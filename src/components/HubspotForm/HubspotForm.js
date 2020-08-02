@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 
+import './HubspotForm.css';
 
 const HubspotForm = ({ hubspotFormId }) => {
 

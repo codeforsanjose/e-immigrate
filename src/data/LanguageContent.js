@@ -13,7 +13,7 @@ export const languageOptions = [
   },
 ]
 
-export const contentVariations = {
+export const content = {
   en: {
     value: 'English',
     language: 'Preferred Language',

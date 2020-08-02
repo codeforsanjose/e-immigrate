@@ -1,0 +1,20 @@
+.languageDropdown {
+  display: flex;
+  align-items: center;
+}
+
+.languageDropdown .label {
+  display: flex;
+  align-items: center;
+}
+
+.languageDropdown .label h4 {
+  margin: 0 0.5rem;
+}
+
+.languageDropdown select {
+  padding: 8px;
+  background-color: rgb(53, 106, 218);
+  color: white;
+  border-radius: 3px;
+}
