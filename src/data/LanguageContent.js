@@ -16,19 +16,19 @@ export const languageOptions = [
 export const content = {
   en: {
     value: 'English',
-    language: 'Preferred Language',
+    preferredLanguage: 'Preferred Language',
     video: 'https://www.youtube.com/embed/QOt3Jc59BD4',
     hubspotFormId: '2245b12f-d7e2-4828-9346-1da44664495e'
   },
   es: {
     value: 'Español',
-    language: 'Idioma Preferido',
+    preferredLanguage: 'Idioma Preferido',
     video: 'https://www.youtube.com/embed/QOt3Jc59BD4',
     hubspotFormId: '2245b12f-d7e2-4828-9346-1da44664495e'
   },
   vi: {
     value: 'Tiếng Việt',
-    language: 'Ngôn Ngữ Ưa Thích',
+    preferredLanguage: 'Ngôn Ngữ Ưa Thích',
     video: 'https://www.youtube.com/embed/MC2MEjzEZ2Y',
     hubspotFormId: '2245b12f-d7e2-4828-9346-1da44664495e'
   }

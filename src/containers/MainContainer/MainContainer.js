@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { content } from '../../data/LanguageContent';
 
 import LanguageDropdown from '../../components/LanguageDropdown/LanguageDropdown';
-import Video from '../../components/Video/Video';
-import HubspotForm from '../../components/HubspotForm/HubspotForm';
+import Video from '../../compositions/Video/Video';
+import HubspotForm from '../../compositions/HubspotForm/HubspotForm';
 
 import './MainContainer.css';
 
@@ -12,9 +12,7 @@ const MainContainer = () => {
   const browserLanguage = window.navigator.userLanguage || window.navigator.language;
    
   useEffect(() => {
-    if (browserLanguage){
-      setLanguage(browserLanguage.substring(0,2))
-    }
+    setLanguage(browserLanguage.substring(0,2))
   },[browserLanguage]);
 
   return (
