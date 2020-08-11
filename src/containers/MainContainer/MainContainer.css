@@ -1,0 +1,12 @@
+.MainContainer {
+  
+}
+
+.MainContainer .wrapper {
+  display: grid;
+  grid-template-columns: minmax(240px, 1fr);
+}
+
+.MainContainer .items {
+  grid-column-start: 1;
+}
