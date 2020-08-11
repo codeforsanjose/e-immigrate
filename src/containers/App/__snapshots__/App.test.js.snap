@@ -1,0 +1,78 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`App renders correctly 1`] = `
+<div
+  className="App"
+>
+  <div
+    className="MainContainer"
+  >
+    <div
+      className="wrapper"
+    >
+      <div
+        className="items"
+      >
+        <div
+          className="languageDropdown"
+        >
+          <div
+            className="label"
+          >
+            <svg
+              height="2rem"
+              width="2rem"
+            >
+              LanguagePicker.svg
+            </svg>
+            <h4>
+              Preferred Language
+              :
+            </h4>
+          </div>
+          <div>
+            <select
+              onChange={[Function]}
+            >
+              <option
+                value="en"
+              >
+                English
+              </option>
+              <option
+                value="es"
+              >
+                Español
+              </option>
+              <option
+                value="vi"
+              >
+                Tiếng Việt
+              </option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <div
+            className="videoContainer"
+          >
+            <iframe
+              allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen={true}
+              className="video"
+              frameBorder="0"
+              height="315"
+              src="https://www.youtube.com/embed/QOt3Jc59BD4"
+              title="Project New Citizen Video"
+              width="560"
+            />
+          </div>
+        </div>
+        <div
+          id="hubspotForm"
+        />
+      </div>
+    </div>
+  </div>
+</div>
+`;
