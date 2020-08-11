@@ -1,20 +1,44 @@
 .languageDropdown {
-  display: flex;
-  align-items: center;
+  display: grid;
+  grid-template-columns: 158px auto;
+  gap: 10px;
 }
 
-.languageDropdown .label {
-  display: flex;
-  align-items: center;
+.languageDropdown .preferredLanguage {
+  align-self: center;
+  margin: 0;
 }
 
-.languageDropdown .label h4 {
-  margin: 0 0.5rem;
+.languageDropdown .languageSelect {
+  align-self: center;
 }
 
-.languageDropdown select {
-  padding: 8px;
+.languageDropdown .languageSelect .languageIcon {
+  align-self: center;
+  justify-self: center;
+}
+
+.languageDropdown .languageSelect .languageSelectContainer {
+  display: grid;
+  grid-template-columns: 40px auto;
+  width: 135px;
   background-color: rgb(53, 106, 218);
   color: white;
   border-radius: 3px;
+}
+
+.languageDropdown .languageSelect select {
+  padding: 12px 0 12px 36px;
+  margin: 0 4px 0 -36px;
+  background-color: rgba(0, 0, 0, 0);
+  color: white;
+  align-self: center;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.languageDropdown .languageSelect select:focus {
+  font-weight: bold;
+  outline: none;
 }
