@@ -4,6 +4,9 @@ import './HubspotForm.css';
 
 const HubspotForm = ({ hubspotFormId }) => {
 
+  const submitFormEvent = (event) => {
+    console.log('the event is', event)
+  }
   useEffect(() => {
     const script = document.createElement('script');
     script.src = 'https://js.hsforms.net/forms/shell.js';
@@ -14,7 +17,8 @@ const HubspotForm = ({ hubspotFormId }) => {
         window.hbspt.forms.create({
           portalId: '8034478',
           formId: hubspotFormId,
-          target: '#hubspotForm'
+          target: '#hubspotForm',
+          onFormSubmit: submitFormEvent,
         })
       }
     });
