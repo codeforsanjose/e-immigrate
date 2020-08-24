@@ -40,6 +40,29 @@ Instead, it will copy all the configuration files and the transitive dependencie
 
 You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
 
+## Running Mongodb Locally
+
+In order to run mongodb locally, you will need to check if you have installed mongodb on your device.
+
+### `which mongo`
+
+Checks if you have mongodb installed locally. It should show a directory path like `/usr/local/bin/mongo`. If it doesn't, you will need to install mongodb on your device. 
+
+In order to install mongodb on you device, go to [mongodb manual](https://docs.mongodb.com/manual/administration/install-community/) and follow the instructions. 
+
+### Connecting to Mongodb
+
+After installing mongodb, create a file with filename '.env' inside the backend folder. Add the following code in the file. 
+
+`MONGO_URI = mongodb://localhost/test`
+
+Now, navigate to the `backend` folder in your terminal and run the command `node index.js`. You should see a response as shown below. 
+
+`listening on port 5000`
+`MongoDB database connection established successfully`
+
+Note: `test` in the above code is the name of the database that you want your application to connect to. You can choose your own name for the database. 
+
 ## Learn More
 
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
