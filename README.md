@@ -60,7 +60,7 @@ After installing mongoDB, create a file with filename `.env` inside the backend 
 
 Now, navigate to the `backend` folder in your terminal, and run the command `node index.js`. You should see a response as shown below, if mongoDB is connected to your application. 
 
-`listening on port 5000`
+`listening on port 5000`<br>
 `MongoDB database connection established successfully`
 
 Note: `test` in the above code is the name of the database that you want your application to connect to. You can choose your own name for the database. 
