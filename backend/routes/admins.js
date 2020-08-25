@@ -23,7 +23,7 @@ router.route('/').get((req, res) => {
       .catch(err => res.status(500).json(err));
   });
   
-//route to sign up
+//route for signing up
 router.route('/').post((req, res) => {
     let email = req.body.email;
     let name = req.body.name;
@@ -123,7 +123,7 @@ router.route('/sessions').post((req, res) => {
     }
 });
 
-//route for authentication with client's jwt
+//route for authenticating with jwt
 router.route("/sessions").get((req, res) => { 
 
     let token = req.get("Authorization").split(" ")[1];
