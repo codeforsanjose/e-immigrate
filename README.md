@@ -54,7 +54,7 @@ In order to install mongoDB on you device, go to [mongoDB manual](https://docs.m
 
 ### Connecting to MongoDB
 
-After installing mongoDB, create a file with filename `.env` inside the backend folder. Add the following code in the file. 
+After installing mongoDB, create a file with filename `.env` inside the backend folder. Add the following line in the file:
 
 `MONGO_URI = mongodb://localhost/test`
 
@@ -63,7 +63,16 @@ Now, navigate to the `backend` folder in your terminal, and run the command `nod
 `listening on port 5000`<br>
 `MongoDB database connection established successfully`
 
-Note: `test` in the above code is the name of the database that you want your application to connect to. You can choose your own name for the database. 
+Note: `test` in the line above is the name of the database that you want your application to connect to. You can choose your own name for the database. 
+
+## JWT Authentication
+
+In your `.env` folder, add the following line:
+
+`JWT_KEY = <secret key>`
+
+The `secret key` can be a "string, buffer, or object containing either the secret for HMAC algorithms or the PEM encoded private key for RSA and ECDSA".   
+For more information on jwt, visit [JWT Documentation](https://www.npmjs.com/package/jsonwebtoken). 
 
 ## Learn More
 
