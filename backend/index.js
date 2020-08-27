@@ -2,7 +2,8 @@ const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const usersRouter = require('./routes/users');
-const adminsRouter = require('./routes/admins')
+const adminsRouter = require('./routes/admins');
+const auth = require('./middleware/auth');
 
 require('dotenv').config()
 
@@ -20,7 +21,8 @@ connection.once('open', () => {
 })
 
 app.use('/api/users', usersRouter);
-app.use('/api/admins', adminsRouter)
+app.use('/api/admins', adminsRouter);
+
 
 const port = process.env.PORT || 5000;
 

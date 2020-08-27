@@ -1,10 +1,18 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/user');
+const auth = require('../middleware/auth');
+
+router.use(auth);
 
 router.route('/').get((req, res) => {
+  const admin = req.user;
+
   User.find()
-    .then(users => res.json(users))
+    .then((allUsers) => {
+      const usersInfo = { users: allUsers, admin: admin }
+      res.json(usersInfo);
+    })
     .catch(err => console.log(err));
 });
 
@@ -15,10 +23,12 @@ router.route('/:id').get((req, res) => {
 });
 
 router.route('/add').post((req, res) => {
+  const name = req.body.name;
   const phoneNumber = req.body.phoneNumber;
   const document = req.body.document;
 
   const newUser = new User({
+    name,
     phoneNumber,
     document,
   });
