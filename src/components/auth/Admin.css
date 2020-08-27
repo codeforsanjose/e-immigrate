@@ -1,0 +1,35 @@
+.Admin {
+    width: 400px;
+    margin: 0 auto;
+}
+
+.Admin .admin-tab-nav {
+    padding: 10px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 60px;
+    max-width: 24em;
+    min-width: 21em;
+    text-align: center;
+    -webkit-box-shadow: 0px 0px 20px 0px rgba(15, 15, 15, 0.2);
+    box-shadow: 0px 0px 20px 0px rgba(15, 15, 15, 0.2);
+    transition: visibility 0.5s;
+}
+
+.Admin .tab-container {
+    padding: 10px;
+    display: grid;
+    max-width: 24em;
+    min-width: 21em;
+    box-shadow: 0px 0px 20px 0px rgba(15, 15, 15, 0.2);
+    border-radius: 6px;
+}
+
+.Admin .tab-container .tab {
+    cursor: pointer;
+}
+
+.Admin .tab-container .selected-tab {
+    transition: border 0.5s ease-out;
+    border-bottom: 2px solid blue;
+}
