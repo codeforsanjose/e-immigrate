@@ -74,6 +74,13 @@ In your `.env` folder, add the following line:
 The `secret key` can be a "string, buffer, or object containing either the secret for HMAC algorithms or the PEM encoded private key for RSA and ECDSA".   
 For more information on jwt, visit [JWT Documentation](https://www.npmjs.com/package/jsonwebtoken). 
 
+## Viewing Registered Users
+
+In order to view the registered users as an admin:
+
+Navigate to [http://localhost:3000/login](http://localhost:3000/login)
+Sign up/Sign in to see the registered users. 
+
 ## Learn More
 
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
