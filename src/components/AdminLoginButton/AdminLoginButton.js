@@ -6,7 +6,7 @@ const login = () => console.log('to admin login page')
 
 const AdminLoginButton = () => {
   return (
-    <div className='loginButton'>
+    <div className='AdminLoginButton'>
       <a href='#' onClick={ login }>Admin Login</a>
     </div>
   );
