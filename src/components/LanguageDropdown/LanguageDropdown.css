@@ -1,7 +1,7 @@
 .languageDropdown {
   display: grid;
-  grid-template-columns: 158px auto;
-  gap: 10px;
+  grid-template-columns: auto;
+  margin-top: 20px;
 }
 
 .languageDropdown .preferredLanguage {
@@ -10,7 +10,7 @@
 }
 
 .languageDropdown .languageSelect {
-  align-self: center;
+  justify-self: center;
 }
 
 .languageDropdown .languageSelect .languageIcon {
@@ -21,11 +21,15 @@
 .languageDropdown .languageSelect .languageSelectContainer {
   display: grid;
   grid-template-columns: 40px auto;
-  width: 135px;
-  background-color: rgb(53, 106, 218);
+  width: 155px;
+  background-color: #2A4EF5;
   color: white;
-  border-radius: 3px;
+  border-radius: 8px;
 }
+
+/* .languageDropdown .languageSelect .languageSelectContainer  {
+  font-size: 5rem;
+} */
 
 .languageDropdown .languageSelect select {
   padding: 12px 0 12px 36px;
@@ -36,6 +40,7 @@
   border: none;
   border-radius: 3px;
   cursor: pointer;
+  font-size: 1.2rem;
 }
 
 .languageDropdown .languageSelect select:focus {
