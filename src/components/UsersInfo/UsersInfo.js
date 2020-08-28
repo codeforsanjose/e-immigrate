@@ -30,7 +30,7 @@ const UsersInfo = (props) => {
                 })
             })
         }
-    });
+    }, []);
 
     const usernames = usersInfoState.usernames.map(user =>
         <li key={user._id}>
