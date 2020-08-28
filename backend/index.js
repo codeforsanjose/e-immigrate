@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const usersRouter = require('./routes/users');
-const adminsRouter = require('./routes/admins')
+const adminsRouter = require('./routes/admins');
 
 require('dotenv').config()
 
@@ -16,11 +16,12 @@ mongoose.connect(uri, { useNewUrlParser: true, useCreateIndex: true, useUnifiedT
 const connection = mongoose.connection;
 connection.on('error', console.error.bind(console, 'connection error:'));
 connection.once('open', () => {
-  console.log('MongoDB database connection established successfully');
+    console.log('MongoDB database connection established successfully');
 })
 
 app.use('/api/users', usersRouter);
-app.use('/api/admins', adminsRouter)
+app.use('/api/admins', adminsRouter);
+
 
 const port = process.env.PORT || 5000;
 
