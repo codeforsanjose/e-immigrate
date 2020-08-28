@@ -25,11 +25,12 @@
     border-radius: 6px;
 }
 
-.Admin .tab-container .tab {
+.Admin .tab {
     cursor: pointer;
+    text-align: center;
+    padding: 20px;
 }
 
-.Admin .tab-container .selected-tab {
-    transition: border 0.5s ease-out;
+.Admin .selected-tab {
     border-bottom: 2px solid blue;
 }

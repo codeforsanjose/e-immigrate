@@ -79,7 +79,7 @@ For more information on jwt, visit [JWT Documentation](https://www.npmjs.com/pac
 In order to view the registered users as an admin:
 
 Navigate to [http://localhost:3000/login](http://localhost:3000/login)
-Sign up/ sign in to see the registered users. 
+Sign up/Sign in to see the registered users. 
 
 ## Learn More
 

@@ -1,39 +1,31 @@
-
-
-
-
-
-.inner-container {
+.LoginBox, .RegisterBox {
     transition: visibility 0.2s ease-out;
 }
 
-.inner-container.show {
+.LoginBox .show, .RegisterBox .show {
     visibility: visible;
 }
 
-.header {
+.LoginBox .header, .RegisterBox .header {
     text-align: center;
     padding: 5px;
     margin-bottom: 17px;
-    font-family: Ozxgen, sans-serif;
     font-size: 22px;
     border-bottom: 2px solid blue;
 }
 
-.box {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+.LoginBox .login-form, .RegisterBox .login-form {
+    display: grid;
+   
 }
 
-.input-group {
-    display: flex;
-    flex-direction: column;
+.LoginBox .input-group, .RegisterBox .input-group {
+    display: grid;
     margin-top: 5px;
     margin-bottom: 5px;
 }
 
-.login-input {
+.LoginBox .login-input, .RegisterBox .login-input {
     border-radius: 3px;
     border: 2px solid blue;
     transition: border 0.2s ease-out;
@@ -44,20 +36,20 @@
     margin: 5px 0;
 }
 
-.login-input:hover {
+.LoginBox .login-input:hover, .RegisterBox .login-input:hover {
     border: 2px solid lightblue;
 }
 
-.login-input:focus {
+.LoginBox .login-input:focus, .RegisterBox .login-input:focus {
     border: 2px solid lightblue;
     box-shadow: 0px 0px 20px rgba(15, 15, 15, 0.2);
 }
 
-.login-input::placeholder {
+.LoginBox .login-input::placeholder, .RegisterBox .login-input::placeholder {
     color: rgba(15, 15, 15, 0.4);
 }
 
-.login-btn {
+.LoginBox .login-btn, .RegisterBox .login-btn {
     padding: 5px 30px;
     border: 0;
     font-size: 18px;
@@ -69,7 +61,8 @@
     cursor: pointer;
 }
 
-.login-btn:hover,
+.LoginBox .login-btn:hover,
+.login-btn:focus, .RegisterBox .login-btn:hover,
 .login-btn:focus {
     background-color: #417cef;
     color: white;

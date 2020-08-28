@@ -18,12 +18,15 @@ const Admin = (props) => {
         setAdminState({ isRegisterOpen: true, isLoginOpen: false });
     }
 
-    const loginClassName = 'tab ' + adminState.isLoginOpen
-        ? 'selected-tab'
-        : ''
-    const registerClassName = 'tab ' + adminState.isRegisterOpen
-        ? 'selected-tab'
-        : ''
+    let loginClassName = 'tab';
+    let registerClassName = 'tab';
+
+    if (adminState.isLoginOpen) {
+        loginClassName = 'tab selected-tab';
+    }
+    else {
+        registerClassName = 'tab selected-tab';
+    }
 
     const loginBox = adminState.isLoginOpen && <LoginBox />
     const registerBox = adminState.isRegisterOpen && <RegisterBox />
@@ -31,24 +34,24 @@ const Admin = (props) => {
         <div className="Admin">
             <div className="admin-tab-nav">
                 <div
-                    className={ loginClassName }
-                    onClick={ showLoginBox }>
+                    className={loginClassName}
+                    onClick={showLoginBox}>
                     Login
                 </div>
                 <div
-                    className={ registerClassName }
-                    onClick={ showRegisterBox }>
+                    className={registerClassName}
+                    onClick={showRegisterBox}>
                     Register
                 </div>
             </div>
 
             <div className="tab-container">
-                { loginBox }
-                { registerBox }
+                {loginBox}
+                {registerBox}
             </div>
         </div>
     )
-    
+
 }
 
 export default Admin;
