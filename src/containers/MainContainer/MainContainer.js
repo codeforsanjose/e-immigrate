@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { content } from '../../data/LanguageContent';
 
-import LanguageDropdown from '../../components/LanguageDropdown/LanguageDropdown';
+import LandingPage from '../../compositions/LandingPage/LandingPage';
+import ChooseLanguage from '../../compositions/ChooseLanguage/ChooseLanguage';
 import Video from '../../compositions/Video/Video';
 import HubspotForm from '../../compositions/HubspotForm/HubspotForm';
 
@@ -19,9 +20,10 @@ const MainContainer = () => {
     <div className='MainContainer'>
       <div className='wrapper'>
         <div className='items'>
-          <LanguageDropdown language={ content[language] } setLanguage={ setLanguage } />
+          <LandingPage welcomeMessage={ content[language].welcomeMessage }/>
+          <ChooseLanguage language={ content[language] } setLanguage={ setLanguage } />
           <Video video={ content[language].video } />
-          <HubspotForm hubspotFormId={ content[language].hubspotFormId } />
+          <HubspotForm hubspot={ content[language].hubspot } />
         </div>
       </div>
     </div>
