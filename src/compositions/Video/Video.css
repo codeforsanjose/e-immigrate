@@ -1,3 +1,25 @@
+.video {
+
+}
+
+.video .titleText {
+  color: #2F3772;
+}
+
+.video .titleText .step {
+  margin-top: 100px;
+  font-size: 2rem;
+  font-weight: 700;
+  text-align: center;
+  text-decoration: underline;
+}
+
+.video .titleText .title1 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  text-align: center;
+}
+
 .videoContainer { 
   position: relative;
   padding-bottom: 56.25%;

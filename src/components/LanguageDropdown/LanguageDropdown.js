@@ -12,7 +12,7 @@ const LanguageSelect = ({ setLanguage }) => {
         { 
           languageOptions.map((lang, idx) => {
             return (
-              <option key={idx} value={lang.code} >{lang.full}</option>
+              <option className='languageOption' key={idx} value={lang.code} >{lang.full}</option>
             )
           })
         }
@@ -22,10 +22,8 @@ const LanguageSelect = ({ setLanguage }) => {
 };
 
 const LanguageDropdown = ({ language, setLanguage }) => {
-  const { preferredLanguage } = language;
   return (
     <div className='languageDropdown'>
-      <h4 className='preferredLanguage'>{ preferredLanguage }:</h4>
       <div className='languageSelect'>
         <LanguageSelect setLanguage={ setLanguage } />
       </div>

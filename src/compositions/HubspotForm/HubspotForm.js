@@ -2,7 +2,8 @@ import React, { useEffect } from 'react';
 
 import './HubspotForm.css';
 
-const HubspotForm = ({ hubspotFormId }) => {
+const HubspotForm = ({ hubspot }) => {
+  const { step, line1, line2, hubspotFormId } = hubspot;
 
   const submitFormEvent = (event) => {
     console.log('the event is', event)
@@ -25,7 +26,14 @@ const HubspotForm = ({ hubspotFormId }) => {
   }, [hubspotFormId])
 
   return (
-    <div id='hubspotForm'></div>
+    <div className='hubspot'>
+      <div className='titleText'>
+        <div className='step'>{ step }</div>
+        <div className='title1'>{ line1 }</div>
+        <div className='title2'>{ line2 }</div>
+      </div>
+      <div id='hubspotForm'></div>
+    </div>
   )
 };
 
