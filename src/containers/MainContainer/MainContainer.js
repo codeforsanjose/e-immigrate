@@ -5,7 +5,6 @@ import LandingPage from '../../compositions/LandingPage/LandingPage';
 import ChooseLanguage from '../../compositions/ChooseLanguage/ChooseLanguage';
 import Video from '../../compositions/Video/Video';
 import HubspotForm from '../../compositions/HubspotForm/HubspotForm';
-import AdminLoginButton from '../../components/AdminLoginButton/AdminLoginButton';
 
 import './MainContainer.css';
 
@@ -21,7 +20,6 @@ const MainContainer = () => {
     <div className='MainContainer'>
       <div className='wrapper'>
         <div className='items'>
-          <AdminLoginButton />
           <LandingPage welcomeMessage={ content[language].welcomeMessage }/>
           <ChooseLanguage language={ content[language] } setLanguage={ setLanguage } />
           <Video video={ content[language].video } />

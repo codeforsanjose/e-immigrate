@@ -1,46 +1,46 @@
 @media only screen and (min-width: 1025px) {
-  .landing {
+  .LandingPage {
     display: grid;
     grid-template-columns: 45% auto;
     gap: 40px;
   }
 
-  .landing img {
+  .LandingPage img {
     grid-column-start: 2;
     grid-row-start: 1;
   }
 }
 
 @media only screen and (max-width: 1024px) {
-  .landing {
+  .LandingPage {
     display: grid;
     grid-template-columns: auto;
     grid-template-rows: auto auto;
   }
 
-  .welcome-message {
+  .LandingPage .welcome-message {
     text-align: center;
   }
 
-  .landing img {
+  .LandingPage img {
     grid-column-start: 1;
     grid-row-start: 2;
   }
 }
 
-.welcome-message h1 {
+.LandingPage .welcome-message h1 {
   font-size: 3rem;
   color: #2F3772;
 }
 
-.welcome-message .line2 {
+.LandingPage .welcome-message .line2 {
   grid-column-start: 1;
   color: #2F3772;
   font-size: 1.5rem;
   font-weight: 500;
 }
 
-.landing img {
+.LandingPage img {
   justify-self: center;
   width: 100%;
   height: auto;

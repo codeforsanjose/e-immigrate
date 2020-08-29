@@ -26,9 +26,9 @@ const Video = ({ video }) => {
         <YouTube 
           className='video'
           videoId={ videoId } 
-          opts={opts} 
-          onEnd={onEnd}
-          onStateChange={onStateChange}
+          opts={ opts } 
+          onEnd={ onEnd }
+          onStateChange={ onStateChange }
         />
       </div>
     </div>

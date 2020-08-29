@@ -6,7 +6,7 @@ import './ChooseLanguage.css';
 const ChooseLanguage = ({ language, setLanguage }) => {
   const { step, preferredLanguage } = language.chooseLanguage;
   return (
-    <div>
+    <div className='ChooseLanguage'>
       <div className='titleText'>
         <div className='step'>{ step }</div>
         <div className='title1'>{ preferredLanguage }</div>
