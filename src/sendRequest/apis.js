@@ -7,4 +7,4 @@ module.exports = {
     addUser: 'http://localhost:5000/api/users/add',
     updateUser: 'http://localhost:5000/api/users/update/:id',
     deleteUser: 'http://localhost:5000/api/users/delete/:id',
-}
+};
