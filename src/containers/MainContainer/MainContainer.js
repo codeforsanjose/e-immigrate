@@ -10,6 +10,8 @@ import './MainContainer.css';
 
 const MainContainer = () => {
   const [language, setLanguage] = useState('en');
+  const [videoState, setVideoState] = useState({hasWatchedVideo: false})
+  const { hasWatchedVideo } = videoState
   const browserLanguage = window.navigator.userLanguage || window.navigator.language;
   console.log('language is', language)
   useEffect(() => {
@@ -31,15 +33,20 @@ const MainContainer = () => {
       }
     })
   }, [])
-
+  const videoEndedHandler = (event) => {
+    console.log('the video ended show the form', event)
+    setVideoState({
+      hasWatchedVideo: true
+    })
+  }
   return (
     <div className='MainContainer'>
       <div className='wrapper'>
         <div className='items'>
           <LandingPage welcomeMessage={ content[language].welcomeMessage }/>
           <ChooseLanguage language={ content[language] } setLanguage={ setLanguage } />
-          <Video video={ content[language].video } />
-          <HubspotForm hubspot={ content[language].hubspot } language={ language } />
+          <Video onEnd={ videoEndedHandler } video={ content[language].video } />
+          <HubspotForm hubspot={ content[language].hubspot } hasWatchedVideo={ hasWatchedVideo } language={ language } />
         </div>
       </div>
     </div>

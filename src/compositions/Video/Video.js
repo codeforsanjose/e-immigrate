@@ -27,6 +27,7 @@ const Video = ({ video, onEnd = () => {}, onStateChange = (event) => {} }) => {
           onStateChange={ onStateChange }
         />
       </div>
+      <h4>You must watch the full video without stopping before taking the survey.</h4>
     </div>
   );
 };
