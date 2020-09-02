@@ -56,7 +56,7 @@ export const content = {
     },
     hubspot: {
       step: 'Paso 3',
-      hubspotFormId: '2245b12f-d7e2-4828-9346-1da44664495e',
+      hubspotFormId: 'c601d5d3-ad19-4aa9-bc4b-0458ded6bfb7',
       line1: 'Responda TODAS las preguntas a continuación',
       line2: 'Nota de Privacidad',
     },

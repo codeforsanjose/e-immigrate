@@ -23,7 +23,7 @@ const MainContainer = () => {
           <LandingPage welcomeMessage={ content[language].welcomeMessage }/>
           <ChooseLanguage language={ content[language] } setLanguage={ setLanguage } />
           <Video video={ content[language].video } />
-          <HubspotForm hubspot={ content[language].hubspot } />
+          <HubspotForm hubspot={ content[language].hubspot } language={ language } />
         </div>
       </div>
     </div>
