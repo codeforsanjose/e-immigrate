@@ -28,13 +28,13 @@ export const content = {
     video: {
       step: 'Step 2',
       line1: 'You must watch the video below before filling in your information',
-      videoId: 'QOt3Jc59BD4',
+      videoId: 'WRP1hn8IGIc',
     },
     hubspot: {
       step: 'Step 3',
       hubspotFormId: '2245b12f-d7e2-4828-9346-1da44664495e',
-      line1: 'Answer ALL of the questions below',
-      line2: "Privacy Note: Your answers to these questions will be for internal use only. They will not be shared outside of CET-ICP and it's partner organizations.",
+      line1: 'Please watch the entire video and complete ALL the screening questions to be selected to take part in this FREE Citizenship Workshop!',
+      line2: 'Thank you for watching the Project New Citizen orientation. In order to qualify to receive a FREE follow-up consultation with a legal service representative, we ask that you complete ALL of the screening questions. Please answer truthfully and as best as you can remember. Please complete ALL the questions to the best of your ability.'
     },
   },
 
@@ -42,8 +42,8 @@ export const content = {
     value: 'Español',
     welcomeMessage: {
       line1: 'Bienvenida al día de la ciudadanía virtual',
-      line2: 'Una herramienta en línea del Center for Employment Training - Immigration & Citizenship Program (CET-ICP)',
-      line3: '',
+      line2: '¡Mire el video completo y conteste TODAS las preguntas para ser seleccionado para participar en este Taller de ciudadanía GRATUITO!',
+      line3: 'Gracias por ver la orientación de Proyecto Nuevo Ciudadano. Para calificar para recibir una consulta GRATUITA con un representante de servicios legales, le pedimos que responda a TODAS las preguntas. Responda con sinceridad y lo mejor que pueda recordar. Complete TODAS las preguntas lo mejor que pueda.',
     },
     chooseLanguage: {
       step: 'Paso 1',
@@ -52,7 +52,7 @@ export const content = {
     video: {
       step: 'Paso 2',
       line1: 'Debes ver el video a continuación antes de completar tu información',
-      videoId: 'MC2MEjzEZ2Y',
+      videoId: 'en6Ce0ULL3c',
     },
     hubspot: {
       step: 'Paso 3',
