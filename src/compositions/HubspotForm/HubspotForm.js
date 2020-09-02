@@ -1,40 +1,29 @@
-import React, { useEffect } from 'react';
-
+import React from 'react';
+import HubspotSpanishForm from './HubspotSpanishForm'
+import HubspotEnglishForm from './HubspotEnglishForm'
+import HubspotVietForm from './HubspotVietForm'
 import './HubspotForm.css';
 
-const HubspotForm = ({ hubspot }) => {
-  const { step, line1, line2, hubspotFormId } = hubspot;
-
-  const submitFormEvent = (event) => {
-    console.log('the event is', event)
-  }
-  useEffect(() => {
-    const script = document.createElement('script');
-    script.src = 'https://js.hsforms.net/forms/shell.js';
-    document.body.appendChild(script);
-    
-    script.addEventListener('load', () => {
-      if(window.hbspt) {
-        window.hbspt.forms.create({
-          portalId: '8034478',
-          formId: hubspotFormId,
-          target: '#hubspotForm',
-          onFormSubmit: submitFormEvent,
-        })
+const HubspotForm = ({ hubspot, language = 'en', hasWatchedVideo = false }) => {
+  const englishForm = <HubspotEnglishForm hubspot={ hubspot } />
+  const spanishForm = <HubspotSpanishForm hubspot={ hubspot } />
+  const vietForm = <HubspotVietForm hubspot={ hubspot } />
+  const loadCorrectForm = () => {
+    if ( hasWatchedVideo ) {
+      if (language === 'en' ) {
+        return englishForm
+      } else if (language === 'es') {
+        return spanishForm
+      } else if (language === 'vi') {
+        return vietForm
       }
-    });
-  }, [hubspotFormId])
+    } else {
+      return null
+    }
+    
 
-  return (
-    <div className='hubspot'>
-      <div className='titleText'>
-        <div className='step'>{ step }</div>
-        <div className='title1'>{ line1 }</div>
-        <div className='title2'>{ line2 }</div>
-      </div>
-      <div id='hubspotForm'></div>
-    </div>
-  )
-};
+  }
+  return loadCorrectForm()
+}
 
-export default HubspotForm;
+export default HubspotForm
