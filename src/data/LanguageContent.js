@@ -80,9 +80,9 @@ export const content = {
     },
     hubspot: {
       step: 'Bước 3',
-      hubspotFormId: '2245b12f-d7e2-4828-9346-1da44664495e',
-      line1: 'Trả lời TẤT CẢ các câu hỏi dưới đây',
-      line2: 'Lưu ý về quyền riêng tư',
+      hubspotFormId: '12359705-44a7-4be9-af94-3932edde8b34',
+      line1: 'Xin quý vị vui lòng xem hết buổi thu hình và trả lời HẾT tất cả các câu hỏi để có thể tiếp tục được sự giúp đỡ và tham gia vào buổi hội thảo Nhập Tịch!',
+      line2: 'Cám ơn quý vị đã xem hết buổi thu hình của Project New Citizen. Để có thể đủ tiêu chuẩn để nhận được tư vấn miễn phí với nhân viên đại diện, chúng tôi xin quý vị thành thật trả lời HẾT tất cả các câu hỏi và theo những gì quý vị nhớ nhất.',
     },
   }
 };
