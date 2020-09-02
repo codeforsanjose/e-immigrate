@@ -2,10 +2,6 @@ import React from 'react';
 import YouTube from 'react-youtube';
 import './Video.css';
 
-const onEnd = () => console.log('video has ended');
-
-const onStateChange = (event) => console.log(event.data);
-
 const opts = {
   height: '315',
   width: '560',
@@ -14,7 +10,7 @@ const opts = {
   },
 };
 
-const Video = ({ video }) => {
+const Video = ({ video, onEnd = () => {}, onStateChange = (event) => {} }) => {
   const { step, line1, videoId } = video;
   return (
     <div className='video'>
