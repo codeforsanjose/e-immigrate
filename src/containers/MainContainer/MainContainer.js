@@ -13,7 +13,6 @@ const MainContainer = () => {
   const [videoState, setVideoState] = useState({hasWatchedVideo: false})
   const { hasWatchedVideo } = videoState
   const browserLanguage = window.navigator.userLanguage || window.navigator.language;
-  console.log('language is', language)
   useEffect(() => {
     setLanguage(browserLanguage.substring(0,2))
   },[browserLanguage]);
@@ -34,7 +33,6 @@ const MainContainer = () => {
     })
   }, [])
   const videoEndedHandler = (event) => {
-    console.log('the video ended show the form', event)
     setVideoState({
       hasWatchedVideo: true
     })
