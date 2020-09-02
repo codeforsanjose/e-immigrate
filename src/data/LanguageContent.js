@@ -76,7 +76,7 @@ export const content = {
     },
     video: {
       step: 'Bước 2',
-      videoId: 'QOt3Jc59BD4',
+      videoId: 'y7-cQUXpTPc',
     },
     hubspot: {
       step: 'Bước 3',
