@@ -17,7 +17,7 @@ export const content = {
   en: {
     value: 'English',
     welcomeMessage: {
-      line1: 'Welcome to Virtual Citizenship Day',
+      line1: 'CITIZENSHIP WORKSHOP 2020',
       line2: 'An online tool from the Center for Employment Training - Immigration & Citizenship Program (CET-ICP)',
       line3: '',
     },
@@ -41,7 +41,7 @@ export const content = {
   es: {
     value: 'Español',
     welcomeMessage: {
-      line1: 'Bienvenida al día de la ciudadanía virtual',
+      line1: 'TALLER DE CIUDADANIA 2020',
       line2: '¡Mire el video completo y conteste TODAS las preguntas para ser seleccionado para participar en este Taller de ciudadanía GRATUITO!',
       line3: 'Gracias por ver la orientación de Proyecto Nuevo Ciudadano. Para calificar para recibir una consulta GRATUITA con un representante de servicios legales, le pedimos que responda a TODAS las preguntas. Responda con sinceridad y lo mejor que pueda recordar. Complete TODAS las preguntas lo mejor que pueda.',
     },
@@ -65,7 +65,7 @@ export const content = {
   vi: {
     value: 'Tiếng Việt',
     welcomeMessage: {
-      line1: 'Chào mừng đến với Ngày quốc tịch ảo',
+      line1: 'NGÀY NHẬP TỊCH 2020',
       line2: 'Một công cụ trực tuyến từ Trung tâm Đào tạo Việc làm - Chương trình Nhập cư & Quốc tịch (CET-ICP)',
       line3: '',
     },
