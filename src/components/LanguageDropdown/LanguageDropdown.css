@@ -4,6 +4,15 @@
   margin-top: 20px;
 }
 
+.languageDropdown .all-languages {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 40px;
+  align-self: center;
+  justify-self: center;
+  text-align: center;
+}
+
 .languageDropdown .preferredLanguage {
   align-self: center;
   margin: 0;
