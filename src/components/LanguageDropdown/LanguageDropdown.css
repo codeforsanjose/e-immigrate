@@ -9,18 +9,9 @@
   margin: 0;
 }
 
-@media only screen and (min-width: 1025px) {
-  .languageDropdown .languageSelect {
-    justify-self: center;
-    width: 250px;
-  }
-}
-
-@media only screen and (max-width: 1024px) {
-  .languageDropdown .languageSelect {
-    justify-self: center;
-    width: 100%;
-  }
+.languageDropdown .languageSelect {
+  justify-self: center;
+  width: 100%;
 }
 
 .languageDropdown .languageSelect .languageIcon {
