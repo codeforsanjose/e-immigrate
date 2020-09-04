@@ -9,7 +9,8 @@ const LanguageSelect = ({ setLanguage }) => {
     <div className='languageSelectContainer'>
       <LanguagePicker className='languageIcon' height='2rem' width='2rem' />
       <select onChange={ev => setLanguage(ev.target.value)} >
-        { 
+        <option value='en'>{languageOptions.map(lang => lang.full).join(', ')}...</option>
+        {
           languageOptions.map((lang, idx) => {
             return (
               <option className='languageOption' key={idx} value={lang.code} >{lang.full}</option>
