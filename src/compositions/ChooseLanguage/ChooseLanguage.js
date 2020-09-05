@@ -7,10 +7,6 @@ const ChooseLanguage = ({ language, setLanguage }) => {
   const { step, preferredLanguage } = language.chooseLanguage;
   return (
     <div className='ChooseLanguage'>
-      <div className='titleText'>
-        <div className='step'>{ step }</div>
-        <div className='title1'>{ preferredLanguage }</div>
-      </div>
       <LanguageDropdown language={ language } setLanguage={ setLanguage } />
     </div>
   );
