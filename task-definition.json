@@ -1,15 +1,11 @@
 {
-    "family": "e-immigrate-client2",
+    "family": "e-immigrate-client",
     "taskRoleArn": "",
     "executionRoleArn": "",
     "networkMode": "bridge",
     "containerDefinitions": [
         {
-            "name": "e-immigrate-client2",
-            "image": "",
-            "repositoryCredentials": {
-                "credentialsParameter": ""
-            },
+            "name": "e-immigrate-client",
             "cpu": 0,
             "memoryReservation": 128,
             "portMappings": [
@@ -41,9 +37,6 @@
     "volumes": [],
     "placementConstraints": [],
     "requiresCompatibilities": [
-        "Ec2"
-    ],
-    "compatibilities": [
         "EC2"
     ]
 }
