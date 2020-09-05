@@ -37,7 +37,7 @@ const MainContainer = () => {
       hasWatchedVideo: true
     })
   }
-  console.log('what is the lang', language)
+
   return (
     <div className='MainContainer'>
       <div className='wrapper'>
