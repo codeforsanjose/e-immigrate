@@ -1,0 +1,49 @@
+{
+    "family": "e-immigrate-client2",
+    "taskRoleArn": "",
+    "executionRoleArn": "",
+    "networkMode": "bridge",
+    "containerDefinitions": [
+        {
+            "name": "e-immigrate-client2",
+            "image": "",
+            "repositoryCredentials": {
+                "credentialsParameter": ""
+            },
+            "cpu": 0,
+            "memoryReservation": 128,
+            "portMappings": [
+                {
+                    "containerPort": 80,
+                    "hostPort": 0,
+                    "protocol": "tcp"
+                }
+            ],
+            "essential": true,
+            "environment": [
+                {
+                    "name": "NODE_ENV",
+                    "value": "production"
+                },
+                {
+                    "name": "PROD_API_PORT",
+                    "value": "8080"
+                },
+                {
+                    "name": "PROD_API_URL",
+                    "value": "e-immigrate-api.corp"
+                }
+            ],
+            "mountPoints": [],
+            "volumesFrom": []
+        }
+    ],
+    "volumes": [],
+    "placementConstraints": [],
+    "requiresCompatibilities": [
+        "Ec2"
+    ],
+    "compatibilities": [
+        "EC2"
+    ]
+}

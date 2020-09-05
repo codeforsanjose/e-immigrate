@@ -13,7 +13,7 @@ jobs:
     steps:
     - name: Debug Action
       uses: hmarr/debug-action@v1.0.0
-
+      
     - name: Checkout
       uses: actions/checkout@v2
 
@@ -57,4 +57,3 @@ jobs:
         service: e-immigrate-client
         cluster: CFSJ-ECS-Cluster
         wait-for-service-stability: true
- 
