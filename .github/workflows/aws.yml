@@ -22,10 +22,12 @@
 # 4. Store an IAM user access key in GitHub Actions secrets named `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`.
 #    See the documentation for each action used below for the recommended IAM policies for this IAM user,
 #    and best practices on handling the access key credentials.
+# TESTING TESTING TESTING testing testing
 
 on:
-  release:
-    types: [created]
+  push:
+    branches:
+      - master
 
 name: Deploy to Amazon ECS
 
@@ -35,6 +37,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Debug Action
+      uses: hmarr/debug-action@v1.0.0
+
+    - name: TESTING
+      run: |
+        echo 'running build...'
+
     - name: Checkout
       uses: actions/checkout@v2
 
@@ -53,7 +62,7 @@ jobs:
       id: build-image
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY: my-ecr-repo
+        ECR_REPOSITORY: e-immigrate
         IMAGE_TAG: ${{ github.sha }}
       run: |
         # Build a docker container and
@@ -75,6 +84,7 @@ jobs:
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
       with:
         task-definition: ${{ steps.task-def.outputs.task-definition }}
-        service: sample-app-service
+        service: e-immigrate-client
         cluster: CFSJ-ECS-Cluster
         wait-for-service-stability: true
+ 
