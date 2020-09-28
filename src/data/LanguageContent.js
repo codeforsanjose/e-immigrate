@@ -16,84 +16,150 @@ export const languageOptions = [
 export const content = {
     en: {
         value: 'English',
+        projectTitle: 'Project New Citizen',
         welcomeMessage: {
             line1: 'CITIZENSHIP WORKSHOP 2020',
             line2:
-                'An online tool from the Center for Employment Training - Immigration & Citizenship Program (CET-ICP)',
-            line3: '',
-        },
-        chooseLanguage: {
-            step: 'Step 1',
-            preferredLanguage: 'Choose Your Preferred Language',
+                "Welcome to Project New Citizen with Santa Clara County's Office of Immigrant Relations.",
         },
         video: {
-            step: 'Step 2',
-            line1:
-                'You must watch the video below before filling in your information',
+            step: 'Step 1',
+            title: 'Video',
+            description: 'You must watch the entire orientation video',
             videoId: 'WRP1hn8IGIc',
+            line1:
+                'Watch the Project New Citizen orientation video to move on to Step 2',
+            line2:
+                'Thank you for watching the Project New Citizen orientation video!',
         },
         hubspot: {
-            step: 'Step 3',
+            step: 'Step 2',
+            title: 'Questionnaire',
+            description:
+                'Please complete ALL the questions to the best of your ability',
             hubspotFormId: '2245b12f-d7e2-4828-9346-1da44664495e',
-            line1:
-                'Please watch the entire video and complete ALL the screening questions to be selected to take part in this FREE Citizenship Workshop!',
-            line2:
-                'Thank you for watching the Project New Citizen orientation. In order to qualify to receive a FREE follow-up consultation with a legal service representative, we ask that you complete ALL of the screening questions. Please answer truthfully and as best as you can remember. Please complete ALL the questions to the best of your ability.',
+            instruction1:
+                'Complete and submit the screening questionnaire in order to move to Step 3 and receive a FREE follow-up consultation',
+            instructionTips: {
+                tip1: 'You might need your green card',
+                tip2: 'Answer 25-30 questions',
+                tip3: 'It takes about 10 minutes',
+            },
+            button: 'Go to Questionnaire',
+            alert: {
+                line1: 'All of your information will be kept confidential.',
+                line2: 'Please answer truthfully and as best you can remember.',
+                line3:
+                    'Please complete ALL the questions to the best of your ability.',
+            },
+        },
+        consultation: {
+            step: 'Step 3',
+            title: 'Consultation',
+            description:
+                'Recieve a FREE follow-up consultation with a legal service representative',
+            instructions: {
+                line1: "What's next?",
+                line2: '',
+                line3: '',
+                line4: '',
+            },
         },
     },
 
     es: {
         value: 'Español',
+        projectTitle: 'Proyecto Nuevo Ciudadano',
         welcomeMessage: {
             line1: 'TALLER DE CIUDADANIA 2020',
             line2:
-                '¡Mire el video completo y conteste TODAS las preguntas para ser seleccionado para participar en este Taller de ciudadanía GRATUITO!',
-            line3:
-                'Gracias por ver la orientación de Proyecto Nuevo Ciudadano. Para calificar para recibir una consulta GRATUITA con un representante de servicios legales, le pedimos que responda a TODAS las preguntas. Responda con sinceridad y lo mejor que pueda recordar. Complete TODAS las preguntas lo mejor que pueda.',
-        },
-        chooseLanguage: {
-            step: 'Paso 1',
-            preferredLanguage: 'Elija su Idioma Preferido',
+                'Bienvenido al Proyecto Nuevo Ciudadano de la Oficina de Relaciones con Inmigrantes del Condado de Santa Clara.',
         },
         video: {
-            step: 'Paso 2',
-            line1:
-                'Debes ver el video a continuación antes de completar tu información',
+            step: 'Paso 1',
+            title: 'Video',
+            description: 'Debes ver el video de orientación completo',
             videoId: 'en6Ce0ULL3c',
         },
         hubspot: {
-            step: 'Paso 3',
+            step: 'Paso 2',
+            title: 'Cuestionario',
+            description: 'Complete TODAS las preguntas lo mejor que pueda',
             hubspotFormId: 'c601d5d3-ad19-4aa9-bc4b-0458ded6bfb7',
-            line1: 'Responda TODAS las preguntas a continuación',
-            line2: 'Nota de Privacidad',
+            instruction1:
+                'Complete and submit the screening questionnaire in order to move to Step 3 and receive a FREE follow-up consultation',
+            instructionTips: {
+                tip1: 'You might need your green card',
+                tip2: 'Answer 25-30 questions',
+                tip3: 'It takes about 10 minutes',
+            },
+            button: 'Go to Questionnaire',
+            alert: {
+                line1: 'All of your information will be kept confidential.',
+                line2: 'Please answer truthfully and as best you can remember.',
+                line3:
+                    'Please complete ALL the questions to the best of your ability.',
+            },
+        },
+        consultation: {
+            step: 'Paso 3',
+            title: 'Consulta',
+            description:
+                'Recibir una consulta GRATUITA con un representante de servicios legales',
+            instructions: {
+                line1: "What's next?",
+                line2: '',
+                line3: '',
+                line4: '',
+            },
         },
     },
 
     vi: {
         value: 'Tiếng Việt',
+        projectTitle: 'Dự án Công dân Mới',
         welcomeMessage: {
             line1: 'NGÀY NHẬP TỊCH 2020',
             line2:
-                'Một công cụ trực tuyến từ Trung tâm Đào tạo Việc làm - Chương trình Nhập cư & Quốc tịch (CET-ICP)',
-            line3: '',
-        },
-        chooseLanguage: {
-            step: 'Bước 1',
-            line1:
-                'Bạn phải xem video bên dưới trước khi điền thông tin của mình',
-            preferredLanguage: 'Chọn Ngôn Ngữ Ưa Thích Của Bạn',
+                'Chào mừng bạn đến với Dự án Công dân Mới với Văn phòng Quan hệ Di dân của Hạt Santa Clara.',
         },
         video: {
-            step: 'Bước 2',
+            step: 'Bước 1',
+            title: 'Video',
+            description: 'Bạn phải xem toàn bộ video định hướng',
             videoId: 'y7-cQUXpTPc',
         },
         hubspot: {
-            step: 'Bước 3',
+            step: 'Bước 2',
+            title: 'Bảng câu hỏi',
+            description:
+                'Xin cố gắng trả lời HẾT những câu hỏi với khả năng của quý vị',
             hubspotFormId: '12359705-44a7-4be9-af94-3932edde8b34',
-            line1:
-                'Xin quý vị vui lòng xem hết buổi thu hình và trả lời HẾT tất cả các câu hỏi để có thể tiếp tục được sự giúp đỡ và tham gia vào buổi hội thảo Nhập Tịch!',
-            line2:
-                'Cám ơn quý vị đã xem hết buổi thu hình của Project New Citizen. Để có thể đủ tiêu chuẩn để nhận được tư vấn miễn phí với nhân viên đại diện, chúng tôi xin quý vị thành thật trả lời HẾT tất cả các câu hỏi và theo những gì quý vị nhớ nhất.',
+            instruction1:
+                'Complete and submit the screening questionnaire in order to move to Step 3 and receive a FREE follow-up consultation',
+            instructionTips: {
+                tip1: 'You might need your green card',
+                tip2: 'Answer 25-30 questions',
+                tip3: 'It takes about 10 minutes',
+            },
+            button: 'Go to Questionnaire',
+            alert: {
+                line1: 'All of your information will be kept confidential.',
+                line2: 'Please answer truthfully and as best you can remember.',
+                line3:
+                    'Please complete ALL the questions to the best of your ability.',
+            },
+        },
+        consultation: {
+            step: 'Bước 3',
+            title: 'Tham vấn',
+            description: 'Nhận được tư vấn miễn phí với nhân viên đại diện',
+            instructions: {
+                line1: "What's next?",
+                line2: '',
+                line3: '',
+                line4: '',
+            },
         },
     },
 };

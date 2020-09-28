@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { content } from '../../data/LanguageContent';
 
 import LanguageSelectionModal from '../../compositions/LanguageSelectionModal/LanguageSelectionModal';
+import Navbar from '../../compositions/Navbar/Navbar';
 import LandingPage from '../../compositions/LandingPage/LandingPage';
 import ChooseLanguage from '../../compositions/ChooseLanguage/ChooseLanguage';
 import Video from '../../compositions/Video/Video';
@@ -51,13 +52,8 @@ const MainContainer = () => {
                     setShowModal={setShowModal}
                 />
                 <div className={`items ${showModal ? 'blur' : ''}`}>
-                    <LandingPage
-                        welcomeMessage={content[language].welcomeMessage}
-                    />
-                    <ChooseLanguage
-                        language={language}
-                        setLanguage={setLanguage}
-                    />
+                    <Navbar language={language} setLanguage={setLanguage} />
+                    <LandingPage content={content[language]} />
                     <Video
                         onEnd={videoEndedHandler}
                         video={content[language].video}

@@ -1,6 +1,6 @@
 import React from 'react';
 import { ReactComponent as LanguagePicker } from './LanguagePicker.svg';
-import { languageOptions, content } from '../../data/LanguageContent';
+import { languageOptions } from '../../data/LanguageContent';
 
 import './LanguageDropdown.css';
 
@@ -33,19 +33,8 @@ const LanguageSelect = ({ setLanguage, language }) => {
 };
 
 const LanguageDropdown = ({ language, setLanguage }) => {
-    const allLanguagesItems = languageOptions.map((option, idx) => {
-        return (
-            <h3 key={idx}>
-                {content[option.code].chooseLanguage.preferredLanguage}
-            </h3>
-        );
-    });
-    const allLanguagesContent = (
-        <div className="all-languages">{allLanguagesItems}</div>
-    );
     return (
         <div className="languageDropdown">
-            {allLanguagesContent}
             <div className="languageSelect">
                 <LanguageSelect setLanguage={setLanguage} language={language} />
             </div>
