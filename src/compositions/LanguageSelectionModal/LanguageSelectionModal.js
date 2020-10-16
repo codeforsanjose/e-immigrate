@@ -1,9 +1,6 @@
 import React from 'react';
 import { languageOptions } from '../../data/LanguageContent';
-<<<<<<< HEAD
 import Button from '../../components/Button/Button';
-=======
->>>>>>> f6a87142ceb5287c9296f778959c162fec7d2306
 
 import './LanguageSelectionModal.css';
 
@@ -23,7 +20,6 @@ const LanguageSelectionModal = ({
             <div className="buttonGrid">
                 {languageOptions.map((lang, idx) => {
                     return (
-<<<<<<< HEAD
                         <div key={idx}>
                             <Button
                                 value={lang.code}
@@ -31,16 +27,6 @@ const LanguageSelectionModal = ({
                                 onClick={(e) => onClick(e)}
                             />
                         </div>
-=======
-                        <button
-                            className="languageButton"
-                            key={idx}
-                            value={lang.code}
-                            onClick={(e) => onClick(e)}
-                        >
-                            {lang.full}
-                        </button>
->>>>>>> f6a87142ceb5287c9296f778959c162fec7d2306
                     );
                 })}
             </div>

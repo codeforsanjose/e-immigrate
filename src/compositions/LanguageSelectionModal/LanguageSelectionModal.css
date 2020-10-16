@@ -42,24 +42,3 @@
         align-items: center;
     }
 }
-<<<<<<< HEAD
-=======
-
-.LanguageSelection .languageButton {
-    width: 200px;
-    height: 50px;
-    background-color: var(--color-primary);
-    color: var(--color-text-secondary);
-    border-radius: 25px;
-    border-style: none;
-    overflow: auto;
-    cursor: pointer;
-    font-weight: 600;
-    font-size: 1.2rem;
-    transition: all 0.2s ease-in-out;
-}
-
-.LanguageSelection .languageButton:hover {
-    transform: scale(1.1);
-}
->>>>>>> f6a87142ceb5287c9296f778959c162fec7d2306
