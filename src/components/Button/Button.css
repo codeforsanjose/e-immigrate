@@ -1,0 +1,17 @@
+.buttonComponent {
+    width: 200px;
+    height: 50px;
+    background-color: var(--color-primary);
+    color: var(--color-text-secondary);
+    border-radius: 25px;
+    border-style: none;
+    overflow: auto;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1.2rem;
+    transition: all 0.1s ease-in-out;
+}
+
+.buttonComponent:hover {
+    background-color: var(--color-primary-light);
+}

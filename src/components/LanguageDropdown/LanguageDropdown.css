@@ -26,8 +26,7 @@
 .languageDropdown .languageSelect .languageSelectContainer {
     display: grid;
     grid-template-columns: 48px auto;
-    /* background-color: #2A4EF5; */
-    background-color: #34cbad;
+    background-color: var(--color-primary);
     color: white;
     border-radius: 8px;
 }
