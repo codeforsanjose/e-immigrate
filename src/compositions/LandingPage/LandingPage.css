@@ -28,22 +28,6 @@
     padding: 3rem 0;
 }
 
-@media only screen and (min-width: 1025px) {
-    .LandingPage .stepsGrid {
-        display: grid;
-        grid-template-columns: repeat(3, 250px);
-        gap: 100px;
-    }
-}
-
-@media only screen and (max-width: 1024px) {
-    .LandingPage .stepsGrid {
-        display: grid;
-        grid-template-rows: repeat(3, auto);
-        gap: 64px;
-    }
-}
-
 .LandingPage .stepsGrid .stepContainer {
     display: grid;
     grid-template-rows: 40px 50px 210px auto;
@@ -82,4 +66,20 @@
 
 .LandingPage .startButtonContainer {
     text-align: center;
+}
+
+@media only screen and (min-width: 1025px) {
+    .LandingPage .stepsGrid {
+        display: grid;
+        grid-template-columns: repeat(3, 250px);
+        gap: 100px;
+    }
+}
+
+@media only screen and (max-width: 1024px) {
+    .LandingPage .stepsGrid {
+        display: grid;
+        grid-template-rows: repeat(3, auto);
+        gap: 64px;
+    }
 }

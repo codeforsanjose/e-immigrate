@@ -12,27 +12,6 @@
     margin: 111px auto 0;
 }
 
-@media only screen and (min-width: 1025px) {
-    .progressBar .stepsGrid {
-        display: grid;
-        grid-template-columns: repeat(3, 220px);
-        gap: 80px;
-    }
-
-    .progressBar .linesGrid {
-        display: grid;
-        grid-template-columns: auto auto;
-    }
-}
-
-@media only screen and (max-width: 1024px) {
-    .progressBar .stepsGrid {
-        display: grid;
-        grid-template-rows: repeat(3, auto);
-        gap: 64px;
-    }
-}
-
 .progressBar .stepsGrid .stepContainer {
     display: grid;
     grid-template-rows: 34px 42px 80px auto;
@@ -75,4 +54,25 @@
 .progressBar .progressLine2 {
     border-bottom: 5px solid;
     z-index: -1;
+}
+
+@media only screen and (min-width: 1025px) {
+    .progressBar .stepsGrid {
+        display: grid;
+        grid-template-columns: repeat(3, 220px);
+        gap: 80px;
+    }
+
+    .progressBar .linesGrid {
+        display: grid;
+        grid-template-columns: auto auto;
+    }
+}
+
+@media only screen and (max-width: 1024px) {
+    .progressBar .stepsGrid {
+        display: grid;
+        grid-template-rows: repeat(3, auto);
+        gap: 64px;
+    }
 }

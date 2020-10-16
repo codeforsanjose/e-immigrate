@@ -1,3 +1,8 @@
+.Navbar .logo {
+    width: 60px;
+    height: auto;
+}
+
 @media only screen and (max-width: 1024px) {
     .Navbar {
         margin-top: -2rem;
@@ -39,9 +44,4 @@
         -webkit-text-fill-color: transparent;
         -moz-text-fill-color: transparent;
     }
-}
-
-.Navbar .logo {
-    width: 60px;
-    height: auto;
 }
