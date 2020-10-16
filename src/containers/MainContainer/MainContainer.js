@@ -16,6 +16,7 @@ const MainContainer = () => {
     const [showModal, setShowModal] = useState(true);
     const [step, setStep] = useState(2);
     const [videoState, setVideoState] = useState({ hasWatchedVideo: false });
+    const [showModal, setShowModal] = useState(true);
     const { hasWatchedVideo } = videoState;
     const browserLanguage =
         window.navigator.userLanguage || window.navigator.language;
@@ -62,6 +63,7 @@ const MainContainer = () => {
                 />
                 <div className={`items ${showModal ? 'blur' : ''}`}>
                     <Navbar language={language} setLanguage={setLanguage} />
+<<<<<<< HEAD
                     <Switch>
                         <Route exact path="/">
                             <LandingPage
@@ -87,6 +89,18 @@ const MainContainer = () => {
                             />
                         </Route>
                     </Switch>
+=======
+                    <LandingPage content={content[language]} />
+                    <Video
+                        onEnd={videoEndedHandler}
+                        video={content[language].video}
+                    />
+                    <HubspotForm
+                        hubspot={content[language].hubspot}
+                        hasWatchedVideo={hasWatchedVideo}
+                        language={language}
+                    />
+>>>>>>> f6a87142ceb5287c9296f778959c162fec7d2306
                 </div>
             </div>
         </div>
