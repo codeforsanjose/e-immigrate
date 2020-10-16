@@ -1,0 +1,43 @@
+@media only screen and (max-width: 1024px) {
+    .Navbar {
+        margin-top: -2rem;
+        display: grid;
+        grid-template-columns: 70px auto;
+        grid-template-rows: 100px;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .Navbar .projectTitle {
+        display: none;
+    }
+}
+
+@media only screen and (min-width: 1025px) {
+    .Navbar {
+        margin-top: -2rem;
+        display: grid;
+        grid-template-columns: 200px auto 200px;
+        grid-template-rows: 100px;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .Navbar .projectTitle {
+        font-size: 56px;
+        text-align: center;
+        margin: 0;
+        background-color: #f3ec78;
+        background-image: linear-gradient(45deg, #9ce8da, #34cbad);
+        background-size: 100%;
+        -webkit-background-clip: text;
+        -moz-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        -moz-text-fill-color: transparent;
+    }
+}
+
+.Navbar .logo {
+    width: 60px;
+    height: auto;
+}

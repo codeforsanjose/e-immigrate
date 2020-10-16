@@ -1,47 +1,78 @@
-@media only screen and (min-width: 1025px) {
-  .LandingPage {
-    display: grid;
-    grid-template-columns: 45% auto;
-    gap: 40px;
-  }
-
-  .LandingPage img {
-    grid-column-start: 2;
-    grid-row-start: 1;
-  }
-}
-
-@media only screen and (max-width: 1024px) {
-  .LandingPage {
+.LandingPage {
     display: grid;
     grid-template-columns: auto;
     grid-template-rows: auto auto;
-  }
+    justify-content: center;
+}
 
-  .LandingPage .welcome-message {
+.LandingPage .welcome-message {
     text-align: center;
-  }
-
-  .LandingPage img {
-    grid-column-start: 1;
-    grid-row-start: 2;
-  }
 }
 
 .LandingPage .welcome-message h1 {
-  font-size: 3rem;
-  color: #2F3772;
+    font-size: 3rem;
+    /* color: #2f3772; */
+    color: #333333;
+    margin-bottom: 10px;
 }
 
 .LandingPage .welcome-message .line2 {
-  grid-column-start: 1;
-  color: #2F3772;
-  font-size: 1.5rem;
-  font-weight: 500;
+    grid-column-start: 1;
+    /* color: #2f3772; */
+    color: #333333;
+    font-size: 1.5rem;
+    font-weight: 500;
 }
 
-.LandingPage img {
-  justify-self: center;
-  width: 100%;
-  height: auto;
+.LandingPage .gridContainer {
+    display: grid;
+    justify-content: center;
+    padding: 3rem 0;
+}
+
+@media only screen and (min-width: 1025px) {
+    .LandingPage .stepsGrid {
+        display: grid;
+        grid-template-columns: repeat(3, 250px);
+        gap: 100px;
+    }
+}
+
+@media only screen and (max-width: 1024px) {
+    .LandingPage .stepsGrid {
+        display: grid;
+        grid-template-rows: repeat(3, auto);
+        gap: 64px;
+    }
+}
+
+.LandingPage .stepsGrid .stepContainer {
+    display: grid;
+    grid-template-rows: 40px 50px 210px auto;
+    justify-items: center;
+    /* color: #2f3772; */
+    color: #34cbad;
+}
+
+.LandingPage .stepContainer .stepNumber {
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.LandingPage .stepContainer .stepTitle {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #808080;
+}
+.LandingPage .stepContainer .stepIcon {
+    height: 200px;
+    width: 200px;
+    border-radius: 100%;
+    background-color: #e6e6e6;
+    display: grid;
+    justify-items: center;
+    align-content: center;
+}
+.LandingPage .stepContainer .stepDescription {
+    text-align: center;
 }

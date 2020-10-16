@@ -1,5 +1,5 @@
 .MainContainer {
-  
+
 }
 
 .MainContainer .wrapper {
@@ -9,4 +9,9 @@
 
 .MainContainer .items {
   grid-column-start: 1;
+}
+
+.blur {
+  filter: blur(12px);
+  -webkit-filter: blur(12px);
 }

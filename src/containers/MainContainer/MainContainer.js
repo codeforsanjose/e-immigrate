@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { content } from '../../data/LanguageContent';
 
+import LanguageSelectionModal from '../../compositions/LanguageSelectionModal/LanguageSelectionModal';
+import Navbar from '../../compositions/Navbar/Navbar';
 import LandingPage from '../../compositions/LandingPage/LandingPage';
 import ChooseLanguage from '../../compositions/ChooseLanguage/ChooseLanguage';
 import Video from '../../compositions/Video/Video';
@@ -11,6 +13,7 @@ import './MainContainer.css';
 const MainContainer = () => {
     const [language, setLanguage] = useState('en');
     const [videoState, setVideoState] = useState({ hasWatchedVideo: false });
+    const [showModal, setShowModal] = useState(true);
     const { hasWatchedVideo } = videoState;
     const browserLanguage =
         window.navigator.userLanguage || window.navigator.language;
@@ -42,14 +45,15 @@ const MainContainer = () => {
     return (
         <div className="MainContainer">
             <div className="wrapper">
-                <div className="items">
-                    <LandingPage
-                        welcomeMessage={content[language].welcomeMessage}
-                    />
-                    <ChooseLanguage
-                        language={content[language]}
-                        setLanguage={setLanguage}
-                    />
+                <LanguageSelectionModal
+                    language={language}
+                    setLanguage={setLanguage}
+                    showModal={showModal}
+                    setShowModal={setShowModal}
+                />
+                <div className={`items ${showModal ? 'blur' : ''}`}>
+                    <Navbar language={language} setLanguage={setLanguage} />
+                    <LandingPage content={content[language]} />
                     <Video
                         onEnd={videoEndedHandler}
                         video={content[language].video}
