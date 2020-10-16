@@ -18,8 +18,9 @@ code {
 }
 
 :root {
-    --color-primary: #34cbad;
-    --color-secondary: #333333;
-    --color-text-primary: #333333;
+    --color-primary: #1c3c69;
+    --color-primary-light: #2b5ca1;
+    --color-secondary: #df1d3b;
+    --color-text-primary: #1c3c69;
     --color-text-secondary: white;
 }

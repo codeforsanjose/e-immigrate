@@ -2,6 +2,8 @@ import React from 'react';
 import { ReactComponent as VideoIcon } from '../../data/images/VideoIcon.svg';
 import { ReactComponent as HubspotIcon } from '../../data/images/HubspotIcon.svg';
 import { ReactComponent as ConsultationIcon } from '../../data/images/ConsultationIcon.svg';
+import Button from '../../components/Button/Button';
+import { useHistory } from 'react-router-dom';
 
 import './LandingPage.css';
 
@@ -16,8 +18,13 @@ const Step = ({ stepContent, children }) => {
     );
 };
 
-const LandingPage = ({ content }) => {
+const LandingPage = ({ content, nextStep }) => {
+    let history = useHistory();
     const { welcomeMessage, video, hubspot, consultation } = content;
+    const goToStep1 = () => {
+        nextStep();
+        history.push('/video');
+    };
     return (
         <div className="LandingPage">
             <div className="welcome-message">
@@ -27,17 +34,19 @@ const LandingPage = ({ content }) => {
             <div className="gridContainer">
                 <div className="stepsGrid">
                     <Step stepContent={video}>
-                        <VideoIcon />
+                        <VideoIcon className="stepSVG" />
                     </Step>
                     <Step stepContent={hubspot}>
-                        <HubspotIcon />
+                        <HubspotIcon className="stepSVG" />
                     </Step>
                     <Step stepContent={consultation}>
-                        <ConsultationIcon />
+                        <ConsultationIcon className="stepSVG" />
                     </Step>
                 </div>
             </div>
-            {/* <img src="https://blush.ly/mM4xntXUA/p" alt="people" /> */}
+            <div className="startButtonContainer">
+                <Button label={'Go to Step 1'} onClick={goToStep1} />
+            </div>
         </div>
     );
 };

@@ -4,16 +4,18 @@ import { content } from '../../data/LanguageContent';
 import LanguageSelectionModal from '../../compositions/LanguageSelectionModal/LanguageSelectionModal';
 import Navbar from '../../compositions/Navbar/Navbar';
 import LandingPage from '../../compositions/LandingPage/LandingPage';
-import ChooseLanguage from '../../compositions/ChooseLanguage/ChooseLanguage';
 import Video from '../../compositions/Video/Video';
 import HubspotForm from '../../compositions/HubspotForm/HubspotForm';
+import { Switch, Route } from 'react-router-dom';
 
 import './MainContainer.css';
+import ProgressBar from '../../compositions/ProgressBar/ProgressBar';
 
 const MainContainer = () => {
     const [language, setLanguage] = useState('en');
-    const [videoState, setVideoState] = useState({ hasWatchedVideo: false });
     const [showModal, setShowModal] = useState(true);
+    const [step, setStep] = useState(2);
+    const [videoState, setVideoState] = useState({ hasWatchedVideo: false });
     const { hasWatchedVideo } = videoState;
     const browserLanguage =
         window.navigator.userLanguage || window.navigator.language;
@@ -40,7 +42,14 @@ const MainContainer = () => {
         setVideoState({
             hasWatchedVideo: true,
         });
+        nextStep();
     };
+
+    const changeStep = (nextStep) => {
+        setStep(nextStep < 0 ? 0 : nextStep > 3 ? 3 : nextStep);
+    };
+    const nextStep = () => changeStep(step + 1);
+    const previousStep = () => changeStep(step - 1);
 
     return (
         <div className="MainContainer">
@@ -53,16 +62,31 @@ const MainContainer = () => {
                 />
                 <div className={`items ${showModal ? 'blur' : ''}`}>
                     <Navbar language={language} setLanguage={setLanguage} />
-                    <LandingPage content={content[language]} />
-                    <Video
-                        onEnd={videoEndedHandler}
-                        video={content[language].video}
-                    />
-                    <HubspotForm
-                        hubspot={content[language].hubspot}
-                        hasWatchedVideo={hasWatchedVideo}
-                        language={language}
-                    />
+                    <Switch>
+                        <Route exact path="/">
+                            <LandingPage
+                                content={content[language]}
+                                nextStep={nextStep}
+                            />
+                        </Route>
+                        <Route path="/video">
+                            <ProgressBar
+                                content={content[language]}
+                                step={step}
+                            />
+                            <Video
+                                onEnd={videoEndedHandler}
+                                video={content[language].video}
+                            />
+                        </Route>
+                        <Route path="/questionnaire">
+                            <HubspotForm
+                                hubspot={content[language].hubspot}
+                                hasWatchedVideo={hasWatchedVideo}
+                                language={language}
+                            />
+                        </Route>
+                    </Switch>
                 </div>
             </div>
         </div>

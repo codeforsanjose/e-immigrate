@@ -11,15 +11,13 @@
 
 .LandingPage .welcome-message h1 {
     font-size: 3rem;
-    /* color: #2f3772; */
-    color: #333333;
+    color: var(--color-text-primary);
     margin-bottom: 10px;
 }
 
 .LandingPage .welcome-message .line2 {
     grid-column-start: 1;
-    /* color: #2f3772; */
-    color: #333333;
+    color: var(--color-text-primary);
     font-size: 1.5rem;
     font-weight: 500;
 }
@@ -28,6 +26,46 @@
     display: grid;
     justify-content: center;
     padding: 3rem 0;
+}
+
+.LandingPage .stepsGrid .stepContainer {
+    display: grid;
+    grid-template-rows: 40px 50px 210px auto;
+    justify-items: center;
+    color: var(--color-primary);
+}
+
+.LandingPage .stepContainer .stepNumber {
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.LandingPage .stepContainer .stepTitle {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #808080;
+}
+
+.LandingPage .stepContainer .stepIcon {
+    height: 200px;
+    width: 200px;
+    border-radius: 100%;
+    background-color: #e6e6e6;
+    display: grid;
+    justify-items: center;
+    align-content: center;
+}
+
+.LandingPage .stepIcon .stepSVG {
+    fill: var(--color-primary);
+}
+
+.LandingPage .stepContainer .stepDescription {
+    text-align: center;
+}
+
+.LandingPage .startButtonContainer {
+    text-align: center;
 }
 
 @media only screen and (min-width: 1025px) {
@@ -44,35 +82,4 @@
         grid-template-rows: repeat(3, auto);
         gap: 64px;
     }
-}
-
-.LandingPage .stepsGrid .stepContainer {
-    display: grid;
-    grid-template-rows: 40px 50px 210px auto;
-    justify-items: center;
-    /* color: #2f3772; */
-    color: #34cbad;
-}
-
-.LandingPage .stepContainer .stepNumber {
-    font-size: 2rem;
-    font-weight: 700;
-}
-
-.LandingPage .stepContainer .stepTitle {
-    font-size: 2rem;
-    font-weight: 700;
-    color: #808080;
-}
-.LandingPage .stepContainer .stepIcon {
-    height: 200px;
-    width: 200px;
-    border-radius: 100%;
-    background-color: #e6e6e6;
-    display: grid;
-    justify-items: center;
-    align-content: center;
-}
-.LandingPage .stepContainer .stepDescription {
-    text-align: center;
 }

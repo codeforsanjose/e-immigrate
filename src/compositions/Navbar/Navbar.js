@@ -8,7 +8,7 @@ import './Navbar.css';
 const Navbar = ({ language, setLanguage }) => {
     return (
         <div className="Navbar">
-            <img src={Logo} className="logo" />
+            <img src={Logo} className="logo" alt="CIIT Logo" />
             <h1 className="projectTitle">{content[language].projectTitle}</h1>
             <LanguageDropdown language={language} setLanguage={setLanguage} />
         </div>
