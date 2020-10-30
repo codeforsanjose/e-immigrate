@@ -21,7 +21,7 @@ const HubspotEnglishForm = ({ hubspot }) => {
         });
     }, [hubspotFormId]);
 
-    const spanishForm = (
+    const englishForm = (
         <div className="hubspot">
             <div className="titleText">
                 <div className="step">{step}</div>
@@ -32,7 +32,7 @@ const HubspotEnglishForm = ({ hubspot }) => {
         </div>
     );
 
-    return spanishForm;
+    return englishForm;
 };
 
 export default HubspotEnglishForm;

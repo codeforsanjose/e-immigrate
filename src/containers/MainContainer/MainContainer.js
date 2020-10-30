@@ -7,6 +7,8 @@ import LandingPage from '../../compositions/LandingPage/LandingPage';
 import Video from '../../compositions/Video/Video';
 import HubspotForm from '../../compositions/HubspotForm/HubspotForm';
 import { Switch, Route } from 'react-router-dom';
+import { addQuestionnaireResponse } from '../../sendRequest/apis'
+import { sendRequest } from '../../sendRequest/sendRequest'
 
 import './MainContainer.css';
 import ProgressBar from '../../compositions/ProgressBar/ProgressBar';
@@ -44,7 +46,20 @@ const MainContainer = () => {
         });
         nextStep();
     };
-
+    
+    const submitQuestionnaireResponse = (userAnswers = []) => {
+        const requestObj = {
+            url: addQuestionnaireResponse,
+            method: 'POST',
+            body: JSON.stringify({
+                title: 'test resonse for this questionnaire',
+                questionnaireResponse: userAnswers,
+            }),
+        };
+        sendRequest(requestObj).then((response) => {
+           console.log('success', response)
+        });
+    }
     const changeStep = (nextStep) => {
         setStep(nextStep < 0 ? 0 : nextStep > 3 ? 3 : nextStep);
     };

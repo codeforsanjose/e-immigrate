@@ -3,6 +3,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const usersRouter = require('./routes/users');
 const adminsRouter = require('./routes/admins');
+const questionnaireResponsesRouter = require('./routes/questionairResponses');
 
 require('dotenv').config();
 
@@ -25,6 +26,7 @@ connection.once('open', () => {
 
 app.use('/api/users', usersRouter);
 app.use('/api/admins', adminsRouter);
+app.use('/api/questionnaire-responses', questionnaireResponsesRouter);
 
 const port = process.env.PORT || 5000;
 
