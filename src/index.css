@@ -21,6 +21,7 @@ code {
     --color-primary: #1c3c69;
     --color-primary-light: #2b5ca1;
     --color-secondary: #df1d3b;
-    --color-text-primary: #1c3c69;
+    --color-text-primary: black;
     --color-text-secondary: white;
+    --color-brightSky: #c8eefc;
 }

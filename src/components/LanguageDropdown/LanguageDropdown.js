@@ -9,8 +9,8 @@ const LanguageSelect = ({ setLanguage, language }) => {
         <div className="languageSelectContainer">
             <LanguagePicker
                 className="languageIcon"
-                height="2rem"
-                width="2rem"
+                height="26px"
+                width="26px"
             />
             <select
                 value={language}

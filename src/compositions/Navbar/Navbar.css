@@ -1,47 +1,40 @@
+.Navbar {
+    background-color: var(--color-brightSky);
+    margin: 0 -2rem;
+    padding: 0 2rem;
+}
+
+.Navbar {
+    margin-top: -2rem;
+    display: grid;
+    grid-template-columns: 94px auto;
+    grid-template-rows: 73px;
+    justify-content: space-between;
+    align-items: center;
+}
+
 .Navbar .logo {
-    width: 60px;
+    width: 94px;
     height: auto;
 }
 
-@media only screen and (max-width: 1024px) {
-    .Navbar {
-        margin-top: -2rem;
-        display: grid;
-        grid-template-columns: 70px auto;
-        grid-template-rows: 100px;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .Navbar .projectTitle {
-        display: none;
-    }
+.Navbar .NavLinks {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    grid-template-rows: auto;
+    gap: 2rem;
+    align-items: center;
 }
 
-@media only screen and (min-width: 1025px) {
-    .Navbar {
-        margin-top: -2rem;
-        display: grid;
-        grid-template-columns: 200px auto 200px;
-        grid-template-rows: 100px;
-        justify-content: space-between;
-        align-items: center;
-    }
+.Navbar .NavLinks a {
+    text-decoration: none;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
 
-    .Navbar .projectTitle {
-        font-size: 56px;
-        text-align: center;
-        margin: 0;
-        background-color: #f3ec78;
-        background-image: linear-gradient(
-            45deg,
-            var(--color-primary),
-            var(--color-secondary)
-        );
-        background-size: 100%;
-        -webkit-background-clip: text;
-        -moz-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        -moz-text-fill-color: transparent;
+@media only screen and (max-width: 600px) {
+    .Navbar .NavLinks .languageDropdown {
+        display: none;
     }
 }
