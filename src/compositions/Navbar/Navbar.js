@@ -9,7 +9,6 @@ const Navbar = ({ language, setLanguage }) => {
     return (
         <div className="Navbar">
             <img src={Logo} className="logo" alt="CIIT Logo" />
-            {/* <h1 className="projectTitle">{content[language].projectTitle}</h1> */}
             <div className="NavLinks">
                 <Link to="/">Home</Link>
                 <Link to="/about">About</Link>

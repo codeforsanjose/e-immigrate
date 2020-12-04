@@ -2,9 +2,6 @@
     background-color: var(--color-brightSky);
     margin: 0 -2rem;
     padding: 0 2rem;
-}
-
-.Navbar {
     margin-top: -2rem;
     display: grid;
     grid-template-columns: 94px auto;
