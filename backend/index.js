@@ -28,7 +28,27 @@ xlsxFile('../src/data/questions/Questionnaire for Upload.xlsx').then((rows) => {
         `export const questions = ${JSON.stringify(data)}`,
         (err) => {
             if (err) return console.log(err);
-            console.log('Data written to file');
+            console.log('Question data written to file');
+        }
+    );
+});
+
+xlsxFile('../src/data/content/Language Content.xlsx').then((rows) => {
+    const data = {};
+    rows.forEach((row) => {
+        data[row[0]] = {
+            en: row[1],
+            es: row[2],
+            vi: row[3],
+        };
+    });
+
+    fs.writeFile(
+        '../src/data/content/Content.js',
+        `export const content = ${JSON.stringify(data)}`,
+        (err) => {
+            if (err) return console.log(err);
+            console.log('Language content data written to file');
         }
     );
 });
