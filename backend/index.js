@@ -4,6 +4,34 @@ const mongoose = require('mongoose');
 const usersRouter = require('./routes/users');
 const adminsRouter = require('./routes/admins');
 const questionnaireResponsesRouter = require('./routes/questionairResponses');
+const xlsxFile = require('read-excel-file/node');
+const fs = require('fs');
+
+xlsxFile('../src/data/questions/Questionnaire for Upload.xlsx').then((rows) => {
+    const data = [];
+    rows.forEach((row) => {
+        data.push({
+            number: row[0],
+            category: row[1],
+            text: row[2],
+            questionType: row[3],
+            answerType: row[4],
+            required: row[5] === 'Yes' ? true : false,
+            followUp: row[6],
+        });
+    });
+
+    data.shift();
+
+    fs.writeFile(
+        '../src/data/questions/Questions.js',
+        `export const questions = ${JSON.stringify(data)}`,
+        (err) => {
+            if (err) return console.log(err);
+            console.log('Data written to file');
+        }
+    );
+});
 
 require('dotenv').config();
 
