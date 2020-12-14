@@ -1,0 +1,41 @@
+.footer {
+    height: 132px;
+    background-color: var(--color-brightSky);
+    margin: 0 -2rem;
+    padding: 18px 2rem;
+    display: grid;
+    grid-template-rows: 50% 35% 15%;
+    grid-template-rows: auto;
+    align-items: center;
+    justify-content: center;
+}
+
+.footer .imgRow {
+    display: grid;
+    grid-template-columns: auto auto;
+    gap: 18px;
+    align-items: center;
+}
+
+.footer .imgRow .ciitLogo {
+    width: 48px;
+    height: auto;
+    justify-self: end;
+}
+
+.footer .imgRow .ceticpLogo {
+    width: 48px;
+    height: auto;
+    justify-self: start;
+}
+
+.footer .textRow1 {
+    display: grid;
+    grid-template-rows: auto;
+    justify-content: center;
+    text-align: center;
+}
+
+.footer .textRow2 {
+    text-align: center;
+}

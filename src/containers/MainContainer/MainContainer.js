@@ -3,12 +3,13 @@ import { content } from '../../data/LanguageContent';
 
 import LanguageSelectionModal from '../../compositions/LanguageSelectionModal/LanguageSelectionModal';
 import Navbar from '../../compositions/Navbar/Navbar';
+import Footer from '../../compositions/Footer/Footer';
 import LandingPage from '../../compositions/LandingPage/LandingPage';
 import Video from '../../compositions/Video/Video';
 import HubspotForm from '../../compositions/HubspotForm/HubspotForm';
 import { Switch, Route } from 'react-router-dom';
-import { addQuestionnaireResponse } from '../../sendRequest/apis'
-import { sendRequest } from '../../sendRequest/sendRequest'
+import { addQuestionnaireResponse } from '../../sendRequest/apis';
+import { sendRequest } from '../../sendRequest/sendRequest';
 
 import './MainContainer.css';
 import ProgressBar from '../../compositions/ProgressBar/ProgressBar';
@@ -46,7 +47,7 @@ const MainContainer = () => {
         });
         nextStep();
     };
-    
+
     const submitQuestionnaireResponse = (userAnswers = []) => {
         const requestObj = {
             url: addQuestionnaireResponse,
@@ -57,9 +58,9 @@ const MainContainer = () => {
             }),
         };
         sendRequest(requestObj).then((response) => {
-           console.log('success', response)
+            console.log('success', response);
         });
-    }
+    };
     const changeStep = (nextStep) => {
         setStep(nextStep < 0 ? 0 : nextStep > 3 ? 3 : nextStep);
     };
@@ -102,6 +103,7 @@ const MainContainer = () => {
                             />
                         </Route>
                     </Switch>
+                    <Footer />
                 </div>
             </div>
         </div>
