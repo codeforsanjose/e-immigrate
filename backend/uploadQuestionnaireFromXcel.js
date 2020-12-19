@@ -27,11 +27,12 @@ const generateQuestionnaires = () => {
                     questionType: row[3],
                     answerType: row[4],
                     required: row[5] === 'Yes' ? true : false,
-                    followUp: row[6],
+                    followUp: row[6] === 'No' ? false : row[6],
                 });
             });
 
             data.shift();
+            console.log('data :>> ', data);
 
             const requestObj = {
                 method: 'POST',
