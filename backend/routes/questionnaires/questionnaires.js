@@ -1,6 +1,7 @@
 const express = require('express');
+const Questionnaire = require('../../models/questionnaireResponse');
 const router = express.Router();
-const Questionnaires = require('../models/questionnaires');
+const Questionnaires = require('../../models/questionnaires');
 
 router.route('/').get((req, res) => {
     Questionnaires.find()
@@ -18,19 +19,21 @@ router.route('/:id').get((req, res) => {
 });
 
 router.route('/add').post((req, res) => {
-    console.log('req.body :>> ', req.body);
+    // validateQuestionnaire(req.body);
+
     const title = req.body.title;
+    const questions = req.body.questions;
     res.json('questionnaire response added');
 
-    // const newQuestionnaireResponse = new Questionnaire({
-    //     title,
-    //     questionnaireResponses,
-    // });
+    const newQuestionnaires = new Questionnaires({
+        title,
+        questions,
+    });
 
-    // newQuestionnaireResponse
-    //     .save()
-    //     .then(() => res.json('questionnaire response added'))
-    //     .catch((err) => console.log(err));
+    newQuestionnaires
+        .save()
+        .then((data) => console.log('save data: ', data))
+        .catch((err) => console.log('error:', err));
 });
 
 router.route('/:id').delete((req, res) => {
@@ -40,5 +43,9 @@ router.route('/:id').delete((req, res) => {
 });
 
 router.route('');
+
+const validateQuestionnaire = (questionnaireOject) => {
+    return questionnaireOject;
+};
 
 module.exports = router;

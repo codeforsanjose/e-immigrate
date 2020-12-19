@@ -3,13 +3,12 @@ const fs = require('fs');
 const fetch = require('node-fetch');
 
 const DEFAULT_HEADERS = {
-    Accept: 'application/json, text/plain, */*',
     'Content-Type': 'application/json',
 };
 
 const sendRequest = (requestObj, headers = DEFAULT_HEADERS) => {
     const url = 'http://localhost:5000/api/questionnaires/add';
-    const response = fetch(url, { ...requestObj, ...headers }).then((data) =>
+    const response = fetch(url, { ...requestObj, headers }).then((data) =>
         data.json()
     );
     return Promise.resolve(response);
@@ -32,7 +31,6 @@ const generateQuestionnaires = () => {
             });
 
             data.shift();
-            console.log('data :>> ', data);
 
             const requestObj = {
                 method: 'POST',
