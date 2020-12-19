@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const usersRouter = require('./routes/users');
 const adminsRouter = require('./routes/admins');
 const questionnaireResponsesRouter = require('./routes/questionairResponses');
-const questionnairesRouter = require('./routes/questionaires');
+const questionnairesRouter = require('./routes/questionnaires');
 
 require('dotenv').config();
 
