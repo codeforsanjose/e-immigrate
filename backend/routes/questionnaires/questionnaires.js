@@ -1,5 +1,4 @@
 const express = require('express');
-const Questionnaire = require('../../models/questionnaireResponse');
 const router = express.Router();
 const Questionnaires = require('../../models/questionnaires');
 
@@ -19,26 +18,40 @@ router.route('/:id').get((req, res) => {
 });
 
 router.route('/add').post((req, res) => {
+    // to-do:
     // validateQuestionnaire(req.body);
 
     const title = req.body.title;
     const questions = req.body.questions;
-    res.json('questionnaire response added');
+    res.json('questionnaire added');
 
-    const newQuestionnaires = new Questionnaires({
-        title,
-        questions,
+    const insertNewQuestionnaire = () => {
+        Questionnaires.insertMany({ title, questions })
+            .then(() => console.log('questionnaire inserted'))
+            .catch((err) => console.log(err));
+    };
+
+    const removeExistingQuestionnaires = (_id) => {
+        Questionnaires.findByIdAndDelete({ _id })
+            .then(() => console.log('questionnaire deleted'))
+            .catch((err) => console.log(err));
+    };
+
+    Questionnaires.find({ title }, function (err, result) {
+        if (err) {
+            res.send(err);
+        } else if (result.length !== 0) {
+            removeExistingQuestionnaires(result[0]._id);
+            insertNewQuestionnaire();
+        } else {
+            insertNewQuestionnaire();
+        }
     });
-
-    newQuestionnaires
-        .save()
-        .then((data) => console.log('save data: ', data))
-        .catch((err) => console.log('error:', err));
 });
 
 router.route('/:id').delete((req, res) => {
     Questionnaires.findByIdAndDelete(req.params.id)
-        .then((users) => res.json('questionnaire response Deleted'))
+        .then(() => res.json('questionnaire deleted'))
         .catch((err) => console.log(err));
 });
 
