@@ -1,17 +1,19 @@
 .MainContainer {
-
 }
 
 .MainContainer .wrapper {
-  display: grid;
-  grid-template-columns: minmax(240px, 1fr);
+    display: grid;
+    grid-template-columns: minmax(240px, 1fr);
+    background-color: white;
+    margin: 0 -2rem;
+    padding: 0 2rem;
 }
 
 .MainContainer .items {
-  grid-column-start: 1;
+    grid-column-start: 1;
 }
 
 .blur {
-  filter: blur(12px);
-  -webkit-filter: blur(12px);
+    filter: blur(12px);
+    -webkit-filter: blur(12px);
 }

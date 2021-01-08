@@ -3,6 +3,7 @@ import { content } from '../../data/LanguageContent';
 
 import LanguageSelectionModal from '../../compositions/LanguageSelectionModal/LanguageSelectionModal';
 import Navbar from '../../compositions/Navbar/Navbar';
+import Footer from '../../compositions/Footer/Footer';
 import LandingPage from '../../compositions/LandingPage/LandingPage';
 import Video from '../../compositions/Video/Video';
 import HubspotForm from '../../compositions/HubspotForm/HubspotForm';
@@ -114,6 +115,7 @@ const MainContainer = () => {
                             />
                         </Route>
                     </Switch>
+                    <Footer />
                 </div>
             </div>
         </div>

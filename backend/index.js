@@ -4,54 +4,7 @@ const mongoose = require('mongoose');
 const usersRouter = require('./routes/users');
 const adminsRouter = require('./routes/admins');
 const questionnaireResponsesRouter = require('./routes/questionairResponses');
-const xlsxFile = require('read-excel-file/node');
-const fs = require('fs');
-
-xlsxFile('../src/data/questions/Questionnaire for Upload.xlsx').then((rows) => {
-    const data = [];
-    rows.forEach((row) => {
-        data.push({
-            number: row[0],
-            category: row[1],
-            text: row[2],
-            questionType: row[3],
-            answerType: row[4],
-            required: row[5] === 'Yes' ? true : false,
-            followUp: row[6],
-        });
-    });
-
-    data.shift();
-
-    fs.writeFile(
-        '../src/data/questions/Questions.js',
-        `export const questions = ${JSON.stringify(data)}`,
-        (err) => {
-            if (err) return console.log(err);
-            console.log('Question data written to file');
-        }
-    );
-});
-
-xlsxFile('../src/data/content/Language Content.xlsx').then((rows) => {
-    const data = {};
-    rows.forEach((row) => {
-        data[row[0]] = {
-            en: row[1],
-            es: row[2],
-            vi: row[3],
-        };
-    });
-
-    fs.writeFile(
-        '../src/data/content/Content.js',
-        `export const content = ${JSON.stringify(data)}`,
-        (err) => {
-            if (err) return console.log(err);
-            console.log('Language content data written to file');
-        }
-    );
-});
+const questionnairesRouter = require('./routes/questionnaires/questionnaires');
 
 require('dotenv').config();
 
@@ -75,6 +28,7 @@ connection.once('open', () => {
 app.use('/api/users', usersRouter);
 app.use('/api/admins', adminsRouter);
 app.use('/api/questionnaire-responses', questionnaireResponsesRouter);
+app.use('/api/questionnaires', questionnairesRouter);
 
 const port = process.env.PORT || 5000;
 
