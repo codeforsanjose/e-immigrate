@@ -7,8 +7,8 @@ import LandingPage from '../../compositions/LandingPage/LandingPage';
 import Video from '../../compositions/Video/Video';
 import HubspotForm from '../../compositions/HubspotForm/HubspotForm';
 import { Switch, Route } from 'react-router-dom';
-import { addQuestionnaireResponse } from '../../sendRequest/apis'
-import { sendRequest } from '../../sendRequest/sendRequest'
+import { addQuestionnaireResponse } from '../../sendRequest/apis';
+import { sendRequest } from '../../sendRequest/sendRequest';
 
 import './MainContainer.css';
 import ProgressBar from '../../compositions/ProgressBar/ProgressBar';
@@ -19,11 +19,23 @@ const MainContainer = () => {
     const [step, setStep] = useState(2);
     const [videoState, setVideoState] = useState({ hasWatchedVideo: false });
     const { hasWatchedVideo } = videoState;
+
     const browserLanguage =
         window.navigator.userLanguage || window.navigator.language;
+
     useEffect(() => {
         setLanguage(browserLanguage.substring(0, 2));
+        const locallyStoredLanguage = localStorage.getItem('preferredLanguage');
+        if (locallyStoredLanguage) {
+            setLanguage(locallyStoredLanguage);
+            setShowModal(false);
+        }
     }, [browserLanguage]);
+
+    const changeLanguage = (language) => {
+        setLanguage(language);
+        localStorage.setItem('preferredLanguage', language);
+    };
 
     useEffect(() => {
         const script = document.createElement('script');
@@ -46,7 +58,7 @@ const MainContainer = () => {
         });
         nextStep();
     };
-    
+
     const submitQuestionnaireResponse = (userAnswers = []) => {
         const requestObj = {
             url: addQuestionnaireResponse,
@@ -57,9 +69,9 @@ const MainContainer = () => {
             }),
         };
         sendRequest(requestObj).then((response) => {
-           console.log('success', response)
+            console.log('success', response);
         });
-    }
+    };
     const changeStep = (nextStep) => {
         setStep(nextStep < 0 ? 0 : nextStep > 3 ? 3 : nextStep);
     };
@@ -71,12 +83,12 @@ const MainContainer = () => {
             <div className="wrapper">
                 <LanguageSelectionModal
                     language={language}
-                    setLanguage={setLanguage}
+                    setLanguage={changeLanguage}
                     showModal={showModal}
                     setShowModal={setShowModal}
                 />
                 <div className={`items ${showModal ? 'blur' : ''}`}>
-                    <Navbar language={language} setLanguage={setLanguage} />
+                    <Navbar language={language} setLanguage={changeLanguage} />
                     <Switch>
                         <Route exact path="/">
                             <LandingPage
