@@ -55,8 +55,6 @@ router.route('/:id').delete((req, res) => {
         .catch((err) => console.log(err));
 });
 
-router.route('');
-
 const validateQuestionnaire = (questionnaireOject) => {
     return questionnaireOject;
 };

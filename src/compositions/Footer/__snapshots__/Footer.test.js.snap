@@ -1,0 +1,37 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`App renders correctly 1`] = `
+<div
+  className="footer"
+>
+  <div
+    className="imgRow"
+  >
+    <img
+      alt="CiiT Logo"
+      className="ciitLogo"
+      src="CiiT Logo.png"
+    />
+    <img
+      alt="CET-ICP Logo"
+      className="ceticpLogo"
+      src="CET-ICP Logo.png"
+    />
+  </div>
+  <div
+    className="textRow1"
+  >
+    <div>
+      CIIT was designed by the Center for Employment Training -
+    </div>
+    <div>
+      Immigration & Citizenship Program (CET-ICP)
+    </div>
+  </div>
+  <div
+    className="textRow2"
+  >
+    CET-ICP is a 501C3 Nonprofit Organization
+  </div>
+</div>
+`;
