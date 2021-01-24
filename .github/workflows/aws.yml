@@ -124,10 +124,12 @@ jobs:
     - name: Fill in the new image ID in the Amazon ECS task definition
       id: task-definition
       uses: aws-actions/amazon-ecs-render-task-definition@v1
+      env:
+        ECR_REPOSITORY: e-immigrate-client-dev
       with:
         task-definition: AWS-Deployment/client/task-definition.json
         container-name: e-immigrate-client-dev-container
-        image: ${{ steps.docker_build.outputs.digest }}
+        image: ${{ steps.login-ecr.outputs.registry }}/$ECR_REPOSITORY/${{ steps.docker_build.outputs.digest }}
         # image: ${{ steps.build-image.outputs.image }}
 
     - name: Deploy Amazon ECS task definition
