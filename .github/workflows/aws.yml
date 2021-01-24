@@ -2,14 +2,19 @@ on:
   push:
     branches:
       - master
+  # In the future we want to use release/tags
+  # release:
+  #   types: # This configuration does not affect the page_build event above
+  #     - created
 
-name: Deploy to Amazon ECS
+name: Deploy to Amazon Elastic Container Service
 
 jobs:
-  deploy:
-    name: Deploy
+  setup:
+    name: Setup Environment
     runs-on: ubuntu-latest
 
+    # un-comment to additional logs to debug
     steps:
     - name: Debug Action
       uses: hmarr/debug-action@v1.0.0
@@ -28,17 +33,56 @@ jobs:
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
 
-    - name: Build, tag, and push image to Amazon ECR
+  # Backend Currently Not online
+  # deploy-backend:
+  #   name: Deploy Backend API
+  #   needs: setup
+
+  #   - name: CLIENT - Build, tag, and push image to Amazon ECR
+  #     id: build-image
+  #     env:
+  #       ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+  #       ECR_REPOSITORY: e-immigrate-api-dev
+  #       IMAGE_TAG: ${{ github.sha }}
+  #     run: |
+  #       # Build a docker container and
+  #       # push it to ECR so that it can
+  #       # be deployed to ECS.
+  #       docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f AWS-Deployment/client/Dockerfile .
+  #       docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+  #       echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+
+  #   - name: Fill in the new image ID in the Amazon ECS task definition
+  #     id: task-def
+  #     uses: aws-actions/amazon-ecs-render-task-definition@v1
+  #     with:
+  #       task-definition: AWS-Deployment/client/task-definition.json
+  #       container-name: open-disclosure-client-dev-container
+  #       image: ${{ steps.build-image.outputs.image }}
+
+  #   - name: Deploy Amazon ECS task definition
+  #     uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+  #     with:
+  #       task-definition: ${{ steps.task-def.outputs.task-definition }}
+  #       service: e-immigrate-client
+  #       cluster: CFSJ-ECS-Cluster
+  #       wait-for-service-stability: true
+
+  deploy-frontend:
+    name: Deploy Frontend app
+    needs: setup
+
+    - name: CLIENT - Build, tag, and push image to Amazon ECR
       id: build-image
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY: e-immigrate
+        ECR_REPOSITORY: e-immigrate-client-dev
         IMAGE_TAG: ${{ github.sha }}
       run: |
         # Build a docker container and
         # push it to ECR so that it can
         # be deployed to ECS.
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f AWS-Deployment/Dockerfile .
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f AWS-Deployment/client/Dockerfile .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
@@ -46,8 +90,8 @@ jobs:
       id: task-def
       uses: aws-actions/amazon-ecs-render-task-definition@v1
       with:
-        task-definition: AWS-Deployment/task-definition.json
-        container-name: e-immigrate-client
+        task-definition: AWS-Deployment/client/task-definition.json
+        container-name: e-immigrate-client-dev-container
         image: ${{ steps.build-image.outputs.image }}
 
     - name: Deploy Amazon ECS task definition
