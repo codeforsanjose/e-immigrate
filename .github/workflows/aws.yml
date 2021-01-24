@@ -71,7 +71,6 @@ jobs:
   deploy-frontend:
     name: Deploy Frontend app
     runs-on: ubuntu-latest
-    needs: setup
 
     - name: CLIENT - Build, tag, and push image to Amazon ECR
       id: build-image
