@@ -70,6 +70,7 @@ jobs:
 
   deploy-frontend:
     name: Deploy Frontend app
+    runs-on: ubuntu-latest
     needs: setup
 
     - name: CLIENT - Build, tag, and push image to Amazon ECR
@@ -87,7 +88,7 @@ jobs:
         echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
     - name: Fill in the new image ID in the Amazon ECS task definition
-      id: task-def
+      id: task-definition
       uses: aws-actions/amazon-ecs-render-task-definition@v1
       with:
         task-definition: AWS-Deployment/client/task-definition.json
@@ -98,6 +99,6 @@ jobs:
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
       with:
         task-definition: ${{ steps.task-def.outputs.task-definition }}
-        service: e-immigrate-client
-        cluster: CFSJ-ECS-Cluster
+        service: e-immigrate-client-dev
+        cluster: multi-tenant-dev
         wait-for-service-stability: true
