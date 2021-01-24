@@ -13,7 +13,6 @@ RUN apk --no-cache --virtual build-dependencies add \
 COPY . /usr/src/app
 
 RUN npm install
-RUN npm install -g serve
 
 RUN npm run build
 
