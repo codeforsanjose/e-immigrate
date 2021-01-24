@@ -1,6 +1,9 @@
 FROM node:alpine as builder
 
-WORKDIR $GITHUB_WORKSPACE
+
+WORKDIR /app
+COPY . /app
+
 RUN npm install
 RUN npm run build
 
