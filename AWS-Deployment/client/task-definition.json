@@ -29,20 +29,5 @@
         }
       ],
       "family": "e-immigrate-client-dev-td",
-      "networkMode": "bridge",
-      "status": "ACTIVE",
-      "requiresAttributes": [
-          {
-              "name": "com.amazonaws.ecs.capability.ecr-auth"
-          },
-          {
-              "name": "com.amazonaws.ecs.capability.docker-remote-api.1.21"
-          }
-      ],
-      "compatibilities": [
-          "EC2"
-      ],
-      "requiresCompatibilities": [
-          "EC2"
-      ]
-  }
+      "networkMode": "bridge"
+}

@@ -3,17 +3,9 @@ FROM node:alpine as builder
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 
-RUN apk --no-cache --virtual build-dependencies add \
-    python \
-    make \
-    g++ \
-    git \
-    openssh-client
-
 COPY . /usr/src/app
 
 RUN npm install
-
 RUN npm run build
 
 FROM openresty/openresty

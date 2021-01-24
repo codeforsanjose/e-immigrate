@@ -101,3 +101,4 @@ jobs:
         service: e-immigrate-client-dev
         cluster: multi-tenant-dev
         wait-for-service-stability: true
+        wait-for-minutes: 5 minutes
