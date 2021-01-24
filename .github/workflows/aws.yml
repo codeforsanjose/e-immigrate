@@ -108,15 +108,16 @@ jobs:
       id: docker_build
       uses: docker/build-push-action@v2
       env:
-        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         ECR_REPOSITORY: e-immigrate-client-dev
         IMAGE_TAG: ${{ github.sha }}
       with:
+        registry: ${{ steps.login-ecr.outputs.registry }}
+        repository: ${{ steps.login-ecr.outputs.registry }}/$ECR_REPOSITORY
         builder: ${{ steps.buildx.outputs.name }}
         context: .
         file: AWS-Deployment/client/Dockerfile
-        push: true
-        tags: $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        add_git_labels: true
+        tag_with_ref: true
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache
 
