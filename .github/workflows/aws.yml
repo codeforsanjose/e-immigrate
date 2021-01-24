@@ -68,9 +68,9 @@ jobs:
   #       cluster: CFSJ-ECS-Cluster
   #       wait-for-service-stability: true
 
-  deploy-frontend:
-    name: Deploy Frontend app
-    runs-on: ubuntu-latest
+  # deploy-frontend:
+  #   name: Deploy Frontend app
+  #   runs-on: ubuntu-latest
 
     - name: CLIENT - Build, tag, and push image to Amazon ECR
       id: build-image
