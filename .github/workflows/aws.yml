@@ -14,7 +14,6 @@ jobs:
     name: Setup Environment
     runs-on: ubuntu-latest
 
-    # un-comment to additional logs to debug
     steps:
     - name: Debug Action
       uses: hmarr/debug-action@v1.0.0
@@ -33,127 +32,38 @@ jobs:
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
       
-    # - name: Set ECR repository
-    #   id: ecr-repository
-    #   env:
-    #     ECR_REPOSITORY: e-immigrate-client-dev
-    #   run: echo "::set-output name=repo::${{ steps.login-ecr.outputs.registry }}/$ECR_REPOSITORY"
-
-    # - uses: docker/setup-buildx-action@v1
-    #   id: buildx
-    #   with:
-    #     driver: docker
-
-    # - name: Cache Docker layers
-    #   uses: actions/cache@v2
-    #   with:
-    #           path: /tmp/.buildx-cache
-    #           key: ${{ runner.os }}-buildx-${{ github.sha }}
-    #           restore-keys: |
-    #             ${{ runner.os }}-buildx-
-
-    # - name: Client - build, tag image
-    #   id: docker_build
-    #   uses: docker/build-push-action@v2
-    #   # env:
-    #   #   ECR_REPOSITORY: e-immigrate-client-dev
-    #   with:
-    #     # registry: ${{ steps.login-ecr.outputs.registry }}
-    #     # repository: $ECR_REPOSITORY
-    #     context: .
-    #     file: AWS-Deployment/client/Dockerfile
-    #     cache-from: type=local,src=/tmp/.buildx-cache
-    #     cache-to: type=local,dest=/tmp/.buildx-cache
-    #     # load: true
-    #     # push: true
-    #     tags: |
-    #       ${{ steps.ecr-repository.outputs.repo }}:${{ github.sha }}
-    #       ${{ steps.ecr-repository.outputs.repo }}:latest
-
-    # - name: Client - push image to ECR
-    #   run: docker push ${{ steps.ecr-repository.outputs.repo }}:${{ github.sha }} --all-tags
-
+    - name: Set ECS Cluster Name & ECR repository variables
+      id: ecs-variables
+      env:
+        ECR_REPOSITORY: e-immigrate-client-dev
+        ECS_CLUSTER: multi-tenant-dev
+      run: |
+        echo "::set-output name=repo::$ECR_REPOSITORY"
+        echo "::set-output name=cluster::$ECS_CLUSTER"
 
     - name: Client - Build, Tag, Push image to ECR
       id: client-build
       uses: whoan/docker-build-with-cache-action@v5.9.0
-      env:
-        ECR_REPOSITORY: e-immigrate-client-dev
       with:
         dockerfile: AWS-Deployment/client/Dockerfile
         registry: ${{ steps.login-ecr.outputs.registry }}
-        # registry: 253016134262.dkr.ecr.us-west-1.amazonaws.com
-        # push_git_tag: true
-        stages_image_name: e-immigrate-client-dev
-        image_name: e-immigrate-client-dev
-        image_tag: ${{ github.sha }}
+        stages_image_name: ${{ steps.ecs-variables.outputs.repo }}
+        image_name: ${{ steps.ecs-variables.outputs.repo }}
+        image_tag: ${{ github.sha }}, latest
 
     - name: Fill in the new image ID in the Amazon ECS task definition
       id: task-definition
       uses: aws-actions/amazon-ecs-render-task-definition@v1
       with:
         task-definition: AWS-Deployment/client/task-definition.json
-        container-name: e-immigrate-client-dev-container
+        container-name: ${{ steps.ecs-variables.outputs.repo }}-container
         image: ${{ steps.client-build.outputs.FULL_IMAGE_NAME }}
 
     - name: Deploy Amazon ECS task definition
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
       with:
         task-definition: ${{ steps.task-definition.outputs.task-definition }}
-        service: e-immigrate-client-dev
-        cluster: multi-tenant-dev
+        service: ${{ steps.ecs-variables.outputs.repo }}
+        cluster: ${{ steps.ecs-variables.outputs.cluster }}
         wait-for-service-stability: true
         wait-for-minutes: 5 minutes
-
-
-  # Backend Currently Not online
-  # deploy-backend:
-  #   name: Deploy Backend API
-  #   needs: setup
-
-  #   - name: CLIENT - Build, tag, and push image to Amazon ECR
-  #     id: build-image
-  #     env:
-  #       ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-  #       ECR_REPOSITORY: e-immigrate-api-dev
-  #       IMAGE_TAG: ${{ github.sha }}
-  #     run: |
-  #       # Build a docker container and
-  #       # push it to ECR so that it can
-  #       # be deployed to ECS.
-  #       docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f AWS-Deployment/client/Dockerfile .
-  #       docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-  #       echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
-
-  #   - name: Fill in the new image ID in the Amazon ECS task definition
-  #     id: task-def
-  #     uses: aws-actions/amazon-ecs-render-task-definition@v1
-  #     with:
-  #       task-definition: AWS-Deployment/client/task-definition.json
-  #       container-name: open-disclosure-client-dev-container
-  #       image: ${{ steps.build-image.outputs.image }}
-
-  #   - name: Deploy Amazon ECS task definition
-  #     uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-  #     with:
-  #       task-definition: ${{ steps.task-def.outputs.task-definition }}
-  #       service: e-immigrate-client
-  #       cluster: CFSJ-ECS-Cluster
-  #       wait-for-service-stability: true
-
-  # deploy-frontend:
-  #   name: Deploy Frontend app
-  #   runs-on: ubuntu-latest
-
-    # - name: CLIENT - Build, tag, and push image to Amazon ECR
-    #   id: build-image
-    #   env:
-    #     ECR_REPOSITORY: ${{ steps.ecr-repository.outputs.repo }}
-    #     IMAGE_TAG: ${{ github.sha }}
-    #   run: |
-    #     # Build a docker container and
-    #     # push it to ECR so that it can
-    #     # be deployed to ECS.
-    #     docker build -t $ECR_REPOSITORY:$IMAGE_TAG -f AWS-Deployment/client/Dockerfile .
-    #     docker push $ECR_REPOSITORY:$IMAGE_TAG
-    #     echo "::set-output name=image::$ECR_REPOSITORY:$IMAGE_TAG"
