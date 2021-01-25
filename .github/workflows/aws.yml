@@ -76,11 +76,12 @@ jobs:
 
     - name: Client - Build, Tag, Push image to ECR
       id: client-build
-      uses: whoan/docker-build-with-cache-action@v5
+      uses: whoan/docker-build-with-cache-action@v5.9.0
       env:
         ECR_REPOSITORY: e-immigrate-client-dev
       with:
-        registry: ${{ steps.login-ecr.outputs.registry }}
+        # registry: ${{ steps.login-ecr.outputs.registry }}
+        registry: 253016134262.dkr.ecr.us-west-1.amazonaws.com
         image_name: e-immigrate-client-dev:${{ github.sha }}
 
     - name: Fill in the new image ID in the Amazon ECS task definition
