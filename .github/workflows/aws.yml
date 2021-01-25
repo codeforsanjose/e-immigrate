@@ -74,7 +74,7 @@ jobs:
         task-definition: AWS-Deployment/client/task-definition.json
         # image: ${{ steps.ecr-repository.outputs.repo }}/${{ steps.docker_build.outputs.digest }}
         container-name: e-immigrate-client-dev-container
-        image: ${{ steps.build-image.outputs.image }}
+        image: ${{ steps.ecr-repository.outputs.repo }}:${{ github.sha }}
 
     - name: Deploy Amazon ECS task definition
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
