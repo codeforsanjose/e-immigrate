@@ -57,7 +57,7 @@ jobs:
       with:
         task-definition: AWS-Deployment/client/task-definition.json
         container-name: ${{ steps.ecs-variables.outputs.repo }}-container
-        image: ${{ steps.client-build.outputs.FULL_IMAGE_NAME }}
+        image: ${{ steps.client-build.outputs.FULL_IMAGE_NAME }}:${{ github.sha }}
 
     - name: Deploy Amazon ECS task definition
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
