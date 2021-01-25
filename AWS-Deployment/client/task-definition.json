@@ -1,6 +1,7 @@
 {
     "containerDefinitions": [
         {
+            "name": "e-immigrate-client-dev-container",
             "cpu": 0,
             "memoryReservation": 128,
             "portMappings": [
