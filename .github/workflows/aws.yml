@@ -93,6 +93,7 @@ jobs:
       with:
         task-definition: AWS-Deployment/client/task-definition.json
         # image: ${{ steps.ecr-repository.outputs.repo }}/${{ steps.docker_build.outputs.digest }}
+        container-name: e-immigrate-client-dev-container
         image: ${{ steps.build-image.outputs.image }}
 
     - name: Deploy Amazon ECS task definition
