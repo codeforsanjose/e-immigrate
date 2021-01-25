@@ -85,6 +85,7 @@ jobs:
         # registry: 253016134262.dkr.ecr.us-west-1.amazonaws.com
         # push_git_tag: true
         image_name: e-immigrate-client-dev
+        image_tag: ${{ github.sha }}
 
     - name: Fill in the new image ID in the Amazon ECS task definition
       id: task-definition
@@ -92,7 +93,7 @@ jobs:
       with:
         task-definition: AWS-Deployment/client/task-definition.json
         container-name: e-immigrate-client-dev-container
-        image: ${{ steps.client-build.outputs.full_image_name }}
+        image: ${{ steps.client-build.outputs.FULL_IMAGE_NAME }}
 
     - name: Deploy Amazon ECS task definition
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
