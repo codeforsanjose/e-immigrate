@@ -25,6 +25,10 @@ const LandingPage = ({ content, nextStep }) => {
         nextStep();
         history.push('/video');
     };
+    const goToStep2 = () => {
+        nextStep();
+        history.push('/questionnaire');
+    };
     return (
         <div className="LandingPage">
             <div className="welcome-message">
@@ -46,6 +50,7 @@ const LandingPage = ({ content, nextStep }) => {
             </div>
             <div className="startButtonContainer">
                 <Button label={'Go to Step 1'} onClick={goToStep1} />
+                <Button label={'Go to Step 2'} onClick={goToStep2} />
             </div>
         </div>
     );

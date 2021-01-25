@@ -7,12 +7,14 @@ import Footer from '../../compositions/Footer/Footer';
 import LandingPage from '../../compositions/LandingPage/LandingPage';
 import Video from '../../compositions/Video/Video';
 import HubspotForm from '../../compositions/HubspotForm/HubspotForm';
+import Questionnaire from '../../compositions/Questionnaire/Questionnaire';
 import { Switch, Route } from 'react-router-dom';
 import { addQuestionnaireResponse } from '../../sendRequest/apis';
 import { sendRequest } from '../../sendRequest/sendRequest';
 
 import './MainContainer.css';
 import ProgressBar from '../../compositions/ProgressBar/ProgressBar';
+import axios from 'axios';
 
 const MainContainer = () => {
     const [language, setLanguage] = useState('en');
@@ -20,6 +22,7 @@ const MainContainer = () => {
     const [step, setStep] = useState(2);
     const [videoState, setVideoState] = useState({ hasWatchedVideo: false });
     const { hasWatchedVideo } = videoState;
+    const [questions, setQuestions] = useState([]);
 
     const browserLanguage =
         window.navigator.userLanguage || window.navigator.language;
@@ -38,27 +41,36 @@ const MainContainer = () => {
         localStorage.setItem('preferredLanguage', language);
     };
 
-    useEffect(() => {
-        const script = document.createElement('script');
-        script.src = 'https://js.hsforms.net/forms/shell.js';
-        document.body.appendChild(script);
+    // useEffect(() => {
+    //     const script = document.createElement('script');
+    //     script.src = 'https://js.hsforms.net/forms/shell.js';
+    //     document.body.appendChild(script);
 
-        script.addEventListener('load', () => {
-            if (window.hbspt) {
-                window.hbspt.forms.create({
-                    portalId: '8034478',
-                    formId: content[language].hubspot,
-                    target: `#hubspotForm-en`,
-                });
-            }
-        });
-    }, [language]);
+    //     script.addEventListener('load', () => {
+    //         if (window.hbspt) {
+    //             window.hbspt.forms.create({
+    //                 portalId: '8034478',
+    //                 formId: content[language].hubspot,
+    //                 target: `#hubspotForm-en`,
+    //             });
+    //         }
+    //     });
+    // }, [language]);
+
     const videoEndedHandler = (event) => {
         setVideoState({
             hasWatchedVideo: true,
         });
         nextStep();
     };
+
+    useEffect(() => {
+        axios
+            .get('http://localhost:5000/api/questionnaires')
+            .then((response) => {
+                setQuestions(response.data.responses[0].questions);
+            });
+    }, [language]);
 
     const submitQuestionnaireResponse = (userAnswers = []) => {
         const requestObj = {
@@ -108,11 +120,16 @@ const MainContainer = () => {
                             />
                         </Route>
                         <Route path="/questionnaire">
-                            <HubspotForm
+                            <Questionnaire
+                                language={language}
+                                questions={questions}
+                                hasWatchedVideo={hasWatchedVideo}
+                            />
+                            {/* <HubspotForm
                                 hubspot={content[language].hubspot}
                                 hasWatchedVideo={hasWatchedVideo}
                                 language={language}
-                            />
+                            /> */}
                         </Route>
                     </Switch>
                     <Footer />

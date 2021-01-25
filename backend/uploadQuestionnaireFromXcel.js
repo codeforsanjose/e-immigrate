@@ -20,11 +20,11 @@ const generateQuestionnaires = () => {
             const data = [];
             rows.forEach((row) => {
                 data.push({
-                    number: row[0],
+                    id: row[0],
                     category: row[1],
                     text: row[2],
                     questionType: row[3],
-                    answerType: row[4],
+                    answerSelections: row[4],
                     required: row[5] === 'Yes' ? true : false,
                     followUp: row[6] === 'No' ? false : row[6],
                 });
