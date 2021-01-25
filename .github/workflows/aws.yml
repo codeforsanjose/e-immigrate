@@ -49,6 +49,7 @@ jobs:
         # repository: $ECR_REPOSITORY
         context: .
         file: AWS-Deployment/client/Dockerfile
+        push: true
         tags: |
           ${{ steps.ecr-repository.outputs.repo }}:${{ github.sha }}
           ${{ steps.ecr-repository.outputs.repo }}:latest
