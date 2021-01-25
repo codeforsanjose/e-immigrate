@@ -44,7 +44,7 @@ jobs:
       with:
         driver: docker
 
-    - name: Client - build, tag, and psh image to ECR
+    - name: Client - build, tag image
       id: docker_build
       uses: docker/build-push-action@v2
       # env:
@@ -55,11 +55,14 @@ jobs:
         context: .
         file: AWS-Deployment/client/Dockerfile
         builder: ${{ steps.buildx.outputs.name }}
-        push: true
         load: true
-        tags: |
-          ${{ steps.ecr-repository.outputs.repo }}:${{ github.sha }}
-          ${{ steps.ecr-repository.outputs.repo }}:latest
+        # push: true
+        # tags: |
+        #   ${{ steps.ecr-repository.outputs.repo }}:${{ github.sha }}
+        #   ${{ steps.ecr-repository.outputs.repo }}:latest
+
+    - name: Client psh image to ECR
+      run: docker push ${{ steps.ecr-repository.outputs.repo }}:${{ github.sha }}
 
     # - name: CLIENT - Build, tag, and push image to Amazon ECR
     #   id: build-image
