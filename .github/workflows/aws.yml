@@ -84,7 +84,7 @@ jobs:
         registry: ${{ steps.login-ecr.outputs.registry }}
         # registry: 253016134262.dkr.ecr.us-west-1.amazonaws.com
         # push_git_tag: true
-        image_name: ${{ steps.login-ecr.outputs.registry }}/e-immigrate-client-dev:latest
+        image_name: e-immigrate-client-dev
 
     - name: Fill in the new image ID in the Amazon ECS task definition
       id: task-definition
