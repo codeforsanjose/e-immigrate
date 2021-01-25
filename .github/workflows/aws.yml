@@ -36,7 +36,7 @@ jobs:
     - name: Set ECR repository
       id: ecr-repository
       env:
-        ECR_REPOSITORY=e-immigrate-client-dev
+        ECR_REPOSITORY: e-immigrate-client-dev
       run: echo "::set-output name=repo::${{ steps.login-ecr.outputs.registry }}/$ECR_REPOSITORY"
 
 
