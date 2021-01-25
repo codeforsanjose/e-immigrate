@@ -39,7 +39,6 @@ jobs:
         ECR_REPOSITORY: e-immigrate-client-dev
       run: echo "::set-output name=repo::${{ steps.login-ecr.outputs.registry }}/$ECR_REPOSITORY"
 
-
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v1
       with:
@@ -62,26 +61,24 @@ jobs:
       uses: docker/build-push-action@v2-build-push
       env:
         ECR_REPOSITORY: e-immigrate-client-dev
-        IMAGE_TAG: ${{ github.sha }}
       with:
-        registry: ${{ steps.login-ecr.outputs.registry }}
-        repository: $ECR_REPOSITORY
+        # registry: ${{ steps.login-ecr.outputs.registry }}
+        # repository: $ECR_REPOSITORY
         context: .
         file: AWS-Deployment/client/Dockerfile
+        push: true
+        builder: ${{ steps.buildx.outputs.name }}
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache
         tags: |
-          ${{ github.sha }}
-          latest
+          ${{ steps.ecr-repository.outputs.repo }}:${{ github.sha }}
+          ${{ steps.ecr-repository.outputs.repo }}:latest
 
     - name: Fill in the new image ID in the Amazon ECS task definition
       id: task-definition
       uses: aws-actions/amazon-ecs-render-task-definition@v1
-      env:
-        ECR_REPOSITORY: e-immigrate-client-dev
       with:
         task-definition: AWS-Deployment/client/task-definition.json
-        container-name: e-immigrate-client-dev-container
         image: ${{ steps.ecr-repository.outputs.repo }}/${{ steps.docker_build.outputs.digest }}
         # image: ${{ steps.build-image.outputs.image }}
 
