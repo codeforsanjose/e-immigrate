@@ -33,68 +33,63 @@ jobs:
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
       
-    - name: Set ECR repository
-      id: ecr-repository
+    # - name: Set ECR repository
+    #   id: ecr-repository
+    #   env:
+    #     ECR_REPOSITORY: e-immigrate-client-dev
+    #   run: echo "::set-output name=repo::${{ steps.login-ecr.outputs.registry }}/$ECR_REPOSITORY"
+
+    # - uses: docker/setup-buildx-action@v1
+    #   id: buildx
+    #   with:
+    #     driver: docker
+
+    # - name: Cache Docker layers
+    #   uses: actions/cache@v2
+    #   with:
+    #           path: /tmp/.buildx-cache
+    #           key: ${{ runner.os }}-buildx-${{ github.sha }}
+    #           restore-keys: |
+    #             ${{ runner.os }}-buildx-
+
+    # - name: Client - build, tag image
+    #   id: docker_build
+    #   uses: docker/build-push-action@v2
+    #   # env:
+    #   #   ECR_REPOSITORY: e-immigrate-client-dev
+    #   with:
+    #     # registry: ${{ steps.login-ecr.outputs.registry }}
+    #     # repository: $ECR_REPOSITORY
+    #     context: .
+    #     file: AWS-Deployment/client/Dockerfile
+    #     cache-from: type=local,src=/tmp/.buildx-cache
+    #     cache-to: type=local,dest=/tmp/.buildx-cache
+    #     # load: true
+    #     # push: true
+    #     tags: |
+    #       ${{ steps.ecr-repository.outputs.repo }}:${{ github.sha }}
+    #       ${{ steps.ecr-repository.outputs.repo }}:latest
+
+    # - name: Client - push image to ECR
+    #   run: docker push ${{ steps.ecr-repository.outputs.repo }}:${{ github.sha }} --all-tags
+
+
+    - name: Client - Build, Tag, Push image to ECR
+      id: client-build
+      uses: whoan/docker-build-with-cache-action@v5
       env:
         ECR_REPOSITORY: e-immigrate-client-dev
-      run: echo "::set-output name=repo::${{ steps.login-ecr.outputs.registry }}/$ECR_REPOSITORY"
-
-    - uses: docker/setup-buildx-action@v1
-      id: buildx
       with:
-        driver: docker
-
-    - name: Cache Docker layers
-      uses: actions/cache@v2
-      with:
-              path: /tmp/.buildx-cache
-              key: ${{ runner.os }}-buildx-${{ github.sha }}
-              restore-keys: |
-                ${{ runner.os }}-buildx-
-
-    - name: Client - build, tag image
-      id: docker_build
-      uses: docker/build-push-action@v2
-      # env:
-      #   ECR_REPOSITORY: e-immigrate-client-dev
-      with:
-        # registry: ${{ steps.login-ecr.outputs.registry }}
-        # repository: $ECR_REPOSITORY
-        context: .
-        file: AWS-Deployment/client/Dockerfile
-        cache-from: type=local,src=/tmp/.buildx-cache
-        cache-to: type=local,dest=/tmp/.buildx-cache
-        # load: true
-        # push: true
-        tags: |
-          ${{ steps.ecr-repository.outputs.repo }}:${{ github.sha }}
-          ${{ steps.ecr-repository.outputs.repo }}:latest
-
-    - name: Client - push image to ECR
-      run: docker push ${{ steps.ecr-repository.outputs.repo }}:${{ github.sha }} --all-tags
-
-    # - name: CLIENT - Build, tag, and push image to Amazon ECR
-    #   id: build-image
-    #   env:
-    #     ECR_REPOSITORY: ${{ steps.ecr-repository.outputs.repo }}
-    #     IMAGE_TAG: ${{ github.sha }}
-    #   run: |
-    #     # Build a docker container and
-    #     # push it to ECR so that it can
-    #     # be deployed to ECS.
-    #     docker build -t $ECR_REPOSITORY:$IMAGE_TAG -f AWS-Deployment/client/Dockerfile .
-    #     docker push $ECR_REPOSITORY:$IMAGE_TAG
-    #     echo "::set-output name=image::$ECR_REPOSITORY:$IMAGE_TAG"
-
+        registry: ${{ steps.login-ecr.outputs.registry }}
+        image_name: e-immigrate-client-dev:${{ github.sha }}
 
     - name: Fill in the new image ID in the Amazon ECS task definition
       id: task-definition
       uses: aws-actions/amazon-ecs-render-task-definition@v1
       with:
         task-definition: AWS-Deployment/client/task-definition.json
-        # image: ${{ steps.ecr-repository.outputs.repo }}/${{ steps.docker_build.outputs.digest }}
         container-name: e-immigrate-client-dev-container
-        image: ${{ steps.ecr-repository.outputs.repo }}:${{ github.sha }}
+        image: ${{ steps.client-build.outputs.full_image_name }}
 
     - name: Deploy Amazon ECS task definition
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
