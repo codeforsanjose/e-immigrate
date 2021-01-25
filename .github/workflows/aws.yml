@@ -32,6 +32,68 @@ jobs:
     - name: Login to Amazon ECR
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
+      
+    - name: Set ECR repository
+      id: ecr-repository
+      env:
+        - ECR_REPOSITORY=e-immigrate-client-dev
+      run: echo "::set-output name=repo::${{ steps.login-ecr.outputs.registry }}/$ECR_REPOSITORY"
+
+
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v1
+      with:
+        platforms: all
+
+    - name: Set up Docker Buildx
+      id: buildx
+      uses: docker/setup-buildx-action@v1
+
+    - name: Cache Docker layers
+      uses: actions/cache@v2
+      with:
+        path: /tmp/.buildx-cache
+        key: ${{ runner.os }}-buildx-${{ github.sha }}
+        restore-keys: |
+          ${{ runner.os }}-buildx-
+
+    - name: Client - build, tag, and psh image to ECR
+      id: docker_build
+      uses: docker/build-push-action@v2
+      env:
+        ECR_REPOSITORY: e-immigrate-client-dev
+        IMAGE_TAG: ${{ github.sha }}
+      with:
+        registry: ${{ steps.login-ecr.outputs.registry }}
+        repository: $ECR_REPOSITORY
+        builder: ${{ steps.buildx.outputs.name }}
+        context: .
+        file: AWS-Deployment/client/Dockerfile
+        add_git_labels: true
+        tag_with_ref: true
+        cache-from: type=local,src=/tmp/.buildx-cache
+        cache-to: type=local,dest=/tmp/.buildx-cache
+
+    - name: Fill in the new image ID in the Amazon ECS task definition
+      id: task-definition
+      uses: aws-actions/amazon-ecs-render-task-definition@v1
+      env:
+        ECR_REPOSITORY: e-immigrate-client-dev
+      with:
+        task-definition: AWS-Deployment/client/task-definition.json
+        container-name: e-immigrate-client-dev-container
+        image: ${{ steps.ecr-repository.outputs.repo }}/${{ steps.docker_build.outputs.digest }}
+        # image: ${{ steps.build-image.outputs.image }}
+
+    - name: Deploy Amazon ECS task definition
+      uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+      with:
+        task-definition: ${{ steps.task-definition.outputs.task-definition }}
+        service: e-immigrate-client-dev
+        cluster: multi-tenant-dev
+        wait-for-service-stability: true
+        wait-for-minutes: 5 minutes
+
 
   # Backend Currently Not online
   # deploy-backend:
@@ -85,58 +147,3 @@ jobs:
     #     docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f AWS-Deployment/client/Dockerfile .
     #     docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
     #     echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
-
-
-    - name: Set up QEMU
-      uses: docker/setup-qemu-action@v1
-      with:
-        platforms: all
-
-    - name: Set up Docker Buildx
-      id: buildx
-      uses: docker/setup-buildx-action@v1
-
-    - name: Cache Docker layers
-      uses: actions/cache@v2
-      with:
-        path: /tmp/.buildx-cache
-        key: ${{ runner.os }}-buildx-${{ github.sha }}
-        restore-keys: |
-          ${{ runner.os }}-buildx-
-
-    - name: Client - build, tag, and psh image to ECR
-      id: docker_build
-      uses: docker/build-push-action@v2
-      env:
-        ECR_REPOSITORY: e-immigrate-client-dev
-        IMAGE_TAG: ${{ github.sha }}
-      with:
-        registry: ${{ steps.login-ecr.outputs.registry }}
-        repository: ${{ steps.login-ecr.outputs.registry }}/$ECR_REPOSITORY
-        builder: ${{ steps.buildx.outputs.name }}
-        context: .
-        file: AWS-Deployment/client/Dockerfile
-        add_git_labels: true
-        tag_with_ref: true
-        cache-from: type=local,src=/tmp/.buildx-cache
-        cache-to: type=local,dest=/tmp/.buildx-cache
-
-    - name: Fill in the new image ID in the Amazon ECS task definition
-      id: task-definition
-      uses: aws-actions/amazon-ecs-render-task-definition@v1
-      env:
-        ECR_REPOSITORY: e-immigrate-client-dev
-      with:
-        task-definition: AWS-Deployment/client/task-definition.json
-        container-name: e-immigrate-client-dev-container
-        image: ${{ steps.login-ecr.outputs.registry }}/${{ ECR_REPOSITORY }}/${{ steps.docker_build.outputs.digest }}
-        # image: ${{ steps.build-image.outputs.image }}
-
-    - name: Deploy Amazon ECS task definition
-      uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-      with:
-        task-definition: ${{ steps.task-definition.outputs.task-definition }}
-        service: e-immigrate-client-dev
-        cluster: multi-tenant-dev
-        wait-for-service-stability: true
-        wait-for-minutes: 5 minutes
