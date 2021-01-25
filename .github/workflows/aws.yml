@@ -54,12 +54,11 @@ jobs:
         # repository: $ECR_REPOSITORY
         context: .
         file: AWS-Deployment/client/Dockerfile
-        builder: ${{ steps.buildx.outputs.name }}
-        load: true
+        # load: true
         # push: true
-        # tags: |
-        #   ${{ steps.ecr-repository.outputs.repo }}:${{ github.sha }}
-        #   ${{ steps.ecr-repository.outputs.repo }}:latest
+        tags: |
+          ${{ steps.ecr-repository.outputs.repo }}:${{ github.sha }}
+          ${{ steps.ecr-repository.outputs.repo }}:latest
 
     - name: Client psh image to ECR
       run: docker push ${{ steps.ecr-repository.outputs.repo }}:${{ github.sha }}
