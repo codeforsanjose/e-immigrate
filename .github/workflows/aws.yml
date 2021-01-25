@@ -59,20 +59,20 @@ jobs:
 
     - name: Client - build, tag, and psh image to ECR
       id: docker_build
-      uses: docker/build-push-action@v2
+      uses: docker/build-push-action@v2-build-push
       env:
         ECR_REPOSITORY: e-immigrate-client-dev
         IMAGE_TAG: ${{ github.sha }}
       with:
         registry: ${{ steps.login-ecr.outputs.registry }}
         repository: $ECR_REPOSITORY
-        builder: ${{ steps.buildx.outputs.name }}
         context: .
         file: AWS-Deployment/client/Dockerfile
-        add_git_labels: true
-        tag_with_ref: true
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache
+        tags: |
+          ${{ github.sha }}
+          latest
 
     - name: Fill in the new image ID in the Amazon ECS task definition
       id: task-definition
