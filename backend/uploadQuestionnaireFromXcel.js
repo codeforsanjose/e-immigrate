@@ -21,12 +21,13 @@ const generateQuestionnaires = () => {
             rows.forEach((row) => {
                 data.push({
                     id: row[0],
-                    category: row[1],
-                    text: row[2],
-                    questionType: row[3],
-                    answerSelections: row[4],
-                    required: row[5] === 'Yes' ? true : false,
-                    followUp: row[6] === 'No' ? false : row[6],
+                    slug: row[1],
+                    category: row[2],
+                    text: row[3],
+                    questionType: row[4],
+                    answerSelections: row[5],
+                    required: row[6] === 'Yes' ? true : false,
+                    followUp: row[7] === 'No' ? false : row[7],
                 });
             });
 

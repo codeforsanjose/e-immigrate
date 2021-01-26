@@ -1,11 +1,41 @@
-import React, { useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
+import Button from '../../components/Button/Button';
+import {
+    Date,
+    Radio,
+    Checkbox,
+    TextInput,
+    TextArea,
+    DropDown,
+    Email,
+    PhoneNumber,
+    Zip,
+} from '../../components/FormComponents/FormComponents';
 
 import './Questionnaire.css';
 
-const Question = ({ question }) => {
+function useMarkFieldAsTouched() {
+    const [touchedFields, setTouchedFields] = useState({});
+    const setFieldAsTouched = (event) => {
+        event.persist();
+        setTouchedFields((prevState) => ({
+            ...prevState,
+            [event.target.name]: true,
+        }));
+    };
+
+    const bindField = (name) => ({
+        'data-touched': touchedFields[name],
+        onBlur: setFieldAsTouched,
+    });
+
+    return [bindField];
+}
+
+const Question = ({ question, bindField }) => {
     const {
         id,
-        category,
+        slug,
         text,
         questionType,
         answerSelections,
@@ -14,92 +44,130 @@ const Question = ({ question }) => {
     } = question;
     const answers = useMemo(() => {
         if (answerSelections) {
-            return answerSelections.split(',');
+            return answerSelections.split(', ');
         }
     }, [answerSelections]);
 
     const Input = () => {
         switch (questionType) {
             case 'date':
-                return <input type="date" />;
+                return (
+                    <Date
+                        slug={slug}
+                        required={required}
+                        bindField={bindField}
+                    />
+                );
             case 'radio':
                 return (
-                    <div>
-                        {answers &&
-                            answers.map((option) => (
-                                <div key={option}>
-                                    <input
-                                        type="radio"
-                                        id={option}
-                                        name={`radio${id}`}
-                                        // value={option}
-                                    />
-                                    <label htmlFor={option}>{option}</label>
-                                </div>
-                            ))}
-                    </div>
+                    <Radio
+                        slug={slug}
+                        required={required}
+                        answers={answers}
+                        bindField={bindField}
+                    />
                 );
             case 'checkbox':
                 return (
-                    <div>
-                        {answers &&
-                            answers.map((option) => (
-                                <div key={option}>
-                                    <input
-                                        type="checkbox"
-                                        id={option}
-                                        name={option}
-                                        value={option}
-                                    />
-                                    <label for={option}>{option}</label>
-                                </div>
-                            ))}
-                    </div>
+                    <Checkbox
+                        slug={slug}
+                        required={required}
+                        answers={answers}
+                        bindField={bindField}
+                    />
                 );
             case 'input':
-                return <input type="text" />;
+                return (
+                    <TextInput
+                        slug={slug}
+                        required={required}
+                        bindField={bindField}
+                    />
+                );
             case 'textArea':
-                return <textarea rows="4" cols="50" />;
+                return (
+                    <TextArea
+                        slug={slug}
+                        required={required}
+                        bindField={bindField}
+                    />
+                );
             case 'dropDown':
                 return (
-                    <select>
-                        {answers &&
-                            answers.map((option) => {
-                                return <option key={option}>{option}</option>;
-                            })}
-                    </select>
+                    <DropDown
+                        slug={slug}
+                        required={required}
+                        answers={answers}
+                        bindField={bindField}
+                    />
                 );
             case 'email':
-                return <input type="email" id="email" name="email" />;
+                return (
+                    <Email
+                        slug={slug}
+                        required={required}
+                        bindField={bindField}
+                    />
+                );
             case 'phoneNumber':
                 return (
-                    <input type="tel" pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}" />
+                    <PhoneNumber
+                        slug={slug}
+                        required={required}
+                        bindField={bindField}
+                    />
                 );
             case 'zip':
                 return (
-                    <input type="text" id="zip" name="zip" pattern="[0-9]*" />
+                    <Zip
+                        slug={slug}
+                        required={required}
+                        bindField={bindField}
+                    />
                 );
         }
     };
 
     return (
-        <div className="Question">
+        <fieldset className="Question">
             <div className="QuestionText">
                 {text}
                 {required ? ' (required)' : ' (optional)'}
             </div>
             <Input className="QuestionInput" />
-        </div>
+            <div className="RequiredError">*This field is required</div>
+        </fieldset>
     );
 };
 
 const Questionnaire = ({ questions }) => {
+    const filteredQuestions = questions.filter(
+        (q) => q.category === 'Red Flag'
+    );
+    const [bindField] = useMarkFieldAsTouched();
+
     return (
-        <div className="Questionnaire">
+        <form
+            className="Questionnaire"
+            onSubmit={(event) => {
+                event.preventDefault();
+                const formData = new FormData(event.target);
+                const data = Object.fromEntries(formData.entries());
+                console.log('form data :>> ', data);
+            }}
+        >
             {questions.map((question) => {
-                return <Question key={question.id} question={question} />;
+                return (
+                    <Question
+                        key={question.id}
+                        question={question}
+                        className="FormElement"
+                        bindField={bindField}
+                    />
+                );
             })}
-        </div>
+            <Button label={'Submit'} type="submit" className="FormElement" />
+        </form>
     );
 };
 
