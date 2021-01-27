@@ -1,5 +1,7 @@
-import React, { useState, useMemo } from 'react';
-import Button from '../../components/Button/Button';
+import React, { useMemo } from 'react';
+
+import './Question.css';
+
 import {
     Date,
     Radio,
@@ -10,27 +12,7 @@ import {
     Email,
     PhoneNumber,
     Zip,
-} from '../../components/FormComponents/FormComponents';
-
-import './Questionnaire.css';
-
-function useMarkFieldAsTouched() {
-    const [touchedFields, setTouchedFields] = useState({});
-    const setFieldAsTouched = (event) => {
-        event.persist();
-        setTouchedFields((prevState) => ({
-            ...prevState,
-            [event.target.name]: true,
-        }));
-    };
-
-    const bindField = (name) => ({
-        'data-touched': touchedFields[name],
-        onBlur: setFieldAsTouched,
-    });
-
-    return [bindField];
-}
+} from '../../../components/FormComponents/FormComponents';
 
 const Question = ({ question, bindField }) => {
     const {
@@ -48,7 +30,7 @@ const Question = ({ question, bindField }) => {
         }
     }, [answerSelections]);
 
-    const Input = () => {
+    const getInputType = () => {
         switch (questionType) {
             case 'date':
                 return (
@@ -65,6 +47,7 @@ const Question = ({ question, bindField }) => {
                         required={required}
                         answers={answers}
                         bindField={bindField}
+                        className="RadioGroup"
                     />
                 );
             case 'checkbox':
@@ -134,41 +117,10 @@ const Question = ({ question, bindField }) => {
                 {text}
                 {required ? ' (required)' : ' (optional)'}
             </div>
-            <Input className="QuestionInput" />
+            {getInputType()}
             <div className="RequiredError">*This field is required</div>
         </fieldset>
     );
 };
 
-const Questionnaire = ({ questions }) => {
-    const filteredQuestions = questions.filter(
-        (q) => q.category === 'Red Flag'
-    );
-    const [bindField] = useMarkFieldAsTouched();
-
-    return (
-        <form
-            className="Questionnaire"
-            onSubmit={(event) => {
-                event.preventDefault();
-                const formData = new FormData(event.target);
-                const data = Object.fromEntries(formData.entries());
-                console.log('form data :>> ', data);
-            }}
-        >
-            {questions.map((question) => {
-                return (
-                    <Question
-                        key={question.id}
-                        question={question}
-                        className="FormElement"
-                        bindField={bindField}
-                    />
-                );
-            })}
-            <Button label={'Submit'} type="submit" className="FormElement" />
-        </form>
-    );
-};
-
-export default Questionnaire;
+export default Question;

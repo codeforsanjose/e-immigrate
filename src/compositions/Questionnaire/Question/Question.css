@@ -1,14 +1,9 @@
-.Questionnaire {
-    max-width: 600px;
-    margin: auto;
-}
-
-.Questionnaire .Question {
+.Question {
     border: none;
     padding: 1rem;
 }
 
-.Questionnaire .Question .QuestionText {
+.Question .QuestionText {
     font-size: 1rem;
     font-weight: 600;
     margin-bottom: 0.5rem;
@@ -18,11 +13,20 @@
     border: 2px solid var(--color-secondary);
 }
 
-.Questionnaire .Question .RequiredError {
+.Question .RequiredError {
     visibility: hidden;
     color: var(--color-secondary);
 }
 
-.TextInput:invalid[touched='true'] ~ .RequiredError {
+.TextInput:invalid[data-touched='true'] ~ .RequiredError {
     visibility: visible;
+}
+
+.RadioButton:invalid[data-touched='true'] .RequiredError {
+    color: blue;
+    visibility: visible;
+}
+
+.RadioGroup:last-child {
+    color: blue;
 }

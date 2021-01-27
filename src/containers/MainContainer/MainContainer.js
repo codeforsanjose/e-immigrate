@@ -7,7 +7,7 @@ import Footer from '../../compositions/Footer/Footer';
 import LandingPage from '../../compositions/LandingPage/LandingPage';
 import Video from '../../compositions/Video/Video';
 import HubspotForm from '../../compositions/HubspotForm/HubspotForm';
-import Questionnaire from '../../compositions/Questionnaire/Questionnaire';
+import Questionnaire from '../../compositions/Questionnaire/Questionnaire/Questionnaire';
 import { Switch, Route } from 'react-router-dom';
 import { addQuestionnaireResponse } from '../../sendRequest/apis';
 import { sendRequest } from '../../sendRequest/sendRequest';

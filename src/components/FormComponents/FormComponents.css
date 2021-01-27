@@ -11,6 +11,20 @@
     border: 2px solid #0072ff;
 }
 
-.TextInput[touched='true']:invalid {
+.TextInput[data-touched='true']:invalid {
     border: 2px solid var(--color-secondary);
+}
+
+/* .RadioButton[data-touched='true']:invalid {
+    outline: solid var(--color-secondary);
+} */
+
+.RequiredError {
+    visibility: hidden;
+    color: var(--color-secondary);
+}
+
+.RadioButton[data-touched='true']:invalid:first-of-type ~ .RequiredError {
+    visibility: visible;
+    margin-left: 8px;
 }

@@ -9,26 +9,32 @@ export const Date = ({ slug, required, bindField }) => {
             name={slug}
             required={required}
             className="TextInput"
-            {...bindField(slug)}
+            // {...bindField(slug)}
         />
     );
 };
 
 export const Radio = ({ slug, required, answers, bindField }) => {
     return (
-        <div>
+        <div className="RadioGroup">
             {answers &&
                 answers.map((option) => (
-                    <div key={`${slug}-${option}`}>
+                    <div key={`${slug}-${option}`} className="Radio">
                         <input
                             type="radio"
                             id={`${slug}-${option}`}
                             name={slug}
                             required={required}
                             value={option}
+                            className="RadioButton"
                             {...bindField(slug)}
                         />
-                        <label htmlFor={slug}>{option}</label>
+                        <label htmlFor={slug} className="RadioLabel">
+                            {option}
+                        </label>
+                        <span className="RequiredError">
+                            *This field is required
+                        </span>
                     </div>
                 ))}
         </div>
