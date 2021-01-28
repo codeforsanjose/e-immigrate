@@ -27,7 +27,8 @@ const generateQuestionnaires = () => {
                     questionType: row[4],
                     answerSelections: row[5],
                     required: row[6] === 'Yes' ? true : false,
-                    followUp: row[7] === 'No' ? false : row[7],
+                    followUpQuestionSlug: row[7] ? row[7] : null,
+                    parentQuestionSlug: row[8] ? row[8] : null,
                 });
             });
 

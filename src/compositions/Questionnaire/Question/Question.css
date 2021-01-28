@@ -3,6 +3,12 @@
     padding: 1rem;
 }
 
+.FollowUp {
+    margin-left: 2rem;
+    display: grid;
+    grid-template-columns: 30px auto;
+}
+
 .Question .QuestionText {
     font-size: 1rem;
     font-weight: 600;
@@ -14,19 +20,10 @@
 }
 
 .Question .RequiredError {
-    visibility: hidden;
+    display: none;
     color: var(--color-secondary);
 }
 
 .TextInput:invalid[data-touched='true'] ~ .RequiredError {
-    visibility: visible;
-}
-
-.RadioButton:invalid[data-touched='true'] .RequiredError {
-    color: blue;
-    visibility: visible;
-}
-
-.RadioGroup:last-child {
-    color: blue;
+    display: block;
 }

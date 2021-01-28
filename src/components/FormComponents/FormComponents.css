@@ -15,16 +15,12 @@
     border: 2px solid var(--color-secondary);
 }
 
-/* .RadioButton[data-touched='true']:invalid {
-    outline: solid var(--color-secondary);
-} */
-
 .RequiredError {
-    visibility: hidden;
+    display: none;
     color: var(--color-secondary);
 }
 
 .RadioButton[data-touched='true']:invalid:first-of-type ~ .RequiredError {
-    visibility: visible;
+    display: inline;
     margin-left: 8px;
 }

@@ -3,7 +3,7 @@ import ciitLogo from '../../data/images/CiiT Logo.png';
 import ceticpLogo from '../../data/images/CET-ICP Logo.png';
 import './Footer.css';
 
-const Footer = ({}) => {
+const Footer = () => {
     return (
         <div className="footer">
             <div className="imgRow">

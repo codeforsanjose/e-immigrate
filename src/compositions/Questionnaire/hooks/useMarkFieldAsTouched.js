@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 function useMarkFieldAsTouched() {
     const [touchedFields, setTouchedFields] = useState({ all: false });

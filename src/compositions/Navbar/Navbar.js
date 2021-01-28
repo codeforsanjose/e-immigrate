@@ -1,7 +1,6 @@
 import React from 'react';
 import Logo from '../../data/images/CiiT Logo.png';
 import LanguageDropdown from '../../components/LanguageDropdown/LanguageDropdown';
-import { content } from '../../data/LanguageContent';
 import { Link } from 'react-router-dom';
 import './Navbar.css';
 

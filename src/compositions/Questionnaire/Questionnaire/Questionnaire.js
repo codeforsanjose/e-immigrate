@@ -7,8 +7,7 @@ import './Questionnaire.css';
 
 const Questionnaire = ({ questions }) => {
     const filteredQuestions = questions.filter(
-        // (q) => q.category === 'Red Flag'
-        (q) => q.category === 'Workshop Eligibility'
+        (q) => q.category === 'Red Flag'
     );
     const [bindField, setAllFieldsTouched] = useMarkFieldAsTouched();
 
@@ -23,12 +22,19 @@ const Questionnaire = ({ questions }) => {
             }}
         >
             {filteredQuestions.map((question) => {
+                if (question.parentQuestionSlug) {
+                    return null;
+                }
+
                 return (
                     <Question
                         key={question.id}
                         question={question}
                         className="FormElement"
                         bindField={bindField}
+                        followUpQuestions={questions.filter(
+                            (q) => q.parentQuestionSlug === question.slug
+                        )}
                     />
                 );
             })}

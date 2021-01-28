@@ -6,7 +6,6 @@ import Navbar from '../../compositions/Navbar/Navbar';
 import Footer from '../../compositions/Footer/Footer';
 import LandingPage from '../../compositions/LandingPage/LandingPage';
 import Video from '../../compositions/Video/Video';
-import HubspotForm from '../../compositions/HubspotForm/HubspotForm';
 import Questionnaire from '../../compositions/Questionnaire/Questionnaire/Questionnaire';
 import { Switch, Route } from 'react-router-dom';
 import { addQuestionnaireResponse } from '../../sendRequest/apis';
@@ -40,22 +39,6 @@ const MainContainer = () => {
         setLanguage(language);
         localStorage.setItem('preferredLanguage', language);
     };
-
-    // useEffect(() => {
-    //     const script = document.createElement('script');
-    //     script.src = 'https://js.hsforms.net/forms/shell.js';
-    //     document.body.appendChild(script);
-
-    //     script.addEventListener('load', () => {
-    //         if (window.hbspt) {
-    //             window.hbspt.forms.create({
-    //                 portalId: '8034478',
-    //                 formId: content[language].hubspot,
-    //                 target: `#hubspotForm-en`,
-    //             });
-    //         }
-    //     });
-    // }, [language]);
 
     const videoEndedHandler = (event) => {
         setVideoState({
@@ -113,6 +96,8 @@ const MainContainer = () => {
                             <ProgressBar
                                 content={content[language]}
                                 step={step}
+                                nextStep={nextStep}
+                                previousStep={previousStep}
                             />
                             <Video
                                 onEnd={videoEndedHandler}
@@ -124,12 +109,10 @@ const MainContainer = () => {
                                 language={language}
                                 questions={questions}
                                 hasWatchedVideo={hasWatchedVideo}
+                                submitQuestionnaireResponse={
+                                    submitQuestionnaireResponse
+                                }
                             />
-                            {/* <HubspotForm
-                                hubspot={content[language].hubspot}
-                                hasWatchedVideo={hasWatchedVideo}
-                                language={language}
-                            /> */}
                         </Route>
                     </Switch>
                     <Footer />
