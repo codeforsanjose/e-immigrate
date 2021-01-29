@@ -5,6 +5,28 @@ import useMarkFieldAsTouched from '../hooks/useMarkFieldAsTouched';
 
 import './Questionnaire.css';
 
+const Questions = ({ filteredQuestions, bindField, questions }) => (
+    <>
+        {filteredQuestions.map((question) => {
+            if (question.parentQuestionSlug) {
+                return null;
+            }
+
+            return (
+                <Question
+                    key={question.id}
+                    question={question}
+                    className="FormElement"
+                    bindField={bindField}
+                    followUpQuestions={questions.filter(
+                        (q) => q.parentQuestionSlug === question.slug
+                    )}
+                />
+            );
+        })}
+    </>
+);
+
 const Questionnaire = ({ questions }) => {
     const filteredQuestions = questions.filter(
         (q) => q.category === 'Red Flag'
@@ -21,23 +43,11 @@ const Questionnaire = ({ questions }) => {
                 console.log('form data :>> ', data);
             }}
         >
-            {filteredQuestions.map((question) => {
-                if (question.parentQuestionSlug) {
-                    return null;
-                }
-
-                return (
-                    <Question
-                        key={question.id}
-                        question={question}
-                        className="FormElement"
-                        bindField={bindField}
-                        followUpQuestions={questions.filter(
-                            (q) => q.parentQuestionSlug === question.slug
-                        )}
-                    />
-                );
-            })}
+            <Questions
+                filteredQuestions={filteredQuestions}
+                bindField={bindField}
+                questions={questions}
+            />
             <Button
                 label={'Submit'}
                 type="submit"
