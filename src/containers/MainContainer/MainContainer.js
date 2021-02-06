@@ -10,6 +10,7 @@ import Questionnaire from '../../compositions/Questionnaire/Questionnaire/Questi
 import { Switch, Route } from 'react-router-dom';
 import { addQuestionnaireResponse } from '../../sendRequest/apis';
 import { sendRequest } from '../../sendRequest/sendRequest';
+import WorkshopScreening from '../../compositions/WorkshopScreening/WorkshopScreening';
 
 import './MainContainer.css';
 import ProgressBar from '../../compositions/ProgressBar/ProgressBar';
@@ -92,6 +93,9 @@ const MainContainer = () => {
                                 nextStep={nextStep}
                             />
                         </Route>
+                        <Route path="/eligibility">
+                            <WorkshopScreening questions={questions} />
+                        </Route>
                         <Route path="/video">
                             <ProgressBar
                                 content={content[language]}
@@ -115,9 +119,9 @@ const MainContainer = () => {
                             />
                         </Route>
                     </Switch>
-                    <Footer />
                 </div>
             </div>
+            <Footer />
         </div>
     );
 };

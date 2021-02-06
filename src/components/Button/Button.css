@@ -1,5 +1,6 @@
 .buttonComponent {
-    width: 200px;
+    min-width: 200px;
+    padding: 0 25px;
     height: 50px;
     background-color: var(--color-primary);
     color: var(--color-text-secondary);
