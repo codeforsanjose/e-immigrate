@@ -40,7 +40,6 @@ const Questionnaire = ({ questions }) => {
                 event.preventDefault();
                 const formData = new FormData(event.target);
                 const data = Object.fromEntries(formData.entries());
-                console.log('form data :>> ', data);
             }}
         >
             <Questions

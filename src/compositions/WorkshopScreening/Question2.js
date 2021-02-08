@@ -6,7 +6,6 @@ const Question2 = ({ q, bindField, setQuestion2 }) => {
         const answers = q.answerSelections.split(', ');
         return (
             <>
-                {/* <div>Question 2</div> */}
                 <form
                     className="RadioGroup"
                     onSubmit={(event) => {
@@ -26,7 +25,6 @@ const Question2 = ({ q, bindField, setQuestion2 }) => {
                                     name={q.slug}
                                     required={q.required}
                                     value={option}
-                                    // onChange={() => setQuestion1({ option })}
                                     className="RadioButton"
                                     {...bindField(q.slug)}
                                 />

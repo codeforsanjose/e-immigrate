@@ -9,18 +9,25 @@ const Branch1 = ({
     question2,
     setQuestion2,
     setQuestion3,
+    showModal,
+    setShowModal,
+    date,
+    setDate,
 }) => {
     if (question2) {
-        console.log('here3');
         return (
             <Question3
                 q={filteredQuestions[2]}
                 bindField={bindField}
                 setQuestion3={setQuestion3}
+                question2={question2}
+                showModal={showModal}
+                setShowModal={setShowModal}
+                date={date}
+                setDate={setDate}
             />
         );
     } else {
-        console.log('here2');
         return (
             <Question2
                 q={filteredQuestions[1]}
@@ -31,12 +38,26 @@ const Branch1 = ({
     }
 };
 
-const Branch2 = ({ filteredQuestions, bindField, setQuestion3 }) => {
+const Branch2 = ({
+    filteredQuestions,
+    bindField,
+    setQuestion3,
+    question2,
+    showModal,
+    setShowModal,
+    date,
+    setDate,
+}) => {
     return (
         <Question3
             q={filteredQuestions[2]}
             bindField={bindField}
             setQuestion3={setQuestion3}
+            question2={question2}
+            showModal={showModal}
+            setShowModal={setShowModal}
+            date={date}
+            setDate={setDate}
         />
     );
 };
@@ -50,6 +71,10 @@ const LogicBranches = ({
     setQuestion2,
     question3,
     setQuestion3,
+    showModal,
+    setShowModal,
+    date,
+    setDate,
 }) => {
     if (question1 === 'Yes') {
         return (
@@ -59,6 +84,10 @@ const LogicBranches = ({
                 question2={question2}
                 setQuestion2={setQuestion2}
                 setQuestion3={setQuestion3}
+                showModal={showModal}
+                setShowModal={setShowModal}
+                date={date}
+                setDate={setDate}
             />
         );
     } else if (question1 === 'No') {
@@ -67,6 +96,11 @@ const LogicBranches = ({
                 filteredQuestions={filteredQuestions}
                 bindField={bindField}
                 setQuestion3={setQuestion3}
+                question2={question2}
+                showModal={showModal}
+                setShowModal={setShowModal}
+                date={date}
+                setDate={setDate}
             />
         );
     } else {

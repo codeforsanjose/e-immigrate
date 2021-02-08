@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import useMarkFieldAsTouched from '../../compositions/Questionnaire/hooks/useMarkFieldAsTouched';
 import LogicBranches from './LogicBranches';
+import Modal from './Modal/Modal';
 
 import './WorkshopScreening.css';
 
@@ -8,6 +9,8 @@ const WorkshopScreening = ({ questions }) => {
     const [question1, setQuestion1] = useState('');
     const [question2, setQuestion2] = useState('');
     const [question3, setQuestion3] = useState('');
+    const [showModal, setShowModal] = useState(false);
+    const [date, setDate] = useState();
 
     const filteredQuestions = questions.filter(
         (q) => q.category === 'Workshop Eligibility'
@@ -27,7 +30,12 @@ const WorkshopScreening = ({ questions }) => {
                 setQuestion2={setQuestion2}
                 question3={question3}
                 setQuestion3={setQuestion3}
+                showModal={showModal}
+                setShowModal={setShowModal}
+                date={date}
+                setDate={setDate}
             />
+            <Modal showModal={showModal} question2={question2} date={date} />
         </div>
     );
 };

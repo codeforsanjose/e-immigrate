@@ -1,7 +1,6 @@
 .Navbar {
     background-color: var(--color-brightSky);
-    margin: 0 -2rem;
-    padding: 0 4rem;
+    padding: 0 1rem;
     display: grid;
     grid-template-columns: 94px auto;
     grid-template-rows: 73px;
