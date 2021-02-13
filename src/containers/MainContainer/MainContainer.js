@@ -14,6 +14,7 @@ import { sendRequest } from '../../sendRequest/sendRequest';
 import './MainContainer.css';
 import ProgressBar from '../../compositions/ProgressBar/ProgressBar';
 import axios from 'axios';
+import { getQuestions } from '../../sendRequest/apis';
 
 const MainContainer = () => {
     const [language, setLanguage] = useState('en');
@@ -48,11 +49,9 @@ const MainContainer = () => {
     };
 
     useEffect(() => {
-        axios
-            .get('http://localhost:5000/api/questionnaires')
-            .then((response) => {
-                setQuestions(response.data.responses[0].questions);
-            });
+        axios.get(getQuestions).then((response) => {
+            setQuestions(response.data.responses[0].questions);
+        });
     }, [language]);
 
     const submitQuestionnaireResponse = (userAnswers = []) => {

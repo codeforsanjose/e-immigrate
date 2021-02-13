@@ -5,6 +5,37 @@ import useMarkFieldAsTouched from '../hooks/useMarkFieldAsTouched';
 
 import './Questionnaire.css';
 
+const QuestionnaireForm = ({
+    filteredQuestions,
+    bindField,
+    questions,
+    setAllFieldsTouched,
+}) => {
+    return (
+        <form
+            className="Questionnaire"
+            onSubmit={(event) => {
+                event.preventDefault();
+                const formData = new FormData(event.target);
+                const data = Object.fromEntries(formData.entries());
+                console.log('form data :>> ', data);
+            }}
+        >
+            <Questions
+                filteredQuestions={filteredQuestions}
+                bindField={bindField}
+                questions={questions}
+            />
+            <Button
+                label={'Submit'}
+                type="submit"
+                className="FormElement"
+                onClick={setAllFieldsTouched}
+            />
+        </form>
+    );
+};
+
 const Questions = ({ filteredQuestions, bindField, questions }) => (
     <>
         {filteredQuestions.map((question) => {
@@ -34,27 +65,12 @@ const Questionnaire = ({ questions }) => {
     const [bindField, setAllFieldsTouched] = useMarkFieldAsTouched();
 
     return (
-        <form
-            className="Questionnaire"
-            onSubmit={(event) => {
-                event.preventDefault();
-                const formData = new FormData(event.target);
-                const data = Object.fromEntries(formData.entries());
-                console.log('form data :>> ', data);
-            }}
-        >
-            <Questions
-                filteredQuestions={filteredQuestions}
-                bindField={bindField}
-                questions={questions}
-            />
-            <Button
-                label={'Submit'}
-                type="submit"
-                className="FormElement"
-                onClick={setAllFieldsTouched}
-            />
-        </form>
+        <QuestionnaireForm
+            filteredQuestions={filteredQuestions}
+            bindField={bindField}
+            questions={questions}
+            setAllFieldsTouched={setAllFieldsTouched}
+        />
     );
 };
 
