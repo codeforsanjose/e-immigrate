@@ -23,6 +23,8 @@ code {
     --color-secondary: #df1d3b;
     --color-text-primary: black;
     --color-text-secondary: white;
+    --color-darkGray: #373737;
     --color-brightSky: #c8eefc;
     --color-bluegray: #7993b3;
+    --color-softBlue: #f9fdff;
 }

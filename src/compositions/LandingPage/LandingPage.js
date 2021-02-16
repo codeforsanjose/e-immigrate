@@ -38,12 +38,10 @@ const LandingPage = ({ nextStep }) => {
                             workshops.
                         </p>
                     </div>
-                    <div className="startButtonContainer">
-                        <Button
-                            label={'See If You Can Participate'}
-                            onClick={goToStep1}
-                        />
-                    </div>
+                    <Button
+                        label={'See If You Can Participate'}
+                        onClick={goToStep1}
+                    />
                 </div>
                 <img src={image} alt="placeholder" />
             </div>

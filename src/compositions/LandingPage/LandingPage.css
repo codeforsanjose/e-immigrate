@@ -1,14 +1,4 @@
 .LandingPage {
-    max-width: 900px;
-    margin: auto;
-    padding: 36px;
-}
-
-.LandingPage .content {
-    display: grid;
-    grid-template-columns: auto 345px;
-    grid-template-rows: auto;
-    gap: 100px;
 }
 
 .LandingPage h1 {
@@ -25,11 +15,52 @@ p {
     margin: 0 0 12px;
 }
 
-.LandingPage img {
-    grid-column-start: 2;
-    display: block;
-}
-
 .description.last {
     margin-bottom: 39px;
+}
+
+@media only screen and (min-width: 875px) {
+    .LandingPage {
+        max-width: 900px;
+        margin: auto;
+        padding: 36px;
+    }
+
+    .LandingPage .content {
+        display: grid;
+        grid-template-columns: auto 345px;
+        grid-template-rows: auto;
+        gap: 5%;
+    }
+
+    .LandingPage img {
+        grid-column-start: 2;
+        display: block;
+    }
+}
+
+@media only screen and (max-width: 874px) {
+    .LandingPage {
+        max-width: 900px;
+        margin: auto;
+        padding: 8px;
+    }
+
+    .LandingPage .content {
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto;
+    }
+
+    .LandingPage img {
+        grid-row-start: 1;
+        display: block;
+        margin: 0 auto 48px;
+        width: 100%;
+        height: auto;
+    }
+
+    .LandingPage .content .buttonComponent {
+        width: 100%;
+    }
 }

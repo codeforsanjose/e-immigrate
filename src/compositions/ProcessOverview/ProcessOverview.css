@@ -5,21 +5,24 @@
     justify-content: center;
 }
 
-.ProcessOverview .welcome-message {
+/* .ProcessOverview .welcome-message {
     text-align: center;
-}
+} */
 
-.ProcessOverview .welcome-message h1 {
-    font-size: 3rem;
+.ProcessOverview .welcome-message {
     color: var(--color-text-primary);
-    margin-bottom: 10px;
 }
 
 .ProcessOverview .welcome-message .line2 {
     grid-column-start: 1;
-    color: var(--color-text-primary);
     font-size: 1.5rem;
     font-weight: 500;
+}
+
+.ProcessOverview .welcome-message .line3 {
+    font-size: 1rem;
+    font-weight: 500;
+    margin-top: 12px;
 }
 
 .ProcessOverview .gridContainer {
@@ -30,34 +33,41 @@
 
 .ProcessOverview .stepsGrid .stepContainer {
     display: grid;
-    grid-template-rows: 40px 50px 210px auto;
+    grid-template-rows: 24px 115px 36px auto;
     justify-items: center;
-    color: var(--color-primary);
+    background-color: white;
+    box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.2), 0px 3px 4px rgba(0, 0, 0, 0.12),
+        0px 2px 4px rgba(0, 0, 0, 0.14);
+    border-radius: 4px;
+    padding: 12px 24px;
 }
 
 .ProcessOverview .stepContainer .stepNumber {
-    font-size: 2rem;
+    font-size: 24px;
     font-weight: 700;
+    color: var(--color-darkGray);
 }
 
 .ProcessOverview .stepContainer .stepTitle {
-    font-size: 2rem;
-    font-weight: 700;
-    color: #808080;
+    font-size: 20px;
+    font-weight: 600;
 }
 
-.ProcessOverview .stepContainer .stepIcon {
-    height: 200px;
-    width: 200px;
-    border-radius: 100%;
-    background-color: #e6e6e6;
+.ProcessOverview .stepIcon {
     display: grid;
+    grid-template: 100% / 100%;
     justify-items: center;
-    align-content: center;
+    align-items: center;
 }
 
 .ProcessOverview .stepIcon .stepSVG {
-    fill: var(--color-primary);
+    grid-row-start: 1;
+    grid-column-start: 1;
+}
+
+.ProcessOverview .stepIcon .blob {
+    grid-row-start: 1;
+    grid-column-start: 1;
 }
 
 .ProcessOverview .stepContainer .stepDescription {
@@ -70,17 +80,36 @@
 }
 
 @media only screen and (min-width: 1025px) {
+    .ProcessOverview .welcome-message h1 {
+        font-size: 3rem;
+        margin-bottom: 10px;
+    }
+
     .ProcessOverview .stepsGrid {
         display: grid;
-        grid-template-columns: repeat(3, 250px);
-        gap: 100px;
+        grid-template-columns: 300px 48px 300px 48px 300px;
+        align-items: center;
     }
 }
 
 @media only screen and (max-width: 1024px) {
+    .ProcessOverview .welcome-message h1 {
+        font-size: 2rem;
+        margin-bottom: 10px;
+    }
+
     .ProcessOverview .stepsGrid {
         display: grid;
-        grid-template-rows: repeat(3, auto);
-        gap: 64px;
+        grid-template-rows: auto 48px auto 48px auto;
+        grid-template-columns: 300px;
+        justify-items: center;
+    }
+
+    .ProcessOverview .stepsGrid .arrow {
+        -webkit-transform: rotate(90deg);
+        -moz-transform: rotate(90deg);
+        -ms-transform: rotate(90deg);
+        -o-transform: rotate(90deg);
+        transform: rotate(90deg);
     }
 }

@@ -1,7 +1,11 @@
 import React from 'react';
 import { ReactComponent as VideoIcon } from '../../data/images/VideoIcon.svg';
-import { ReactComponent as HubspotIcon } from '../../data/images/HubspotIcon.svg';
-import { ReactComponent as ConsultationIcon } from '../../data/images/ConsultationIcon.svg';
+import { ReactComponent as QuestionnaireIcon } from '../../data/images/HubspotIcon.svg';
+import { ReactComponent as CheckMark } from '../../data/images/CheckMark.svg';
+import { ReactComponent as Blob1 } from '../../data/images/Blob1.svg';
+import { ReactComponent as Blob2 } from '../../data/images/Blob2.svg';
+import { ReactComponent as Blob3 } from '../../data/images/Blob3.svg';
+import { ReactComponent as Arrow } from '../../data/images/Arrow.svg';
 import Button from '../../components/Button/Button';
 import { useHistory } from 'react-router-dom';
 
@@ -11,8 +15,8 @@ const Step = ({ stepContent, children }) => {
     return (
         <div className="stepContainer">
             <div className="stepNumber">{stepContent.step}</div>
-            <div className="stepTitle">{stepContent.title}</div>
             <div className="stepIcon">{children}</div>
+            <div className="stepTitle">{stepContent.title}</div>
             <div className="stepDescription">{stepContent.description}</div>
         </div>
     );
@@ -25,32 +29,36 @@ const LandingPage = ({ content, nextStep }) => {
         nextStep();
         history.push('/video');
     };
-    const goToStep2 = () => {
-        nextStep();
-        history.push('/questionnaire');
-    };
     return (
         <div className="ProcessOverview">
             <div className="welcome-message">
-                <h1>{welcomeMessage.line1}</h1>
-                <div className="line2">{welcomeMessage.line2}</div>
+                <h1>Welcome to the Virtual Citizenship Workshop</h1>
+                <div className="line2">Congratulations!</div>
+                <div className="line3">
+                    Based on your answers, you can pariticipate in this
+                    workshop. Follow the steps below.
+                </div>
             </div>
             <div className="gridContainer">
                 <div className="stepsGrid">
                     <Step stepContent={video}>
+                        <Blob1 className="blob" />
                         <VideoIcon className="stepSVG" />
                     </Step>
+                    <Arrow className="arrow" />
                     <Step stepContent={hubspot}>
-                        <HubspotIcon className="stepSVG" />
+                        <Blob2 className="blob" />
+                        <QuestionnaireIcon className="stepSVG" />
                     </Step>
+                    <Arrow className="arrow" />
                     <Step stepContent={consultation}>
-                        <ConsultationIcon className="stepSVG" />
+                        <Blob3 className="blob" />
+                        <CheckMark className="stepSVG" />
                     </Step>
                 </div>
             </div>
             <div className="startButtonContainer">
                 <Button label={'Go to Step 1'} onClick={goToStep1} />
-                <Button label={'Go to Step 2'} onClick={goToStep2} />
             </div>
         </div>
     );

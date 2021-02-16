@@ -3,7 +3,6 @@
 
 .items {
     height: 100vh;
-
     display: grid;
     grid-template-columns: 1fr;
     grid-template-rows: auto 1fr auto;
@@ -29,6 +28,7 @@
 
 .items > .main > .section {
     padding: 1rem;
+    background-color: var(--color-softBlue);
 }
 
 .MainContainer .wrapper {

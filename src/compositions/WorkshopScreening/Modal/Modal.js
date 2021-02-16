@@ -33,11 +33,10 @@ const checkEligibility = (userDate, question2, history) => {
 const Modal = ({ showModal, question2, date }) => {
     let history = useHistory();
 
-    {
-        if (!showModal) {
-            return null;
-        }
+    if (!showModal) {
+        return null;
     }
+
     return (
         <div>
             <div className="Modal">

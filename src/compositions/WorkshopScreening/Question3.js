@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Button from '../../components/Button/Button';
 import { enUS } from 'date-fns/locale';
 import { DatePicker } from 'react-nice-dates';

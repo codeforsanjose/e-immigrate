@@ -1,5 +1,4 @@
 .footer {
-    height: 132px;
     background-color: var(--color-brightSky);
     padding: 18px 2rem;
     display: grid;
@@ -7,6 +6,7 @@
     grid-template-rows: auto;
     align-items: center;
     justify-content: center;
+    overflow: none;
 }
 
 .footer .imgRow {
