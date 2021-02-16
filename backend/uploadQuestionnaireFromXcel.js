@@ -14,9 +14,27 @@ const sendRequest = (requestObj, headers = DEFAULT_HEADERS) => {
     return Promise.resolve(response);
 };
 
+// to-do: where should this object live?
+const languageOptions = [
+    {
+        code: 'en',
+        full: 'English',
+    },
+    {
+        code: 'es',
+        full: 'Español',
+    },
+    {
+        code: 'vi',
+        full: 'Tiếng Việt',
+    },
+];
+
 const generateQuestionnaires = () => {
-    xlsxFile('../src/data/questions/Questionnaire for Upload.xlsx').then(
-        (rows) => {
+    languageOptions.map((language, idx) => {
+        xlsxFile('../src/data/questions/Questionnaire for Upload.xlsx', {
+            sheet: idx + 1,
+        }).then((rows) => {
             const data = [];
             rows.forEach((row) => {
                 data.push({
@@ -37,14 +55,14 @@ const generateQuestionnaires = () => {
             const requestObj = {
                 method: 'POST',
                 body: JSON.stringify({
-                    title: 'CIIT Initial Workshop',
+                    title: language.code,
                     questions: data,
                 }),
             };
 
             sendRequest(requestObj);
-        }
-    );
+        });
+    });
 };
 
 generateQuestionnaires();

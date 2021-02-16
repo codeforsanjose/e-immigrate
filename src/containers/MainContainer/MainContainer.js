@@ -50,7 +50,11 @@ const MainContainer = () => {
 
     useEffect(() => {
         axios.get(getQuestions).then((response) => {
-            setQuestions(response.data.responses[0].questions);
+            const responseQuestions = {};
+            response.data.responses.map((response) => {
+                responseQuestions[response.title] = response.questions;
+            });
+            setQuestions(responseQuestions);
         });
     }, [language]);
 
@@ -106,7 +110,7 @@ const MainContainer = () => {
                         <Route path="/questionnaire">
                             <Questionnaire
                                 language={language}
-                                questions={questions}
+                                questions={questions[language]}
                                 hasWatchedVideo={hasWatchedVideo}
                                 submitQuestionnaireResponse={
                                     submitQuestionnaireResponse
