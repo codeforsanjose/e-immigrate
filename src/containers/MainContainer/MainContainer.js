@@ -13,7 +13,6 @@ import { sendRequest } from '../../sendRequest/sendRequest';
 
 import './MainContainer.css';
 import ProgressBar from '../../compositions/ProgressBar/ProgressBar';
-import axios from 'axios';
 import { getQuestions } from '../../sendRequest/apis';
 
 const MainContainer = () => {
@@ -49,9 +48,12 @@ const MainContainer = () => {
     };
 
     useEffect(() => {
-        axios.get(getQuestions).then((response) => {
+        const requestObj = {
+            url: getQuestions,
+        };
+        sendRequest(requestObj).then((response) => {
             const responseQuestions = {};
-            response.data.responses.map((response) => {
+            response.responses.map((response) => {
                 responseQuestions[response.title] = response.questions;
             });
             setQuestions(responseQuestions);
