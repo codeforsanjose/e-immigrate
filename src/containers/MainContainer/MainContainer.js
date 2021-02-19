@@ -10,6 +10,8 @@ import Questionnaire from '../../compositions/Questionnaire/Questionnaire/Questi
 import { Switch, Route } from 'react-router-dom';
 import { addQuestionnaireResponse } from '../../sendRequest/apis';
 import { sendRequest } from '../../sendRequest/sendRequest';
+import WorkshopScreening from '../../compositions/WorkshopScreening/WorkshopScreening';
+import ProcessOverview from '../../compositions/ProcessOverview/ProcessOverview';
 
 import './MainContainer.css';
 import ProgressBar from '../../compositions/ProgressBar/ProgressBar';
@@ -86,37 +88,50 @@ const MainContainer = () => {
                 />
                 <div className={`items ${showModal ? 'blur' : ''}`}>
                     <Navbar language={language} setLanguage={changeLanguage} />
-                    <Switch>
-                        <Route exact path="/">
-                            <LandingPage
-                                content={content[language]}
-                                nextStep={nextStep}
-                            />
-                        </Route>
-                        <Route path="/video">
-                            <ProgressBar
-                                content={content[language]}
-                                step={step}
-                                nextStep={nextStep}
-                                previousStep={previousStep}
-                            />
-                            <Video
-                                onEnd={videoEndedHandler}
-                                video={content[language].video}
-                            />
-                        </Route>
-                        <Route path="/questionnaire">
-                            <Questionnaire
-                                language={language}
-                                questions={questions}
-                                hasWatchedVideo={hasWatchedVideo}
-                                submitQuestionnaireResponse={
-                                    submitQuestionnaireResponse
-                                }
-                            />
-                        </Route>
-                    </Switch>
-                    <Footer />
+                    <div className="main">
+                        <div className="section">
+                            <Switch>
+                                <Route exact path="/">
+                                    <LandingPage
+                                        content={content[language]}
+                                        nextStep={nextStep}
+                                    />
+                                </Route>
+                                <Route path="/eligibility">
+                                    <WorkshopScreening questions={questions} />
+                                </Route>
+                                <Route path="/overview">
+                                    <ProcessOverview
+                                        content={content[language]}
+                                        nextStep={nextStep}
+                                    />
+                                </Route>
+                                <Route path="/video">
+                                    <ProgressBar
+                                        content={content[language]}
+                                        step={step}
+                                        nextStep={nextStep}
+                                        previousStep={previousStep}
+                                    />
+                                    <Video
+                                        onEnd={videoEndedHandler}
+                                        video={content[language].video}
+                                    />
+                                </Route>
+                                <Route path="/questionnaire">
+                                    <Questionnaire
+                                        language={language}
+                                        questions={questions}
+                                        hasWatchedVideo={hasWatchedVideo}
+                                        submitQuestionnaireResponse={
+                                            submitQuestionnaireResponse
+                                        }
+                                    />
+                                </Route>
+                            </Switch>
+                        </div>
+                        <Footer />
+                    </div>
                 </div>
             </div>
         </div>

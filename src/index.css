@@ -5,7 +5,6 @@ body {
         'Helvetica Neue', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background-color: #c8eefc;
 }
 
 code {
@@ -24,6 +23,8 @@ code {
     --color-secondary: #df1d3b;
     --color-text-primary: black;
     --color-text-secondary: white;
+    --color-darkGray: #373737;
     --color-brightSky: #c8eefc;
     --color-bluegray: #7993b3;
+    --color-softBlue: #f9fdff;
 }
