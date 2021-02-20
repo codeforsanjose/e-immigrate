@@ -1,0 +1,53 @@
+.WorkshopScreening {
+    max-width: 900px;
+    margin: auto;
+}
+
+.WorkshopScreening h2,
+p {
+    margin: 0 0 12px;
+}
+
+.WorkshopScreening .QuestionText {
+    margin-bottom: 5px;
+}
+
+.WorkshopScreening .RadioGroup {
+    margin: 20px 0;
+}
+
+.WorkshopScreening button {
+    margin-top: 20px;
+}
+
+.WorkshopScreening .DatePicker {
+    margin: 20px 0;
+}
+
+.WorkshopScreening .nice-dates input {
+    border: 2px solid var(--color-bluegray);
+    border-radius: 10px;
+    font-size: 1rem;
+    padding: 10px 12px;
+    width: 250px;
+    outline: none;
+}
+
+@media only screen and (min-width: 601px) {
+    .WorkshopScreening h1 {
+        font-size: 3rem;
+        margin: 36px 0 48px;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    .WorkshopScreening h1 {
+        font-size: 2rem;
+        margin: 24px 0 24px;
+    }
+
+    .WorkshopScreening h2,
+    p {
+        margin: 0 0 12px;
+    }
+}

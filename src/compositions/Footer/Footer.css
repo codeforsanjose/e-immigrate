@@ -1,13 +1,12 @@
 .footer {
-    height: 132px;
     background-color: var(--color-brightSky);
-    margin: 0 -2rem;
     padding: 18px 2rem;
     display: grid;
     grid-template-rows: 50% 35% 15%;
     grid-template-rows: auto;
     align-items: center;
     justify-content: center;
+    overflow: none;
 }
 
 .footer .imgRow {
