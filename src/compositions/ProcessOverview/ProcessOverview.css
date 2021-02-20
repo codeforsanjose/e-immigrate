@@ -70,6 +70,18 @@
     grid-column-start: 1;
 }
 
+.ProcessOverview .blob1 {
+    fill: #C8EEFC;
+}
+
+.ProcessOverview .blob2 {
+    fill: #E0ADB6;
+}
+
+.ProcessOverview .blob3 {
+    fill: #8BA5CC;
+}
+
 .ProcessOverview .stepContainer .stepDescription {
     text-align: center;
 }

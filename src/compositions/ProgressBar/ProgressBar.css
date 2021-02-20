@@ -6,45 +6,66 @@
 
 .progressBar .linesGridContainer {
     position: absolute;
-    width: 600px;
+    width: 430px;
     left: 0;
     right: 0;
-    margin: 111px auto 0;
+    margin: 95px auto 0;
 }
 
 .progressBar .stepsGrid .stepContainer {
     display: grid;
-    grid-template-rows: 34px 42px 80px auto;
+    grid-template-rows: 36px 32px 54px;
     justify-items: center;
-    color: var(--color-primary);
+    align-items: center;
 }
 
 .progressBar .stepContainer .stepNumber {
-    font-size: 28px;
+    font-size: 24px;
     font-weight: 700;
 }
 
 .progressBar .stepContainer .stepTitle {
-    font-size: 28px;
+    font-size: 20px;
     font-weight: 400;
 }
 
-.progressBar .stepContainer .stepIcon {
-    height: 70px;
-    width: 70px;
-    border-radius: 100%;
-    background-color: #f3f3f3;
+.progressBar .stepIcon {
     display: grid;
+    grid-template: 100% / 100%;
     justify-items: center;
-    align-content: center;
+    align-items: center;
 }
 
 .progressBar .stepIcon .stepSVG {
-    width: 50px;
+    grid-row-start: 1;
+    grid-column-start: 1;
+}
+
+.progressBar .stepIcon .blob {
+    grid-row-start: 1;
+    grid-column-start: 1;
+    height: 42px;
+    width: 42px;
+}
+
+.progressBar .blob1 {
+    fill: #c8eefc;
+}
+
+.progressBar .blob2 {
+    fill: #e0adb6;
+}
+
+.progressBar .blob3 {
+    fill: #8ba5cc;
 }
 
 .progressBar .incomplete {
-    color: #e6e6e6;
+    color: #bdbdbd;
+}
+
+.progressBar .incomplete > .blob {
+    fill: #f2f2f2;
 }
 
 .progressBar .progressLine1 {
@@ -60,7 +81,7 @@
     .progressBar .stepsGrid {
         display: grid;
         grid-template-columns: repeat(3, 220px);
-        gap: 80px;
+        /* gap: 40px; */
     }
 
     .progressBar .linesGrid {
@@ -73,6 +94,6 @@
     .progressBar .stepsGrid {
         display: grid;
         grid-template-rows: repeat(3, auto);
-        gap: 64px;
+        gap: 36px;
     }
 }
