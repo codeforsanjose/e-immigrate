@@ -20,7 +20,7 @@ import { getQuestions } from '../../sendRequest/apis';
 const MainContainer = () => {
     const [language, setLanguage] = useState('en');
     const [showModal, setShowModal] = useState(true);
-    const [step, setStep] = useState(2);
+    const [step, setStep] = useState(0);
     const [videoState, setVideoState] = useState({ hasWatchedVideo: false });
     const { hasWatchedVideo } = videoState;
     const [questions, setQuestions] = useState([]);
@@ -113,7 +113,7 @@ const MainContainer = () => {
                                 <Route path="/video">
                                     <ProgressBar
                                         content={content[language]}
-                                        step={step}
+                                        step="1"
                                         nextStep={nextStep}
                                         previousStep={previousStep}
                                     />
