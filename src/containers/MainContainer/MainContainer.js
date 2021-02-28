@@ -46,7 +46,6 @@ const MainContainer = () => {
         setVideoState({
             hasWatchedVideo: true,
         });
-        nextStep();
     };
 
     useEffect(() => {
@@ -102,7 +101,9 @@ const MainContainer = () => {
                                     />
                                 </Route>
                                 <Route path="/eligibility">
-                                    <WorkshopScreening questions={questions} />
+                                    <WorkshopScreening
+                                        questions={questions[language]}
+                                    />
                                 </Route>
                                 <Route path="/overview">
                                     <ProcessOverview
@@ -120,12 +121,19 @@ const MainContainer = () => {
                                     <Video
                                         onEnd={videoEndedHandler}
                                         video={content[language].video}
+                                        videoState={videoState}
                                     />
                                 </Route>
                                 <Route path="/questionnaire">
+                                    <ProgressBar
+                                        content={content[language]}
+                                        step="2"
+                                        nextStep={nextStep}
+                                        previousStep={previousStep}
+                                    />
                                     <Questionnaire
                                         language={language}
-                                        questions={questions}
+                                        questions={questions[language]}
                                         hasWatchedVideo={hasWatchedVideo}
                                         submitQuestionnaireResponse={
                                             submitQuestionnaireResponse

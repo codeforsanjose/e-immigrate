@@ -2,3 +2,8 @@
     max-width: 600px;
     margin: auto;
 }
+
+.Questionnaire .ButtonContainer {
+    text-align: center;
+    margin-top: 1rem;
+}

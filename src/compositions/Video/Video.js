@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import YouTube from 'react-youtube';
+import Button from '../../components/Button/Button';
 import './Video.css';
 
 const opts = {
@@ -10,27 +12,57 @@ const opts = {
     },
 };
 
-const Video = ({ video, onEnd = () => {}, onStateChange = (event) => {} }) => {
-    const { step, line1, videoId } = video;
+const Video = ({
+    video,
+    videoState,
+    onEnd = () => {},
+    onStateChange = (event) => {},
+}) => {
+    const { videoId } = video;
+    const hasWatchedVideo = videoState.hasWatchedVideo;
+    let history = useHistory();
+    const goToStep2 = () => {
+        history.push('/questionnaire');
+    };
+    const [watchingVideo, setWatchingVideo] = useState(false);
+    const onPlay = () => {
+        setWatchingVideo(true);
+    };
+    const onVideoEnd = () => {
+        setWatchingVideo(false);
+        onEnd();
+    };
+
     return (
         <div className="video">
             <div className="titleText">
-                <div className="step">{step}</div>
-                <div className="title1">{line1}</div>
+                <div className="step">Step 1: Video</div>
+                <div className="title1">
+                    <div>Watch the Project New Citizen orientation video.</div>
+                    <div>It's only 15 minutes!</div>
+                </div>
             </div>
-            <div className="videoContainer">
-                <YouTube
-                    className="video"
-                    videoId={videoId}
-                    opts={opts}
-                    onEnd={onEnd}
-                    onStateChange={onStateChange}
-                />
+            <div
+                className={`videoContainer ${
+                    watchingVideo ? 'largeVideo' : 'smallVideo'
+                }`}
+            >
+                <div className="videoWrapper">
+                    <YouTube
+                        className="video"
+                        videoId={videoId}
+                        opts={opts}
+                        onPlay={onPlay}
+                        onEnd={onVideoEnd}
+                        onStateChange={onStateChange}
+                    />
+                </div>
             </div>
-            <h4>
-                You must watch the full video without stopping before taking the
-                survey.
-            </h4>
+            {hasWatchedVideo && (
+                <div className="buttonContainer">
+                    <Button label={'Go to Step 2'} onClick={goToStep2} />
+                </div>
+            )}
         </div>
     );
 };

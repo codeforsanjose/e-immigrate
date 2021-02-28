@@ -26,12 +26,14 @@ const QuestionnaireForm = ({
                 bindField={bindField}
                 questions={questions}
             />
-            <Button
-                label={'Submit'}
-                type="submit"
-                className="FormElement"
-                onClick={setAllFieldsTouched}
-            />
+            <div className="ButtonContainer">
+                <Button
+                    label={'Submit'}
+                    type="submit"
+                    className="FormElement"
+                    onClick={setAllFieldsTouched}
+                />
+            </div>
         </form>
     );
 };
