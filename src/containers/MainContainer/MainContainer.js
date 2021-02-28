@@ -54,7 +54,11 @@ const MainContainer = () => {
             url: getQuestions,
         };
         sendRequest(requestObj).then((response) => {
-            setQuestions(response.responses[0].questions);
+            const responseQuestions = {};
+            response.responses.map((response) => {
+                responseQuestions[response.title] = response.questions;
+            });
+            setQuestions(responseQuestions);
         });
     }, [language]);
 
