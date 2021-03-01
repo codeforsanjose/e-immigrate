@@ -1,6 +1,7 @@
 const xlsxFile = require('read-excel-file/node');
 const fs = require('fs');
 const fetch = require('node-fetch');
+const LanguageOptions = require('./LanguageOptions');
 
 const DEFAULT_HEADERS = {
     'Content-Type': 'application/json',
@@ -14,24 +15,8 @@ const sendRequest = (requestObj, headers = DEFAULT_HEADERS) => {
     return Promise.resolve(response);
 };
 
-// to-do: where should this object live?
-const languageOptions = [
-    {
-        code: 'en',
-        full: 'English',
-    },
-    {
-        code: 'es',
-        full: 'Español',
-    },
-    {
-        code: 'vi',
-        full: 'Tiếng Việt',
-    },
-];
-
 const generateQuestionnaires = () => {
-    languageOptions.map((language, idx) => {
+    LanguageOptions.map((language, idx) => {
         xlsxFile('../src/data/questions/Questionnaire for Upload.xlsx', {
             sheet: idx + 1,
         }).then((rows) => {
