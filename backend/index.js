@@ -3,7 +3,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const usersRouter = require('./routes/users');
 const adminsRouter = require('./routes/admins');
-const questionnaireResponsesRouter = require('./routes/questionairResponses');
+const questionnaireResponsesRouter = require('./routes/questionnaireResponses');
 const questionnairesRouter = require('./routes/questionnaires/questionnaires');
 
 require('dotenv').config();
