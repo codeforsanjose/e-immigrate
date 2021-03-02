@@ -120,6 +120,7 @@ const MainContainer = () => {
                                     <Video
                                         onEnd={videoEndedHandler}
                                         video={content[language].video}
+                                        videoState={videoState}
                                     />
                                 </Route>
                                 <Route path="/questionnaire">
