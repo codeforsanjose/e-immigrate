@@ -10,7 +10,6 @@ import './ProgressBar.css';
 
 const ProgressBar = ({ content, step }) => {
     const { video, hubspot, consultation } = content;
-
     const Step = ({ stepContent, children, completed }) => {
         const isComplete = completed ? '' : 'incomplete';
         return (
@@ -28,6 +27,7 @@ const ProgressBar = ({ content, step }) => {
 
     return (
         <div className="progressBar">
+            <div className="title">Virtual Citizenship Workshop</div>
             <div className="stepsGrid">
                 <Step stepContent={video} completed={step >= 1 ? true : false}>
                     <Blob1 className="blob blob1" />
