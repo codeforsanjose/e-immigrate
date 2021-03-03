@@ -1,5 +1,4 @@
 const xlsxFile = require('read-excel-file/node');
-const fs = require('fs');
 const fetch = require('node-fetch');
 const LanguageOptions = require('./LanguageOptions');
 
@@ -14,23 +13,6 @@ const sendRequest = (requestObj, headers = DEFAULT_HEADERS) => {
     );
     return Promise.resolve(response);
 };
-
-/*
-get rows from excel sheet
-translate into object in this format:
-const data = {
-    en: {
-        homeButton: "home"
-    },
-    es: {
-        homeButton: "casa"
-    }
-}
-save objects to mongo
-frontend requests langObject based on language dropdown selection
-
-Object.keys(data).forEach(key => upload data[key] object to mongo)
-*/
 
 const generateLanguageContent = () => {
     xlsxFile('../src/data/content/Website Content.xlsx').then((rows) => {
