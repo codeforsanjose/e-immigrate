@@ -24,7 +24,7 @@ const Step = ({ stepContent, children }) => {
 
 const LandingPage = ({ content, nextStep }) => {
     let history = useHistory();
-    const { welcomeMessage, video, hubspot, consultation } = content;
+    const { video, hubspot, consultation } = content;
     const goToStep1 = () => {
         nextStep();
         history.push('/video');
