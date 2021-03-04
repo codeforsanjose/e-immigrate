@@ -1,6 +1,6 @@
 import React from 'react';
 import { ReactComponent as VideoIcon } from '../../data/images/VideoIcon.svg';
-import { ReactComponent as QuestionnaireIcon } from '../../data/images/HubspotIcon.svg';
+import { ReactComponent as QuestionnaireIcon } from '../../data/images/QuestionnaireIcon.svg';
 import { ReactComponent as CheckMark } from '../../data/images/CheckMark.svg';
 import { ReactComponent as Blob1 } from '../../data/images/Blob1.svg';
 import { ReactComponent as Blob2 } from '../../data/images/Blob2.svg';
@@ -42,17 +42,17 @@ const LandingPage = ({ content, nextStep }) => {
             <div className="gridContainer">
                 <div className="stepsGrid">
                     <Step stepContent={video}>
-                        <Blob1 className="blob" />
+                        <Blob1 className="blob blob1" />
                         <VideoIcon className="stepSVG" />
                     </Step>
                     <Arrow className="arrow" />
                     <Step stepContent={hubspot}>
-                        <Blob2 className="blob" />
+                        <Blob2 className="blob blob2" />
                         <QuestionnaireIcon className="stepSVG" />
                     </Step>
                     <Arrow className="arrow" />
                     <Step stepContent={consultation}>
-                        <Blob3 className="blob" />
+                        <Blob3 className="blob blob3" />
                         <CheckMark className="stepSVG" />
                     </Step>
                 </div>
