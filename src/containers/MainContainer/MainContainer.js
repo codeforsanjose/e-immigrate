@@ -23,7 +23,7 @@ const MainContainer = () => {
     const [step, setStep] = useState(2);
     const [videoState, setVideoState] = useState({ hasWatchedVideo: false });
     const { hasWatchedVideo } = videoState;
-    const [questions, setQuestions] = useState([]);
+    const [questions, setQuestions] = useState({});
 
     const browserLanguage =
         window.navigator.userLanguage || window.navigator.language;
