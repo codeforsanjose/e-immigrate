@@ -4,11 +4,13 @@ const DEFAULT_HEADERS = {
 };
 
 const sendRequest = (requestObj, headers = DEFAULT_HEADERS) => {
+    console.log('requestObj :>> ', requestObj);
     const url = requestObj.url;
     delete requestObj.url;
-    const response = fetch(url, { ...requestObj, ...headers }).then((data) =>
-        data.json()
-    );
+    const response = fetch(url, {
+        ...requestObj,
+        headers: { ...headers },
+    }).then((data) => data.json());
 
     return Promise.resolve(response);
 };

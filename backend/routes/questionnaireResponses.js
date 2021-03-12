@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Questionnaire = require('../models/questionnaireResponse');
-const sendEmail =  require('./sendEmail/sendEmail')
+const sendEmail = require('./sendEmail/sendEmail');
 
 router.route('/').get((req, res) => {
     Questionnaire.find()
@@ -19,29 +19,28 @@ router.route('/:id').get((req, res) => {
 });
 
 router.route('/add').post((req, res) => {
+    console.log('req.body :>> ', req.body);
     const title = req.body.title;
-    const questionnaireResponses = req.body.questionnaireResponses;
-    
+    const questionnaireResponse = req.body.questionnaireResponse;
+
     //todo: extract userEmail, name from request.body
 
-    const userEmail = ""
-    const userFirstName = ""
-    
+    const userEmail = '';
+    const userFirstName = '';
+
     const newQuestionnaireResponse = new Questionnaire({
         title,
-        questionnaireResponses,
+        questionnaireResponse,
     });
-    
+
     newQuestionnaireResponse
         .save()
         .then(() => {
-            sendEmail(userEmail, userFirstName)
-            res.json('questionnaire response added')
+            sendEmail(userEmail, userFirstName);
+            res.json('questionnaire response added');
         })
         .catch((err) => console.log(err));
-    
 });
-
 
 router.route('/:id').delete((req, res) => {
     Questionnaire.findByIdAndDelete(req.params.id)

@@ -12,6 +12,7 @@ const Question3 = ({
     setShowModal,
     date,
     setDate,
+    addResponse,
 }) => {
     if (q) {
         return (
@@ -24,6 +25,7 @@ const Question3 = ({
                         const formData = new FormData(event.target);
                         const data = Object.fromEntries(formData.entries());
                         setQuestion3(data[q.slug]);
+                        addResponse(q.slug, data[q.slug]);
                     }}
                 >
                     <DatePicker

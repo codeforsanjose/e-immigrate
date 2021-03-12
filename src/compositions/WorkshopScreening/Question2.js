@@ -1,7 +1,7 @@
 import React from 'react';
 import Button from '../../components/Button/Button';
 
-const Question2 = ({ q, bindField, setQuestion2 }) => {
+const Question2 = ({ q, bindField, setQuestion2, addResponse }) => {
     if (q) {
         const answers = q.answerSelections.split(', ');
         return (
@@ -13,6 +13,7 @@ const Question2 = ({ q, bindField, setQuestion2 }) => {
                         const formData = new FormData(event.target);
                         const data = Object.fromEntries(formData.entries());
                         setQuestion2(data[q.slug]);
+                        addResponse(q.slug, data[q.slug]);
                     }}
                 >
                     <div className="QuestionText">{q.text}</div>

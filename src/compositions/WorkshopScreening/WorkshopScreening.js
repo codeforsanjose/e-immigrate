@@ -5,7 +5,11 @@ import Modal from './Modal/Modal';
 
 import './WorkshopScreening.css';
 
-const WorkshopScreening = ({ questions }) => {
+const WorkshopScreening = ({
+    questions,
+    questionnaireResponse,
+    setQuestionnaireResponse,
+}) => {
     const [question1, setQuestion1] = useState('');
     const [question2, setQuestion2] = useState('');
     const [question3, setQuestion3] = useState('');
@@ -16,6 +20,10 @@ const WorkshopScreening = ({ questions }) => {
         (q) => q.category === 'Workshop Eligibility'
     );
     const [bindField] = useMarkFieldAsTouched();
+
+    const addResponse = (question, response) => {
+        questionnaireResponse[question] = response;
+    };
 
     return (
         <div className="WorkshopScreening">
@@ -34,6 +42,7 @@ const WorkshopScreening = ({ questions }) => {
                 setShowModal={setShowModal}
                 date={date}
                 setDate={setDate}
+                addResponse={addResponse}
             />
             <Modal showModal={showModal} question2={question2} date={date} />
         </div>
