@@ -36,7 +36,7 @@ router.route('/add').post((req, res) => {
     newQuestionnaireResponse
         .save()
         .then(() => {
-            sendEmail(userEmail, userFirstName);
+            // sendEmail(userEmail, userFirstName);
             res.json('questionnaire response added');
         })
         .catch((err) => console.log(err));
