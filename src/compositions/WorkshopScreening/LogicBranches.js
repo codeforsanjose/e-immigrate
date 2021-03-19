@@ -13,6 +13,7 @@ const Branch1 = ({
     setShowModal,
     date,
     setDate,
+    addResponse,
 }) => {
     if (question2) {
         return (
@@ -25,6 +26,7 @@ const Branch1 = ({
                 setShowModal={setShowModal}
                 date={date}
                 setDate={setDate}
+                addResponse={addResponse}
             />
         );
     } else {
@@ -33,6 +35,7 @@ const Branch1 = ({
                 q={filteredQuestions[1]}
                 bindField={bindField}
                 setQuestion2={setQuestion2}
+                addResponse={addResponse}
             />
         );
     }
@@ -47,6 +50,7 @@ const Branch2 = ({
     setShowModal,
     date,
     setDate,
+    addResponse,
 }) => {
     return (
         <Question3
@@ -58,6 +62,7 @@ const Branch2 = ({
             setShowModal={setShowModal}
             date={date}
             setDate={setDate}
+            addResponse={addResponse}
         />
     );
 };
@@ -75,6 +80,7 @@ const LogicBranches = ({
     setShowModal,
     date,
     setDate,
+    addResponse,
 }) => {
     if (question1 === 'Yes') {
         return (
@@ -88,6 +94,7 @@ const LogicBranches = ({
                 setShowModal={setShowModal}
                 date={date}
                 setDate={setDate}
+                addResponse={addResponse}
             />
         );
     } else if (question1 === 'No') {
@@ -101,6 +108,7 @@ const LogicBranches = ({
                 setShowModal={setShowModal}
                 date={date}
                 setDate={setDate}
+                addResponse={addResponse}
             />
         );
     } else {
@@ -109,6 +117,7 @@ const LogicBranches = ({
                 q={filteredQuestions[0]}
                 bindField={bindField}
                 setQuestion1={setQuestion1}
+                addResponse={addResponse}
             />
         );
     }

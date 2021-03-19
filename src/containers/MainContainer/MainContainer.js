@@ -24,6 +24,7 @@ const MainContainer = () => {
     const [videoState, setVideoState] = useState({ hasWatchedVideo: false });
     const { hasWatchedVideo } = videoState;
     const [questions, setQuestions] = useState({});
+    const [questionnaireResponse, setQuestionnaireResponse] = useState({});
 
     const browserLanguage =
         window.navigator.userLanguage || window.navigator.language;
@@ -62,7 +63,7 @@ const MainContainer = () => {
         });
     }, [language]);
 
-    const submitQuestionnaireResponse = (userAnswers = []) => {
+    const submitQuestionnaireResponse = (userAnswers) => {
         const requestObj = {
             url: addQuestionnaireResponse,
             method: 'POST',
@@ -102,7 +103,15 @@ const MainContainer = () => {
                                     />
                                 </Route>
                                 <Route path="/eligibility">
-                                    <WorkshopScreening questions={questions} />
+                                    <WorkshopScreening
+                                        questions={questions[language]}
+                                        questionnaireResponse={
+                                            questionnaireResponse
+                                        }
+                                        setQuestionnaireResponse={
+                                            setQuestionnaireResponse
+                                        }
+                                    />
                                 </Route>
                                 <Route path="/overview">
                                     <ProcessOverview
@@ -125,11 +134,15 @@ const MainContainer = () => {
                                 </Route>
                                 <Route path="/questionnaire">
                                     <Questionnaire
-                                        language={language}
-                                        questions={questions}
-                                        hasWatchedVideo={hasWatchedVideo}
+                                        questions={questions[language]}
                                         submitQuestionnaireResponse={
                                             submitQuestionnaireResponse
+                                        }
+                                        questionnaireResponse={
+                                            questionnaireResponse
+                                        }
+                                        setQuestionnaireResponse={
+                                            setQuestionnaireResponse
                                         }
                                     />
                                 </Route>

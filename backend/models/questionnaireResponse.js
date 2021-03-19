@@ -5,13 +5,16 @@ const Schema = mongoose.Schema;
 const questionnaireSchema = new Schema(
     {
         title: { type: String, required: false, unique: false },
-        questionnaireResponse: { type: Array, required: true },
+        questionnaireResponse: { type: Object, required: true },
     },
     {
         timestamps: true,
     }
 );
 
-const Questionnaire = mongoose.model('Questionnaire', questionnaireSchema);
+const Questionnaire = mongoose.model(
+    'QuestionnaireResponse',
+    questionnaireSchema
+);
 
 module.exports = Questionnaire;

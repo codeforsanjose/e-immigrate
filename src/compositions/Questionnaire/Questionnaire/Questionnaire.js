@@ -10,6 +10,9 @@ const QuestionnaireForm = ({
     bindField,
     questions,
     setAllFieldsTouched,
+    submitQuestionnaireResponse,
+    questionnaireResponse,
+    setQuestionnaireResponse,
 }) => {
     return (
         <form
@@ -18,7 +21,10 @@ const QuestionnaireForm = ({
                 event.preventDefault();
                 const formData = new FormData(event.target);
                 const data = Object.fromEntries(formData.entries());
-                console.log('form data :>> ', data);
+                submitQuestionnaireResponse({
+                    ...questionnaireResponse,
+                    ...data,
+                });
             }}
         >
             <Questions
@@ -58,7 +64,12 @@ const Questions = ({ filteredQuestions, bindField, questions }) => (
     </>
 );
 
-const Questionnaire = ({ questions }) => {
+const Questionnaire = ({
+    questions,
+    submitQuestionnaireResponse,
+    questionnaireResponse,
+    setQuestionnaireResponse,
+}) => {
     const filteredQuestions = questions.filter(
         (q) => q.category === 'Red Flag'
     );
@@ -70,6 +81,9 @@ const Questionnaire = ({ questions }) => {
             bindField={bindField}
             questions={questions}
             setAllFieldsTouched={setAllFieldsTouched}
+            submitQuestionnaireResponse={submitQuestionnaireResponse}
+            questionnaireResponse={questionnaireResponse}
+            setQuestionnaireResponse={setQuestionnaireResponse}
         />
     );
 };
