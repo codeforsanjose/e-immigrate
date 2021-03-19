@@ -64,7 +64,6 @@ const MainContainer = () => {
     }, [language]);
 
     const submitQuestionnaireResponse = (userAnswers) => {
-        console.log('userAnswers :>> ', userAnswers);
         const requestObj = {
             url: addQuestionnaireResponse,
             method: 'POST',

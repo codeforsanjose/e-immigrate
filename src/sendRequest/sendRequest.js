@@ -4,7 +4,6 @@ const DEFAULT_HEADERS = {
 };
 
 const sendRequest = (requestObj, headers = DEFAULT_HEADERS) => {
-    console.log('requestObj :>> ', requestObj);
     const url = requestObj.url;
     delete requestObj.url;
     const response = fetch(url, {

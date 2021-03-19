@@ -21,10 +21,6 @@ const QuestionnaireForm = ({
                 event.preventDefault();
                 const formData = new FormData(event.target);
                 const data = Object.fromEntries(formData.entries());
-                console.log('questionnaireResponse :>> ', {
-                    ...questionnaireResponse,
-                    ...data,
-                });
                 submitQuestionnaireResponse({
                     ...questionnaireResponse,
                     ...data,

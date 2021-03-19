@@ -19,7 +19,6 @@ router.route('/:id').get((req, res) => {
 });
 
 router.route('/add').post((req, res) => {
-    console.log('req.body :>> ', req.body);
     const title = req.body.title;
     const questionnaireResponse = req.body.questionnaireResponse;
 
