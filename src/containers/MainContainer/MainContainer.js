@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { content } from '../../data/LanguageContent';
+// import { content } from '../../data/LanguageContent';
 
 import LanguageSelectionModal from '../../compositions/LanguageSelectionModal/LanguageSelectionModal';
 import Navbar from '../../compositions/Navbar/Navbar';
@@ -8,14 +8,17 @@ import LandingPage from '../../compositions/LandingPage/LandingPage';
 import Video from '../../compositions/Video/Video';
 import Questionnaire from '../../compositions/Questionnaire/Questionnaire/Questionnaire';
 import { Switch, Route } from 'react-router-dom';
-import { addQuestionnaireResponse } from '../../sendRequest/apis';
 import { sendRequest } from '../../sendRequest/sendRequest';
 import WorkshopScreening from '../../compositions/WorkshopScreening/WorkshopScreening';
 import ProcessOverview from '../../compositions/ProcessOverview/ProcessOverview';
 
 import './MainContainer.css';
 import ProgressBar from '../../compositions/ProgressBar/ProgressBar';
-import { getQuestions } from '../../sendRequest/apis';
+import {
+    addQuestionnaireResponse,
+    getQuestions,
+    getTranslatedContent,
+} from '../../sendRequest/apis';
 
 const MainContainer = () => {
     const [language, setLanguage] = useState('en');
@@ -25,6 +28,7 @@ const MainContainer = () => {
     const { hasWatchedVideo } = videoState;
     const [questions, setQuestions] = useState({});
     const [questionnaireResponse, setQuestionnaireResponse] = useState({});
+    const [content, setContent] = useState({});
 
     const browserLanguage =
         window.navigator.userLanguage || window.navigator.language;
@@ -52,14 +56,20 @@ const MainContainer = () => {
 
     useEffect(() => {
         const requestObj = {
-            url: getQuestions,
+            url: `${getQuestions}/${language}`,
         };
         sendRequest(requestObj).then((response) => {
-            const responseQuestions = {};
-            response.responses.map((response) => {
-                responseQuestions[response.title] = response.questions;
-            });
-            setQuestions(responseQuestions);
+            setQuestions(response.questions);
+        });
+    }, [language]);
+
+    useEffect(() => {
+        const requestObj = {
+            url: `${getTranslatedContent}/${language}`,
+        };
+        sendRequest(requestObj).then((response) => {
+            console.log('response.content :>> ', response.content);
+            setContent(response.content);
         });
     }, [language]);
 
@@ -98,13 +108,13 @@ const MainContainer = () => {
                             <Switch>
                                 <Route exact path="/">
                                     <LandingPage
-                                        content={content[language]}
+                                        content={content}
                                         nextStep={nextStep}
                                     />
                                 </Route>
                                 <Route path="/eligibility">
                                     <WorkshopScreening
-                                        questions={questions[language]}
+                                        questions={questions}
                                         questionnaireResponse={
                                             questionnaireResponse
                                         }
@@ -115,26 +125,26 @@ const MainContainer = () => {
                                 </Route>
                                 <Route path="/overview">
                                     <ProcessOverview
-                                        content={content[language]}
+                                        content={content}
                                         nextStep={nextStep}
                                     />
                                 </Route>
                                 <Route path="/video">
                                     <ProgressBar
-                                        content={content[language]}
+                                        content={content}
                                         step="1"
                                         nextStep={nextStep}
                                         previousStep={previousStep}
                                     />
                                     <Video
                                         onEnd={videoEndedHandler}
-                                        video={content[language].video}
+                                        video={content.step1VideoID}
                                         videoState={videoState}
                                     />
                                 </Route>
                                 <Route path="/questionnaire">
                                     <Questionnaire
-                                        questions={questions[language]}
+                                        questions={questions}
                                         submitQuestionnaireResponse={
                                             submitQuestionnaireResponse
                                         }

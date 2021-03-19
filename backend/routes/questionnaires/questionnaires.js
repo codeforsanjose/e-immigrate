@@ -11,8 +11,8 @@ router.route('/').get((req, res) => {
         .catch((err) => console.log(err));
 });
 
-router.route('/:id').get((req, res) => {
-    Questionnaires.findById(req.params.id)
+router.route('/:title').get((req, res) => {
+    Questionnaires.findOne({ title: req.params.title })
         .then((questionnaires) => res.json(questionnaires))
         .catch((err) => console.log(err));
 });

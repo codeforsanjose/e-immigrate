@@ -12,8 +12,8 @@ router.route('/').get((req, res) => {
         .catch((err) => console.log(err));
 });
 
-router.route('/:id').get((req, res) => {
-    TranslatedContent.findById(req.params.id)
+router.route('/:title').get((req, res) => {
+    TranslatedContent.findOne({ title: req.params.title })
         .then((translatedContent) => res.json(translatedContent))
         .catch((err) => console.log(err));
 });
