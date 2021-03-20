@@ -68,7 +68,6 @@ const MainContainer = () => {
             url: `${getTranslatedContent}/${language}`,
         };
         sendRequest(requestObj).then((response) => {
-            console.log('response.content :>> ', response.content);
             setContent(response.content);
         });
     }, [language]);
@@ -102,18 +101,20 @@ const MainContainer = () => {
                     setShowModal={setShowModal}
                 />
                 <div className={`items ${showModal ? 'blur' : ''}`}>
-                    <Navbar language={language} setLanguage={changeLanguage} />
+                    <Navbar
+                        language={language}
+                        setLanguage={changeLanguage}
+                        content={content}
+                    />
                     <div className="main">
                         <div className="section">
                             <Switch>
                                 <Route exact path="/">
-                                    <LandingPage
-                                        content={content}
-                                        nextStep={nextStep}
-                                    />
+                                    <LandingPage content={content} />
                                 </Route>
                                 <Route path="/eligibility">
                                     <WorkshopScreening
+                                        content={content}
                                         questions={questions}
                                         questionnaireResponse={
                                             questionnaireResponse
@@ -158,7 +159,7 @@ const MainContainer = () => {
                                 </Route>
                             </Switch>
                         </div>
-                        <Footer />
+                        <Footer content={content} />
                     </div>
                 </div>
             </div>

@@ -4,13 +4,13 @@ import LanguageDropdown from '../../components/LanguageDropdown/LanguageDropdown
 import { Link } from 'react-router-dom';
 import './Navbar.css';
 
-const Navbar = ({ language, setLanguage }) => {
+const Navbar = ({ language, setLanguage, content }) => {
     return (
         <div className="Navbar">
             <img src={Logo} className="logo" alt="CIIT Logo" />
             <div className="NavLinks">
-                <Link to="/">Home</Link>
-                <Link to="/about">About</Link>
+                <Link to="/">{content.buttonHome}</Link>
+                <Link to="/about">{content.buttonAbout}</Link>
                 <LanguageDropdown
                     className="languageDropdown"
                     language={language}

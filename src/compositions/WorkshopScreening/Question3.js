@@ -13,6 +13,7 @@ const Question3 = ({
     date,
     setDate,
     addResponse,
+    content,
 }) => {
     if (q) {
         return (
@@ -47,8 +48,11 @@ const Question3 = ({
                             />
                         )}
                     </DatePicker>
-                    <div className="RequiredError">*This field is required</div>
-                    <Button type="submit" label={'Submit'} />
+                    <div className="RequiredError">*{content.errorMessage}</div>
+                    <Button
+                        type="submit"
+                        label={content.screeningProceedButton}
+                    />
                 </form>
             </div>
         );
