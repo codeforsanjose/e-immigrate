@@ -17,11 +17,11 @@ const UsersInfo = (props) => {
         } else {
             let requestObj = {
                 url: getUsers,
-                headers: {
-                    Authorization: `Bearer ${jwt}`,
-                },
             };
-            sendRequest(requestObj).then((usersInfo) => {
+            const headers = {
+                Authorization: `Bearer ${jwt}`,
+            };
+            sendRequest(requestObj, headers).then((usersInfo) => {
                 setUsersInfoState({
                     usernames: usersInfo.users,
                     admin: usersInfo.admin.name,

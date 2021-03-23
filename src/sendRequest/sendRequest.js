@@ -6,12 +6,10 @@ const DEFAULT_HEADERS = {
 const sendRequest = (requestObj, headers = DEFAULT_HEADERS) => {
     const url = requestObj.url;
     delete requestObj.url;
-    const response = fetch(url, {
+    return fetch(url, {
         ...requestObj,
         headers: { ...headers },
     }).then((data) => data.json());
-
-    return Promise.resolve(response);
 };
 
 export { sendRequest };
