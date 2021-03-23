@@ -3,7 +3,7 @@ import Question from './Question';
 
 import renderer from 'react-test-renderer';
 
-it('App renders correctly', () => {
+it('question renders correctly', () => {
     const tree = renderer.create(<Question />).toJSON();
     expect(tree).toMatchSnapshot();
 });

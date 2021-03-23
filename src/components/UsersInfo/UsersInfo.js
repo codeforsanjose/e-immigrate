@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { sendRequest } from '../../sendRequest/sendRequest';
 import { getQuestionnaireResponse } from '../../sendRequest/apis';
-import { withRouter } from 'react-router-dom';
 import './UsersInfo.css';
 
 const UsersInfo = (props) => {
@@ -41,4 +40,4 @@ const UsersInfo = (props) => {
     );
 };
 
-export default withRouter(UsersInfo);
+export default UsersInfo;

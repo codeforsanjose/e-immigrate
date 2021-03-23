@@ -120,154 +120,90 @@ exports[`App renders correctly 1`] = `
           </div>
         </div>
         <div
-          className="LandingPage"
+          className="main"
         >
           <div
-            className="welcome-message"
-          >
-            <h1>
-              CITIZENSHIP WORKSHOP 2020
-            </h1>
-            <div
-              className="line2"
-            >
-              Welcome to Project New Citizen with Santa Clara County's Office of Immigrant Relations.
-            </div>
-          </div>
-          <div
-            className="gridContainer"
+            className="section"
           >
             <div
-              className="stepsGrid"
+              className="LandingPage"
             >
+              <h1>
+                Welcome to the Virtual Citizenship Workshop
+              </h1>
               <div
-                className="stepContainer"
+                className="content"
               >
-                <div
-                  className="stepNumber"
-                >
-                  Step 1
-                </div>
-                <div
-                  className="stepTitle"
-                >
-                  Video
-                </div>
-                <div
-                  className="stepIcon"
-                >
-                  <svg
-                    className="stepSVG"
+                <div>
+                  <div
+                    className="description"
                   >
-                    VideoIcon.svg
-                  </svg>
-                </div>
-                <div
-                  className="stepDescription"
-                >
-                  You must watch the entire orientation video
-                </div>
-              </div>
-              <div
-                className="stepContainer"
-              >
-                <div
-                  className="stepNumber"
-                >
-                  Step 2
-                </div>
-                <div
-                  className="stepTitle"
-                >
-                  Questionnaire
-                </div>
-                <div
-                  className="stepIcon"
-                >
-                  <svg
-                    className="stepSVG"
+                    <h2>
+                      What is the Virtual Citizenship Workshop?
+                    </h2>
+                    <p>
+                      This workshop is an opportunity to learn more about the process to become a U.S. citizen, verify your elegibility to apply for citizenship, and get connected to free legal assistance.
+                    </p>
+                  </div>
+                  <div
+                    className="description last"
                   >
-                    HubspotIcon.svg
-                  </svg>
-                </div>
-                <div
-                  className="stepDescription"
-                >
-                  Please complete ALL the questions to the best of your ability
-                </div>
-              </div>
-              <div
-                className="stepContainer"
-              >
-                <div
-                  className="stepNumber"
-                >
-                  Step 3
-                </div>
-                <div
-                  className="stepTitle"
-                >
-                  Consultation
-                </div>
-                <div
-                  className="stepIcon"
-                >
-                  <svg
-                    className="stepSVG"
+                    <h2>
+                      Who Can Participate?
+                    </h2>
+                    <p>
+                      Depending on the date that you became a Legal Permanent Resident, you might or might not be able to participate in this workshop.
+                    </p>
+                    <p>
+                      But don't worry, if you can't participate in this workshop, you might be able to participate in future workshops.
+                    </p>
+                  </div>
+                  <button
+                    className="buttonComponent"
+                    onClick={[Function]}
                   >
-                    ConsultationIcon.svg
-                  </svg>
+                    See If You Can Participate
+                  </button>
                 </div>
-                <div
-                  className="stepDescription"
-                >
-                  Recieve a FREE follow-up consultation with a legal service representative
-                </div>
+                <img
+                  alt="placeholder"
+                  src="image placeholder.png"
+                />
               </div>
             </div>
           </div>
           <div
-            className="startButtonContainer"
+            className="footer"
           >
-            <button
-              className="buttonComponent"
-              onClick={[Function]}
+            <div
+              className="imgRow"
             >
-              Go to Step 1
-            </button>
-          </div>
-        </div>
-        <div
-          className="footer"
-        >
-          <div
-            className="imgRow"
-          >
-            <img
-              alt="CiiT Logo"
-              className="ciitLogo"
-              src="CiiT Logo.png"
-            />
-            <img
-              alt="CET-ICP Logo"
-              className="ceticpLogo"
-              src="CET-ICP Logo.png"
-            />
-          </div>
-          <div
-            className="textRow1"
-          >
-            <div>
-              CIIT was designed by the Center for Employment Training -
+              <img
+                alt="CiiT Logo"
+                className="ciitLogo"
+                src="CiiT Logo.png"
+              />
+              <img
+                alt="CET-ICP Logo"
+                className="ceticpLogo"
+                src="CET-ICP Logo.png"
+              />
             </div>
-            <div>
-              Immigration & Citizenship Program (CET-ICP)
+            <div
+              className="textRow1"
+            >
+              <div>
+                CIIT was designed by the Center for Employment Training -
+              </div>
+              <div>
+                Immigration & Citizenship Program (CET-ICP)
+              </div>
             </div>
-          </div>
-          <div
-            className="textRow2"
-          >
-            CET-ICP is a 501C3 Nonprofit Organization
+            <div
+              className="textRow2"
+            >
+              CET-ICP is a 501C3 Nonprofit Organization
+            </div>
           </div>
         </div>
       </div>

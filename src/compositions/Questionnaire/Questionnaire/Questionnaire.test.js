@@ -3,7 +3,19 @@ import Questionnaire from './Questionnaire';
 
 import renderer from 'react-test-renderer';
 
-it('App renders correctly', () => {
-    const tree = renderer.create(<Questionnaire />).toJSON();
+it('Questionnaire renders correctly', () => {
+    const tree = renderer
+        .create(
+            <Questionnaire
+                filteredQuestions={[]}
+                bindField={() => {}}
+                questions={[]}
+                setAllFieldsTouched={() => {}}
+                submitQuestionnaireResponse={() => {}}
+                questionnaireResponse={() => {}}
+                setQuestionnaireResponse={() => {}}
+            />
+        )
+        .toJSON();
     expect(tree).toMatchSnapshot();
 });
