@@ -141,6 +141,7 @@ const MainContainer = () => {
                                         onEnd={videoEndedHandler}
                                         video={content.step1VideoID}
                                         videoState={videoState}
+                                        content={content}
                                     />
                                 </Route>
                                 <Route path="/questionnaire">
@@ -155,6 +156,7 @@ const MainContainer = () => {
                                         setQuestionnaireResponse={
                                             setQuestionnaireResponse
                                         }
+                                        content={content}
                                     />
                                 </Route>
                             </Switch>

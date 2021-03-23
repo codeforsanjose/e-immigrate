@@ -9,16 +9,17 @@ import { ReactComponent as Blob3 } from '../../data/images/Blob3.svg';
 import './ProgressBar.css';
 
 const ProgressBar = ({ content, step }) => {
-    const { video, hubspot, consultation } = content;
-    const Step = ({ stepContent, children, completed }) => {
+    const Step = ({ content, stepNumber, children, completed }) => {
         const isComplete = completed ? '' : 'incomplete';
+        const step = `step${stepNumber}Header`;
+        const title = `step${stepNumber}Title`;
         return (
             <div className={`stepContainer ${isComplete}`}>
                 <div className={`stepNumber ${isComplete}`}>
-                    {stepContent.step}
+                    {content[step]}
                 </div>
                 <div className={`stepTitle ${isComplete}`}>
-                    {stepContent.title}
+                    {content[title]}
                 </div>
                 <div className={`stepIcon ${isComplete}`}>{children}</div>
             </div>
@@ -27,14 +28,19 @@ const ProgressBar = ({ content, step }) => {
 
     return (
         <div className="progressBar">
-            <div className="title">Virtual Citizenship Workshop</div>
+            <div className="title">{content.progressBarHeader}</div>
             <div className="stepsGrid">
-                <Step stepContent={video} completed={step >= 1 ? true : false}>
+                <Step
+                    content={content}
+                    stepNumber={'1'}
+                    completed={step >= 1 ? true : false}
+                >
                     <Blob1 className="blob blob1" />
                     <VideoIcon className="stepSVG" height="32px" width="32px" />
                 </Step>
                 <Step
-                    stepContent={hubspot}
+                    content={content}
+                    stepNumber={'2'}
                     completed={step >= 2 ? true : false}
                 >
                     <Blob2 className="blob blob2" />
@@ -45,7 +51,8 @@ const ProgressBar = ({ content, step }) => {
                     />
                 </Step>
                 <Step
-                    stepContent={consultation}
+                    content={content}
+                    stepNumber={'3'}
                     completed={step >= 3 ? true : false}
                 >
                     <Blob3 className="blob blob3" />
