@@ -1,16 +1,44 @@
 .AdminDashboard .responses {
-    margin: 0;
-    width: 100%;
     border: solid 1px #efefef;
+    display: grid;
 }
 
 .AdminDashboard .responses tbody tr td {
     overflow-x: scroll;
     height: 30px;
+    border: solid 1px #efefef;
+    height: 100px;
+    overflow-x: scroll;
 }
 
 .AdminDashboard .all-answers {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    overflow-x: scroll;
+    grid-gap: 16px;
+
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(1fr, 160px);
+    width: 700px;
+}
+.AdminDashboard .all-answers .answer {
+    width: 100%;
+    padding: 6px;
+}
+
+.AdminDashboard .green {
+    background-color: greenyellow;
+}
+.AdminDashboard .red {
+    background-color: red;
+}
+
+.AdminDashboard .flag {
+    width: 20px;
+    height: 20px;
+    border-radius: 25px;
+}
+.AdminDashboard .green-outline {
+    border: solid 1px greenyellow;
+}
+.AdminDashboard .red-outline {
+    border: solid 1px red;
 }

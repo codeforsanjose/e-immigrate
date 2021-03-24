@@ -53,25 +53,39 @@ const AdminDashboard = (props) => {
                 ? 'red'
                 : 'green';
             const allAnswers = Object.keys(questionnaireResponse).reduce(
-                (accumulator, questionKey) => {
+                (accumulator, questionKey, index) => {
+                    const flagIt =
+                        questionnaireResponse[questionKey].toUpperCase() ===
+                        'YES'
+                            ? 'red-outline'
+                            : 'green-outline';
                     const answerMarkup = (
-                        <article className="answer">
-                            {questionKey}:{questionnaireResponse[questionKey]}
+                        <article className={`answer ${flagIt}`}>
+                            <b>{index + 1}.</b>
+                            <span>
+                                {questionKey}:
+                                {questionnaireResponse[questionKey]}
+                            </span>
                         </article>
                     );
                     return [...accumulator, answerMarkup];
                 },
                 []
             );
+
             return (
                 <tr key={response._id}>
                     <td>{index + 1}</td>
-                    <td>{colorFlag}</td>
+                    <td>
+                        <div className={`flag ${colorFlag}`}></div>
+                    </td>
                     <td>
                         <section>
                             <input
                                 type="checkbox"
-                                checked={false}
+                                checked={selectedResponses.find(
+                                    (item) => item === index
+                                )}
                                 onClick={(e) =>
                                     selectResponseCheckbox(e, index)
                                 }
@@ -85,6 +99,7 @@ const AdminDashboard = (props) => {
             );
         });
     }, [questionnaireResponses]);
+
     const responsesTable = (
         <table className="responses">
             <tbody>{responsesMarkup}</tbody>
