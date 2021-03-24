@@ -11,56 +11,55 @@ import { useHistory } from 'react-router-dom';
 
 import './ProcessOverview.css';
 
-const Step = ({ stepContent, children }) => {
-    console.log('what is step content here?', stepContent);
+const Step = ({ content, stepNumber, children }) => {
+    const step = `step${stepNumber}Header`;
+    const title = `step${stepNumber}Title`;
+    const instructions = `step${stepNumber}Instructions`;
     return (
         <div className="stepContainer">
-            <div className="stepNumber">{stepContent.step}</div>
+            <div className="stepNumber">{content[step]}</div>
             <div className="stepIcon">{children}</div>
-            <div className="stepTitle">{stepContent.title}</div>
-            <div className="stepDescription">{stepContent.description}</div>
+            <div className="stepTitle">{content[title]}</div>
+            <div className="stepDescription">{content[instructions]}</div>
         </div>
     );
 };
 
-const ProcessOverview = ({ content, nextStep }) => {
-    console.log('the fuck is content here', content, nextStep);
+const ProcessOverview = ({ content }) => {
     let history = useHistory();
-    const { welcomeMessage, video, hubspot, consultation } = content;
     const goToStep1 = () => {
-        nextStep();
         history.push('/video');
     };
     return (
         <div className="ProcessOverview">
             <div className="welcome-message">
-                <h1>Welcome to the Virtual Citizenship Workshop</h1>
-                <div className="line2">Congratulations!</div>
-                <div className="line3">
-                    Based on your answers, you can pariticipate in this
-                    workshop. Follow the steps below.
-                </div>
+                <h1>{content.stepsHeader}</h1>
+                <div className="line2">{content.stepsHeader2}</div>
+                <div className="line3">{content.stepsHeader3}</div>
             </div>
             <div className="gridContainer">
                 <div className="stepsGrid">
-                    <Step stepContent={video}>
+                    <Step content={content} stepNumber={'1'}>
                         <Blob1 className="blob blob1" />
                         <VideoIcon className="stepSVG" />
                     </Step>
                     <Arrow className="arrow" />
-                    <Step stepContent={hubspot}>
+                    <Step content={content} stepNumber={'2'}>
                         <Blob2 className="blob blob2" />
                         <QuestionnaireIcon className="stepSVG" />
                     </Step>
                     <Arrow className="arrow" />
-                    <Step stepContent={consultation}>
+                    <Step content={content} stepNumber={'2'}>
                         <Blob3 className="blob blob3" />
                         <CheckMark className="stepSVG" />
                     </Step>
                 </div>
             </div>
             <div className="startButtonContainer">
-                <Button label={'Go to Step 1'} onClick={goToStep1} />
+                <Button
+                    label={content.stepsProceedButton}
+                    onClick={goToStep1}
+                />
             </div>
         </div>
     );

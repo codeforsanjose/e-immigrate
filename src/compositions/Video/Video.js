@@ -13,12 +13,11 @@ const opts = {
 };
 
 const Video = ({
-    video,
+    content,
     videoState,
     onEnd = () => {},
     onStateChange = (event) => {},
 }) => {
-    const { videoId } = video;
     const hasWatchedVideo = videoState.hasWatchedVideo;
     let history = useHistory();
     const goToStep2 = () => {
@@ -36,10 +35,12 @@ const Video = ({
     return (
         <div className="video">
             <div className="titleText">
-                <div className="step">Step 1: Video</div>
+                <div className="step">
+                    {content.step1Header}: {content.step1Title}
+                </div>
                 <div className="title1">
-                    <div>Watch the Project New Citizen orientation video.</div>
-                    <div>It's only 15 minutes!</div>
+                    <div>{content.step1Tip1}</div>
+                    <div>{content.step1Tip2}</div>
                 </div>
             </div>
             <div
@@ -50,7 +51,7 @@ const Video = ({
                 <div className="videoWrapper">
                     <YouTube
                         className="video"
-                        videoId={videoId}
+                        videoId={content.step1VideoID}
                         opts={opts}
                         onPlay={onPlay}
                         onEnd={onVideoEnd}
@@ -60,7 +61,10 @@ const Video = ({
             </div>
             {hasWatchedVideo && (
                 <div className="buttonContainer">
-                    <Button label={'Go to Step 2'} onClick={goToStep2} />
+                    <Button
+                        label={content.step1ProceedButton}
+                        onClick={goToStep2}
+                    />
                 </div>
             )}
         </div>

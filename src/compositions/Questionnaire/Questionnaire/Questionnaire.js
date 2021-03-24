@@ -13,6 +13,7 @@ const QuestionnaireForm = ({
     submitQuestionnaireResponse,
     questionnaireResponse,
     setQuestionnaireResponse,
+    content,
 }) => {
     return (
         <form
@@ -33,7 +34,7 @@ const QuestionnaireForm = ({
                 questions={questions}
             />
             <Button
-                label={'Submit'}
+                label={content.step2ProceedButton3}
                 type="submit"
                 className="FormElement"
                 onClick={setAllFieldsTouched}
@@ -69,6 +70,7 @@ const Questionnaire = ({
     submitQuestionnaireResponse,
     questionnaireResponse,
     setQuestionnaireResponse,
+    content,
 }) => {
     const filteredQuestions = questions.filter(
         (q) => q.category === 'Red Flag'
@@ -84,6 +86,7 @@ const Questionnaire = ({
             submitQuestionnaireResponse={submitQuestionnaireResponse}
             questionnaireResponse={questionnaireResponse}
             setQuestionnaireResponse={setQuestionnaireResponse}
+            content={content}
         />
     );
 };

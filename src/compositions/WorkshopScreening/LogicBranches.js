@@ -14,6 +14,7 @@ const Branch1 = ({
     date,
     setDate,
     addResponse,
+    content,
 }) => {
     if (question2) {
         return (
@@ -27,6 +28,7 @@ const Branch1 = ({
                 date={date}
                 setDate={setDate}
                 addResponse={addResponse}
+                content={content}
             />
         );
     } else {
@@ -36,6 +38,7 @@ const Branch1 = ({
                 bindField={bindField}
                 setQuestion2={setQuestion2}
                 addResponse={addResponse}
+                content={content}
             />
         );
     }
@@ -51,6 +54,7 @@ const Branch2 = ({
     date,
     setDate,
     addResponse,
+    content,
 }) => {
     return (
         <Question3
@@ -63,11 +67,13 @@ const Branch2 = ({
             date={date}
             setDate={setDate}
             addResponse={addResponse}
+            content={content}
         />
     );
 };
 
 const LogicBranches = ({
+    content,
     filteredQuestions,
     bindField,
     question1,
@@ -95,6 +101,7 @@ const LogicBranches = ({
                 date={date}
                 setDate={setDate}
                 addResponse={addResponse}
+                content={content}
             />
         );
     } else if (question1 === 'No') {
@@ -109,6 +116,7 @@ const LogicBranches = ({
                 date={date}
                 setDate={setDate}
                 addResponse={addResponse}
+                content={content}
             />
         );
     } else {
@@ -118,6 +126,7 @@ const LogicBranches = ({
                 bindField={bindField}
                 setQuestion1={setQuestion1}
                 addResponse={addResponse}
+                content={content}
             />
         );
     }

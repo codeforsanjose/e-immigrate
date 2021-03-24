@@ -124,18 +124,20 @@ const MainContainer = () => {
                     setShowModal={setShowModal}
                 />
                 <div className={`items ${showModal ? 'blur' : ''}`}>
-                    <Navbar language={language} setLanguage={changeLanguage} />
+                    <Navbar
+                        language={language}
+                        setLanguage={changeLanguage}
+                        content={content}
+                    />
                     <div className="main">
                         <div className="section">
                             <Switch>
                                 <Route exact path="/">
-                                    <LandingPage
-                                        content={content}
-                                        nextStep={nextStep}
-                                    />
+                                    <LandingPage content={content} />
                                 </Route>
                                 <Route path="/eligibility">
                                     <WorkshopScreening
+                                        content={content}
                                         questions={questions}
                                         questionnaireResponse={
                                             questionnaireResponse
@@ -164,6 +166,7 @@ const MainContainer = () => {
                                         onEnd={videoEndedHandler}
                                         video={content.step1VideoID}
                                         videoState={videoState}
+                                        content={content}
                                     />
                                 </Route>
                                 <Route path="/questionnaire">
@@ -178,11 +181,12 @@ const MainContainer = () => {
                                         setQuestionnaireResponse={
                                             setQuestionnaireResponse
                                         }
+                                        content={content}
                                     />
                                 </Route>
                             </Switch>
                         </div>
-                        <Footer />
+                        <Footer content={content} />
                     </div>
                 </div>
             </div>
