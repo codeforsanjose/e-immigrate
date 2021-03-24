@@ -16,7 +16,11 @@ import {
     Zip,
 } from '../../../components/FormComponents/FormComponents';
 
-const Question = ({ question, bindField, followUpQuestions }) => {
+const Question = ({
+    question = { text: '', required: true },
+    bindField,
+    followUpQuestions,
+}) => {
     const [showFollowUp, setShowFollowUp] = useState(false);
 
     const { text, required } = question;
