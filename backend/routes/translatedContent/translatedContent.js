@@ -12,8 +12,11 @@ router.route('/').get((req, res) => {
         .catch((err) => console.log(err));
 });
 
-router.route('/:id').get((req, res) => {
-    TranslatedContent.findById(req.params.id)
+router.route('/:title.:language').get((req, res) => {
+    TranslatedContent.findOne({
+        title: req.params.title,
+        language: req.params.language,
+    })
         .then((translatedContent) => res.json(translatedContent))
         .catch((err) => console.log(err));
 });
@@ -23,11 +26,12 @@ router.route('/add').post((req, res) => {
     // validate(req.body);
 
     const title = req.body.title;
+    const language = req.body.language;
     const content = req.body.content;
     res.json('translated content added');
 
     const insertNewTranslatedContent = () => {
-        TranslatedContent.insertMany({ title, content })
+        TranslatedContent.insertMany({ title, language, content })
             .then(() => console.log('translated content inserted'))
             .catch((err) => console.log(err));
     };
@@ -38,7 +42,7 @@ router.route('/add').post((req, res) => {
             .catch((err) => console.log(err));
     };
 
-    TranslatedContent.find({ title }, function (err, result) {
+    TranslatedContent.find({ title, language }, function (err, result) {
         if (err) {
             res.send(err);
         } else if (result.length !== 0) {

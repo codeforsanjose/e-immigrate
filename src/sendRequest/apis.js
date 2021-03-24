@@ -13,4 +13,5 @@ module.exports = {
     addQuestionnaires: 'http://localhost:5000/api/questionnaires/add',
     deleteQuestionnaire: 'http://localhost:5000/api/questionnaires/delete/:id',
     getQuestions: 'http://localhost:5000/api/questionnaires',
+    getTranslatedContent: 'http://localhost:5000/api/translatedContent',
 };

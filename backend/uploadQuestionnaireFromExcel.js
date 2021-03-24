@@ -1,12 +1,13 @@
 const xlsxFile = require('read-excel-file/node');
 const fetch = require('node-fetch');
-const LanguageOptions = require('./LanguageOptions');
+const { LanguageOptions, WorkshopTitle } = require('./LanguageOptions');
 
 const DEFAULT_HEADERS = {
     'Content-Type': 'application/json',
 };
 
 const sendRequest = (requestObj, headers = DEFAULT_HEADERS) => {
+    // console.log('requestObj :>> ', requestObj);
     const url = 'http://localhost:5000/api/questionnaires/add';
     const response = fetch(url, { ...requestObj, headers }).then((data) =>
         data.json()
@@ -39,7 +40,8 @@ const generateQuestionnaires = () => {
             const requestObj = {
                 method: 'POST',
                 body: JSON.stringify({
-                    title: language.code,
+                    title: WorkshopTitle,
+                    language: language.code,
                     questions: data,
                 }),
             };

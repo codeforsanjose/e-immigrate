@@ -11,8 +11,11 @@ router.route('/').get((req, res) => {
         .catch((err) => console.log(err));
 });
 
-router.route('/:id').get((req, res) => {
-    Questionnaires.findById(req.params.id)
+router.route('/:title.:language').get((req, res) => {
+    Questionnaires.findOne({
+        title: req.params.title,
+        language: req.params.language,
+    })
         .then((questionnaires) => res.json(questionnaires))
         .catch((err) => console.log(err));
 });
@@ -22,11 +25,12 @@ router.route('/add').post((req, res) => {
     // validateQuestionnaire(req.body);
 
     const title = req.body.title;
+    const language = req.body.language;
     const questions = req.body.questions;
     res.json('questionnaire added');
 
     const insertNewQuestionnaire = () => {
-        Questionnaires.insertMany({ title, questions })
+        Questionnaires.insertMany({ title, language, questions })
             .then(() => console.log('questionnaire inserted'))
             .catch((err) => console.log(err));
     };
@@ -37,7 +41,7 @@ router.route('/add').post((req, res) => {
             .catch((err) => console.log(err));
     };
 
-    Questionnaires.find({ title }, function (err, result) {
+    Questionnaires.find({ title, language }, function (err, result) {
         if (err) {
             res.send(err);
         } else if (result.length !== 0) {
