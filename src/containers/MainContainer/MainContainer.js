@@ -111,8 +111,6 @@ const MainContainer = () => {
     };
     const nextStep = () => changeStep(step + 1);
     const previousStep = () => changeStep(step - 1);
-    console.log('what is content here?', content);
-    console.log('video here', videoState);
     const updatedContentForProcessOverview = { ...content, ...videoState };
     return (
         <div className="MainContainer">
