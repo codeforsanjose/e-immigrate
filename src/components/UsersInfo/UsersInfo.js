@@ -1,14 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { sendRequest } from '../../sendRequest/sendRequest';
-import { getUsers } from '../../sendRequest/apis';
-import { withRouter } from 'react-router-dom';
+import { getQuestionnaireResponse } from '../../sendRequest/apis';
 import './UsersInfo.css';
 
 const UsersInfo = (props) => {
-    const [usersInfoState, setUsersInfoState] = useState({
-        usernames: [],
-        admin: '',
-    });
+    const [questionnaireResponses, setQuestionnaireResponses] = useState([]);
 
     useEffect(() => {
         let jwt = localStorage.getItem('jwt-eimmigrate');
@@ -16,36 +12,32 @@ const UsersInfo = (props) => {
             return props.history.push('/login');
         } else {
             let requestObj = {
-                url: getUsers,
-                headers: {
-                    Authorization: `Bearer ${jwt}`,
-                },
+                url: getQuestionnaireResponse,
             };
-            sendRequest(requestObj).then((usersInfo) => {
-                setUsersInfoState({
-                    usernames: usersInfo.users,
-                    admin: usersInfo.admin.name,
-                });
+            const headers = {
+                Authorization: `Bearer ${jwt}`,
+            };
+            sendRequest(requestObj, headers).then((response) => {
+                const { responses = [] } = response;
+                setQuestionnaireResponses(responses);
             });
         }
     }, [props.history]);
 
-    const usernames = usersInfoState.usernames.map((user) => (
-        <li key={user._id}>
-            <div className="user-name">Name: {user.name}</div>
-            <div className="phone-number">Phone number: {user.phoneNumber}</div>
-            <div className="docs">Document: {user.document}</div>
-        </li>
-    ));
-    const admin = usersInfoState.admin;
+    const responsesMarkup = questionnaireResponses.map(
+        (questionnaireResponse, index) => (
+            <li key={questionnaireResponse._id}>
+                <div>response: {questionnaireResponse._id}</div>
+            </li>
+        )
+    );
     return (
         <div>
-            <div className="users-info">Hello {admin}! Our users are:</div>
-            <div className="user-list">
-                <ol>{usernames}</ol>
+            <div className="responses-list">
+                <ol>{responsesMarkup}</ol>
             </div>
         </div>
     );
 };
 
-export default withRouter(UsersInfo);
+export default UsersInfo;

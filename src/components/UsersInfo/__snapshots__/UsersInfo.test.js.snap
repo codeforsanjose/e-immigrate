@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`UsersInfo renders correctly 1`] = `
+<div>
+  <div
+    className="responses-list"
+  >
+    <ol />
+  </div>
+</div>
+`;
