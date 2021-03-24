@@ -20,15 +20,27 @@ import {
     getTranslatedContent,
 } from '../../sendRequest/apis';
 
+import { getFromStorage, saveToStorage } from '../../utilities/storage_utils';
+
 const MainContainer = () => {
-    const [language, setLanguage] = useState('en');
+    const questionnaireTitle = 'CIIT_Workshop_Spring_2021';
+    const LOCALSTORE_LANGUAGE = getFromStorage('preferredLanguage') || 'en';
+    const LOCALSTORE_CONTENT =
+        getFromStorage(
+            `${questionnaireTitle}-content-${LOCALSTORE_LANGUAGE}`
+        ) || {};
+    const LOCALSTORE_QUESTIONS =
+        getFromStorage(
+            `${questionnaireTitle}-questions-${LOCALSTORE_LANGUAGE}`
+        ) || [];
+    const [language, setLanguage] = useState(LOCALSTORE_LANGUAGE);
     const [showModal, setShowModal] = useState(true);
     const [step, setStep] = useState(0);
     const [videoState, setVideoState] = useState({ hasWatchedVideo: false });
     const { hasWatchedVideo } = videoState;
-    const [questions, setQuestions] = useState({});
+    const [questions, setQuestions] = useState(LOCALSTORE_QUESTIONS);
     const [questionnaireResponse, setQuestionnaireResponse] = useState({});
-    const [content, setContent] = useState({});
+    const [content, setContent] = useState(LOCALSTORE_CONTENT);
 
     const browserLanguage =
         window.navigator.userLanguage || window.navigator.language;
@@ -44,7 +56,7 @@ const MainContainer = () => {
 
     const changeLanguage = (language) => {
         setLanguage(language);
-        localStorage.setItem('preferredLanguage', language);
+        saveToStorage('preferredLanguage', language);
     };
 
     const videoEndedHandler = (event) => {
@@ -56,20 +68,27 @@ const MainContainer = () => {
 
     useEffect(() => {
         const requestObj = {
-            url: `${getQuestions}/CIIT_Workshop_Spring_2021.${language}`,
+            url: `${getQuestions}/${questionnaireTitle}.${language}`,
         };
         sendRequest(requestObj).then((response) => {
             setQuestions(response.questions);
+            saveToStorage(
+                `${questionnaireTitle}-questions-${language}`,
+                response.questions
+            );
         });
     }, [language]);
 
     useEffect(() => {
         const requestObj = {
-            url: `${getTranslatedContent}/CIIT_Workshop_Spring_2021.${language}`,
+            url: `${getTranslatedContent}/${questionnaireTitle}.${language}`,
         };
         sendRequest(requestObj).then((response) => {
-            console.log('response.content :>> ', response.content);
             setContent(response.content);
+            saveToStorage(
+                `${questionnaireTitle}-content-${language}`,
+                response.content
+            );
         });
     }, [language]);
 
@@ -84,6 +103,7 @@ const MainContainer = () => {
         };
         sendRequest(requestObj).then((response) => {
             console.log('success', response);
+            // should redirect to thanks page
         });
     };
     const changeStep = (nextStep) => {
@@ -91,7 +111,9 @@ const MainContainer = () => {
     };
     const nextStep = () => changeStep(step + 1);
     const previousStep = () => changeStep(step - 1);
-
+    console.log('what is content here?', content);
+    console.log('video here', videoState);
+    const updatedContentForProcessOverview = { ...content, ...videoState };
     return (
         <div className="MainContainer">
             <div className="wrapper">
@@ -125,7 +147,9 @@ const MainContainer = () => {
                                 </Route>
                                 <Route path="/overview">
                                     <ProcessOverview
-                                        content={content}
+                                        content={
+                                            updatedContentForProcessOverview
+                                        }
                                         nextStep={nextStep}
                                     />
                                 </Route>

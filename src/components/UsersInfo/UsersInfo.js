@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { sendRequest } from '../../sendRequest/sendRequest';
 import { getQuestionnaireResponse } from '../../sendRequest/apis';
+import { getAuthToken } from '../../utilities/auth_utils';
 import './UsersInfo.css';
 
 const UsersInfo = (props) => {
     const [questionnaireResponses, setQuestionnaireResponses] = useState([]);
 
     useEffect(() => {
-        let jwt = localStorage.getItem('jwt-eimmigrate');
-        if (!jwt) {
+        const jwt = getAuthToken();
+        if (jwt === null) {
             return props.history.push('/login');
         } else {
-            let requestObj = {
+            const requestObj = {
                 url: getQuestionnaireResponse,
             };
             const headers = {

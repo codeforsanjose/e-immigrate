@@ -12,6 +12,7 @@ import { useHistory } from 'react-router-dom';
 import './ProcessOverview.css';
 
 const Step = ({ stepContent, children }) => {
+    console.log('what is step content here?', stepContent);
     return (
         <div className="stepContainer">
             <div className="stepNumber">{stepContent.step}</div>
@@ -22,7 +23,8 @@ const Step = ({ stepContent, children }) => {
     );
 };
 
-const LandingPage = ({ content, nextStep }) => {
+const ProcessOverview = ({ content, nextStep }) => {
+    console.log('the fuck is content here', content, nextStep);
     let history = useHistory();
     const { welcomeMessage, video, hubspot, consultation } = content;
     const goToStep1 = () => {
@@ -64,4 +66,4 @@ const LandingPage = ({ content, nextStep }) => {
     );
 };
 
-export default LandingPage;
+export default ProcessOverview;
