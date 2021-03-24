@@ -2,7 +2,7 @@ import React from 'react';
 import MainContainer from '../MainContainer/MainContainer';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Admin from '../../components/auth/Admin';
-import UsersInfo from '../../components/UsersInfo/UsersInfo';
+import AdminDashboard from '../../components/AdminDashboard/AdminDashboard';
 import './App.css';
 
 function App() {
@@ -10,8 +10,8 @@ function App() {
         <Router>
             <div className="App">
                 <Switch>
-                    <Route path="/users">
-                        <UsersInfo />
+                    <Route path="/dashboard">
+                        <AdminDashboard />
                     </Route>
                     <Route path="/login">
                         <Admin />

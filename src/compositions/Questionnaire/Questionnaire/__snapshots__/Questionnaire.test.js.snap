@@ -9,7 +9,7 @@ exports[`Questionnaire renders correctly 1`] = `
     className="buttonComponent"
     onClick={[Function]}
   >
-    Submit
+    
   </button>
 </form>
 `;

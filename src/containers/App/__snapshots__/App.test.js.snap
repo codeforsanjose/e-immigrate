@@ -66,15 +66,11 @@ exports[`App renders correctly 1`] = `
             <a
               href="/"
               onClick={[Function]}
-            >
-              Home
-            </a>
+            />
             <a
               href="/about"
               onClick={[Function]}
-            >
-              About
-            </a>
+            />
             <div
               className="languageDropdown"
             >
@@ -128,9 +124,7 @@ exports[`App renders correctly 1`] = `
             <div
               className="LandingPage"
             >
-              <h1>
-                Welcome to the Virtual Citizenship Workshop
-              </h1>
+              <h1 />
               <div
                 className="content"
               >
@@ -138,32 +132,20 @@ exports[`App renders correctly 1`] = `
                   <div
                     className="description"
                   >
-                    <h2>
-                      What is the Virtual Citizenship Workshop?
-                    </h2>
-                    <p>
-                      This workshop is an opportunity to learn more about the process to become a U.S. citizen, verify your elegibility to apply for citizenship, and get connected to free legal assistance.
-                    </p>
+                    <h2 />
+                    <p />
                   </div>
                   <div
                     className="description last"
                   >
-                    <h2>
-                      Who Can Participate?
-                    </h2>
-                    <p>
-                      Depending on the date that you became a Legal Permanent Resident, you might or might not be able to participate in this workshop.
-                    </p>
-                    <p>
-                      But don't worry, if you can't participate in this workshop, you might be able to participate in future workshops.
-                    </p>
+                    <h2 />
+                    <p />
+                    <p />
                   </div>
                   <button
                     className="buttonComponent"
                     onClick={[Function]}
-                  >
-                    See If You Can Participate
-                  </button>
+                  />
                 </div>
                 <img
                   alt="placeholder"
@@ -191,19 +173,10 @@ exports[`App renders correctly 1`] = `
             </div>
             <div
               className="textRow1"
-            >
-              <div>
-                CIIT was designed by the Center for Employment Training -
-              </div>
-              <div>
-                Immigration & Citizenship Program (CET-ICP)
-              </div>
-            </div>
+            />
             <div
               className="textRow2"
-            >
-              CET-ICP is a 501C3 Nonprofit Organization
-            </div>
+            />
           </div>
         </div>
       </div>

@@ -13,7 +13,7 @@ const QuestionnaireForm = ({
     submitQuestionnaireResponse,
     questionnaireResponse,
     setQuestionnaireResponse,
-    content,
+    content = { step2ProceedButton3: '' },
 }) => {
     return (
         <form
@@ -73,7 +73,7 @@ const Questionnaire = ({
     content,
 }) => {
     const filteredQuestions = questions.filter(
-        (q) => q.category === 'Red Flag'
+        (q) => q.category === 'Red Flag' || q.category === 'Basic Info'
     );
     const [bindField, setAllFieldsTouched] = useMarkFieldAsTouched();
 
