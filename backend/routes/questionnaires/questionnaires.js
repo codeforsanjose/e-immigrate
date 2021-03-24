@@ -16,7 +16,9 @@ router.route('/:title.:language').get((req, res) => {
         title: req.params.title,
         language: req.params.language,
     })
-        .then((questionnaires) => res.json(questionnaires))
+        .then((questionnaires) => {
+            res.json(questionnaires);
+        })
         .catch((err) => console.log(err));
 });
 

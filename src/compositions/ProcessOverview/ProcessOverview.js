@@ -25,7 +25,7 @@ const Step = ({ content, stepNumber, children }) => {
     );
 };
 
-const LandingPage = ({ content }) => {
+const ProcessOverview = ({ content }) => {
     let history = useHistory();
     const goToStep1 = () => {
         history.push('/video');
@@ -65,4 +65,4 @@ const LandingPage = ({ content }) => {
     );
 };
 
-export default LandingPage;
+export default ProcessOverview;
