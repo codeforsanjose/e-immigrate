@@ -1,0 +1,16 @@
+.AdminDashboard .responses {
+    margin: 0;
+    width: 100%;
+    border: solid 1px #efefef;
+}
+
+.AdminDashboard .responses tbody tr td {
+    overflow-x: scroll;
+    height: 30px;
+}
+
+.AdminDashboard .all-answers {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    overflow-x: scroll;
+}
