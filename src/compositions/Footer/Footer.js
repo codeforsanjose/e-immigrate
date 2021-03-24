@@ -3,7 +3,7 @@ import ciitLogo from '../../data/images/CiiT Logo.png';
 import ceticpLogo from '../../data/images/CET-ICP Logo.png';
 import './Footer.css';
 
-const Footer = () => {
+const Footer = ({ content }) => {
     return (
         <div className="footer">
             <div className="imgRow">
@@ -14,15 +14,8 @@ const Footer = () => {
                     alt="CET-ICP Logo"
                 />
             </div>
-            <div className="textRow1">
-                <div>
-                    CIIT was designed by the Center for Employment Training -
-                </div>
-                <div>Immigration & Citizenship Program (CET-ICP)</div>
-            </div>
-            <div className="textRow2">
-                CET-ICP is a 501C3 Nonprofit Organization
-            </div>
+            <div className="textRow1">{content.footerText1}</div>
+            <div className="textRow2">{content.footerText2}</div>
         </div>
     );
 };

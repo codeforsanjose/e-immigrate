@@ -6,6 +6,7 @@ import Modal from './Modal/Modal';
 import './WorkshopScreening.css';
 
 const WorkshopScreening = ({
+    content,
     questions,
     questionnaireResponse,
     setQuestionnaireResponse,
@@ -21,15 +22,16 @@ const WorkshopScreening = ({
     );
     const [bindField] = useMarkFieldAsTouched();
 
-    const addResponse = (question, response) => {
+    const addResponse = (content, question, response) => {
         questionnaireResponse[question] = response;
     };
 
     return (
         <div className="WorkshopScreening">
-            <h1>Let's make sure that you can participate in this workshop</h1>
-            <h2>Answer 2-3 questions and find out if you can participate</h2>
+            <h1>{content.screeningHeader}</h1>
+            <h2>{content.screeningHeader2}</h2>
             <LogicBranches
+                content={content}
                 filteredQuestions={filteredQuestions}
                 bindField={bindField}
                 question1={question1}
@@ -44,7 +46,12 @@ const WorkshopScreening = ({
                 setDate={setDate}
                 addResponse={addResponse}
             />
-            <Modal showModal={showModal} question2={question2} date={date} />
+            <Modal
+                showModal={showModal}
+                question2={question2}
+                date={date}
+                content={content}
+            />
         </div>
     );
 };

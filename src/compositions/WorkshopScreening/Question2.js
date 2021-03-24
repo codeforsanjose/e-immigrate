@@ -1,7 +1,7 @@
 import React from 'react';
 import Button from '../../components/Button/Button';
 
-const Question2 = ({ q, bindField, setQuestion2, addResponse }) => {
+const Question2 = ({ q, bindField, setQuestion2, addResponse, content }) => {
     if (q) {
         const answers = q.answerSelections.split(', ');
         return (
@@ -33,11 +33,14 @@ const Question2 = ({ q, bindField, setQuestion2, addResponse }) => {
                                     {option}
                                 </label>
                                 <span className="RequiredError">
-                                    *This field is required
+                                    *{content.errorMessage}
                                 </span>
                             </div>
                         ))}
-                    <Button type="submit" label={'Submit'} />
+                    <Button
+                        type="submit"
+                        label={content.screeningProceedButton}
+                    />
                 </form>
             </>
         );
