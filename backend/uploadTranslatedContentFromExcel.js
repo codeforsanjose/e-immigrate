@@ -1,6 +1,6 @@
 const xlsxFile = require('read-excel-file/node');
 const fetch = require('node-fetch');
-const LanguageOptions = require('./LanguageOptions');
+const { LanguageOptions, WorkshopTitle } = require('./LanguageOptions');
 
 const DEFAULT_HEADERS = {
     'Content-Type': 'application/json',
@@ -35,7 +35,8 @@ const generateLanguageContent = () => {
             const requestObj = {
                 method: 'POST',
                 body: JSON.stringify({
-                    title: language.code,
+                    title: WorkshopTitle,
+                    language: language.code,
                     content: data[language.code],
                 }),
             };
