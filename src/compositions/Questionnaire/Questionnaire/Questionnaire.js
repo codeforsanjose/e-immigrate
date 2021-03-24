@@ -13,7 +13,7 @@ const QuestionnaireForm = ({
     submitQuestionnaireResponse,
     questionnaireResponse,
     setQuestionnaireResponse,
-    content,
+    content = { step2ProceedButton3: '' },
 }) => {
     return (
         <form

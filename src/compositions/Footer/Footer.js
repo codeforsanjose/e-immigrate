@@ -3,7 +3,8 @@ import ciitLogo from '../../data/images/CiiT Logo.png';
 import ceticpLogo from '../../data/images/CET-ICP Logo.png';
 import './Footer.css';
 
-const Footer = ({ content }) => {
+const Footer = ({ content = { footerText1: '', footerText2: '' } }) => {
+    const { footerText1, footerText2 } = content;
     return (
         <div className="footer">
             <div className="imgRow">
@@ -14,8 +15,8 @@ const Footer = ({ content }) => {
                     alt="CET-ICP Logo"
                 />
             </div>
-            <div className="textRow1">{content.footerText1}</div>
-            <div className="textRow2">{content.footerText2}</div>
+            <div className="textRow1">{footerText1}</div>
+            <div className="textRow2">{footerText2}</div>
         </div>
     );
 };
