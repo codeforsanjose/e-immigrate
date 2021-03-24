@@ -56,7 +56,7 @@ const MainContainer = () => {
 
     useEffect(() => {
         const requestObj = {
-            url: `${getQuestions}/${language}`,
+            url: `${getQuestions}/CIIT_Workshop_Spring_2021.${language}`,
         };
         sendRequest(requestObj).then((response) => {
             setQuestions(response.questions);
@@ -65,7 +65,7 @@ const MainContainer = () => {
 
     useEffect(() => {
         const requestObj = {
-            url: `${getTranslatedContent}/${language}`,
+            url: `${getTranslatedContent}/CIIT_Workshop_Spring_2021.${language}`,
         };
         sendRequest(requestObj).then((response) => {
             console.log('response.content :>> ', response.content);

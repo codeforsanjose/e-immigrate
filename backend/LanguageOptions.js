@@ -1,3 +1,5 @@
+const WorkshopTitle = 'CIIT_Workshop_Spring_2021';
+
 const LanguageOptions = [
     {
         code: 'en',
@@ -13,4 +15,4 @@ const LanguageOptions = [
     },
 ];
 
-module.exports = LanguageOptions;
+module.exports = { LanguageOptions, WorkshopTitle };
