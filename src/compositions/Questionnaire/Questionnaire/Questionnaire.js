@@ -14,36 +14,38 @@ const QuestionnaireForm = ({
     questionnaireResponse,
     setQuestionnaireResponse,
     content = { step2ProceedButton3: '' },
+    collectAnswer,
 }) => {
+    const onSubmit = (e) => {
+        e.preventDefault();
+        setAllFieldsTouched();
+        submitQuestionnaireResponse(questionnaireResponse);
+    };
+
     return (
-        <form
-            className="Questionnaire"
-            onSubmit={(event) => {
-                event.preventDefault();
-                const formData = new FormData(event.target);
-                const data = Object.fromEntries(formData.entries());
-                submitQuestionnaireResponse({
-                    ...questionnaireResponse,
-                    ...data,
-                });
-            }}
-        >
+        <div className="Questionnaire">
             <Questions
                 filteredQuestions={filteredQuestions}
                 bindField={bindField}
                 questions={questions}
+                collectAnswer={collectAnswer}
             />
             <Button
                 label={content.step2ProceedButton3}
                 type="submit"
                 className="FormElement"
-                onClick={setAllFieldsTouched}
+                onClick={onSubmit}
             />
-        </form>
+        </div>
     );
 };
 
-const Questions = ({ filteredQuestions, bindField, questions }) => (
+const Questions = ({
+    filteredQuestions,
+    bindField,
+    questions,
+    collectAnswer,
+}) => (
     <>
         {filteredQuestions.map((question) => {
             if (question.parentQuestionSlug) {
@@ -59,6 +61,7 @@ const Questions = ({ filteredQuestions, bindField, questions }) => (
                     followUpQuestions={questions.filter(
                         (q) => q.parentQuestionSlug === question.slug
                     )}
+                    collectAnswer={collectAnswer}
                 />
             );
         })}
@@ -76,6 +79,11 @@ const Questionnaire = ({
         (q) => q.category === 'Red Flag' || q.category === 'Basic Info'
     );
     const [bindField, setAllFieldsTouched] = useMarkFieldAsTouched();
+    const collectAnswer = (slug, answer) => {
+        const answeredQuestion = Object.assign({}, questionnaireResponse);
+        answeredQuestion[slug] = answer;
+        setQuestionnaireResponse(answeredQuestion);
+    };
 
     return (
         <QuestionnaireForm
@@ -87,6 +95,7 @@ const Questionnaire = ({
             questionnaireResponse={questionnaireResponse}
             setQuestionnaireResponse={setQuestionnaireResponse}
             content={content}
+            collectAnswer={collectAnswer}
         />
     );
 };

@@ -3,7 +3,8 @@ module.exports = {
     registerApi: 'http://localhost:5000/api/admins',
     deleteApi: 'http://localhost:5000/api/admins/:id',
     getUsers: 'http://localhost:5000/api/users',
-    getQuestionnaireResponse: 'http://localhost:5000/api/questionnaire-responses',
+    getQuestionnaireResponse:
+        'http://localhost:5000/api/questionnaire-responses',
     getUserById: 'http://localhost:5000/api/users/:id',
     addUser: 'http://localhost:5000/api/users/add',
     updateUser: 'http://localhost:5000/api/users/update/:id',
