@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-// import { content } from '../../data/LanguageContent';
 
 import LanguageSelectionModal from '../../compositions/LanguageSelectionModal/LanguageSelectionModal';
 import Navbar from '../../compositions/Navbar/Navbar';
