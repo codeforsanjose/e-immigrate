@@ -34,7 +34,7 @@ const LoginBox = (props) => {
         return (
             <Redirect
                 to={{
-                    pathname: '/users',
+                    pathname: '/dashboard',
                     state: { name: loginBoxState.name },
                 }}
             />

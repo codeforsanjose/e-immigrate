@@ -12,6 +12,11 @@ router.route('/').get((req, res) => {
         .catch((err) => console.log(err));
 });
 
+router.route('/email').post((req, res) => {
+    const responsesToEmail = req.body.responsesToEmail;
+    console.log('responses to email', responsesToEmail);
+});
+
 router.route('/:id').get((req, res) => {
     Questionnaire.findById(req.params.id)
         .then((questionnaireResponse) => res.json(questionnaireResponse))

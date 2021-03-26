@@ -1,12 +1,15 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { sendRequest } from '../../sendRequest/sendRequest';
-import { getQuestionnaireResponse } from '../../sendRequest/apis';
+import {
+    getQuestionnaireResponse,
+    emailQuestionnaireResponse,
+} from '../../sendRequest/apis';
 import { getAuthToken } from '../../utilities/auth_utils';
 import './AdminDashboard.css';
 
 const AdminDashboard = (props) => {
     const [questionnaireResponses, setQuestionnaireResponses] = useState([]);
-    const [selectedResponses, setSelectedResponses] = useState([]);
+    const [adminSelectedResponses, setSelectedResponses] = useState([]);
     useEffect(() => {
         const jwt = getAuthToken();
         if (jwt === null) {
@@ -25,15 +28,18 @@ const AdminDashboard = (props) => {
         }
     }, [props.history]);
 
-    const selectResponseCheckbox = (e, index) => {
-        const found = selectedResponses.find((item) => item === index);
-        if (found) {
-            const selectedResponsesFiltered = selectedResponses.filter(
-                (item) => item === index
-            );
-            setSelectedResponses(selectedResponsesFiltered);
+    const selectResponseCheckbox = (index) => {
+        const found = adminSelectedResponses.includes((item) => item === index);
+        if (!found) {
+            //no fuond then add to selected responses
+            setSelectedResponses([...adminSelectedResponses, index]);
         } else {
-            setSelectedResponses([...selectedResponses, index]);
+            // found it so remove to uncheck
+            const updatedSelection = adminSelectedResponses.filter(
+                (res) => res !== index
+            );
+            console.log('updated selected', updatedSelection);
+            setSelectedResponses(updatedSelection);
         }
     };
     const overviewMarkup = useMemo(() => {
@@ -60,7 +66,10 @@ const AdminDashboard = (props) => {
                             ? 'red-outline'
                             : 'green-outline';
                     const answerMarkup = (
-                        <article className={`answer ${flagIt}`}>
+                        <article
+                            key={`td-answer-${index}`}
+                            className={`answer ${flagIt}`}
+                        >
                             <b>{index + 1}.</b>
                             <span>
                                 {questionKey}:
@@ -83,12 +92,7 @@ const AdminDashboard = (props) => {
                         <section>
                             <input
                                 type="checkbox"
-                                checked={selectedResponses.find(
-                                    (item) => item === index
-                                )}
-                                onClick={(e) =>
-                                    selectResponseCheckbox(e, index)
-                                }
+                                onClick={(e) => selectResponseCheckbox(index)}
                             />
                         </section>
                     </td>
@@ -105,13 +109,47 @@ const AdminDashboard = (props) => {
             <tbody>{responsesMarkup}</tbody>
         </table>
     );
-
+    const sendSelectedUsersToAgencies = (e) => {
+        console.log(
+            'here are the ones we selected by index',
+            adminSelectedResponses
+        );
+        console.log(
+            'oh and the questionnaireResponses',
+            questionnaireResponses
+        );
+        const responsesToEmail = adminSelectedResponses.map(
+            (responseSelected) => questionnaireResponses[responseSelected]
+        );
+        console.log('responses selected', responsesToEmail);
+        const requestObj = {
+            url: emailQuestionnaireResponse,
+            method: 'POST',
+            body: JSON.stringify({
+                responsesToEmail: responsesToEmail,
+            }),
+        };
+        const jwt = getAuthToken();
+        const headers = {
+            Authorization: `Bearer ${jwt}`,
+        };
+        sendRequest(requestObj, headers).then((response) => {
+            console.log('wow success response', response);
+        });
+        // display alert of sent?
+    };
+    console.log('selecteedResponses', adminSelectedResponses);
     return (
         <section className="AdminDashboard">
             <article className="overview-container">
                 <h3>Overview</h3>
                 {overviewMarkup}
             </article>
+            <section>
+                <button onClick={sendSelectedUsersToAgencies}>
+                    Send Email
+                </button>
+            </section>
             <section>
                 <h3>Details</h3>
                 {responsesTable}
