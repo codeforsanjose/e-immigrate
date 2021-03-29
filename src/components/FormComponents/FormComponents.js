@@ -29,19 +29,20 @@ export const Radio = ({
             {answers &&
                 answers.map((option) => (
                     <div key={`${slug}-${option}`} className="Radio">
-                        <input
-                            type="radio"
-                            id={`${slug}-${option}`}
-                            name={slug}
-                            required={required}
-                            value={option}
-                            className="RadioButton"
-                            {...bindField(slug)}
-                            onChange={(e) =>
-                                collectAnswer(slug, e.target.value)
-                            }
-                        />
-                        <label htmlFor={slug} className="RadioLabel">
+                        <label className="RadioLabel">
+                            <input
+                                type="radio"
+                                id={`${slug}-${option}`}
+                                name={slug}
+                                required={required}
+                                value={option}
+                                className="RadioButton"
+                                {...bindField(slug)}
+                                onChange={(e) =>
+                                    collectAnswer(slug, e.target.value)
+                                }
+                            />
+
                             {option}
                         </label>
                         <span className="RequiredError">
@@ -67,22 +68,22 @@ export const RadioWithFollowUp = ({
             {answers &&
                 answers.map((option) => (
                     <div key={`${slug}-${option}`} className="Radio">
-                        <input
-                            type="radio"
-                            id={`${slug}-${option}`}
-                            name={slug}
-                            required={required}
-                            value={option}
-                            onChange={(e) => {
-                                collectAnswer(slug, e.target.value);
-                                option === 'Yes'
-                                    ? setShowFollowUp(true)
-                                    : setShowFollowUp(false);
-                            }}
-                            className="RadioButton"
-                            {...bindField(slug)}
-                        />
-                        <label htmlFor={slug} className="RadioLabel">
+                        <label className="RadioLabel">
+                            <input
+                                type="radio"
+                                id={`${slug}-${option}`}
+                                name={slug}
+                                required={required}
+                                value={option}
+                                onChange={(e) => {
+                                    collectAnswer(slug, e.target.value);
+                                    option === 'Yes'
+                                        ? setShowFollowUp(true)
+                                        : setShowFollowUp(false);
+                                }}
+                                className="RadioButton"
+                                {...bindField(slug)}
+                            />
                             {option}
                         </label>
                         <span className="RequiredError">
