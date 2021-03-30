@@ -38,7 +38,9 @@ const MainContainer = () => {
     const [videoState, setVideoState] = useState({ hasWatchedVideo: false });
     const { hasWatchedVideo } = videoState;
     const [questions, setQuestions] = useState(LOCALSTORE_QUESTIONS);
-    const [questionnaireResponse, setQuestionnaireResponse] = useState({});
+    const [questionnaireResponse, setQuestionnaireResponse] = useState({
+        languageCode: language,
+    });
     const [content, setContent] = useState(LOCALSTORE_CONTENT);
 
     const browserLanguage =
@@ -96,7 +98,8 @@ const MainContainer = () => {
             url: addQuestionnaireResponse,
             method: 'POST',
             body: JSON.stringify({
-                title: 'test resonse for this questionnaire',
+                title: questionnaireTitle,
+                language: language,
                 questionnaireResponse: userAnswers,
             }),
         };

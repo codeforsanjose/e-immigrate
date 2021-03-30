@@ -25,6 +25,7 @@ router.route('/:id').get((req, res) => {
 
 router.route('/add').post((req, res) => {
     const title = req.body.title;
+    const language = req.body.language;
     const questionnaireResponse = req.body.questionnaireResponse;
 
     //todo: extract userEmail, name from request.body
@@ -34,6 +35,7 @@ router.route('/add').post((req, res) => {
 
     const newQuestionnaireResponse = new Questionnaire({
         title,
+        language,
         questionnaireResponse,
     });
 
