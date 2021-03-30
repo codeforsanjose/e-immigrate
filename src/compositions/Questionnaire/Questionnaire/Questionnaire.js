@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Button from '../../../components/Button/Button';
 import Question from '../Question/Question';
 import useMarkFieldAsTouched from '../hooks/useMarkFieldAsTouched';
@@ -15,11 +15,22 @@ const QuestionnaireForm = ({
     setQuestionnaireResponse,
     content = { step2ProceedButton3: '' },
     collectAnswer,
+    categoryIndex,
+    setCategoryIndex,
+    categories,
 }) => {
     const onSubmit = (e) => {
-        e.preventDefault();
-        setAllFieldsTouched();
+        // e.preventDefault();
         submitQuestionnaireResponse(questionnaireResponse);
+    };
+
+    const nextStep = () => {
+        setAllFieldsTouched();
+        if (categoryIndex < categories.length - 1) {
+            setCategoryIndex(categoryIndex + 1);
+        } else {
+            return onSubmit();
+        }
     };
 
     return (
@@ -33,8 +44,7 @@ const QuestionnaireForm = ({
             <Button
                 label={content.step2ProceedButton3}
                 type="submit"
-                className="FormElement"
-                onClick={onSubmit}
+                onClick={nextStep}
             />
         </div>
     );
@@ -56,7 +66,6 @@ const Questions = ({
                 <Question
                     key={question.id}
                     question={question}
-                    className="FormElement"
                     bindField={bindField}
                     followUpQuestions={questions.filter(
                         (q) => q.parentQuestionSlug === question.slug
@@ -75,15 +84,25 @@ const Questionnaire = ({
     setQuestionnaireResponse,
     content,
 }) => {
+    const categories = ['Basic Info', 'Waiver Flag', 'Red Flag'];
+    const [categoryIndex, setCategoryIndex] = useState(0);
     const filteredQuestions = questions.filter(
-        (q) => q.category === 'Red Flag' || q.category === 'Basic Info'
+        (q) => q.category === categories[categoryIndex]
     );
+
     const [bindField, setAllFieldsTouched] = useMarkFieldAsTouched();
     const collectAnswer = (slug, answer) => {
         const answeredQuestion = Object.assign({}, questionnaireResponse);
         answeredQuestion[slug] = answer;
         setQuestionnaireResponse(answeredQuestion);
     };
+
+    const totalNumberOfQuestions = questions.filter(
+        (q) =>
+            q.category === 'Basic Info' ||
+            q.category === 'Waiver Flag' ||
+            q.category === 'Red Flag'
+    ).length;
 
     return (
         <QuestionnaireForm
@@ -96,6 +115,9 @@ const Questionnaire = ({
             setQuestionnaireResponse={setQuestionnaireResponse}
             content={content}
             collectAnswer={collectAnswer}
+            categoryIndex={categoryIndex}
+            setCategoryIndex={setCategoryIndex}
+            categories={categories}
         />
     );
 };

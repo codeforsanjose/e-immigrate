@@ -167,6 +167,12 @@ const MainContainer = () => {
                                     />
                                 </Route>
                                 <Route path="/questionnaire">
+                                    <ProgressBar
+                                        content={content}
+                                        step="2"
+                                        nextStep={nextStep}
+                                        previousStep={previousStep}
+                                    />
                                     <Questionnaire
                                         questions={questions}
                                         submitQuestionnaireResponse={
