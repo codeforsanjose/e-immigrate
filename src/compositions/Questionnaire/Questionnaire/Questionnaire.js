@@ -19,6 +19,7 @@ const QuestionnaireForm = ({
     setCategoryIndex,
     categories,
 }) => {
+    const [errors, setErrors] = useState({});
     const onSubmit = (e) => {
         // e.preventDefault();
         submitQuestionnaireResponse(questionnaireResponse);
@@ -34,7 +35,10 @@ const QuestionnaireForm = ({
             }
         });
         setAllFieldsTouched();
-        if (allRequiredFieldsCompleted) {
+        if (
+            allRequiredFieldsCompleted &&
+            !Object.values(errors).includes(true)
+        ) {
             if (categoryIndex < categories.length - 1) {
                 setCategoryIndex((prev) => prev + 1);
             } else {
@@ -50,6 +54,7 @@ const QuestionnaireForm = ({
                 bindField={bindField}
                 questions={questions}
                 collectAnswer={collectAnswer}
+                setErrors={setErrors}
             />
             <Button
                 label={content.step2ProceedButton3}
@@ -65,6 +70,7 @@ const Questions = ({
     bindField,
     questions,
     collectAnswer,
+    setErrors,
 }) => (
     <>
         {filteredQuestions.map((question) => {
@@ -81,6 +87,7 @@ const Questions = ({
                         (q) => q.parentQuestionSlug === question.slug
                     )}
                     collectAnswer={collectAnswer}
+                    setErrors={setErrors}
                 />
             );
         })}
