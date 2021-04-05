@@ -7,7 +7,6 @@ const DEFAULT_HEADERS = {
 };
 
 const sendRequest = (requestObj, headers = DEFAULT_HEADERS) => {
-    // console.log('requestObj :>> ', requestObj);
     const url = 'http://localhost:5000/api/questionnaires/add';
     const response = fetch(url, { ...requestObj, headers }).then((data) =>
         data.json()

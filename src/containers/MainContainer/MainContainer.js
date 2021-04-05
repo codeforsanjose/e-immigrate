@@ -47,11 +47,12 @@ const MainContainer = () => {
         window.navigator.userLanguage || window.navigator.language;
 
     useEffect(() => {
-        setLanguage(browserLanguage.substring(0, 2));
         const locallyStoredLanguage = localStorage.getItem('preferredLanguage');
         if (locallyStoredLanguage) {
-            setLanguage(locallyStoredLanguage);
+            setLanguage(locallyStoredLanguage.slice(1, -1));
             setShowModal(false);
+        } else {
+            setLanguage(browserLanguage.split('-')[0]);
         }
     }, [browserLanguage]);
 

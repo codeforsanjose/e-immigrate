@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import './FormComponents.css';
 
@@ -126,6 +126,7 @@ export const Checkbox = ({
 };
 
 export const TextInput = ({ slug, required, bindField, collectAnswer }) => {
+    const [inputState, setInputState] = useState('');
     return (
         <>
             <input
@@ -164,6 +165,10 @@ export const DropDown = ({
     bindField,
     collectAnswer,
 }) => {
+    useEffect(() => {
+        collectAnswer(slug, answers[0]);
+    }, []);
+
     return (
         <>
             <select
@@ -229,7 +234,7 @@ export const Zip = ({ slug, required, bindField, collectAnswer }) => {
         <>
             <input
                 type="text"
-                pattern="[0-9]*"
+                pattern="[0-9]{5}"
                 id={slug}
                 name={slug}
                 required={required}

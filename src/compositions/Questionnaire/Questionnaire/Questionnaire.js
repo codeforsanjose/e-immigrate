@@ -24,12 +24,22 @@ const QuestionnaireForm = ({
         submitQuestionnaireResponse(questionnaireResponse);
     };
 
-    const nextStep = () => {
+    const nextStep = (e) => {
+        e.preventDefault();
+        const allRequiredFieldsCompleted = filteredQuestions.every((q) => {
+            if (q.required && !questionnaireResponse[q.slug]) {
+                return false;
+            } else {
+                return true;
+            }
+        });
         setAllFieldsTouched();
-        if (categoryIndex < categories.length - 1) {
-            setCategoryIndex(categoryIndex + 1);
-        } else {
-            return onSubmit();
+        if (allRequiredFieldsCompleted) {
+            if (categoryIndex < categories.length - 1) {
+                setCategoryIndex((prev) => prev + 1);
+            } else {
+                return onSubmit();
+            }
         }
     };
 
@@ -97,6 +107,37 @@ const Questionnaire = ({
         setQuestionnaireResponse(answeredQuestion);
     };
 
+    return (
+        <>
+            <QuestionnaireProgressBar
+                questions={questions}
+                questionnaireResponse={questionnaireResponse}
+            />
+            <QuestionnaireForm
+                filteredQuestions={filteredQuestions}
+                bindField={bindField}
+                questions={questions}
+                setAllFieldsTouched={setAllFieldsTouched}
+                submitQuestionnaireResponse={submitQuestionnaireResponse}
+                questionnaireResponse={questionnaireResponse}
+                setQuestionnaireResponse={setQuestionnaireResponse}
+                content={content}
+                collectAnswer={collectAnswer}
+                categoryIndex={categoryIndex}
+                setCategoryIndex={setCategoryIndex}
+                categories={categories}
+            />
+        </>
+    );
+};
+
+export default Questionnaire;
+
+const QuestionnaireProgressBar = ({ questions, questionnaireResponse }) => {
+    const numberOfScreeningQuestions = questions.filter(
+        (q) => q.category === 'Workshop Eligibility'
+    ).length;
+
     const totalNumberOfQuestions = questions.filter(
         (q) =>
             q.category === 'Basic Info' ||
@@ -104,22 +145,20 @@ const Questionnaire = ({
             q.category === 'Red Flag'
     ).length;
 
+    // console.log(
+    //     'questionnaireResponse :>> ',
+    //     questionnaireResponse,
+    //     Object.keys(questionnaireResponse).length
+    // );
+
     return (
-        <QuestionnaireForm
-            filteredQuestions={filteredQuestions}
-            bindField={bindField}
-            questions={questions}
-            setAllFieldsTouched={setAllFieldsTouched}
-            submitQuestionnaireResponse={submitQuestionnaireResponse}
-            questionnaireResponse={questionnaireResponse}
-            setQuestionnaireResponse={setQuestionnaireResponse}
-            content={content}
-            collectAnswer={collectAnswer}
-            categoryIndex={categoryIndex}
-            setCategoryIndex={setCategoryIndex}
-            categories={categories}
-        />
+        <progress
+            max={totalNumberOfQuestions}
+            value={
+                Object.keys(questionnaireResponse).length -
+                numberOfScreeningQuestions -
+                1
+            }
+        ></progress>
     );
 };
-
-export default Questionnaire;
