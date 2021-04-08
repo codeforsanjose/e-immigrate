@@ -29,17 +29,27 @@ const AdminDashboard = (props) => {
     }, [props.history]);
 
     const selectResponseCheckbox = (index) => {
+        console.log('-----------------------------------');
+        console.log('the bloody index passed to be selected ', index);
+        console.log('tadminSelectedResponses ', adminSelectedResponses);
         const found = adminSelectedResponses.includes((item) => item === index);
-        if (!found) {
-            //no fuond then add to selected responses
-            setSelectedResponses([...adminSelectedResponses, index]);
-        } else {
+        console.log('IS IT FOUND', found);
+        if (found) {
             // found it so remove to uncheck
             const updatedSelection = adminSelectedResponses.filter(
                 (res) => res !== index
             );
             console.log('updated selected', updatedSelection);
-            setSelectedResponses(updatedSelection);
+            setSelectedResponses((prevState) => {
+                console.log('sooo this still does it -------->', prevState);
+                return updatedSelection;
+            });
+        } else {
+            //no fuond then add to selected responses
+            setSelectedResponses((prevState) => {
+                console.log('sooo this still does it wat??', prevState);
+                return [...prevState, index];
+            });
         }
     };
     const overviewMarkup = useMemo(() => {
@@ -90,10 +100,20 @@ const AdminDashboard = (props) => {
                     </td>
                     <td>
                         <section>
-                            <input
+                            {/* <input
                                 type="checkbox"
+                                onClick={(e) =>
+                                    selectResponseCheckbox(e, index)
+                                }
+                            /> */}
+                            <div
+                                className={
+                                    adminSelectedResponses.includes(index)
+                                        ? `checkbox check`
+                                        : 'checkbox'
+                                }
                                 onClick={(e) => selectResponseCheckbox(index)}
-                            />
+                            ></div>
                         </section>
                     </td>
                     <td>
@@ -138,7 +158,7 @@ const AdminDashboard = (props) => {
         });
         // display alert of sent?
     };
-    console.log('selecteedResponses', adminSelectedResponses);
+    //console.log('selecteedResponses', adminSelectedResponses);
     return (
         <section className="AdminDashboard">
             <article className="overview-container">

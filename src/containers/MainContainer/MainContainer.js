@@ -35,7 +35,7 @@ const MainContainer = () => {
     const [language, setLanguage] = useState(LOCALSTORE_LANGUAGE);
     const [showModal, setShowModal] = useState(true);
     const [step, setStep] = useState(0);
-    const [videoState, setVideoState] = useState({ hasWatchedVideo: false });
+    const [videoState, setVideoState] = useState({ hasWatchedVideo: true });
     const { hasWatchedVideo } = videoState;
     const [questions, setQuestions] = useState(LOCALSTORE_QUESTIONS);
     const [questionnaireResponse, setQuestionnaireResponse] = useState({
