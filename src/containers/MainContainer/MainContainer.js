@@ -115,6 +115,11 @@ const MainContainer = () => {
     const nextStep = () => changeStep(step + 1);
     const previousStep = () => changeStep(step - 1);
     const updatedContentForProcessOverview = { ...content, ...videoState };
+    const collectAnswer = (slug, answer) => {
+        const answeredQuestion = Object.assign({}, questionnaireResponse);
+        answeredQuestion[slug] = answer;
+        setQuestionnaireResponse(answeredQuestion);
+    };
     return (
         <div className="MainContainer">
             <div className="wrapper">
@@ -146,6 +151,7 @@ const MainContainer = () => {
                                         setQuestionnaireResponse={
                                             setQuestionnaireResponse
                                         }
+                                        collectAnswer={collectAnswer}
                                     />
                                 </Route>
                                 <Route path="/overview">
@@ -189,6 +195,7 @@ const MainContainer = () => {
                                             setQuestionnaireResponse
                                         }
                                         content={content}
+                                        collectAnswer={collectAnswer}
                                     />
                                 </Route>
                             </Switch>
