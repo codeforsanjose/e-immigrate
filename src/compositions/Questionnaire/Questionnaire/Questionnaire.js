@@ -56,7 +56,11 @@ const QuestionnaireForm = ({
                 setErrors={setErrors}
             />
             <Button
-                label={content.step2ProceedButton3}
+                label={
+                    categoryIndex < categories.length - 1
+                        ? content.step2ProceedButton2
+                        : content.step2ProceedButton3
+                }
                 type="submit"
                 onClick={nextStep}
             />
