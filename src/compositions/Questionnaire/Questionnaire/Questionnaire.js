@@ -29,6 +29,7 @@ const QuestionnaireForm = ({
                 bindField={bindField}
                 questions={questions}
                 collectAnswer={collectAnswer}
+                content={content}
             />
             <Button
                 label={content.step2ProceedButton3}
@@ -45,6 +46,7 @@ const Questions = ({
     bindField,
     questions,
     collectAnswer,
+    content,
 }) => (
     <>
         {filteredQuestions.map((question) => {
@@ -62,6 +64,7 @@ const Questions = ({
                         (q) => q.parentQuestionSlug === question.slug
                     )}
                     collectAnswer={collectAnswer}
+                    content={content}
                 />
             );
         })}
