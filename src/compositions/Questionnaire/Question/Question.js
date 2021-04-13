@@ -21,6 +21,7 @@ const Question = ({
     bindField,
     followUpQuestions,
     collectAnswer,
+    setErrors,
     content,
 }) => {
     const [showFollowUp, setShowFollowUp] = useState(false);
@@ -126,6 +127,7 @@ const Question = ({
                         required={q.required}
                         bindField={bindField}
                         collectAnswer={collectAnswer}
+                        setErrors={setErrors}
                         content={content}
                     />
                 );
@@ -136,6 +138,7 @@ const Question = ({
                         required={q.required}
                         bindField={bindField}
                         collectAnswer={collectAnswer}
+                        setErrors={setErrors}
                         content={content}
                     />
                 );

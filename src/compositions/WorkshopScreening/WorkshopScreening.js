@@ -10,6 +10,7 @@ const WorkshopScreening = ({
     questions,
     questionnaireResponse,
     setQuestionnaireResponse,
+    collectAnswer,
 }) => {
     const [question1, setQuestion1] = useState('');
     const [question2, setQuestion2] = useState('');
@@ -21,11 +22,6 @@ const WorkshopScreening = ({
         (q) => q.category === 'Workshop Eligibility'
     );
     const [bindField] = useMarkFieldAsTouched();
-
-    const addResponse = (content, question, response) => {
-        questionnaireResponse[question] = response;
-    };
-
     return (
         <div className="WorkshopScreening">
             <h1>{content.screeningHeader}</h1>
@@ -44,7 +40,7 @@ const WorkshopScreening = ({
                 setShowModal={setShowModal}
                 date={date}
                 setDate={setDate}
-                addResponse={addResponse}
+                collectAnswer={collectAnswer}
             />
             <Modal
                 showModal={showModal}

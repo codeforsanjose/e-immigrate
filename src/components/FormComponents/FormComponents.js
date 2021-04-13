@@ -1,5 +1,4 @@
-import React from 'react';
-import { content } from '../../data/LanguageContent';
+import React, { useEffect } from 'react';
 
 import './FormComponents.css';
 
@@ -156,7 +155,13 @@ export const TextInput = ({
     );
 };
 
-export const TextArea = ({ slug, required, bindField, collectAnswer }) => {
+export const TextArea = ({
+    slug,
+    required,
+    bindField,
+    collectAnswer,
+    content,
+}) => {
     return (
         <>
             <textarea
@@ -180,6 +185,10 @@ export const DropDown = ({
     collectAnswer,
     content,
 }) => {
+    useEffect(() => {
+        collectAnswer(slug, answers[0]);
+    }, []);
+
     return (
         <>
             <select
@@ -228,6 +237,7 @@ export const PhoneNumber = ({
     required,
     bindField,
     collectAnswer,
+    setErrors,
     content,
 }) => {
     return (
@@ -240,25 +250,46 @@ export const PhoneNumber = ({
                 required={required}
                 className="TextInput"
                 {...bindField(slug)}
-                onChange={(e) => collectAnswer(slug, e.target.value)}
+                onChange={(e) => {
+                    if (e.target.checkValidity()) {
+                        setErrors((prev) => ({ ...prev, [slug]: false }));
+                    } else {
+                        setErrors((prev) => ({ ...prev, [slug]: true }));
+                    }
+                    collectAnswer(slug, e.target.value);
+                }}
             />
             <div className="RequiredError">*{content.errorMessagePhone}</div>
         </>
     );
 };
 
-export const Zip = ({ slug, required, bindField, collectAnswer, content }) => {
+export const Zip = ({
+    slug,
+    required,
+    bindField,
+    collectAnswer,
+    setErrors,
+    content,
+}) => {
     return (
         <>
             <input
                 type="text"
-                pattern="[0-9]*"
+                pattern="[0-9]{5}"
                 id={slug}
                 name={slug}
                 required={required}
                 className="TextInput"
                 {...bindField(slug)}
-                onChange={(e) => collectAnswer(slug, e.target.value)}
+                onChange={(e) => {
+                    if (e.target.checkValidity()) {
+                        setErrors((prev) => ({ ...prev, [slug]: false }));
+                    } else {
+                        setErrors((prev) => ({ ...prev, [slug]: true }));
+                    }
+                    collectAnswer(slug, e.target.value);
+                }}
             />
             <div className="RequiredError">*{content.errorMessageZip}</div>
         </>

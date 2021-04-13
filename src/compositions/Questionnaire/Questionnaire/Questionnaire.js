@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Button from '../../../components/Button/Button';
 import Question from '../Question/Question';
 import useMarkFieldAsTouched from '../hooks/useMarkFieldAsTouched';
@@ -15,11 +15,35 @@ const QuestionnaireForm = ({
     setQuestionnaireResponse,
     content = { step2ProceedButton3: '' },
     collectAnswer,
+    categoryIndex,
+    setCategoryIndex,
+    categories,
 }) => {
+    const [errors, setErrors] = useState({});
     const onSubmit = (e) => {
-        e.preventDefault();
-        setAllFieldsTouched();
         submitQuestionnaireResponse(questionnaireResponse);
+    };
+
+    const nextStep = (e) => {
+        e.preventDefault();
+        const allRequiredFieldsCompleted = filteredQuestions.every((q) => {
+            if (q.required && !questionnaireResponse[q.slug]) {
+                return false;
+            } else {
+                return true;
+            }
+        });
+        setAllFieldsTouched();
+        if (
+            allRequiredFieldsCompleted &&
+            !Object.values(errors).includes(true)
+        ) {
+            if (categoryIndex < categories.length - 1) {
+                setCategoryIndex((prev) => prev + 1);
+            } else {
+                return onSubmit();
+            }
+        }
     };
 
     return (
@@ -29,13 +53,17 @@ const QuestionnaireForm = ({
                 bindField={bindField}
                 questions={questions}
                 collectAnswer={collectAnswer}
+                setErrors={setErrors}
                 content={content}
             />
             <Button
-                label={content.step2ProceedButton3}
+                label={
+                    categoryIndex < categories.length - 1
+                        ? content.step2ProceedButton2
+                        : content.step2ProceedButton3
+                }
                 type="submit"
-                className="FormElement"
-                onClick={onSubmit}
+                onClick={nextStep}
             />
         </div>
     );
@@ -46,6 +74,7 @@ const Questions = ({
     bindField,
     questions,
     collectAnswer,
+    setErrors,
     content,
 }) => (
     <>
@@ -58,12 +87,12 @@ const Questions = ({
                 <Question
                     key={question.id}
                     question={question}
-                    className="FormElement"
                     bindField={bindField}
                     followUpQuestions={questions.filter(
                         (q) => q.parentQuestionSlug === question.slug
                     )}
                     collectAnswer={collectAnswer}
+                    setErrors={setErrors}
                     content={content}
                 />
             );
@@ -77,17 +106,14 @@ const Questionnaire = ({
     questionnaireResponse,
     setQuestionnaireResponse,
     content,
+    collectAnswer,
 }) => {
+    const categories = ['Basic Info', 'Waiver Flag', 'Red Flag'];
+    const [categoryIndex, setCategoryIndex] = useState(0);
     const filteredQuestions = questions.filter(
-        (q) => q.category === 'Red Flag' || q.category === 'Basic Info'
+        (q) => q.category === categories[categoryIndex]
     );
     const [bindField, setAllFieldsTouched] = useMarkFieldAsTouched();
-    const collectAnswer = (slug, answer) => {
-        const answeredQuestion = Object.assign({}, questionnaireResponse);
-        answeredQuestion[slug] = answer;
-        setQuestionnaireResponse(answeredQuestion);
-    };
-
     return (
         <QuestionnaireForm
             filteredQuestions={filteredQuestions}
@@ -99,6 +125,9 @@ const Questionnaire = ({
             setQuestionnaireResponse={setQuestionnaireResponse}
             content={content}
             collectAnswer={collectAnswer}
+            categoryIndex={categoryIndex}
+            setCategoryIndex={setCategoryIndex}
+            categories={categories}
         />
     );
 };

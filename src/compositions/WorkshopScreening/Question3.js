@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Button from '../../components/Button/Button';
+import { format } from 'date-fns';
 import { enUS } from 'date-fns/locale';
 import { DatePicker } from 'react-nice-dates';
 
@@ -8,27 +9,25 @@ import 'react-nice-dates/build/style.css';
 const Question3 = ({
     q,
     bindField,
-    setQuestion3,
     setShowModal,
     date,
     setDate,
-    addResponse,
     content,
+    collectAnswer,
 }) => {
     if (q) {
+        const onClick = (e) => {
+            e.preventDefault();
+            collectAnswer(
+                q.slug,
+                date && format(date, 'MM/dd/yyyy', { locale: enUS })
+            );
+            setShowModal(true);
+        };
         return (
             <div className="DatePicker">
                 <div className="QuestionText">{q.text}</div>
-                <form
-                    onSubmit={(event) => {
-                        event.preventDefault();
-                        setShowModal(true);
-                        const formData = new FormData(event.target);
-                        const data = Object.fromEntries(formData.entries());
-                        setQuestion3(data[q.slug]);
-                        addResponse(q.slug, data[q.slug]);
-                    }}
-                >
+                <div>
                     <DatePicker
                         date={date}
                         onDateChange={setDate}
@@ -52,8 +51,9 @@ const Question3 = ({
                     <Button
                         type="submit"
                         label={content.screeningProceedButton}
+                        onClick={onClick}
                     />
-                </form>
+                </div>
             </div>
         );
     } else {
