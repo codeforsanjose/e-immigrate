@@ -21,6 +21,7 @@ const Question = ({
     bindField,
     followUpQuestions,
     collectAnswer,
+    setErrors,
 }) => {
     const [showFollowUp, setShowFollowUp] = useState(false);
 
@@ -117,6 +118,7 @@ const Question = ({
                         required={q.required}
                         bindField={bindField}
                         collectAnswer={collectAnswer}
+                        setErrors={setErrors}
                     />
                 );
             case 'zip':
@@ -126,6 +128,7 @@ const Question = ({
                         required={q.required}
                         bindField={bindField}
                         collectAnswer={collectAnswer}
+                        setErrors={setErrors}
                     />
                 );
             default:

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import './FormComponents.css';
 
@@ -126,6 +126,7 @@ export const Checkbox = ({
 };
 
 export const TextInput = ({ slug, required, bindField, collectAnswer }) => {
+    const [inputState, setInputState] = useState('');
     return (
         <>
             <input
@@ -164,6 +165,10 @@ export const DropDown = ({
     bindField,
     collectAnswer,
 }) => {
+    useEffect(() => {
+        collectAnswer(slug, answers[0]);
+    }, []);
+
     return (
         <>
             <select
@@ -203,7 +208,13 @@ export const Email = ({ slug, required, bindField, collectAnswer }) => {
     );
 };
 
-export const PhoneNumber = ({ slug, required, bindField, collectAnswer }) => {
+export const PhoneNumber = ({
+    slug,
+    required,
+    bindField,
+    collectAnswer,
+    setErrors,
+}) => {
     return (
         <>
             <input
@@ -214,7 +225,14 @@ export const PhoneNumber = ({ slug, required, bindField, collectAnswer }) => {
                 required={required}
                 className="TextInput"
                 {...bindField(slug)}
-                onChange={(e) => collectAnswer(slug, e.target.value)}
+                onChange={(e) => {
+                    if (e.target.checkValidity()) {
+                        setErrors((prev) => ({ ...prev, [slug]: false }));
+                    } else {
+                        setErrors((prev) => ({ ...prev, [slug]: true }));
+                    }
+                    collectAnswer(slug, e.target.value);
+                }}
             />
             <div className="RequiredError">
                 *This field is required. Please use the following format:
@@ -224,18 +242,31 @@ export const PhoneNumber = ({ slug, required, bindField, collectAnswer }) => {
     );
 };
 
-export const Zip = ({ slug, required, bindField, collectAnswer }) => {
+export const Zip = ({
+    slug,
+    required,
+    bindField,
+    collectAnswer,
+    setErrors,
+}) => {
     return (
         <>
             <input
                 type="text"
-                pattern="[0-9]*"
+                pattern="[0-9]{5}"
                 id={slug}
                 name={slug}
                 required={required}
                 className="TextInput"
                 {...bindField(slug)}
-                onChange={(e) => collectAnswer(slug, e.target.value)}
+                onChange={(e) => {
+                    if (e.target.checkValidity()) {
+                        setErrors((prev) => ({ ...prev, [slug]: false }));
+                    } else {
+                        setErrors((prev) => ({ ...prev, [slug]: true }));
+                    }
+                    collectAnswer(slug, e.target.value);
+                }}
             />
             <div className="RequiredError">
                 *This field is required. Please use the following format: #####
