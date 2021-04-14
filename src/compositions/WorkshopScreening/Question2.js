@@ -15,25 +15,30 @@ const Question2 = ({ q, bindField, setQuestion2, content, collectAnswer }) => {
                     <div className="QuestionText">{q.text}</div>
                     {answers &&
                         answers.map((option) => (
-                            <div key={`${q.slug}-${option}`} className="Radio">
-                                <label className="RadioLabel">
-                                    <input
-                                        type="radio"
-                                        id={`${q.slug}-${option}`}
-                                        name={q.slug}
-                                        required={q.required}
-                                        value={option}
-                                        className="RadioButton"
-                                        {...bindField(q.slug)}
-                                        onChange={(e) => {
-                                            collectAnswer(
-                                                q.slug,
-                                                e.target.value
-                                            );
-                                            setQuestion2Answer(e.target.value);
-                                        }}
-                                    />
-                                    {option}
+                            <div key={`${q.slug}-${option}`}>
+                                <label className="Radio">
+                                    <span className="RadioInput">
+                                        <input
+                                            type="radio"
+                                            id={`${q.slug}-${option}`}
+                                            name={q.slug}
+                                            required={q.required}
+                                            value={option}
+                                            className="RadioButton"
+                                            {...bindField(q.slug)}
+                                            onChange={(e) => {
+                                                collectAnswer(
+                                                    q.slug,
+                                                    e.target.value
+                                                );
+                                                setQuestion2Answer(
+                                                    e.target.value
+                                                );
+                                            }}
+                                        />
+                                        <span className="RadioControl"></span>
+                                    </span>
+                                    <span className="RadioLabel">{option}</span>
                                 </label>
                                 <span className="RequiredError">
                                     *{content.errorMessage}

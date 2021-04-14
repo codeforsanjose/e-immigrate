@@ -25,7 +25,7 @@ p {
 }
 
 .WorkshopScreening .nice-dates input {
-    border: 2px solid var(--color-bluegray);
+    border: 2px solid var(--color-foggyBlue);
     border-radius: 10px;
     font-size: 1rem;
     padding: 10px 12px;

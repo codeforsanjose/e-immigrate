@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 
 import './FormComponents.css';
 
-export const Date = ({ slug, required, bindField }) => {
+export const Date = ({ slug, required, bindField, content }) => {
     return (
         <>
             <input
@@ -12,7 +12,7 @@ export const Date = ({ slug, required, bindField }) => {
                 className="TextInput"
                 {...bindField(slug)}
             />
-            <div className="RequiredError">*This field is required</div>
+            <div className="RequiredError">*{content.errorMessage}</div>
         </>
     );
 };
@@ -23,30 +23,33 @@ export const Radio = ({
     answers,
     bindField,
     collectAnswer,
+    content,
 }) => {
     return (
         <div className="RadioGroup">
             {answers &&
                 answers.map((option) => (
-                    <div key={`${slug}-${option}`} className="Radio">
-                        <label className="RadioLabel">
-                            <input
-                                type="radio"
-                                id={`${slug}-${option}`}
-                                name={slug}
-                                required={required}
-                                value={option}
-                                className="RadioButton"
-                                {...bindField(slug)}
-                                onChange={(e) =>
-                                    collectAnswer(slug, e.target.value)
-                                }
-                            />
-
-                            {option}
+                    <div key={`${slug}-${option}`}>
+                        <label className="Radio">
+                            <span className="RadioInput">
+                                <input
+                                    type="radio"
+                                    id={`${slug}-${option}`}
+                                    name={slug}
+                                    required={required}
+                                    value={option}
+                                    className="RadioButton"
+                                    {...bindField(slug)}
+                                    onChange={(e) =>
+                                        collectAnswer(slug, e.target.value)
+                                    }
+                                />
+                                <span className="RadioControl"></span>
+                            </span>
+                            <span className="RadioLabel">{option}</span>
                         </label>
                         <span className="RequiredError">
-                            *This field is required
+                            *{content.errorMessage}
                         </span>
                     </div>
                 ))}
@@ -62,32 +65,36 @@ export const RadioWithFollowUp = ({
     showFollowUp,
     setShowFollowUp,
     collectAnswer,
+    content,
 }) => {
     return (
         <div className="RadioGroup">
             {answers &&
                 answers.map((option) => (
-                    <div key={`${slug}-${option}`} className="Radio">
-                        <label className="RadioLabel">
-                            <input
-                                type="radio"
-                                id={`${slug}-${option}`}
-                                name={slug}
-                                required={required}
-                                value={option}
-                                onChange={(e) => {
-                                    collectAnswer(slug, e.target.value);
-                                    option === 'Yes'
-                                        ? setShowFollowUp(true)
-                                        : setShowFollowUp(false);
-                                }}
-                                className="RadioButton"
-                                {...bindField(slug)}
-                            />
-                            {option}
+                    <div key={`${slug}-${option}`}>
+                        <label className="Radio">
+                            <span className="RadioInput">
+                                <input
+                                    type="radio"
+                                    id={`${slug}-${option}`}
+                                    name={slug}
+                                    required={required}
+                                    value={option}
+                                    onChange={(e) => {
+                                        collectAnswer(slug, e.target.value);
+                                        option === 'Yes'
+                                            ? setShowFollowUp(true)
+                                            : setShowFollowUp(false);
+                                    }}
+                                    className="RadioButton"
+                                    {...bindField(slug)}
+                                />
+                                <span className="RadioControl"></span>
+                            </span>
+                            <span className="RadioLabel">{option}</span>
                         </label>
                         <span className="RequiredError">
-                            *This field is required
+                            *{content.errorMessage}
                         </span>
                     </div>
                 ))}
@@ -101,6 +108,7 @@ export const Checkbox = ({
     answers,
     bindField,
     collectAnswer,
+    content,
 }) => {
     return (
         <div>
@@ -125,8 +133,13 @@ export const Checkbox = ({
     );
 };
 
-export const TextInput = ({ slug, required, bindField, collectAnswer }) => {
-    const [inputState, setInputState] = useState('');
+export const TextInput = ({
+    slug,
+    required,
+    bindField,
+    collectAnswer,
+    content,
+}) => {
     return (
         <>
             <input
@@ -137,12 +150,18 @@ export const TextInput = ({ slug, required, bindField, collectAnswer }) => {
                 {...bindField(slug)}
                 onChange={(e) => collectAnswer(slug, e.target.value)}
             />
-            <div className="RequiredError">*This field is required</div>
+            <div className="RequiredError">*{content.errorMessage}</div>
         </>
     );
 };
 
-export const TextArea = ({ slug, required, bindField, collectAnswer }) => {
+export const TextArea = ({
+    slug,
+    required,
+    bindField,
+    collectAnswer,
+    content,
+}) => {
     return (
         <>
             <textarea
@@ -153,7 +172,7 @@ export const TextArea = ({ slug, required, bindField, collectAnswer }) => {
                 {...bindField(slug)}
                 onChange={(e) => collectAnswer(slug, e.target.value)}
             />
-            <div className="RequiredError">*This field is required</div>
+            <div className="RequiredError">*{content.errorMessage}</div>
         </>
     );
 };
@@ -164,6 +183,7 @@ export const DropDown = ({
     answers,
     bindField,
     collectAnswer,
+    content,
 }) => {
     useEffect(() => {
         collectAnswer(slug, answers[0]);
@@ -184,12 +204,18 @@ export const DropDown = ({
                         );
                     })}
             </select>
-            <div className="RequiredError">*This field is required</div>
+            <div className="RequiredError">*{content.errorMessage}</div>
         </>
     );
 };
 
-export const Email = ({ slug, required, bindField, collectAnswer }) => {
+export const Email = ({
+    slug,
+    required,
+    bindField,
+    collectAnswer,
+    content,
+}) => {
     return (
         <>
             <input
@@ -201,9 +227,7 @@ export const Email = ({ slug, required, bindField, collectAnswer }) => {
                 {...bindField(slug)}
                 onChange={(e) => collectAnswer(slug, e.target.value)}
             />
-            <div className="RequiredError">
-                *This field is required. Please use valid email format
-            </div>
+            <div className="RequiredError">*{content.errorMessageEmail}</div>
         </>
     );
 };
@@ -214,6 +238,7 @@ export const PhoneNumber = ({
     bindField,
     collectAnswer,
     setErrors,
+    content,
 }) => {
     return (
         <>
@@ -234,10 +259,7 @@ export const PhoneNumber = ({
                     collectAnswer(slug, e.target.value);
                 }}
             />
-            <div className="RequiredError">
-                *This field is required. Please use the following format:
-                ###-###-####
-            </div>
+            <div className="RequiredError">*{content.errorMessagePhone}</div>
         </>
     );
 };
@@ -248,6 +270,7 @@ export const Zip = ({
     bindField,
     collectAnswer,
     setErrors,
+    content,
 }) => {
     return (
         <>
@@ -268,9 +291,7 @@ export const Zip = ({
                     collectAnswer(slug, e.target.value);
                 }}
             />
-            <div className="RequiredError">
-                *This field is required. Please use the following format: #####
-            </div>
+            <div className="RequiredError">*{content.errorMessageZip}</div>
         </>
     );
 };

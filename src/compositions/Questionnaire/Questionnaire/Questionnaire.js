@@ -54,6 +54,7 @@ const QuestionnaireForm = ({
                 questions={questions}
                 collectAnswer={collectAnswer}
                 setErrors={setErrors}
+                content={content}
             />
             <Button
                 label={
@@ -74,6 +75,7 @@ const Questions = ({
     questions,
     collectAnswer,
     setErrors,
+    content,
 }) => (
     <>
         {filteredQuestions.map((question) => {
@@ -91,6 +93,7 @@ const Questions = ({
                     )}
                     collectAnswer={collectAnswer}
                     setErrors={setErrors}
+                    content={content}
                 />
             );
         })}
