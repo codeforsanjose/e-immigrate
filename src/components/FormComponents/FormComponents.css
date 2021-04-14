@@ -26,12 +26,10 @@
     display: grid;
     grid-template-columns: min-content auto;
     gap: 0.5rem;
-    /* align-items: center; */
 }
 
 .RadioGroup .RadioInput {
     display: flex;
-    /* align-items: center; */
 }
 
 .RadioGroup .RadioInput input {

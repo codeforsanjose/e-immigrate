@@ -1,7 +1,6 @@
 .buttonComponent {
     min-width: 200px;
     padding: 8px 16px;
-    /* height: 50px; */
     background-color: var(--color-primary);
     color: var(--color-text-secondary);
     border-radius: 25px;
