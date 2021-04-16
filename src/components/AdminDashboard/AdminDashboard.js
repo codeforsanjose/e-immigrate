@@ -9,7 +9,6 @@ import './AdminDashboard.css';
 
 const AdminDashboard = (props) => {
     const [questionnaireResponses, setQuestionnaireResponses] = useState([]);
-    const [adminSelectedResponses, setSelectedResponses] = useState([]);
     useEffect(() => {
         const jwt = getAuthToken();
         if (jwt === null) {
@@ -29,18 +28,18 @@ const AdminDashboard = (props) => {
     }, [props.history]);
 
     const selectResponseCheckbox = (index) => {
-        const found = adminSelectedResponses.includes((item) => item === index);
-        if (!found) {
-            //no fuond then add to selected responses
-            setSelectedResponses([...adminSelectedResponses, index]);
-        } else {
-            // found it so remove to uncheck
-            const updatedSelection = adminSelectedResponses.filter(
-                (res) => res !== index
-            );
-            console.log('updated selected', updatedSelection);
-            setSelectedResponses(updatedSelection);
-        }
+        const updatedResponses = questionnaireResponses.map(
+            (item, responseIndex) => {
+                return {
+                    ...item,
+                    selected:
+                        responseIndex === index
+                            ? !item.selected
+                            : item.selected,
+                };
+            }
+        );
+        setQuestionnaireResponses(updatedResponses);
     };
     const overviewMarkup = useMemo(() => {
         return (
@@ -110,18 +109,9 @@ const AdminDashboard = (props) => {
         </table>
     );
     const sendSelectedUsersToAgencies = (e) => {
-        console.log(
-            'here are the ones we selected by index',
-            adminSelectedResponses
-        );
-        console.log(
-            'oh and the questionnaireResponses',
-            questionnaireResponses
-        );
-        const responsesToEmail = adminSelectedResponses.map(
+        const responsesToEmail = [].map(
             (responseSelected) => questionnaireResponses[responseSelected]
         );
-        console.log('responses selected', responsesToEmail);
         const requestObj = {
             url: emailQuestionnaireResponse,
             method: 'POST',
@@ -138,7 +128,6 @@ const AdminDashboard = (props) => {
         });
         // display alert of sent?
     };
-    console.log('selecteedResponses', adminSelectedResponses);
     return (
         <section className="AdminDashboard">
             <article className="overview-container">
