@@ -22,7 +22,24 @@ const AdminDashboard = (props) => {
             };
             sendRequest(requestObj, headers).then((response) => {
                 const { responses = [] } = response;
-                setQuestionnaireResponses(responses);
+                const updatedResponses = responses.map((item) => {
+                    const { questionnaireResponse = {} } = item;
+                    const newFlag = Object.entries(
+                        questionnaireResponse
+                    ).reduce((acc, [key, value]) => {
+                        return key !== 'male'
+                            ? value.toUpperCase() === 'YES'
+                                ? 'red'
+                                : acc
+                            : acc;
+                    }, 'green');
+                    return {
+                        ...item,
+                        selected: false,
+                        flag: newFlag,
+                    };
+                });
+                setQuestionnaireResponses(updatedResponses);
             });
         }
     }, [props.history]);
@@ -41,6 +58,17 @@ const AdminDashboard = (props) => {
         );
         setQuestionnaireResponses(updatedResponses);
     };
+    const toggleFlag = (index) => {
+        const updatedResponses = questionnaireResponses.map(
+            (item, responseIndex) => {
+                return {
+                    ...item,
+                    flag: responseIndex === index ? 'green' : item.flag,
+                };
+            }
+        );
+        setQuestionnaireResponses(updatedResponses);
+    };
     const overviewMarkup = useMemo(() => {
         return (
             <section className="details-container">
@@ -52,17 +80,15 @@ const AdminDashboard = (props) => {
     const responsesMarkup = useMemo(() => {
         return questionnaireResponses.map((response, index) => {
             const { questionnaireResponse = {} } = response;
-            const colorFlag = Object.values(questionnaireResponse).find(
-                (answer) => answer.toUpperCase() === 'YES'
-            )
-                ? 'red'
-                : 'green';
             const allAnswers = Object.keys(questionnaireResponse).reduce(
                 (accumulator, questionKey, index) => {
                     const flagIt =
-                        questionnaireResponse[questionKey].toUpperCase() ===
-                        'YES'
-                            ? 'red-outline'
+                        questionKey !== 'male'
+                            ? questionnaireResponse[
+                                  questionKey
+                              ].toUpperCase() === 'YES'
+                                ? 'red-outline'
+                                : 'green-outline'
                             : 'green-outline';
                     const answerMarkup = (
                         <article
@@ -85,7 +111,10 @@ const AdminDashboard = (props) => {
                 <tr key={response._id}>
                     <td>{index + 1}</td>
                     <td>
-                        <div className={`flag ${colorFlag}`}></div>
+                        <div
+                            className={`flag ${response.flag}`}
+                            onClick={(e) => toggleFlag(index)}
+                        ></div>
                     </td>
                     <td>
                         <section>
