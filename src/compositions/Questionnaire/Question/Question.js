@@ -21,6 +21,8 @@ const Question = ({
     bindField,
     followUpQuestions,
     collectAnswer,
+    setErrors,
+    content,
 }) => {
     const [showFollowUp, setShowFollowUp] = useState(false);
 
@@ -35,6 +37,7 @@ const Question = ({
                         required={q.required}
                         bindField={bindField}
                         collectAnswer={collectAnswer}
+                        content={content}
                     />
                 );
             case 'radio':
@@ -49,6 +52,7 @@ const Question = ({
                             setShowFollowUp={setShowFollowUp}
                             className="RadioGroup"
                             collectAnswer={collectAnswer}
+                            content={content}
                         />
                     );
                 } else {
@@ -60,6 +64,7 @@ const Question = ({
                             bindField={bindField}
                             className="RadioGroup"
                             collectAnswer={collectAnswer}
+                            content={content}
                         />
                     );
                 }
@@ -71,6 +76,7 @@ const Question = ({
                         answers={q.answerSelections.split(', ')}
                         bindField={bindField}
                         collectAnswer={collectAnswer}
+                        content={content}
                     />
                 );
             case 'input':
@@ -80,6 +86,7 @@ const Question = ({
                         required={q.required}
                         bindField={bindField}
                         collectAnswer={collectAnswer}
+                        content={content}
                     />
                 );
             case 'textArea':
@@ -89,6 +96,7 @@ const Question = ({
                         required={q.required}
                         bindField={bindField}
                         collectAnswer={collectAnswer}
+                        content={content}
                     />
                 );
             case 'dropDown':
@@ -99,6 +107,7 @@ const Question = ({
                         answers={q.answerSelections.split(', ')}
                         bindField={bindField}
                         collectAnswer={collectAnswer}
+                        content={content}
                     />
                 );
             case 'email':
@@ -108,6 +117,7 @@ const Question = ({
                         required={q.required}
                         bindField={bindField}
                         collectAnswer={collectAnswer}
+                        content={content}
                     />
                 );
             case 'phoneNumber':
@@ -117,6 +127,8 @@ const Question = ({
                         required={q.required}
                         bindField={bindField}
                         collectAnswer={collectAnswer}
+                        setErrors={setErrors}
+                        content={content}
                     />
                 );
             case 'zip':
@@ -126,6 +138,8 @@ const Question = ({
                         required={q.required}
                         bindField={bindField}
                         collectAnswer={collectAnswer}
+                        setErrors={setErrors}
+                        content={content}
                     />
                 );
             default:

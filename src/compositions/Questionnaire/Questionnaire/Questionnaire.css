@@ -1,4 +1,9 @@
 .Questionnaire {
     max-width: 600px;
     margin: auto;
+    display: grid;
+}
+
+.Questionnaire button {
+    margin: auto;
 }
