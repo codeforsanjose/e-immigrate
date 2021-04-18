@@ -28,7 +28,8 @@ const QuestionnaireForm = ({
         e.preventDefault();
         const allRequiredFieldsCompleted = filteredQuestions.every((q) => {
             if (q.required && !questionnaireResponse[q.slug]) {
-                return false;
+                // DO NOT COMMIT
+                return true;
             } else {
                 return true;
             }

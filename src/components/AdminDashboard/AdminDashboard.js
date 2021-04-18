@@ -138,8 +138,8 @@ const AdminDashboard = (props) => {
         </table>
     );
     const sendSelectedUsersToAgencies = (e) => {
-        const responsesToEmail = [].map(
-            (responseSelected) => questionnaireResponses[responseSelected]
+        const responsesToEmail = questionnaireResponses.filter(
+            (responseSelected) => responseSelected.selected
         );
         const requestObj = {
             url: emailQuestionnaireResponse,
@@ -155,7 +155,7 @@ const AdminDashboard = (props) => {
         sendRequest(requestObj, headers).then((response) => {
             console.log('wow success response', response);
         });
-        // display alert of sent?
+        // display alert of emails sent?
     };
     return (
         <section className="AdminDashboard">
