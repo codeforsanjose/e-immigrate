@@ -15,9 +15,6 @@
     width: 20px;
     height: 20px;
 }
-.AdminDashboard .checkbox.check {
-    background-color: blueviolet;
-}
 
 .AdminDashboard .all-answers {
     display: grid;
