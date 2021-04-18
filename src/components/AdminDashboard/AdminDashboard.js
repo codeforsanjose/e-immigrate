@@ -7,6 +7,7 @@ import {
 import { getAuthToken } from '../../utilities/auth_utils';
 import './AdminDashboard.css';
 
+const AGENCIES = ['ALA', 'CAIR', 'CC', 'CET', 'IRC', 'PARS'];
 const AdminDashboard = (props) => {
     const [questionnaireResponses, setQuestionnaireResponses] = useState([]);
     useEffect(() => {
@@ -77,6 +78,29 @@ const AdminDashboard = (props) => {
         );
     }, [questionnaireResponses]);
 
+    const firstOption = <option value="">Please select</option>;
+    const agenciesOptions = AGENCIES.map((agency, index) => {
+        return (
+            <option key={`agency-${index}`} value={agency}>
+                {agency}
+            </option>
+        );
+    });
+    const allOptions = [firstOption, agenciesOptions];
+
+    const selectAgencyForResponse = (e, index) => {
+        const updatedResponseWithAgency = questionnaireResponses.map(
+            (response, resIndex) => {
+                return resIndex === index
+                    ? {
+                          ...response,
+                          agency: e.target.value,
+                      }
+                    : response;
+            }
+        );
+        setQuestionnaireResponses(updatedResponseWithAgency);
+    };
     const responsesMarkup = useMemo(() => {
         return questionnaireResponses.map((response, index) => {
             const { questionnaireResponse = {} } = response;
@@ -123,6 +147,19 @@ const AdminDashboard = (props) => {
                                 onClick={(e) => selectResponseCheckbox(index)}
                             />
                         </section>
+                    </td>
+                    <td>
+                        <label for="agency-select">Assigned To:</label>
+                        <select
+                            id="agency-select"
+                            value={response.agency}
+                            onChange={(e) => selectAgencyForResponse(e, index)}
+                        >
+                            {allOptions}
+                        </select>
+                    </td>
+                    <td>
+                        <span>Email Sent: {response.emailSent || 'No'}</span>
                     </td>
                     <td>
                         <div className="all-answers">{allAnswers}</div>
