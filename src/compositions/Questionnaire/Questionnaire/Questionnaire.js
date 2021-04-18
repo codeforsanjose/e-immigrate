@@ -28,6 +28,13 @@ const QuestionnaireForm = ({
         e.preventDefault();
         const allRequiredFieldsCompleted = filteredQuestions.every((q) => {
             if (q.required && !questionnaireResponse[q.slug]) {
+                if (q.parentQuestionSlug) {
+                    if (questionnaireResponse[q.parentQuestionSlug] === 'Yes') {
+                        return false;
+                    } else {
+                        return true;
+                    }
+                }
                 return false;
             } else {
                 return true;

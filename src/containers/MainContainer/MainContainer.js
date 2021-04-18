@@ -59,6 +59,7 @@ const MainContainer = () => {
     const changeLanguage = (language) => {
         setLanguage(language);
         saveToStorage('preferredLanguage', language);
+        questionnaireResponse.languageCode = language;
     };
 
     const videoEndedHandler = (event) => {
@@ -95,6 +96,7 @@ const MainContainer = () => {
     }, [language]);
 
     const submitQuestionnaireResponse = (userAnswers) => {
+        console.log('userAnswers :>> ', userAnswers);
         const requestObj = {
             url: addQuestionnaireResponse,
             method: 'POST',
