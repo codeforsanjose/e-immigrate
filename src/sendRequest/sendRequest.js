@@ -8,7 +8,7 @@ const sendRequest = (requestObj, headers = DEFAULT_HEADERS) => {
     delete requestObj.url;
     return fetch(url, {
         ...requestObj,
-        headers: { ...headers },
+        headers: { ...headers, ...DEFAULT_HEADERS },
     }).then((data) => data.json());
 };
 

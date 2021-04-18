@@ -11,6 +11,11 @@
     overflow-x: scroll;
 }
 
+.AdminDashboard .checkbox {
+    width: 20px;
+    height: 20px;
+}
+
 .AdminDashboard .all-answers {
     display: grid;
     grid-gap: 16px;
