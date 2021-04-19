@@ -10,6 +10,7 @@ import { Switch, Route } from 'react-router-dom';
 import { sendRequest } from '../../sendRequest/sendRequest';
 import WorkshopScreening from '../../compositions/WorkshopScreening/WorkshopScreening';
 import ProcessOverview from '../../compositions/ProcessOverview/ProcessOverview';
+import { workshopTitle } from '../../data/LanguageOptions';
 
 import './MainContainer.css';
 import ProgressBar from '../../compositions/ProgressBar/ProgressBar';
@@ -22,16 +23,12 @@ import {
 import { getFromStorage, saveToStorage } from '../../utilities/storage_utils';
 
 const MainContainer = () => {
-    const questionnaireTitle = 'CIIT_Workshop_Spring_2021';
     const LOCALSTORE_LANGUAGE = getFromStorage('preferredLanguage') || 'en';
     const LOCALSTORE_CONTENT =
-        getFromStorage(
-            `${questionnaireTitle}-content-${LOCALSTORE_LANGUAGE}`
-        ) || {};
+        getFromStorage(`${workshopTitle}-content-${LOCALSTORE_LANGUAGE}`) || {};
     const LOCALSTORE_QUESTIONS =
-        getFromStorage(
-            `${questionnaireTitle}-questions-${LOCALSTORE_LANGUAGE}`
-        ) || [];
+        getFromStorage(`${workshopTitle}-questions-${LOCALSTORE_LANGUAGE}`) ||
+        [];
     const [language, setLanguage] = useState(LOCALSTORE_LANGUAGE);
     const [showModal, setShowModal] = useState(true);
     const [step, setStep] = useState(0);
@@ -70,12 +67,12 @@ const MainContainer = () => {
 
     useEffect(() => {
         const requestObj = {
-            url: `${getQuestions}/${questionnaireTitle}.${language}`,
+            url: `${getQuestions}/${workshopTitle}.${language}`,
         };
         sendRequest(requestObj).then((response) => {
             setQuestions(response.questions);
             saveToStorage(
-                `${questionnaireTitle}-questions-${language}`,
+                `${workshopTitle}-questions-${language}`,
                 response.questions
             );
         });
@@ -83,12 +80,12 @@ const MainContainer = () => {
 
     useEffect(() => {
         const requestObj = {
-            url: `${getTranslatedContent}/${questionnaireTitle}.${language}`,
+            url: `${getTranslatedContent}/${workshopTitle}.${language}`,
         };
         sendRequest(requestObj).then((response) => {
             setContent(response.content);
             saveToStorage(
-                `${questionnaireTitle}-content-${language}`,
+                `${workshopTitle}-content-${language}`,
                 response.content
             );
         });
@@ -99,7 +96,7 @@ const MainContainer = () => {
             url: addQuestionnaireResponse,
             method: 'POST',
             body: JSON.stringify({
-                title: questionnaireTitle,
+                title: workshopTitle,
                 language: language,
                 questionnaireResponse: userAnswers,
             }),

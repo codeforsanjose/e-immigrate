@@ -1,5 +1,5 @@
 import React from 'react';
-import { languageOptions } from '../../data/LanguageContent';
+import { languageOptions } from '../../data/LanguageOptions';
 import Button from '../../components/Button/Button';
 
 import './LanguageSelectionModal.css';
