@@ -15,7 +15,7 @@ const sendRequest = (requestObj, headers = DEFAULT_HEADERS) => {
 };
 
 const generateLanguageContent = () => {
-    xlsxFile('../src/data/content/Website Content.xlsx').then((rows) => {
+    xlsxFile('./Website Content.xlsx').then((rows) => {
         const data = rows.reduce((obj, row) => {
             for (let i = 1; i < row.length; i++) {
                 let languageObject = obj[LanguageOptions[i - 1].code];

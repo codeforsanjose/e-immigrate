@@ -1,6 +1,6 @@
-const WorkshopTitle = 'CIIT_Workshop_Spring_2021';
+export const workshopTitle = 'CIIT_Workshop_Spring_2021';
 
-const LanguageOptions = [
+export const languageOptions = [
     {
         code: 'en',
         full: 'English',
@@ -22,5 +22,3 @@ const LanguageOptions = [
         full: '普通话',
     },
 ];
-
-module.exports = { LanguageOptions, WorkshopTitle };

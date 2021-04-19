@@ -1,6 +1,6 @@
 import React from 'react';
 import { ReactComponent as LanguagePicker } from './LanguagePicker.svg';
-import { languageOptions } from '../../data/LanguageContent';
+import { languageOptions } from '../../data/LanguageOptions';
 
 import './LanguageDropdown.css';
 

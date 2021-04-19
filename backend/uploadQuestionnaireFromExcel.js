@@ -16,7 +16,7 @@ const sendRequest = (requestObj, headers = DEFAULT_HEADERS) => {
 
 const generateQuestionnaires = () => {
     LanguageOptions.map((language, idx) => {
-        xlsxFile('../src/data/questions/Questionnaire for Upload.xlsx', {
+        xlsxFile('./Questionnaire for Upload.xlsx', {
             sheet: idx + 1,
         }).then((rows) => {
             const data = [];
@@ -28,9 +28,10 @@ const generateQuestionnaires = () => {
                     text: row[3],
                     questionType: row[4],
                     answerSelections: row[5],
-                    required: row[6] === 'Yes' ? true : false,
-                    followUpQuestionSlug: row[7] ? row[7] : null,
-                    parentQuestionSlug: row[8] ? row[8] : null,
+                    answerValues: row[6],
+                    required: row[7] === 'Yes' ? true : false,
+                    followUpQuestionSlug: row[8] ? row[8] : null,
+                    parentQuestionSlug: row[9] ? row[9] : null,
                 });
             });
 
