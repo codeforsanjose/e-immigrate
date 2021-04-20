@@ -6,6 +6,9 @@ const questionnaireSchema = new Schema(
     {
         title: { type: String, required: false, unique: false },
         language: { type: String, required: false, unique: false },
+        flag: { type: String, required: false, unique: false },
+        emailSent: { type: Boolean, required: false, unique: false },
+        agency: { type: String, required: false, unique: false },
         questionnaireResponse: { type: Object, required: true },
     },
     {
@@ -13,9 +16,9 @@ const questionnaireSchema = new Schema(
     }
 );
 
-const Questionnaire = mongoose.model(
+const QuestionnaireResponse = mongoose.model(
     'QuestionnaireResponse',
     questionnaireSchema
 );
 
-module.exports = Questionnaire;
+module.exports = QuestionnaireResponse;

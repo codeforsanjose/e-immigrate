@@ -1,10 +1,12 @@
+const { response } = require('express');
 const express = require('express');
 const router = express.Router();
-const Questionnaire = require('../models/questionnaireResponse');
+const QuestionnaireResponse = require('../models/questionnaireResponse');
 const sendEmail = require('./sendEmail/sendEmail');
+const ObjectID = require('mongodb').ObjectID;
 
 router.route('/').get((req, res) => {
-    Questionnaire.find()
+    QuestionnaireResponse.find()
         .then((allResponses) => {
             const responsesInfo = { responses: allResponses };
             res.json(responsesInfo);
@@ -14,11 +16,29 @@ router.route('/').get((req, res) => {
 
 router.route('/email').post((req, res) => {
     const responsesToEmail = req.body.responsesToEmail;
-    console.log('responses to email', responsesToEmail);
+    for (const response of responsesToEmail) {
+        //send email
+        const { questionnaireResponse = {}, flag } = response;
+        const { email = '' } = questionnaireResponse;
+        const tempUpdatedSuccessEmail = {
+            ...response,
+            emailSent: true,
+        };
+        QuestionnaireResponse.updateOne(
+            { _id: ObjectID(response._id) },
+            tempUpdatedSuccessEmail,
+            (err, raw) => {
+                if (err) {
+                    console.log('updated something err is', err);
+                }
+            }
+        );
+    }
+    res.json({ msg: 'success' });
 });
 
 router.route('/:id').get((req, res) => {
-    Questionnaire.findById(req.params.id)
+    QuestionnaireResponse.findById(req.params.id)
         .then((questionnaireResponse) => res.json(questionnaireResponse))
         .catch((err) => console.log(err));
 });
@@ -33,7 +53,7 @@ router.route('/add').post((req, res) => {
     const userEmail = '';
     const userFirstName = '';
 
-    const newQuestionnaireResponse = new Questionnaire({
+    const newQuestionnaireResponse = new QuestionnaireResponse({
         title,
         language,
         questionnaireResponse,
@@ -43,13 +63,13 @@ router.route('/add').post((req, res) => {
         .save()
         .then(() => {
             // sendEmail(userEmail, userFirstName);
-            res.json('questionnaire response added');
+            res.json('QuestionnaireResponse response added');
         })
         .catch((err) => console.log(err));
 });
 
 router.route('/:id').delete((req, res) => {
-    Questionnaire.findByIdAndDelete(req.params.id)
+    QuestionnaireResponse.findByIdAndDelete(req.params.id)
         .then((users) => res.json('questionnaire response Deleted'))
         .catch((err) => console.log(err));
 });
