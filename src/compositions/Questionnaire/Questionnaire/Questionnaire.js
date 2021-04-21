@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Button from '../../../components/Button/Button';
 import Question from '../Question/Question';
 import useMarkFieldAsTouched from '../hooks/useMarkFieldAsTouched';
+import QuestionnaireIntro from '../QuestionnaireIntro/QuestionnaireIntro';
 
 import './Questionnaire.css';
 
@@ -20,6 +21,7 @@ const QuestionnaireForm = ({
     categories,
 }) => {
     const [errors, setErrors] = useState({});
+    const [introPage, setIntroPage] = useState(true);
     const onSubmit = (e) => {
         submitQuestionnaireResponse(questionnaireResponse);
     };
@@ -55,23 +57,32 @@ const QuestionnaireForm = ({
 
     return (
         <div className="Questionnaire">
-            <Questions
-                filteredQuestions={filteredQuestions}
-                bindField={bindField}
-                questions={questions}
-                collectAnswer={collectAnswer}
-                setErrors={setErrors}
-                content={content}
-            />
-            <Button
-                label={
-                    categoryIndex < categories.length - 1
-                        ? content.step2ProceedButton2
-                        : content.step2ProceedButton3
-                }
-                type="submit"
-                onClick={nextStep}
-            />
+            {introPage ? (
+                <QuestionnaireIntro
+                    content={content}
+                    setIntroPage={setIntroPage}
+                />
+            ) : (
+                <>
+                    <Questions
+                        filteredQuestions={filteredQuestions}
+                        bindField={bindField}
+                        questions={questions}
+                        collectAnswer={collectAnswer}
+                        setErrors={setErrors}
+                        content={content}
+                    />
+                    <Button
+                        label={
+                            categoryIndex < categories.length - 1
+                                ? content.step2ProceedButton2
+                                : content.step2ProceedButton3
+                        }
+                        type="submit"
+                        onClick={nextStep}
+                    />
+                </>
+            )}
         </div>
     );
 };
