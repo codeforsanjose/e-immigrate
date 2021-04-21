@@ -149,7 +149,7 @@ const AdminDashboard = (props) => {
                         </section>
                     </td>
                     <td>
-                        <label for="agency-select">Assigned To:</label>
+                        <label htmlFor="agency-select">Assigned To:</label>
                         <select
                             id="agency-select"
                             value={response.agency}
@@ -175,9 +175,12 @@ const AdminDashboard = (props) => {
         </table>
     );
     const sendSelectedUsersToAgencies = (e) => {
-        const responsesToEmail = questionnaireResponses.filter(
-            (responseSelected) => responseSelected.selected
-        );
+        const responsesToEmail = questionnaireResponses
+            .filter((responseSelected) => responseSelected.selected)
+            .map((response) => {
+                return { ...response, selected: undefined };
+            });
+
         const requestObj = {
             url: emailQuestionnaireResponse,
             method: 'POST',

@@ -1,15 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Questionnaire renders correctly 1`] = `
-<form
+<div
   className="Questionnaire"
-  onSubmit={[Function]}
 >
   <button
     className="buttonComponent"
     onClick={[Function]}
-  >
-    
-  </button>
-</form>
+  />
+</div>
 `;

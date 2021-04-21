@@ -46,6 +46,24 @@ exports[`App renders correctly 1`] = `
                 Tiếng Việt
               </button>
             </div>
+            <div>
+              <button
+                className="buttonComponent"
+                onClick={[Function]}
+                value="ko"
+              >
+                한국어
+              </button>
+            </div>
+            <div>
+              <button
+                className="buttonComponent"
+                onClick={[Function]}
+                value="cmn"
+              >
+                普通话
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -108,6 +126,18 @@ exports[`App renders correctly 1`] = `
                       value="vi"
                     >
                       Tiếng Việt
+                    </option>
+                    <option
+                      className="languageOption"
+                      value="ko"
+                    >
+                      한국어
+                    </option>
+                    <option
+                      className="languageOption"
+                      value="cmn"
+                    >
+                      普通话
                     </option>
                   </select>
                 </div>

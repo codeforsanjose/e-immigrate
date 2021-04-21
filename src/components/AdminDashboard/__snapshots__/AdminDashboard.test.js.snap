@@ -18,6 +18,13 @@ exports[`AdminDashboard renders correctly 1`] = `
     </section>
   </article>
   <section>
+    <button
+      onClick={[Function]}
+    >
+      Send Email
+    </button>
+  </section>
+  <section>
     <h3>
       Details
     </h3>
