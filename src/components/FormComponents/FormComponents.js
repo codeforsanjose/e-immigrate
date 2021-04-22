@@ -2,15 +2,15 @@ import React, { useEffect } from 'react';
 
 import './FormComponents.css';
 
-export const Date = ({ slug, required, bindField, content }) => {
+export const Date = ({ q, bindField, content }) => {
     return (
         <>
             <input
                 type="date"
-                name={slug}
-                required={required}
+                name={q.slug}
+                required={q.required}
                 className="TextInput"
-                {...bindField(slug)}
+                {...bindField(q.slug)}
             />
             <div className="RequiredError">*{content.errorMessage}</div>
         </>
@@ -18,9 +18,9 @@ export const Date = ({ slug, required, bindField, content }) => {
 };
 
 export const Radio = ({
-    slug,
-    required,
+    q,
     answers,
+    values,
     bindField,
     collectAnswer,
     content,
@@ -28,20 +28,20 @@ export const Radio = ({
     return (
         <div className="RadioGroup">
             {answers &&
-                answers.map((option) => (
-                    <div key={`${slug}-${option}`}>
+                answers.map((option, idx) => (
+                    <div key={`${q.slug}-${option}`}>
                         <label className="Radio">
                             <span className="RadioInput">
                                 <input
                                     type="radio"
-                                    id={`${slug}-${option}`}
-                                    name={slug}
-                                    required={required}
-                                    value={option}
+                                    id={`${q.slug}-${option}`}
+                                    name={q.slug}
+                                    required={q.required}
+                                    value={values[idx]}
                                     className="RadioButton"
-                                    {...bindField(slug)}
+                                    {...bindField(q.slug)}
                                     onChange={(e) =>
-                                        collectAnswer(slug, e.target.value)
+                                        collectAnswer(q.slug, e.target.value)
                                     }
                                 />
                                 <span className="RadioControl"></span>
@@ -58,9 +58,9 @@ export const Radio = ({
 };
 
 export const RadioWithFollowUp = ({
-    slug,
-    required,
+    q,
     answers,
+    values,
     bindField,
     showFollowUp,
     setShowFollowUp,
@@ -70,24 +70,24 @@ export const RadioWithFollowUp = ({
     return (
         <div className="RadioGroup">
             {answers &&
-                answers.map((option) => (
-                    <div key={`${slug}-${option}`}>
+                answers.map((option, idx) => (
+                    <div key={`${q.slug}-${option}`}>
                         <label className="Radio">
                             <span className="RadioInput">
                                 <input
                                     type="radio"
-                                    id={`${slug}-${option}`}
-                                    name={slug}
-                                    required={required}
-                                    value={option}
+                                    id={`${q.slug}-${option}`}
+                                    name={q.slug}
+                                    required={q.required}
+                                    value={values[idx]}
                                     onChange={(e) => {
-                                        collectAnswer(slug, e.target.value);
-                                        option === 'Yes'
+                                        collectAnswer(q.slug, e.target.value);
+                                        values[idx] === 'Yes'
                                             ? setShowFollowUp(true)
                                             : setShowFollowUp(false);
                                     }}
                                     className="RadioButton"
-                                    {...bindField(slug)}
+                                    {...bindField(q.slug)}
                                 />
                                 <span className="RadioControl"></span>
                             </span>
@@ -103,9 +103,9 @@ export const RadioWithFollowUp = ({
 };
 
 export const Checkbox = ({
-    slug,
-    required,
+    q,
     answers,
+    values,
     bindField,
     collectAnswer,
     content,
@@ -113,94 +113,77 @@ export const Checkbox = ({
     return (
         <div>
             {answers &&
-                answers.map((option) => (
+                answers.map((option, idx) => (
                     <div key={option}>
                         <input
                             type="checkbox"
-                            id={`${slug}-${option}`}
-                            name={slug}
-                            required={required}
-                            value={option}
-                            {...bindField(slug)}
+                            id={`${q.slug}-${option}`}
+                            name={q.slug}
+                            required={q.required}
+                            value={values[idx]}
+                            {...bindField(q.slug)}
                             onChange={(e) =>
-                                collectAnswer(slug, e.target.value)
+                                collectAnswer(q.slug, e.target.value)
                             }
                         />
-                        <label for={slug}>{option}</label>
+                        <label for={q.slug}>{option}</label>
                     </div>
                 ))}
         </div>
     );
 };
 
-export const TextInput = ({
-    slug,
-    required,
-    bindField,
-    collectAnswer,
-    content,
-}) => {
+export const TextInput = ({ q, bindField, collectAnswer, content }) => {
     return (
         <>
             <input
                 type="text"
-                name={slug}
-                required={required}
+                name={q.slug}
+                required={q.required}
                 className="TextInput"
-                {...bindField(slug)}
-                onChange={(e) => collectAnswer(slug, e.target.value)}
+                {...bindField(q.slug)}
+                onChange={(e) => collectAnswer(q.slug, e.target.value)}
             />
             <div className="RequiredError">*{content.errorMessage}</div>
         </>
     );
 };
 
-export const TextArea = ({
-    slug,
-    required,
-    bindField,
-    collectAnswer,
-    content,
-}) => {
+export const TextArea = ({ q, bindField, collectAnswer, content }) => {
     return (
         <>
             <textarea
                 rows="4"
-                name={slug}
-                required={required}
+                name={q.slug}
+                required={q.required}
                 className="TextInput"
-                {...bindField(slug)}
-                onChange={(e) => collectAnswer(slug, e.target.value)}
+                {...bindField(q.slug)}
+                onChange={(e) => collectAnswer(q.slug, e.target.value)}
             />
             <div className="RequiredError">*{content.errorMessage}</div>
         </>
     );
 };
 
-export const DropDown = ({
-    slug,
-    required,
-    answers,
-    bindField,
-    collectAnswer,
-    content,
-}) => {
+export const DropDown = ({ q, answers, bindField, collectAnswer, content }) => {
     useEffect(() => {
-        collectAnswer(slug, answers[0]);
+        collectAnswer(q.slug, answers[0]);
     }, []);
 
     return (
         <>
             <select
-                name={slug}
-                required={required}
-                {...bindField(slug)}
-                onChange={(e) => collectAnswer(slug, e.target.value)}
+                name={q.slug}
+                required={q.required}
+                {...bindField(q.slug)}
+                onChange={(e) => collectAnswer(q.slug, e.target.value)}
             >
                 {answers &&
                     answers.map((option) => {
                         return (
-                            <option key={`${slug}-${option}`}>{option}</option>
+                            <option key={`${q.slug}-${option}`}>
+                                {option}
+                            </option>
                         );
                     })}
             </select>
@@ -209,23 +192,17 @@ export const DropDown = ({
     );
 };
 
-export const Email = ({
-    slug,
-    required,
-    bindField,
-    collectAnswer,
-    content,
-}) => {
+export const Email = ({ q, bindField, collectAnswer, content }) => {
     return (
         <>
             <input
                 type="email"
-                id={slug}
-                name={slug}
-                required={required}
+                id={q.slug}
+                name={q.slug}
+                required={q.required}
                 className="TextInput"
-                {...bindField(slug)}
-                onChange={(e) => collectAnswer(slug, e.target.value)}
+                {...bindField(q.slug)}
+                onChange={(e) => collectAnswer(q.slug, e.target.value)}
             />
             <div className="RequiredError">*{content.errorMessageEmail}</div>
         </>
@@ -233,8 +210,7 @@ export const Email = ({
 };
 
 export const PhoneNumber = ({
-    slug,
-    required,
+    q,
     bindField,
     collectAnswer,
     setErrors,
@@ -245,18 +221,18 @@ export const PhoneNumber = ({
             <input
                 type="tel"
                 pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
-                id={slug}
-                name={slug}
-                required={required}
+                id={q.slug}
+                name={q.slug}
+                required={q.required}
                 className="TextInput"
-                {...bindField(slug)}
+                {...bindField(q.slug)}
                 onChange={(e) => {
                     if (e.target.checkValidity()) {
-                        setErrors((prev) => ({ ...prev, [slug]: false }));
+                        setErrors((prev) => ({ ...prev, [q.slug]: false }));
                     } else {
-                        setErrors((prev) => ({ ...prev, [slug]: true }));
+                        setErrors((prev) => ({ ...prev, [q.slug]: true }));
                     }
-                    collectAnswer(slug, e.target.value);
+                    collectAnswer(q.slug, e.target.value);
                 }}
             />
             <div className="RequiredError">*{content.errorMessagePhone}</div>
@@ -264,31 +240,24 @@ export const PhoneNumber = ({
     );
 };
 
-export const Zip = ({
-    slug,
-    required,
-    bindField,
-    collectAnswer,
-    setErrors,
-    content,
-}) => {
+export const Zip = ({ q, bindField, collectAnswer, setErrors, content }) => {
     return (
         <>
             <input
                 type="text"
                 pattern="[0-9]{5}"
-                id={slug}
-                name={slug}
-                required={required}
+                id={q.slug}
+                name={q.slug}
+                required={q.required}
                 className="TextInput"
-                {...bindField(slug)}
+                {...bindField(q.slug)}
                 onChange={(e) => {
                     if (e.target.checkValidity()) {
-                        setErrors((prev) => ({ ...prev, [slug]: false }));
+                        setErrors((prev) => ({ ...prev, [q.slug]: false }));
                     } else {
-                        setErrors((prev) => ({ ...prev, [slug]: true }));
+                        setErrors((prev) => ({ ...prev, [q.slug]: true }));
                     }
-                    collectAnswer(slug, e.target.value);
+                    collectAnswer(q.slug, e.target.value);
                 }}
             />
             <div className="RequiredError">*{content.errorMessageZip}</div>
