@@ -1,0 +1,52 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`questionnaire intro renders correctly 1`] = `
+<div
+  className="QuestionnaireIntro"
+>
+  <div>
+    <h1>
+      Step 2
+      : 
+      Questionnaire
+    </h1>
+    <h2>
+      Please complete the screening questionnaire
+    </h2>
+    <ul>
+      <li>
+        It takes about 10 minutes
+      </li>
+      <li>
+        Answer 25-30 questions
+      </li>
+    </ul>
+  </div>
+  <div>
+    <h1>
+      About the Screening Questionnaire
+    </h1>
+    <ul>
+      <li>
+        All your information will be kept confidential
+      </li>
+      <li>
+        Please answer truthfully and as best as you can remember
+      </li>
+      <li>
+        Please complete ALL the questions to the best of your ability
+      </li>
+    </ul>
+  </div>
+  <div
+    className="ButtonContainer"
+  >
+    <button
+      className="buttonComponent"
+      onClick={[Function]}
+    >
+      Begin Questionnaire
+    </button>
+  </div>
+</div>
+`;

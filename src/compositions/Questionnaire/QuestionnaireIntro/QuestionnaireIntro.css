@@ -14,19 +14,10 @@
 }
 
 .QuestionnaireIntro ul {
-    list-style-type: none;
-    margin: 0.5rem 0;
-}
-
-.QuestionnaireIntro ul li::before {
-    content: '\2022';
-    color: var(--color-red);
-    font-weight: 900;
-    display: inline-block;
-    margin: 0 11px 8px -6px;
+    list-style-image: url('../../../data/images/CIIT_bullet.svg');
 }
 
 .QuestionnaireIntro .ButtonContainer {
-    margin: 64px 0 16px;
+    margin: 48px 0 16px;
     display: grid;
 }
