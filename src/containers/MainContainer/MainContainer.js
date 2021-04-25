@@ -6,11 +6,12 @@ import Footer from '../../compositions/Footer/Footer';
 import LandingPage from '../../compositions/LandingPage/LandingPage';
 import Video from '../../compositions/Video/Video';
 import Questionnaire from '../../compositions/Questionnaire/Questionnaire/Questionnaire';
-import { Switch, Route } from 'react-router-dom';
+import { Switch, Route, useHistory } from 'react-router-dom';
 import { sendRequest } from '../../sendRequest/sendRequest';
 import WorkshopScreening from '../../compositions/WorkshopScreening/WorkshopScreening';
 import ProcessOverview from '../../compositions/ProcessOverview/ProcessOverview';
 import { workshopTitle } from '../../data/LanguageOptions';
+import Confirmation from '../../compositions/Confirmation/Confirmation';
 
 import './MainContainer.css';
 import ProgressBar from '../../compositions/ProgressBar/ProgressBar';
@@ -40,6 +41,7 @@ const MainContainer = () => {
     });
     const [content, setContent] = useState(LOCALSTORE_CONTENT);
 
+    let history = useHistory();
     const browserLanguage =
         window.navigator.userLanguage || window.navigator.language;
 
@@ -105,6 +107,7 @@ const MainContainer = () => {
         sendRequest(requestObj).then((response) => {
             console.log('success', response);
             // should redirect to thanks page
+            history.push('/confirmation');
         });
     };
     const changeStep = (nextStep) => {
@@ -195,6 +198,15 @@ const MainContainer = () => {
                                         content={content}
                                         collectAnswer={collectAnswer}
                                     />
+                                </Route>
+                                <Route path="/confirmation">
+                                    <ProgressBar
+                                        content={content}
+                                        step="3"
+                                        nextStep={nextStep}
+                                        previousStep={previousStep}
+                                    />
+                                    <Confirmation content={content} />
                                 </Route>
                             </Switch>
                         </div>
