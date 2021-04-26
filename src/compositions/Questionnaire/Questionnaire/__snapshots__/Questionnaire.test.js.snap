@@ -4,9 +4,35 @@ exports[`Questionnaire renders correctly 1`] = `
 <div
   className="Questionnaire"
 >
-  <button
-    className="buttonComponent"
-    onClick={[Function]}
-  />
+  <div
+    className="QuestionnaireIntro"
+  >
+    <div>
+      <h1>
+        :
+      </h1>
+      <h2 />
+      <ul>
+        <li />
+        <li />
+      </ul>
+    </div>
+    <div>
+      <h1 />
+      <ul>
+        <li />
+        <li />
+        <li />
+      </ul>
+    </div>
+    <div
+      className="ButtonContainer"
+    >
+      <button
+        className="buttonComponent"
+        onClick={[Function]}
+      />
+    </div>
+  </div>
 </div>
 `;

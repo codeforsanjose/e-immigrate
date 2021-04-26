@@ -1,0 +1,23 @@
+.QuestionnaireIntro {
+}
+
+.QuestionnaireIntro h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0 0 1rem 0;
+}
+
+.QuestionnaireIntro h2 {
+    font-size: 17px;
+    font-weight: 400;
+    margin: 0 0 0.5rem 0;
+}
+
+.QuestionnaireIntro ul {
+    list-style-image: url('../../../data/images/CIIT_bullet.svg');
+}
+
+.QuestionnaireIntro .ButtonContainer {
+    margin: 48px 0 16px;
+    display: grid;
+}
