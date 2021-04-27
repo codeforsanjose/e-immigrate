@@ -33,8 +33,7 @@ const Question = ({
             case 'date':
                 return (
                     <Date
-                        slug={q.slug}
-                        required={q.required}
+                        q={q}
                         bindField={bindField}
                         collectAnswer={collectAnswer}
                         content={content}
@@ -44,9 +43,9 @@ const Question = ({
                 if (q.followUpQuestionSlug) {
                     return (
                         <RadioWithFollowUp
-                            slug={q.slug}
-                            required={q.required}
+                            q={q}
                             answers={q.answerSelections.split(', ')}
+                            values={q.answerValues.split(', ')}
                             bindField={bindField}
                             showFollowUp={showFollowUp}
                             setShowFollowUp={setShowFollowUp}
@@ -58,9 +57,9 @@ const Question = ({
                 } else {
                     return (
                         <Radio
-                            slug={q.slug}
-                            required={q.required}
+                            q={q}
                             answers={q.answerSelections.split(', ')}
+                            values={q.answerValues.split(', ')}
                             bindField={bindField}
                             className="RadioGroup"
                             collectAnswer={collectAnswer}
@@ -71,9 +70,9 @@ const Question = ({
             case 'checkbox':
                 return (
                     <Checkbox
-                        slug={q.slug}
-                        required={q.required}
+                        q={q}
                         answers={q.answerSelections.split(', ')}
+                        values={q.answerValues.split(', ')}
                         bindField={bindField}
                         collectAnswer={collectAnswer}
                         content={content}
@@ -82,8 +81,7 @@ const Question = ({
             case 'input':
                 return (
                     <TextInput
-                        slug={q.slug}
-                        required={q.required}
+                        q={q}
                         bindField={bindField}
                         collectAnswer={collectAnswer}
                         content={content}
@@ -92,8 +90,7 @@ const Question = ({
             case 'textArea':
                 return (
                     <TextArea
-                        slug={q.slug}
-                        required={q.required}
+                        q={q}
                         bindField={bindField}
                         collectAnswer={collectAnswer}
                         content={content}
@@ -102,8 +99,7 @@ const Question = ({
             case 'dropDown':
                 return (
                     <DropDown
-                        slug={q.slug}
-                        required={q.required}
+                        q={q}
                         answers={q.answerSelections.split(', ')}
                         bindField={bindField}
                         collectAnswer={collectAnswer}
@@ -113,8 +109,7 @@ const Question = ({
             case 'email':
                 return (
                     <Email
-                        slug={q.slug}
-                        required={q.required}
+                        q={q}
                         bindField={bindField}
                         collectAnswer={collectAnswer}
                         content={content}
@@ -123,8 +118,7 @@ const Question = ({
             case 'phoneNumber':
                 return (
                     <PhoneNumber
-                        slug={q.slug}
-                        required={q.required}
+                        q={q}
                         bindField={bindField}
                         collectAnswer={collectAnswer}
                         setErrors={setErrors}
@@ -134,8 +128,7 @@ const Question = ({
             case 'zip':
                 return (
                     <Zip
-                        slug={q.slug}
-                        required={q.required}
+                        q={q}
                         bindField={bindField}
                         collectAnswer={collectAnswer}
                         setErrors={setErrors}

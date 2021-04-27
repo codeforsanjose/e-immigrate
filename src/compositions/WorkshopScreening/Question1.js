@@ -5,6 +5,7 @@ const Question1 = ({ q, bindField, setQuestion1, content, collectAnswer }) => {
     const [question1Answer, setQuestion1Answer] = useState(null);
     if (q) {
         const answers = q.answerSelections.split(', ');
+        const values = q.answerValues.split(', ');
         const onClick = (e) => {
             e.preventDefault();
             setQuestion1(question1Answer);
@@ -14,7 +15,7 @@ const Question1 = ({ q, bindField, setQuestion1, content, collectAnswer }) => {
                 <div className="RadioGroup">
                     <div className="QuestionText">{q.text}</div>
                     {answers &&
-                        answers.map((option) => (
+                        answers.map((option, idx) => (
                             <div key={`${q.slug}-${option}`}>
                                 <label className="Radio">
                                     <span className="RadioInput">
@@ -23,7 +24,7 @@ const Question1 = ({ q, bindField, setQuestion1, content, collectAnswer }) => {
                                             id={`${q.slug}-${option}`}
                                             name={q.slug}
                                             required={q.required}
-                                            value={option}
+                                            value={values[idx]}
                                             className="RadioButton"
                                             {...bindField(q.slug)}
                                             onChange={(e) => {
