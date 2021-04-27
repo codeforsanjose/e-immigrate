@@ -1,0 +1,35 @@
+.Confirmation {
+    max-width: 600px;
+    margin: auto;
+    display: grid;
+}
+
+.Confirmation h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0 0 1rem 0;
+}
+
+.Confirmation h2 {
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0 0 10px 0;
+}
+
+.Confirmation p {
+    font-size: 17px;
+    font-weight: 400;
+    margin: 0 0 0.5rem 0;
+}
+
+.Confirmation div {
+    margin: 0 0 54px 0;
+}
+
+.Confirmation ul {
+    list-style-image: url('../../data/images/CIIT_bullet.svg');
+}
+
+.Confirmation li {
+    margin-bottom: 1rem;
+}

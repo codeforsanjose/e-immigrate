@@ -21,12 +21,12 @@ exports[`Footer renders correctly 1`] = `
   <div
     className="textRow1"
   >
-    
+    test
   </div>
   <div
     className="textRow2"
   >
-    
+    test
   </div>
 </div>
 `;
