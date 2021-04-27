@@ -3,13 +3,17 @@ import { sendRequest } from '../../sendRequest/sendRequest';
 import {
     getQuestionnaireResponse,
     emailQuestionnaireResponse,
+    generateResponsesExcel,
+    getQuestions,
 } from '../../sendRequest/apis';
 import { getAuthToken } from '../../utilities/auth_utils';
 import './AdminDashboard.css';
+import { workshopTitle } from '../../data/LanguageOptions';
 
 const AGENCIES = ['ALA', 'CAIR', 'CC', 'CET', 'IRC', 'PARS'];
 const AdminDashboard = (props) => {
     const [questionnaireResponses, setQuestionnaireResponses] = useState([]);
+    const [questions, setQuestions] = useState();
     useEffect(() => {
         const jwt = getAuthToken();
         if (jwt === null) {
@@ -133,7 +137,6 @@ const AdminDashboard = (props) => {
                 },
                 []
             );
-
             return (
                 <tr key={response._id}>
                     <td>{index + 1}</td>
@@ -204,6 +207,40 @@ const AdminDashboard = (props) => {
         });
         // display alert of emails sent?
     };
+    const downloadResponsesExcel = (e) => {
+        const includedResponses = questionnaireResponses.filter(
+            (responseSelected) => responseSelected.selected
+        );
+        // .map((response) => {
+        //     return { ...response, selected: undefined };
+        // });
+        console.log('includedResponses :>> ', includedResponses);
+        const requestObj = {
+            url: generateResponsesExcel,
+            method: 'POST',
+            body: JSON.stringify({
+                questions: questions,
+                responses: includedResponses,
+            }),
+        };
+        console.log('requestObj :>> ', requestObj);
+        const jwt = getAuthToken();
+        const headers = {
+            Authorization: `Bearer ${jwt}`,
+        };
+        sendRequest(requestObj, headers).then((response) => {
+            console.log('success', response);
+        });
+    };
+    useEffect(() => {
+        const requestObj = {
+            url: `${getQuestions}/${workshopTitle}.en`,
+        };
+        sendRequest(requestObj).then((response) => {
+            setQuestions(response.questions);
+        });
+    }, []);
+
     return (
         <section className="AdminDashboard">
             <article className="overview-container">
@@ -214,6 +251,7 @@ const AdminDashboard = (props) => {
                 <button onClick={sendSelectedUsersToAgencies}>
                     Send Email
                 </button>
+                <button onClick={downloadResponsesExcel}>Download Excel</button>
             </section>
             <section>
                 <h3>Details</h3>
