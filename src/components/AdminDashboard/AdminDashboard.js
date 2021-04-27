@@ -30,15 +30,18 @@ const AdminDashboard = (props) => {
                     ).reduce((acc, [key, value]) => {
                         return key !== 'male'
                             ? value.toUpperCase() === 'YES'
-                                ? 'red'
+                                ? true
                                 : acc
                             : acc;
-                    }, 'green');
+                    }, false);
                     return {
                         ...item,
                         selected: false,
                         flag: newFlag,
                     };
+                });
+                updatedResponses.sort((itemA, itemB) => {
+                    return itemA.agency > itemB.agency ? 1 : -1;
                 });
                 setQuestionnaireResponses(updatedResponses);
             });
@@ -64,7 +67,7 @@ const AdminDashboard = (props) => {
             (item, responseIndex) => {
                 return {
                     ...item,
-                    flag: responseIndex === index ? 'green' : item.flag,
+                    flag: responseIndex === index ? !item.flag : item.flag,
                 };
             }
         );
@@ -136,7 +139,9 @@ const AdminDashboard = (props) => {
                     <td>{index + 1}</td>
                     <td>
                         <div
-                            className={`flag ${response.flag}`}
+                            className={`flag ${
+                                response.flag ? 'red' : 'green'
+                            }`}
                             onClick={(e) => toggleFlag(index)}
                         ></div>
                     </td>
@@ -159,7 +164,9 @@ const AdminDashboard = (props) => {
                         </select>
                     </td>
                     <td>
-                        <span>Email Sent: {response.emailSent || 'No'}</span>
+                        <span>
+                            Email Sent: {response.emailSent ? 'Yes' : 'No'}
+                        </span>
                     </td>
                     <td>
                         <div className="all-answers">{allAnswers}</div>
