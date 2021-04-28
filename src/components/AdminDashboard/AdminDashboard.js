@@ -3,6 +3,7 @@ import { sendRequest } from '../../sendRequest/sendRequest';
 import {
     getQuestionnaireResponse,
     emailQuestionnaireResponse,
+    agencyAssignURL,
 } from '../../sendRequest/apis';
 import { getAuthToken } from '../../utilities/auth_utils';
 import './AdminDashboard.css';
@@ -48,20 +49,6 @@ const AdminDashboard = (props) => {
         }
     }, [props.history]);
 
-    const selectResponseCheckbox = (index) => {
-        const updatedResponses = questionnaireResponses.map(
-            (item, responseIndex) => {
-                return {
-                    ...item,
-                    selected:
-                        responseIndex === index
-                            ? !item.selected
-                            : item.selected,
-                };
-            }
-        );
-        setQuestionnaireResponses(updatedResponses);
-    };
     const toggleFlag = (index) => {
         const updatedResponses = questionnaireResponses.map(
             (item, responseIndex) => {
@@ -91,18 +78,34 @@ const AdminDashboard = (props) => {
     });
     const allOptions = [firstOption, agenciesOptions];
 
-    const selectAgencyForResponse = (e, index) => {
-        const updatedResponseWithAgency = questionnaireResponses.map(
-            (response, resIndex) => {
-                return resIndex === index
-                    ? {
-                          ...response,
-                          agency: e.target.value,
-                      }
-                    : response;
-            }
-        );
-        setQuestionnaireResponses(updatedResponseWithAgency);
+    const assignResponseAgency = (e, resIndex) => {
+        const updatedResponses = questionnaireResponses.map((item, index) => {
+            return resIndex === index
+                ? {
+                      ...item,
+                      agency: e.target.value,
+                  }
+                : item;
+        });
+        const selectedResponseForAgency = {
+            ...questionnaireResponses[resIndex],
+            agency: e.target.value,
+        };
+        const requestObj = {
+            url: agencyAssignURL,
+            method: 'POST',
+            body: JSON.stringify({
+                responsesToEmail: [selectedResponseForAgency],
+            }),
+        };
+        const jwt = getAuthToken();
+        const headers = {
+            Authorization: `Bearer ${jwt}`,
+        };
+        sendRequest(requestObj, headers).then((response) => {
+            console.log('wow success response', response);
+            setQuestionnaireResponses(updatedResponses);
+        });
     };
     const responsesMarkup = useMemo(() => {
         return questionnaireResponses.map((response, index) => {
@@ -146,19 +149,11 @@ const AdminDashboard = (props) => {
                         ></div>
                     </td>
                     <td>
-                        <section>
-                            <input
-                                type="checkbox"
-                                onClick={(e) => selectResponseCheckbox(index)}
-                            />
-                        </section>
-                    </td>
-                    <td>
                         <label htmlFor="agency-select">Assigned To:</label>
                         <select
                             id="agency-select"
                             value={response.agency}
-                            onChange={(e) => selectAgencyForResponse(e, index)}
+                            onChange={(e) => assignResponseAgency(e, index)}
                         >
                             {allOptions}
                         </select>
@@ -181,12 +176,11 @@ const AdminDashboard = (props) => {
             <tbody>{responsesMarkup}</tbody>
         </table>
     );
+
     const sendSelectedUsersToAgencies = (e) => {
-        const responsesToEmail = questionnaireResponses
-            .filter((responseSelected) => responseSelected.selected)
-            .map((response) => {
-                return { ...response, selected: undefined };
-            });
+        const responsesToEmail = questionnaireResponses.filter(
+            (responseSelected) => !responseSelected.emailSent
+        );
 
         const requestObj = {
             url: emailQuestionnaireResponse,
@@ -200,9 +194,8 @@ const AdminDashboard = (props) => {
             Authorization: `Bearer ${jwt}`,
         };
         sendRequest(requestObj, headers).then((response) => {
-            console.log('wow success response', response);
+            window.location.reload();
         });
-        // display alert of emails sent?
     };
     return (
         <section className="AdminDashboard">
