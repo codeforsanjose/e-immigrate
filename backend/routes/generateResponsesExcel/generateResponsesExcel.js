@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const xl = require('excel4node');
+const fs = require('fs');
 
 router.route('/responses').post((req, res) => {
     const responses = req.body.responses;
@@ -43,7 +44,9 @@ router.route('/responses').post((req, res) => {
                     fgColor: response.flag ? '#EA2616' : '#ADFF3D',
                 },
             });
-        ws.cell(row, 3).string(response.agency).style(style);
+        ws.cell(row, 3)
+            .string(response.agency ? response.agency : '')
+            .style(style);
         ws.cell(row, 4)
             .string(response.emailSent ? 'true' : 'false')
             .style(style);
@@ -59,9 +62,22 @@ router.route('/responses').post((req, res) => {
         });
     });
 
-    const excelFile = wb.write('ResponsesExcel.xlsx');
+    wb.write('ResponsesExcel.xlsx');
 
-    res.json({ excelFile });
+    res.json({ msg: 'success' });
+});
+
+router.route('/:filename').get((req, res) => {
+    const filename = req.params.filename;
+    console.log('req.params :>> ', req.params);
+    res.download('ResponsesExcel.xlsx');
+});
+
+// delete the file after downloaded
+router.route('/delete/:filename').get((req, res) => {
+    const filename = req.params.filename;
+    fs.unlink('../../' + filename, function (response, error) {});
+    res.status(202).json({ msg: 'deleted file' });
 });
 
 module.exports = router;

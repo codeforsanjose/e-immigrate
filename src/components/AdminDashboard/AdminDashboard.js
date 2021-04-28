@@ -5,6 +5,8 @@ import {
     emailQuestionnaireResponse,
     generateResponsesExcel,
     getQuestions,
+    getResponsesExcel,
+    deleteResponsesExcel,
 } from '../../sendRequest/apis';
 import { getAuthToken } from '../../utilities/auth_utils';
 import './AdminDashboard.css';
@@ -14,6 +16,8 @@ const AGENCIES = ['ALA', 'CAIR', 'CC', 'CET', 'IRC', 'PARS'];
 const AdminDashboard = (props) => {
     const [questionnaireResponses, setQuestionnaireResponses] = useState([]);
     const [questions, setQuestions] = useState();
+    const [downloadAllResponses, setDownloadAllResponses] = useState(false);
+    const [] = useState();
     useEffect(() => {
         const jwt = getAuthToken();
         if (jwt === null) {
@@ -172,6 +176,12 @@ const AdminDashboard = (props) => {
                         </span>
                     </td>
                     <td>
+                        <span>
+                            Response Exported:{' '}
+                            {response.responseExported ? 'Yes' : 'No'}
+                        </span>
+                    </td>
+                    <td>
                         <div className="all-answers">{allAnswers}</div>
                     </td>
                 </tr>
@@ -207,13 +217,35 @@ const AdminDashboard = (props) => {
         });
         // display alert of emails sent?
     };
+
+    const getExcelFile = () => {
+        const filename = 'ResponsesExcel.xlsx';
+        const requestObj = {
+            url: `${getResponsesExcel}/${filename}`,
+            method: 'GET',
+        };
+        const jwt = getAuthToken();
+        const headers = {
+            Authorization: `Bearer ${jwt}`,
+        };
+        sendRequest(requestObj, headers).then((response) => {
+            console.log('success excel', response);
+        });
+    };
+
     const downloadResponsesExcel = (e) => {
-        const includedResponses = questionnaireResponses.filter(
-            (responseSelected) => responseSelected.selected
-        );
-        // .map((response) => {
-        //     return { ...response, selected: undefined };
-        // });
+        const includedResponses = (downloadAllResponses
+            ? questionnaireResponses
+            : questionnaireResponses.filter(
+                  (responseSelected) => responseSelected.selected
+              )
+        ).sort((a, b) => {
+            const keyA = a.agency;
+            const keyB = b.agency;
+            if (keyA < keyB) return -1;
+            if (keyA > keyB) return 1;
+            return 0;
+        });
         console.log('includedResponses :>> ', includedResponses);
         const requestObj = {
             url: generateResponsesExcel,
@@ -223,7 +255,6 @@ const AdminDashboard = (props) => {
                 responses: includedResponses,
             }),
         };
-        console.log('requestObj :>> ', requestObj);
         const jwt = getAuthToken();
         const headers = {
             Authorization: `Bearer ${jwt}`,
@@ -231,7 +262,21 @@ const AdminDashboard = (props) => {
         sendRequest(requestObj, headers).then((response) => {
             console.log('success', response);
         });
+        const updatedQuestionnaireResponses = questionnaireResponses.map(
+            (response) => {
+                return includedResponses.includes(response)
+                    ? {
+                          ...response,
+                          responseExported: true,
+                      }
+                    : response;
+            }
+        );
+        setQuestionnaireResponses(updatedQuestionnaireResponses);
+        setDownloadAllResponses(false);
+        getExcelFile();
     };
+
     useEffect(() => {
         const requestObj = {
             url: `${getQuestions}/${workshopTitle}.en`,
@@ -251,7 +296,18 @@ const AdminDashboard = (props) => {
                 <button onClick={sendSelectedUsersToAgencies}>
                     Send Email
                 </button>
+            </section>
+            <section>
                 <button onClick={downloadResponsesExcel}>Download Excel</button>
+                <label htmlFor="selectAllCheckbox">Download All</label>
+                <input
+                    id="selecAllCheckbox"
+                    type="checkbox"
+                    checked={downloadAllResponses}
+                    onClick={() => {
+                        setDownloadAllResponses(!downloadAllResponses);
+                    }}
+                />
             </section>
             <section>
                 <h3>Details</h3>
