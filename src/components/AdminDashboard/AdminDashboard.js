@@ -3,14 +3,21 @@ import { sendRequest } from '../../sendRequest/sendRequest';
 import {
     getQuestionnaireResponse,
     emailQuestionnaireResponse,
+    generateResponsesExcel,
+    getQuestions,
+    getResponsesExcel,
+    deleteResponsesExcel,
     agencyAssignURL,
+    downloadStatusQuestionnaireResponse,
 } from '../../sendRequest/apis';
 import { getAuthToken } from '../../utilities/auth_utils';
 import './AdminDashboard.css';
+import { workshopTitle } from '../../data/LanguageOptions';
 
 const AGENCIES = ['ALA', 'CAIR', 'CC', 'CET', 'IRC', 'PARS'];
 const AdminDashboard = (props) => {
     const [questionnaireResponses, setQuestionnaireResponses] = useState([]);
+    const [questions, setQuestions] = useState();
     useEffect(() => {
         const jwt = getAuthToken();
         if (jwt === null) {
@@ -136,7 +143,6 @@ const AdminDashboard = (props) => {
                 },
                 []
             );
-
             return (
                 <tr key={response._id}>
                     <td>{index + 1}</td>
@@ -161,6 +167,12 @@ const AdminDashboard = (props) => {
                     <td>
                         <span>
                             Email Sent: {response.emailSent ? 'Yes' : 'No'}
+                        </span>
+                    </td>
+                    <td>
+                        <span>
+                            Response Downloaded:{' '}
+                            {response.responseDownloadedToExcel ? 'Yes' : 'No'}
                         </span>
                     </td>
                     <td>
@@ -197,6 +209,66 @@ const AdminDashboard = (props) => {
             window.location.reload();
         });
     };
+
+    const getExcelFile = () => {
+        window.location.href =
+            '/api/generateExcel/getLatest/ResponsesExcel.xlsx';
+    };
+
+    const updateDownloadStatus = (e) => {
+        const responsesToUpdate = questionnaireResponses.filter(
+            (responseSelected) => !responseSelected.responseDownloadedToExcel
+        );
+
+        const requestObj = {
+            url: downloadStatusQuestionnaireResponse,
+            method: 'POST',
+            body: JSON.stringify({
+                responsesToUpdate: responsesToUpdate,
+            }),
+        };
+        const jwt = getAuthToken();
+        const headers = {
+            Authorization: `Bearer ${jwt}`,
+        };
+        sendRequest(requestObj, headers).then((response) => {
+            window.location.reload();
+        });
+    };
+
+    const downloadResponsesExcel = (e) => {
+        const includedResponses = questionnaireResponses.sort((a, b) => {
+            if (a.agency < b.agency) return -1;
+            if (a.agency > b.agency) return 1;
+            return 0;
+        });
+        const requestObj = {
+            url: generateResponsesExcel,
+            method: 'POST',
+            body: JSON.stringify({
+                questions: questions,
+                responses: includedResponses,
+            }),
+        };
+        updateDownloadStatus();
+        const jwt = getAuthToken();
+        const headers = {
+            Authorization: `Bearer ${jwt}`,
+        };
+        sendRequest(requestObj, headers).then((response) => {
+            getExcelFile();
+        });
+    };
+
+    useEffect(() => {
+        const requestObj = {
+            url: `${getQuestions}/${workshopTitle}.en`,
+        };
+        sendRequest(requestObj).then((response) => {
+            setQuestions(response.questions);
+        });
+    }, []);
+
     return (
         <section className="AdminDashboard">
             <article className="overview-container">
@@ -207,6 +279,9 @@ const AdminDashboard = (props) => {
                 <button onClick={sendSelectedUsersToAgencies}>
                     Send Email
                 </button>
+            </section>
+            <section>
+                <button onClick={downloadResponsesExcel}>Download Excel</button>
             </section>
             <section>
                 <h3>Details</h3>

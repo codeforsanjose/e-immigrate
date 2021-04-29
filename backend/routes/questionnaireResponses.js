@@ -37,6 +37,26 @@ router.route('/email').post((req, res) => {
     res.json({ msg: 'success' });
 });
 
+router.route('/excel-download-status').post((req, res) => {
+    const responsesToUpdate = req.body.responsesToUpdate;
+    for (const response of responsesToUpdate) {
+        const tempUpdatedResponse = {
+            ...response,
+            responseDownloadedToExcel: true,
+        };
+        QuestionnaireResponse.updateOne(
+            { _id: ObjectID(response._id) },
+            tempUpdatedResponse,
+            (err, raw) => {
+                if (err) {
+                    console.log('updated something err is', err);
+                }
+            }
+        );
+    }
+    res.json({ msg: 'success' });
+});
+
 router.route('/assign-agency').post((req, res) => {
     const responseToAssignAgency = req.body.responsesToEmail;
     for (const response of responseToAssignAgency) {

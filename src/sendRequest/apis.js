@@ -7,6 +7,8 @@ module.exports = {
         'http://localhost:5000/api/questionnaire-responses',
     emailQuestionnaireResponse:
         'http://localhost:5000/api/questionnaire-responses/email',
+    downloadStatusQuestionnaireResponse:
+        'http://localhost:5000/api/questionnaire-responses/excel-download-status',
     agencyAssignURL:
         'http://localhost:5000/api/questionnaire-responses/assign-agency',
     getUserById: 'http://localhost:5000/api/users/:id',
@@ -19,4 +21,7 @@ module.exports = {
     deleteQuestionnaire: 'http://localhost:5000/api/questionnaires/delete/:id',
     getQuestions: 'http://localhost:5000/api/questionnaires',
     getTranslatedContent: 'http://localhost:5000/api/translatedContent',
+    generateResponsesExcel: 'http://localhost:5000/api/generateExcel/responses',
+    getResponsesExcel: 'http://localhost:5000/api/generateExcel/getLatest',
+    deleteResponsesExcel: 'http://localhost:5000/api/generateExcel/delete',
 };
