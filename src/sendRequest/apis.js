@@ -18,6 +18,6 @@ module.exports = {
     getQuestions: 'http://localhost:5000/api/questionnaires',
     getTranslatedContent: 'http://localhost:5000/api/translatedContent',
     generateResponsesExcel: 'http://localhost:5000/api/generateExcel/responses',
-    getResponsesExcel: 'http://localhost:5000/api/generateExcel',
+    getResponsesExcel: 'http://localhost:5000/api/generateExcel/getLatest',
     deleteResponsesExcel: 'http://localhost:5000/api/generateExcel/delete',
 };

@@ -61,16 +61,16 @@ router.route('/responses').post((req, res) => {
             }
         });
     });
-
-    wb.write('ResponsesExcel.xlsx');
+    //in build step be sure to write reports directory with path below
+    wb.write('./routes/generateResponsesExcel/reports/ResponsesExcel.xlsx');
 
     res.json({ msg: 'success' });
 });
 
-router.route('/:filename').get((req, res) => {
+router.route('/getLatest/:filename').get((req, res) => {
+    console.log('made it here');
     const filename = req.params.filename;
-    console.log('req.params :>> ', req.params);
-    res.download('ResponsesExcel.xlsx');
+    res.download('routes/generateResponsesExcel/reports/' + filename);
 });
 
 // delete the file after downloaded

@@ -219,40 +219,27 @@ const AdminDashboard = (props) => {
     };
 
     const getExcelFile = () => {
-        const filename = 'ResponsesExcel.xlsx';
-        const requestObj = {
-            url: `${getResponsesExcel}/${filename}`,
-            method: 'GET',
-        };
-        const jwt = getAuthToken();
-        const headers = {
-            Authorization: `Bearer ${jwt}`,
-        };
-        sendRequest(requestObj, headers).then((response) => {
-            console.log('success excel', response);
-        });
+        window.location.href =
+            '/api/generateExcel/getLatest/ResponsesExcel.xlsx';
     };
 
     const downloadResponsesExcel = (e) => {
-        const includedResponses = (downloadAllResponses
+        const includedResponses = downloadAllResponses
             ? questionnaireResponses
             : questionnaireResponses.filter(
                   (responseSelected) => responseSelected.selected
-              )
-        ).sort((a, b) => {
-            const keyA = a.agency;
-            const keyB = b.agency;
-            if (keyA < keyB) return -1;
-            if (keyA > keyB) return 1;
+              );
+        const sortedIncludedResponses = includedResponses.sort((a, b) => {
+            if (a.agency < b.agency) return -1;
+            if (a.agency > b.agency) return 1;
             return 0;
         });
-        console.log('includedResponses :>> ', includedResponses);
         const requestObj = {
             url: generateResponsesExcel,
             method: 'POST',
             body: JSON.stringify({
                 questions: questions,
-                responses: includedResponses,
+                responses: sortedIncludedResponses,
             }),
         };
         const jwt = getAuthToken();
@@ -260,11 +247,11 @@ const AdminDashboard = (props) => {
             Authorization: `Bearer ${jwt}`,
         };
         sendRequest(requestObj, headers).then((response) => {
-            console.log('success', response);
+            getExcelFile();
         });
         const updatedQuestionnaireResponses = questionnaireResponses.map(
             (response) => {
-                return includedResponses.includes(response)
+                return sortedIncludedResponses.includes(response)
                     ? {
                           ...response,
                           responseExported: true,
@@ -274,7 +261,6 @@ const AdminDashboard = (props) => {
         );
         setQuestionnaireResponses(updatedQuestionnaireResponses);
         setDownloadAllResponses(false);
-        getExcelFile();
     };
 
     useEffect(() => {
@@ -304,7 +290,7 @@ const AdminDashboard = (props) => {
                     id="selecAllCheckbox"
                     type="checkbox"
                     checked={downloadAllResponses}
-                    onClick={() => {
+                    onChange={() => {
                         setDownloadAllResponses(!downloadAllResponses);
                     }}
                 />
