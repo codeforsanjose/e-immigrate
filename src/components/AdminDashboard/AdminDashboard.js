@@ -7,6 +7,8 @@ import {
     getQuestions,
     getResponsesExcel,
     deleteResponsesExcel,
+    agencyAssignURL,
+    downloadStatusQuestionnaireResponse,
 } from '../../sendRequest/apis';
 import { getAuthToken } from '../../utilities/auth_utils';
 import './AdminDashboard.css';
@@ -16,8 +18,6 @@ const AGENCIES = ['ALA', 'CAIR', 'CC', 'CET', 'IRC', 'PARS'];
 const AdminDashboard = (props) => {
     const [questionnaireResponses, setQuestionnaireResponses] = useState([]);
     const [questions, setQuestions] = useState();
-    const [downloadAllResponses, setDownloadAllResponses] = useState(false);
-    const [] = useState();
     useEffect(() => {
         const jwt = getAuthToken();
         if (jwt === null) {
@@ -56,20 +56,6 @@ const AdminDashboard = (props) => {
         }
     }, [props.history]);
 
-    const selectResponseCheckbox = (index) => {
-        const updatedResponses = questionnaireResponses.map(
-            (item, responseIndex) => {
-                return {
-                    ...item,
-                    selected:
-                        responseIndex === index
-                            ? !item.selected
-                            : item.selected,
-                };
-            }
-        );
-        setQuestionnaireResponses(updatedResponses);
-    };
     const toggleFlag = (index) => {
         const updatedResponses = questionnaireResponses.map(
             (item, responseIndex) => {
@@ -99,18 +85,34 @@ const AdminDashboard = (props) => {
     });
     const allOptions = [firstOption, agenciesOptions];
 
-    const selectAgencyForResponse = (e, index) => {
-        const updatedResponseWithAgency = questionnaireResponses.map(
-            (response, resIndex) => {
-                return resIndex === index
-                    ? {
-                          ...response,
-                          agency: e.target.value,
-                      }
-                    : response;
-            }
-        );
-        setQuestionnaireResponses(updatedResponseWithAgency);
+    const assignResponseAgency = (e, resIndex) => {
+        const updatedResponses = questionnaireResponses.map((item, index) => {
+            return resIndex === index
+                ? {
+                      ...item,
+                      agency: e.target.value,
+                  }
+                : item;
+        });
+        const selectedResponseForAgency = {
+            ...questionnaireResponses[resIndex],
+            agency: e.target.value,
+        };
+        const requestObj = {
+            url: agencyAssignURL,
+            method: 'POST',
+            body: JSON.stringify({
+                responsesToEmail: [selectedResponseForAgency],
+            }),
+        };
+        const jwt = getAuthToken();
+        const headers = {
+            Authorization: `Bearer ${jwt}`,
+        };
+        sendRequest(requestObj, headers).then((response) => {
+            console.log('wow success response', response);
+            setQuestionnaireResponses(updatedResponses);
+        });
     };
     const responsesMarkup = useMemo(() => {
         return questionnaireResponses.map((response, index) => {
@@ -153,19 +155,11 @@ const AdminDashboard = (props) => {
                         ></div>
                     </td>
                     <td>
-                        <section>
-                            <input
-                                type="checkbox"
-                                onClick={(e) => selectResponseCheckbox(index)}
-                            />
-                        </section>
-                    </td>
-                    <td>
                         <label htmlFor="agency-select">Assigned To:</label>
                         <select
                             id="agency-select"
                             value={response.agency}
-                            onChange={(e) => selectAgencyForResponse(e, index)}
+                            onChange={(e) => assignResponseAgency(e, index)}
                         >
                             {allOptions}
                         </select>
@@ -177,8 +171,8 @@ const AdminDashboard = (props) => {
                     </td>
                     <td>
                         <span>
-                            Response Exported:{' '}
-                            {response.responseExported ? 'Yes' : 'No'}
+                            Response Downloaded:{' '}
+                            {response.responseDownloadedToExcel ? 'Yes' : 'No'}
                         </span>
                     </td>
                     <td>
@@ -194,12 +188,11 @@ const AdminDashboard = (props) => {
             <tbody>{responsesMarkup}</tbody>
         </table>
     );
+
     const sendSelectedUsersToAgencies = (e) => {
-        const responsesToEmail = questionnaireResponses
-            .filter((responseSelected) => responseSelected.selected)
-            .map((response) => {
-                return { ...response, selected: undefined };
-            });
+        const responsesToEmail = questionnaireResponses.filter(
+            (responseSelected) => !responseSelected.emailSent
+        );
 
         const requestObj = {
             url: emailQuestionnaireResponse,
@@ -213,9 +206,8 @@ const AdminDashboard = (props) => {
             Authorization: `Bearer ${jwt}`,
         };
         sendRequest(requestObj, headers).then((response) => {
-            console.log('wow success response', response);
+            window.location.reload();
         });
-        // display alert of emails sent?
     };
 
     const getExcelFile = () => {
@@ -223,13 +215,29 @@ const AdminDashboard = (props) => {
             '/api/generateExcel/getLatest/ResponsesExcel.xlsx';
     };
 
+    const updateDownloadStatus = (e) => {
+        const responsesToUpdate = questionnaireResponses.filter(
+            (responseSelected) => !responseSelected.responseDownloadedToExcel
+        );
+
+        const requestObj = {
+            url: downloadStatusQuestionnaireResponse,
+            method: 'POST',
+            body: JSON.stringify({
+                responsesToUpdate: responsesToUpdate,
+            }),
+        };
+        const jwt = getAuthToken();
+        const headers = {
+            Authorization: `Bearer ${jwt}`,
+        };
+        sendRequest(requestObj, headers).then((response) => {
+            window.location.reload();
+        });
+    };
+
     const downloadResponsesExcel = (e) => {
-        const includedResponses = downloadAllResponses
-            ? questionnaireResponses
-            : questionnaireResponses.filter(
-                  (responseSelected) => responseSelected.selected
-              );
-        const sortedIncludedResponses = includedResponses.sort((a, b) => {
+        const includedResponses = questionnaireResponses.sort((a, b) => {
             if (a.agency < b.agency) return -1;
             if (a.agency > b.agency) return 1;
             return 0;
@@ -239,28 +247,29 @@ const AdminDashboard = (props) => {
             method: 'POST',
             body: JSON.stringify({
                 questions: questions,
-                responses: sortedIncludedResponses,
+                responses: includedResponses,
             }),
         };
+        updateDownloadStatus();
         const jwt = getAuthToken();
         const headers = {
             Authorization: `Bearer ${jwt}`,
         };
         sendRequest(requestObj, headers).then((response) => {
-            getExcelFile();
+            console.log('response :>> ', response);
+            // getExcelFile();
         });
-        const updatedQuestionnaireResponses = questionnaireResponses.map(
-            (response) => {
-                return sortedIncludedResponses.includes(response)
-                    ? {
-                          ...response,
-                          responseExported: true,
-                      }
-                    : response;
-            }
-        );
-        setQuestionnaireResponses(updatedQuestionnaireResponses);
-        setDownloadAllResponses(false);
+        // const updatedQuestionnaireResponses = questionnaireResponses.map(
+        //     (response) => {
+        //         return includedResponses.includes(response)
+        //             ? {
+        //                   ...response,
+        //                   responseExported: true,
+        //               }
+        //             : response;
+        //     }
+        // );
+        // setQuestionnaireResponses(updatedQuestionnaireResponses);
     };
 
     useEffect(() => {
@@ -285,15 +294,6 @@ const AdminDashboard = (props) => {
             </section>
             <section>
                 <button onClick={downloadResponsesExcel}>Download Excel</button>
-                <label htmlFor="selectAllCheckbox">Download All</label>
-                <input
-                    id="selecAllCheckbox"
-                    type="checkbox"
-                    checked={downloadAllResponses}
-                    onChange={() => {
-                        setDownloadAllResponses(!downloadAllResponses);
-                    }}
-                />
             </section>
             <section>
                 <h3>Details</h3>

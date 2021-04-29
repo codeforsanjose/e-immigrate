@@ -10,6 +10,11 @@ const questionnaireSchema = new Schema(
         emailSent: { type: Boolean, required: false, unique: false },
         agency: { type: String, required: false, unique: false },
         questionnaireResponse: { type: Object, required: true },
+        responseDownloadedToExcel: {
+            type: Boolean,
+            required: false,
+            unique: false,
+        },
     },
     {
         timestamps: true,
