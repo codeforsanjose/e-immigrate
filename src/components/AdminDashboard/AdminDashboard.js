@@ -256,20 +256,8 @@ const AdminDashboard = (props) => {
             Authorization: `Bearer ${jwt}`,
         };
         sendRequest(requestObj, headers).then((response) => {
-            console.log('response :>> ', response);
-            // getExcelFile();
+            getExcelFile();
         });
-        // const updatedQuestionnaireResponses = questionnaireResponses.map(
-        //     (response) => {
-        //         return includedResponses.includes(response)
-        //             ? {
-        //                   ...response,
-        //                   responseExported: true,
-        //               }
-        //             : response;
-        //     }
-        // );
-        // setQuestionnaireResponses(updatedQuestionnaireResponses);
     };
 
     useEffect(() => {

@@ -68,7 +68,6 @@ router.route('/responses').post((req, res) => {
 });
 
 router.route('/getLatest/:filename').get((req, res) => {
-    console.log('made it here');
     const filename = req.params.filename;
     res.download('routes/generateResponsesExcel/reports/' + filename);
 });

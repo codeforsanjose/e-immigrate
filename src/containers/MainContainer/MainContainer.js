@@ -106,7 +106,6 @@ const MainContainer = () => {
         };
         sendRequest(requestObj).then((response) => {
             console.log('success', response);
-            // should redirect to thanks page
             history.push('/confirmation');
         });
     };
