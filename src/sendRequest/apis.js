@@ -7,6 +7,8 @@ module.exports = {
         'http://localhost:5000/api/questionnaire-responses',
     emailQuestionnaireResponse:
         'http://localhost:5000/api/questionnaire-responses/email',
+    agencyAssignURL:
+        'http://localhost:5000/api/questionnaire-responses/assign-agency',
     getUserById: 'http://localhost:5000/api/users/:id',
     addUser: 'http://localhost:5000/api/users/add',
     updateUser: 'http://localhost:5000/api/users/update/:id',
