@@ -219,27 +219,6 @@ const AdminDashboard = (props) => {
             '/api/generateExcel/getLatest/ResponsesExcel.xlsx';
     };
 
-    const updateDownloadStatus = (e) => {
-        const responsesToUpdate = questionnaireResponses.filter(
-            (responseSelected) => !responseSelected.responseDownloadedToExcel
-        );
-
-        const requestObj = {
-            url: downloadStatusQuestionnaireResponse,
-            method: 'POST',
-            body: JSON.stringify({
-                responsesToUpdate: responsesToUpdate,
-            }),
-        };
-        const jwt = getAuthToken();
-        const headers = {
-            Authorization: `Bearer ${jwt}`,
-        };
-        sendRequest(requestObj, headers).then((response) => {
-            window.location.reload();
-        });
-    };
-
     const downloadResponsesExcel = (e) => {
         const includedResponses = questionnaireResponses.sort((a, b) => {
             if (a.agency < b.agency) return -1;
@@ -254,7 +233,6 @@ const AdminDashboard = (props) => {
                 responses: includedResponses,
             }),
         };
-        updateDownloadStatus();
         const jwt = getAuthToken();
         const headers = {
             Authorization: `Bearer ${jwt}`,

@@ -1,5 +1,7 @@
 const express = require('express');
 const router = express.Router();
+const QuestionnaireResponse = require('../../models/questionnaireResponse');
+const ObjectID = require('mongodb').ObjectID;
 const xl = require('excel4node');
 const fs = require('fs');
 
@@ -63,10 +65,26 @@ router.route('/responses').post((req, res) => {
     });
     //in build step be sure to write reports directory with path below
     wb.write('./routes/generateResponsesExcel/reports/ResponsesExcel.xlsx');
-
+    updateResponseDownloadStatus(responses);
     res.json({ msg: 'success' });
 });
-
+const updateResponseDownloadStatus = (questionnaireResponses = []) => {
+    for (const response of questionnaireResponses) {
+        const tempUpdatedResponse = {
+            ...response,
+            responseDownloadedToExcel: true,
+        };
+        QuestionnaireResponse.updateOne(
+            { _id: ObjectID(response._id) },
+            tempUpdatedResponse,
+            (err, raw) => {
+                if (err) {
+                    console.log('updated something err is', err);
+                }
+            }
+        );
+    }
+};
 router.route('/getLatest/:filename').get((req, res) => {
     const filename = req.params.filename;
     res.download('routes/generateResponsesExcel/reports/' + filename);
