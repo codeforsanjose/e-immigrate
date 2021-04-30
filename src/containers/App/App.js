@@ -16,7 +16,7 @@ function App() {
                     <Route path="/login">
                         <Admin />
                     </Route>
-                    <Route exact path="/">
+                    <Route path="/">
                         <MainContainer />
                     </Route>
                 </Switch>
