@@ -36,7 +36,13 @@ const AdminDashboard = (props) => {
                     const newFlag = Object.entries(
                         questionnaireResponse
                     ).reduce((acc, [key, value]) => {
+<<<<<<< HEAD
                         return key !== 'male'
+=======
+                        return key !== 'male' &&
+                            key !== 'green_card_through_marriage' &&
+                            key !== 'still_married_to_that_citizen'
+>>>>>>> 51934a148549827972053f527bed97f261645c56
                             ? value.toUpperCase() === 'YES'
                                 ? true
                                 : acc
@@ -120,7 +126,13 @@ const AdminDashboard = (props) => {
             const allAnswers = Object.keys(questionnaireResponse).reduce(
                 (accumulator, questionKey, index) => {
                     const flagIt =
+<<<<<<< HEAD
                         questionKey !== 'male'
+=======
+                        questionKey !== 'male' &&
+                        questionKey !== 'green_card_through_marriage' &&
+                        questionKey !== 'still_married_to_that_citizen'
+>>>>>>> 51934a148549827972053f527bed97f261645c56
                             ? questionnaireResponse[
                                   questionKey
                               ].toUpperCase() === 'YES'
@@ -215,27 +227,6 @@ const AdminDashboard = (props) => {
             '/api/generateExcel/getLatest/ResponsesExcel.xlsx';
     };
 
-    const updateDownloadStatus = (e) => {
-        const responsesToUpdate = questionnaireResponses.filter(
-            (responseSelected) => !responseSelected.responseDownloadedToExcel
-        );
-
-        const requestObj = {
-            url: downloadStatusQuestionnaireResponse,
-            method: 'POST',
-            body: JSON.stringify({
-                responsesToUpdate: responsesToUpdate,
-            }),
-        };
-        const jwt = getAuthToken();
-        const headers = {
-            Authorization: `Bearer ${jwt}`,
-        };
-        sendRequest(requestObj, headers).then((response) => {
-            window.location.reload();
-        });
-    };
-
     const downloadResponsesExcel = (e) => {
         const includedResponses = questionnaireResponses.sort((a, b) => {
             if (a.agency < b.agency) return -1;
@@ -250,7 +241,6 @@ const AdminDashboard = (props) => {
                 responses: includedResponses,
             }),
         };
-        updateDownloadStatus();
         const jwt = getAuthToken();
         const headers = {
             Authorization: `Bearer ${jwt}`,

@@ -10,7 +10,6 @@ const Navbar = ({ language, setLanguage, content }) => {
             <img src={Logo} className="logo" alt="CIIT Logo" />
             <div className="NavLinks">
                 <Link to="/">{content.buttonHome}</Link>
-                <Link to="/about">{content.buttonAbout}</Link>
                 <LanguageDropdown
                     className="languageDropdown"
                     language={language}
