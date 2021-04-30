@@ -36,13 +36,9 @@ const AdminDashboard = (props) => {
                     const newFlag = Object.entries(
                         questionnaireResponse
                     ).reduce((acc, [key, value]) => {
-<<<<<<< HEAD
-                        return key !== 'male'
-=======
                         return key !== 'male' &&
                             key !== 'green_card_through_marriage' &&
                             key !== 'still_married_to_that_citizen'
->>>>>>> 51934a148549827972053f527bed97f261645c56
                             ? value.toUpperCase() === 'YES'
                                 ? true
                                 : acc
@@ -126,13 +122,9 @@ const AdminDashboard = (props) => {
             const allAnswers = Object.keys(questionnaireResponse).reduce(
                 (accumulator, questionKey, index) => {
                     const flagIt =
-<<<<<<< HEAD
-                        questionKey !== 'male'
-=======
                         questionKey !== 'male' &&
                         questionKey !== 'green_card_through_marriage' &&
                         questionKey !== 'still_married_to_that_citizen'
->>>>>>> 51934a148549827972053f527bed97f261645c56
                             ? questionnaireResponse[
                                   questionKey
                               ].toUpperCase() === 'YES'
