@@ -38,6 +38,10 @@
     height: 0;
 }
 
+.RadioGroup .RadioInput input:focus + .RadioControl {
+    box-shadow: 0 0px 6px var(--color-overcastBlue);
+}
+
 .RadioGroup .RadioInput .RadioButton:checked + .RadioControl {
     background: radial-gradient(
         var(--color-overcastBlue) 50%,
