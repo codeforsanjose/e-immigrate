@@ -18,21 +18,32 @@ router.route('/email').post((req, res) => {
     const responsesToEmail = req.body.responsesToEmail;
     for (const response of responsesToEmail) {
         //send email
-        const { questionnaireResponse = {}, flag } = response;
+        const { questionnaireResponse = {}, flag, language = 'en' } = response;
         const { email = '' } = questionnaireResponse;
-        const tempUpdatedSuccessEmail = {
-            ...response,
-            emailSent: true,
-        };
-        QuestionnaireResponse.updateOne(
-            { _id: ObjectID(response._id) },
-            tempUpdatedSuccessEmail,
-            (err, raw) => {
-                if (err) {
-                    console.log('updated something err is', err);
+        sendEmail(email, '', flag, language)
+            .then((result) => {
+                const tempUpdatedSuccessEmail = {
+                    ...response,
+                    emailSent: false,
+                };
+                QuestionnaireResponse.updateOne(
+                    { _id: ObjectID(response._id) },
+                    tempUpdatedSuccessEmail,
+                    (err, raw) => {
+                        if (err) {
+                            console.log('updated something err is', err);
+                        }
+                    }
+                );
+            })
+            .catch((error) => {
+                console.log('what is the error', error.body);
+                if (error && error.body) {
+                    for (const reserror of error.body.errors) {
+                        console.log('the error here', reserror);
+                    }
                 }
-            }
-        );
+            });
     }
     res.json({ msg: 'success' });
 });

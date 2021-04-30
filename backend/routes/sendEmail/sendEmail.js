@@ -4,7 +4,7 @@ const emailContents = require('./emailContent.js');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 //todo: set senderEmail that has access to to e-immigrate SENDGRID_API_KEY key
 
-const senderEmail = '';
+const senderEmail = 'noreply@cet-icp.org';
 const sendEmail = (email, name, flag, language) => {
     const colorFlag = flag ? 'red' : 'green';
     const emailContentForResponse = emailContents[language][colorFlag];
@@ -14,6 +14,7 @@ const sendEmail = (email, name, flag, language) => {
         subject: 'Your Response has been received',
         html: emailContentForResponse,
     };
+    console.log('the message to be sent', msg);
     return sgMail.send(msg);
 };
 
