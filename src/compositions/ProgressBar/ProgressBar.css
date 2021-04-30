@@ -1,0 +1,126 @@
+.progressBar {
+    display: grid;
+    grid-template-rows: auto auto;
+    justify-items: center;
+}
+
+.progressBar .title {
+    text-align: center;
+    font-weight: 800;
+}
+
+.progressBar .stepContainer .stepNumber {
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.progressBar .stepContainer .stepTitle {
+    font-size: 20px;
+    font-weight: 400;
+}
+
+.progressBar .stepIcon {
+    display: grid;
+    grid-template: 100% / 100%;
+    justify-items: center;
+    align-items: center;
+    z-index: 99;
+}
+
+.progressBar .stepIcon .stepSVG {
+    grid-row-start: 1;
+    grid-column-start: 1;
+}
+
+.progressBar .stepIcon .blob {
+    grid-row-start: 1;
+    grid-column-start: 1;
+    height: 42px;
+    width: 42px;
+}
+
+.progressBar .blob1 {
+    fill: #c8eefc;
+}
+
+.progressBar .blob2 {
+    fill: #e0adb6;
+}
+
+.progressBar .blob3 {
+    fill: #8ba5cc;
+}
+
+.progressBar .incomplete {
+    color: #bdbdbd;
+}
+
+.progressBar .incomplete > .blob {
+    fill: #f2f2f2;
+}
+
+.progressBar .linesGrid {
+    display: grid;
+    grid-template-columns: auto auto;
+}
+
+.progressBar .progressLine1,
+.progressBar .progressLine2 {
+    border-bottom: 2px solid;
+}
+
+@media only screen and (min-width: 701px) {
+    .progressBar {
+        padding: 3rem 0;
+    }
+
+    .progressBar .title {
+        font-size: 60px;
+        margin-bottom: 30px;
+    }
+
+    .progressBar .stepsGrid {
+        display: grid;
+        grid-template-columns: repeat(3, 220px);
+    }
+
+    .progressBar .stepsGrid .stepContainer {
+        display: grid;
+        grid-template-rows: 36px 32px 42px;
+        justify-items: center;
+    }
+
+    .progressBar .linesGridContainer {
+        position: relative;
+        width: 430px;
+        bottom: 22px;
+    }
+}
+
+@media only screen and (max-width: 700px) {
+    .progressBar {
+        padding: 1rem 0 2rem;
+    }
+
+    .progressBar .title {
+        font-size: 36px;
+        margin-bottom: 18px;
+    }
+
+    .progressBar .stepsGrid {
+        display: grid;
+        grid-template-columns: repeat(3, 90px);
+        z-index: 1;
+    }
+
+    .progressBar .linesGridContainer {
+        position: relative;
+        width: 180px;
+        bottom: 22px;
+    }
+
+    .progressBar .stepContainer .stepNumber,
+    .progressBar .stepContainer .stepTitle {
+        display: none;
+    }
+}

@@ -1,0 +1,6 @@
+<svg height="100" width="100" fill="#1c3c69" viewBox="0 0 1000 1000" fill-rule="evenodd" clip-rule="evenodd" shape-rendering="geometricPrecision" text-rendering="geometricPrecision" image-rendering="optimizeQuality">
+  <defs>
+    <style/>
+  </defs>
+  <path class="fil0" d="M876 746L724 865c-6 5-8 14-2 21 5 6 14 7 20 2l186-144c4-3 7-8 7-13s-3-10-7-13L742 573c-6-5-15-3-20 3-6 7-4 16 2 21l152 119H632c-64 0-123-26-165-69-43-42-69-101-69-165V179c0-9-7-15-15-15s-15 6-15 15v303c0 73 30 139 77 186 48 48 114 78 187 78h244zM80 108c-8 0-15 7-15 15 0 9 7 15 15 15h606c8 0 15-6 15-15 0-8-7-15-15-15H80z"/>
+</svg>

@@ -3,6 +3,10 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const usersRouter = require('./routes/users');
 const adminsRouter = require('./routes/admins');
+const questionnaireResponsesRouter = require('./routes/questionnaireResponses');
+const questionnairesRouter = require('./routes/questionnaires/questionnaires');
+const translatedContentRouter = require('./routes/translatedContent/translatedContent');
+const generateResponsesExcelRouter = require('./routes/generateResponsesExcel/generateResponsesExcel');
 
 require('dotenv').config();
 
@@ -25,6 +29,10 @@ connection.once('open', () => {
 
 app.use('/api/users', usersRouter);
 app.use('/api/admins', adminsRouter);
+app.use('/api/questionnaire-responses', questionnaireResponsesRouter);
+app.use('/api/questionnaires', questionnairesRouter);
+app.use('/api/translatedContent', translatedContentRouter);
+app.use('/api/generateExcel', generateResponsesExcelRouter);
 
 const port = process.env.PORT || 5000;
 

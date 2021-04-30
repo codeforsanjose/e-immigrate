@@ -1,10 +1,15 @@
-const fetch = require('node-fetch');
-
-const sendRequest = (requestObj) => {
-    let url = requestObj.url;
-    delete requestObj.url;
-    let response = fetch(url, requestObj).then((data) => data.json());
-    return Promise.resolve(response);
+const DEFAULT_HEADERS = {
+    Accept: 'application/json, text/plain, */*',
+    'Content-Type': 'application/json',
 };
 
-module.exports = { sendRequest };
+const sendRequest = (requestObj, headers = DEFAULT_HEADERS) => {
+    const url = requestObj.url;
+    delete requestObj.url;
+    return fetch(url, {
+        ...requestObj,
+        headers: { ...headers, ...DEFAULT_HEADERS },
+    }).then((data) => data.json());
+};
+
+export { sendRequest };

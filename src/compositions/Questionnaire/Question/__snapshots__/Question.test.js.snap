@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`question renders correctly 1`] = `
+<fieldset
+  className="Question"
+>
+  <div
+    className="QuestionText"
+  >
+    
+     (required)
+  </div>
+  <div>
+    An error has occurred. Please return to the home page.
+  </div>
+</fieldset>
+`;

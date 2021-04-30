@@ -1,26 +1,26 @@
 import React from 'react';
 import { ReactComponent as LanguagePicker } from './LanguagePicker.svg';
-import { languageOptions, content } from '../../data/LanguageContent';
+import { languageOptions } from '../../data/LanguageOptions';
 
 import './LanguageDropdown.css';
 
-const LanguageSelect = ({ setLanguage }) => {
+const LanguageSelect = ({ setLanguage, language }) => {
     return (
         <div className="languageSelectContainer">
             <LanguagePicker
                 className="languageIcon"
-                height="2rem"
-                width="2rem"
+                height="26px"
+                width="26px"
             />
-            <select onChange={(ev) => setLanguage(ev.target.value)}>
-                <option value="en">
-                    {languageOptions.map((lang) => lang.full).join(', ')}...
-                </option>
+            <select
+                value={language}
+                onChange={(ev) => setLanguage(ev.target.value)}
+            >
                 {languageOptions.map((lang, idx) => {
                     return (
                         <option
-                            className="languageOption"
                             key={idx}
+                            className="languageOption"
                             value={lang.code}
                         >
                             {lang.full}
@@ -33,17 +33,10 @@ const LanguageSelect = ({ setLanguage }) => {
 };
 
 const LanguageDropdown = ({ language, setLanguage }) => {
-    const allLanguagesItems = languageOptions.map((option) => {
-        return <h3>{content[option.code].chooseLanguage.preferredLanguage}</h3>;
-    });
-    const allLanguagesContent = (
-        <div className="all-languages">{allLanguagesItems}</div>
-    );
     return (
         <div className="languageDropdown">
-            {allLanguagesContent}
             <div className="languageSelect">
-                <LanguageSelect setLanguage={setLanguage} />
+                <LanguageSelect setLanguage={setLanguage} language={language} />
             </div>
         </div>
     );

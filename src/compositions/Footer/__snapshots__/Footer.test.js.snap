@@ -1,0 +1,32 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Footer renders correctly 1`] = `
+<div
+  className="footer"
+>
+  <div
+    className="imgRow"
+  >
+    <img
+      alt="CiiT Logo"
+      className="ciitLogo"
+      src="CiiT Logo.png"
+    />
+    <img
+      alt="CET-ICP Logo"
+      className="ceticpLogo"
+      src="CET-ICP Logo.png"
+    />
+  </div>
+  <div
+    className="textRow1"
+  >
+    test
+  </div>
+  <div
+    className="textRow2"
+  >
+    test
+  </div>
+</div>
+`;

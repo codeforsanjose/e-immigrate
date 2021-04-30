@@ -12,12 +12,9 @@ const LoginBox = (props) => {
         loggedIn: false,
     });
 
-    let requestObj = {
+    const requestObj = {
         url: loginApi,
         method: 'POST',
-        headers: {
-            'content-type': 'application/json',
-        },
         body: JSON.stringify({
             email: loginBoxState.email,
             password: btoa(loginBoxState.password),
@@ -37,7 +34,7 @@ const LoginBox = (props) => {
         return (
             <Redirect
                 to={{
-                    pathname: '/users',
+                    pathname: '/dashboard',
                     state: { name: loginBoxState.name },
                 }}
             />

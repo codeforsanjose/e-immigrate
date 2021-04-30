@@ -81,6 +81,10 @@ In order to view the registered users as an admin:
 Navigate to [http://localhost:3000/login](http://localhost:3000/login)
 Sign up/Sign in to see the registered users. 
 
+## Adding Twilio API Key and Sender Email
+
+Please refer to the [Twilio documentation](https://www.twilio.com/blog/how-to-send-emails-in-javascript-with-sendgrid).
+
 ## Learn More
 
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).

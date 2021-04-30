@@ -1,12 +1,41 @@
 .MainContainer {
-  
+}
+
+.items {
+    height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr auto;
+    grid-template-areas:
+        'header'
+        'main';
+}
+
+.items > .Navbar {
+    grid-area: header;
+}
+
+.items > .main {
+    grid-area: main;
+    display: grid;
+    grid-template-rows: 1fr auto;
+    grid-template-columns: auto;
+}
+
+.items > .footer {
+    grid-area: 2 / 1 / 3 / 4;
+}
+
+.items > .main > .section {
+    padding: 1rem;
+    background-color: var(--color-softBlue);
 }
 
 .MainContainer .wrapper {
-  display: grid;
-  grid-template-columns: minmax(240px, 1fr);
+    background-color: white;
 }
 
-.MainContainer .items {
-  grid-column-start: 1;
+.blur {
+    filter: blur(12px);
+    -webkit-filter: blur(12px);
 }

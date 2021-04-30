@@ -1,0 +1,58 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`confirmation page renders correctly 1`] = `
+<div
+  className="Confirmation"
+>
+  <div>
+    <h1>
+      Step 3
+      : 
+      Confirmation
+    </h1>
+    <h2>
+      Congratulations, you have completed the questionnaire!
+    </h2>
+    <p>
+      We have sent a copy of this confirmation page to the email and/or phone that you provided in the questionnaire.
+    </p>
+  </div>
+  <div>
+    <h1>
+      What's Next?
+    </h1>
+    <h2>
+      If it appears that you are eligible for citizenship based on the answers you provided:
+    </h2>
+    <ul>
+      <li>
+        Project New Citizen team members will begin to contact all eligible participants starting Monday, May 17th for a FREE follow-up consultation to verify all the information, give advice, and instuction.
+      </li>
+      <li>
+        If you are eligible to apply, you will be assisted by the immigration attourneys and DOJ accredited representatives. The citizenship application assisstance will be FREE of charge, and all information will be kept confidential.
+      </li>
+      <li>
+        You will also receive resources to help you study for the citizenship interview.
+      </li>
+    </ul>
+  </div>
+  <div>
+    <h2>
+      If you are ineligible to apply for citizenship at this time we will follow up with you by email no later than Monday, May 24th.
+    </h2>
+  </div>
+  <p>
+    Note: Due to limited space and COVID-19, we cannot guarantee that you will receive services. Thank you for your cooperation, patience and understanding.
+  </p>
+  <p>
+    If you want more information about immigration, please visit
+     
+    <a
+      href="https://www.e-immigrate.info/"
+      target="_blank"
+    >
+      e-immigrate.info
+    </a>
+  </p>
+</div>
+`;

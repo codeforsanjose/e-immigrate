@@ -1,0 +1,29 @@
+.Question {
+    border: none;
+    padding: 1rem;
+}
+
+.FollowUp {
+    margin-left: 2rem;
+    display: grid;
+    grid-template-columns: 30px auto;
+}
+
+.Question .QuestionText {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.QuestionInput:invalid {
+    border: 2px solid var(--color-secondary);
+}
+
+.Question .RequiredError {
+    display: none;
+    color: var(--color-secondary);
+}
+
+.TextInput:invalid[data-touched='true'] ~ .RequiredError {
+    display: block;
+}

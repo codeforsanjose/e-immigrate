@@ -11,66 +11,204 @@ exports[`App renders correctly 1`] = `
       className="wrapper"
     >
       <div
-        className="items"
+        className="LanguageSelection"
       >
         <div
-          className="languageDropdown"
+          className="gridContainer"
         >
           <div
-            className="label"
+            className="buttonGrid"
           >
-            <svg
-              height="2rem"
-              width="2rem"
-            >
-              LanguagePicker.svg
-            </svg>
-            <h4>
-              Preferred Language
-              :
-            </h4>
-          </div>
-          <div>
-            <select
-              onChange={[Function]}
-            >
-              <option
+            <div>
+              <button
+                className="buttonComponent"
+                onClick={[Function]}
                 value="en"
               >
                 English
-              </option>
-              <option
+              </button>
+            </div>
+            <div>
+              <button
+                className="buttonComponent"
+                onClick={[Function]}
                 value="es"
               >
                 Español
-              </option>
-              <option
+              </button>
+            </div>
+            <div>
+              <button
+                className="buttonComponent"
+                onClick={[Function]}
                 value="vi"
               >
                 Tiếng Việt
-              </option>
-            </select>
+              </button>
+            </div>
+            <div>
+              <button
+                className="buttonComponent"
+                onClick={[Function]}
+                value="ko"
+              >
+                한국어
+              </button>
+            </div>
+            <div>
+              <button
+                className="buttonComponent"
+                onClick={[Function]}
+                value="cmn"
+              >
+                普通话
+              </button>
+            </div>
           </div>
         </div>
-        <div>
+      </div>
+      <div
+        className="items blur"
+      >
+        <div
+          className="Navbar"
+        >
+          <img
+            alt="CIIT Logo"
+            className="logo"
+            src="CiiT Logo.png"
+          />
           <div
-            className="videoContainer"
+            className="NavLinks"
           >
-            <iframe
-              allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen={true}
-              className="video"
-              frameBorder="0"
-              height="315"
-              src="https://www.youtube.com/embed/QOt3Jc59BD4"
-              title="Project New Citizen Video"
-              width="560"
+            <a
+              href="/"
+              onClick={[Function]}
             />
+            <a
+              href="/about"
+              onClick={[Function]}
+            />
+            <div
+              className="languageDropdown"
+            >
+              <div
+                className="languageSelect"
+              >
+                <div
+                  className="languageSelectContainer"
+                >
+                  <svg
+                    className="languageIcon"
+                    height="26px"
+                    width="26px"
+                  >
+                    LanguagePicker.svg
+                  </svg>
+                  <select
+                    onChange={[Function]}
+                    value="en"
+                  >
+                    <option
+                      className="languageOption"
+                      value="en"
+                    >
+                      English
+                    </option>
+                    <option
+                      className="languageOption"
+                      value="es"
+                    >
+                      Español
+                    </option>
+                    <option
+                      className="languageOption"
+                      value="vi"
+                    >
+                      Tiếng Việt
+                    </option>
+                    <option
+                      className="languageOption"
+                      value="ko"
+                    >
+                      한국어
+                    </option>
+                    <option
+                      className="languageOption"
+                      value="cmn"
+                    >
+                      普通话
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
         <div
-          id="hubspotForm"
-        />
+          className="main"
+        >
+          <div
+            className="section"
+          >
+            <div
+              className="LandingPage"
+            >
+              <h1 />
+              <div
+                className="content"
+              >
+                <div>
+                  <div
+                    className="description"
+                  >
+                    <h2 />
+                    <p />
+                  </div>
+                  <div
+                    className="description last"
+                  >
+                    <h2 />
+                    <p />
+                    <p />
+                  </div>
+                  <button
+                    className="buttonComponent"
+                    onClick={[Function]}
+                  />
+                </div>
+                <img
+                  alt="placeholder"
+                  src="image placeholder.png"
+                />
+              </div>
+            </div>
+          </div>
+          <div
+            className="footer"
+          >
+            <div
+              className="imgRow"
+            >
+              <img
+                alt="CiiT Logo"
+                className="ciitLogo"
+                src="CiiT Logo.png"
+              />
+              <img
+                alt="CET-ICP Logo"
+                className="ceticpLogo"
+                src="CET-ICP Logo.png"
+              />
+            </div>
+            <div
+              className="textRow1"
+            />
+            <div
+              className="textRow2"
+            />
+          </div>
+        </div>
       </div>
     </div>
   </div>

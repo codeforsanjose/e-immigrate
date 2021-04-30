@@ -1,0 +1,38 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AdminDashboard renders correctly 1`] = `
+<section
+  className="AdminDashboard"
+>
+  <article
+    className="overview-container"
+  >
+    <h3>
+      Overview
+    </h3>
+    <section
+      className="details-container"
+    >
+      total Responses: 
+      0
+    </section>
+  </article>
+  <section>
+    <button
+      onClick={[Function]}
+    >
+      Send Email
+    </button>
+  </section>
+  <section>
+    <h3>
+      Details
+    </h3>
+    <table
+      className="responses"
+    >
+      <tbody />
+    </table>
+  </section>
+</section>
+`;
