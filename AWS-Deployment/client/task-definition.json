@@ -1,11 +1,7 @@
 {
-    "family": "e-immigrate-client",
-    "taskRoleArn": "",
-    "executionRoleArn": "",
-    "networkMode": "bridge",
     "containerDefinitions": [
         {
-            "name": "e-immigrate-client",
+            "name": "e-immigrate-client-dev-container",
             "cpu": 0,
             "memoryReservation": 128,
             "portMappings": [
@@ -27,16 +23,11 @@
                 },
                 {
                     "name": "PROD_API_URL",
-                    "value": "e-immigrate-api.corp"
+                    "value": "open-disclosure-api-dev.multi-tenant-dev"
                 }
-            ],
-            "mountPoints": [],
-            "volumesFrom": []
+            ]
         }
-    ],
-    "volumes": [],
-    "placementConstraints": [],
-    "requiresCompatibilities": [
-        "EC2"
-    ]
+      ],
+      "family": "e-immigrate-client-dev-td",
+      "networkMode": "bridge"
 }
