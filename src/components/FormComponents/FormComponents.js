@@ -29,7 +29,7 @@ export const Radio = ({
         <div className="RadioGroup">
             {answers &&
                 answers.map((option, idx) => (
-                    <div key={`${q.slug}-${option}`}>
+                    <div key={`${q.slug}-${idx}`}>
                         <label className="Radio">
                             <span className="RadioInput">
                                 <input
@@ -165,7 +165,14 @@ export const TextArea = ({ q, bindField, collectAnswer, content }) => {
     );
 };
 
-export const DropDown = ({ q, answers, bindField, collectAnswer, content }) => {
+export const DropDown = ({
+    q,
+    answers,
+    bindField,
+    collectAnswer,
+    content,
+    values,
+}) => {
     useEffect(() => {
         collectAnswer(q.slug, answers[0]);
     }, []);
@@ -179,9 +186,12 @@ export const DropDown = ({ q, answers, bindField, collectAnswer, content }) => {
                 onChange={(e) => collectAnswer(q.slug, e.target.value)}
             >
                 {answers &&
-                    answers.map((option) => {
+                    answers.map((option, idx) => {
                         return (
-                            <option key={`${q.slug}-${option}`}>
+                            <option
+                                value={values[idx]}
+                                key={`${q.slug}-${option}`}
+                            >
                                 {option}
                             </option>
                         );
@@ -220,7 +230,7 @@ export const PhoneNumber = ({
         <>
             <input
                 type="tel"
-                pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
+                pattern="^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$"
                 id={q.slug}
                 name={q.slug}
                 required={q.required}
