@@ -1,4 +1,4 @@
-name: Build Push and Deploy into AWS ECS
+name: Frontend Build and Deploy ECS
 on:
   workflow_dispatch:
     inputs:
@@ -11,7 +11,7 @@ on:
         required: true
 env:
   AWS_APP_NAME: e-immigrate
-  AWS_REGION: us-west-2
+  AWS_REGION: us-west-1
   DOCKERFILE: AWS-Deployment/backend/Dockerfile
   DOCKER_PATH: .
 jobs:
