@@ -18,6 +18,7 @@ const sendEmail = (email, name, flag, language) => {
         subject: 'Your Response has been received',
         html: translatedContents,
     };
+    console.log('the message to be sent', msg);
     return sgMail.send(msg);
 };
 

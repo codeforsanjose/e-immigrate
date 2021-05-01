@@ -103,7 +103,7 @@ const Questions = ({
 
             return (
                 <Question
-                    key={question.id}
+                    key={question.slug}
                     question={question}
                     bindField={bindField}
                     followUpQuestions={questions.filter(

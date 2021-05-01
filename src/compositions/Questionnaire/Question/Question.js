@@ -104,6 +104,7 @@ const Question = ({
                         bindField={bindField}
                         collectAnswer={collectAnswer}
                         content={content}
+                        values={q.answerValues.split(', ')}
                     />
                 );
             case 'email':
@@ -149,7 +150,9 @@ const Question = ({
             <fieldset className="Question">
                 <div className="QuestionText">
                     {text}
-                    {required ? ' (required)' : ' (optional)'}
+                    {required
+                        ? ` (${content.required})`
+                        : ` (${content.optional})`}
                 </div>
                 {getInputType(question)}
             </fieldset>
@@ -162,8 +165,8 @@ const Question = ({
                                 <div className="QuestionText">
                                     {followUpQuestion.text}
                                     {followUpQuestion.required
-                                        ? ' (required)'
-                                        : ' (optional)'}
+                                        ? ` (${content.required})`
+                                        : ` (${content.optional})`}
                                 </div>
                                 {getInputType(followUpQuestion)}
                             </fieldset>

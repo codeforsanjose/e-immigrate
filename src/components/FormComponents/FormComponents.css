@@ -37,7 +37,6 @@
     width: 0;
     height: 0;
 }
-
 .RadioGroup .RadioInput input:focus + .RadioControl {
     box-shadow: 0 0px 6px var(--color-overcastBlue);
 }
