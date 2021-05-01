@@ -1,0 +1,33 @@
+version: "3.9"  # optional since v1.27.0
+services:
+  frontend:
+    build:
+      context: ./
+      dockerfile: AWS-Deployment/client/Dockerfile
+    ports:
+      - "8080:80"
+    environment:
+      - PROD_API_URL=backend
+      - PROD_API_PORT=5000
+    links:
+      - backend
+    depends_on:
+      - "backend"
+  backend:
+    build:
+      context: ./
+      dockerfile: AWS-Deployment/backend/Dockerfile
+    ports:
+      - "5000:5000"
+    environment:
+      - MONGO_URI=mongodb+srv://appuser:<REDACTED>@eimmigrate.khn2l.mongodb.net/eimmigrate?retryWrites=true&w=majority
+      - SENDGRID_API_KEY=SG.hxxxx
+      - JWT_KEY=mysecret
+    # depends_on:
+    #   - "mongodb"
+  # mongodb:
+  #   image: mongo:latest
+  #   links:
+  #     - backend
+    
+  
