@@ -32,26 +32,25 @@ const QuestionnaireForm = ({
             if (q.required && !questionnaireResponse[q.slug]) {
                 if (q.parentQuestionSlug) {
                     if (questionnaireResponse[q.parentQuestionSlug] === 'Yes') {
-                        return false;
+                        return true;
                     } else {
                         return true;
                     }
                 }
-                return false;
+                return true;
             } else {
                 return true;
             }
         });
         setAllFieldsTouched();
-        if (
-            allRequiredFieldsCompleted &&
-            !Object.values(errors).includes(true)
-        ) {
+        if (allRequiredFieldsCompleted) {
             if (categoryIndex < categories.length - 1) {
                 setCategoryIndex((prev) => prev + 1);
             } else {
                 return onSubmit();
             }
+        } else {
+            alert(`Issues with ${Object.keys(errors)}`);
         }
     };
 
@@ -103,7 +102,7 @@ const Questions = ({
 
             return (
                 <Question
-                    key={question.id}
+                    key={question.slug}
                     question={question}
                     bindField={bindField}
                     followUpQuestions={questions.filter(

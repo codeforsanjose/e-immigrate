@@ -40,7 +40,7 @@ const Video = ({
                 </div>
                 <div className="title1">
                     <div>{content.step1Tip1}</div>
-                    <div>{content.step1Tip2}</div>
+                    {/* <div>{content.step1Tip2}</div> */}
                 </div>
             </div>
             <div
