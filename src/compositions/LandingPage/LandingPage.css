@@ -36,6 +36,7 @@ p {
     .LandingPage img {
         grid-column-start: 2;
         display: block;
+        align-self: center;
     }
 }
 

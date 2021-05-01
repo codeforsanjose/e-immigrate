@@ -1,7 +1,7 @@
 import React from 'react';
 import Button from '../../components/Button/Button';
 import { useHistory } from 'react-router-dom';
-import image from '../../data/images/image placeholder.png';
+import image from '../../data/images/CiiT Logo.png';
 
 import './LandingPage.css';
 
@@ -29,7 +29,7 @@ const LandingPage = ({ content }) => {
                         onClick={goToStep1}
                     />
                 </div>
-                <img src={image} alt="placeholder" />
+                <img src={image} alt="CIIT Logo" width="100%" height="auto" />
             </div>
         </div>
     );
