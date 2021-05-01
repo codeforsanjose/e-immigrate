@@ -8,9 +8,11 @@ const DEFAULT_HEADERS = {
 
 const sendRequest = (requestObj, headers = DEFAULT_HEADERS) => {
     const url = 'http://localhost:5000/api/questionnaires/add';
-    const response = fetch(url, { ...requestObj, headers }).then((data) =>
-        data.json()
-    );
+    const response = fetch(url, { ...requestObj, headers })
+        .then((data) => data.json())
+        .catch((error) => {
+            console.log('uploading failed due to error', error);
+        });
     return Promise.resolve(response);
 };
 
