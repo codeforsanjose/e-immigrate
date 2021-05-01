@@ -12,7 +12,7 @@ on:
 env:
   AWS_APP_NAME: e-immigrate
   AWS_REGION: us-west-1
-  DOCKERFILE: AWS-Deployment/backend/Dockerfile
+  DOCKERFILE: AWS-Deployment/client/Dockerfile
   DOCKER_PATH: .
 jobs:
   setup_env:
@@ -34,7 +34,7 @@ jobs:
             echo IMAGE_TAG=$SHORT_SHA >> $GITHUB_ENV
         fi
     outputs:
-          AWS_APPENV: e-immigrate-api-dev
+          AWS_APPENV: e-immigrate-client-dev
           IMAGE_TAG: ${{ env.IMAGE_TAG }}
   build:
     name: Build & Push Docker Image

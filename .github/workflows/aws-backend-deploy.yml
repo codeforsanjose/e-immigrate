@@ -34,7 +34,7 @@ jobs:
             echo IMAGE_TAG=$SHORT_SHA >> $GITHUB_ENV
         fi
     outputs:
-          AWS_APPENV: e-immigrate-client-dev
+          AWS_APPENV: e-immigrate-api-dev
           IMAGE_TAG: ${{ env.IMAGE_TAG }}
   build:
     name: Build & Push Docker Image
