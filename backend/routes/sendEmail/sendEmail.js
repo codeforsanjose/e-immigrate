@@ -9,7 +9,7 @@ const sendEmail = (email, name, flag, language) => {
     const colorFlag = flag ? 'red' : 'green';
     const emailContentForResponse = emailContents[language][colorFlag];
     const translatedContents =
-        emailContentForResponse === ''
+        emailContentForResponse && emailContentForResponse === ''
             ? emailContents['en'][colorFlag]
             : emailContentForResponse;
     const msg = {
