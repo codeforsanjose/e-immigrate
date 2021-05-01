@@ -1,15 +1,15 @@
 FROM node:alpine as builder
 
-WORKDIR /app
+WORKDIR /srv
 
-COPY package*.json /app/
+COPY package*.json .
 RUN npm install
 
-COPY . /app
+COPY . .
 RUN npm run build
 
 FROM openresty/openresty
 COPY ./AWS-Deployment/client/nginx/default.conf /etc/nginx/conf.d/default.conf
 COPY ./AWS-Deployment/client/nginx/nginx.conf /usr/local/openresty/nginx/conf/nginx.conf
-COPY --from=builder /app/build /usr/local/openresty/nginx/html
+COPY --from=builder /srv/build /usr/local/openresty/nginx/html
 EXPOSE 80
