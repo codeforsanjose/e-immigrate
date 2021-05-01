@@ -100,7 +100,7 @@ const Question = ({
                 return (
                     <DropDown
                         q={q}
-                        answers={q.answerSelections.split(', ')}
+                        answers={['--', ...q.answerSelections.split(', ')]}
                         bindField={bindField}
                         collectAnswer={collectAnswer}
                         content={content}

@@ -176,7 +176,6 @@ export const DropDown = ({
     useEffect(() => {
         collectAnswer(q.slug, answers[0]);
     }, []);
-
     return (
         <>
             <select
@@ -189,7 +188,7 @@ export const DropDown = ({
                     answers.map((option, idx) => {
                         return (
                             <option
-                                value={values[idx]}
+                                value={values[idx - 1]}
                                 key={`${q.slug}-${option}`}
                             >
                                 {option}
