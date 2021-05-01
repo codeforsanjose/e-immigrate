@@ -47,7 +47,7 @@ const RegisterBox = (props) => {
         return (
             <Redirect
                 to={{
-                    pathname: '/users',
+                    pathname: '/dashboard',
                     state: { name: registerBoxState.name },
                 }}
             />

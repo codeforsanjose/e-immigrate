@@ -24,7 +24,7 @@ router.route('/email').post((req, res) => {
             .then((result) => {
                 const tempUpdatedSuccessEmail = {
                     ...response,
-                    emailSent: false,
+                    emailSent: true,
                 };
                 QuestionnaireResponse.updateOne(
                     { _id: ObjectID(response._id) },
