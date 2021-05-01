@@ -7,7 +7,7 @@ const DEFAULT_HEADERS = {
 };
 
 const sendRequest = (requestObj, headers = DEFAULT_HEADERS) => {
-    const url = 'http://localhost:5000/api/translatedContent/add';
+    const url = '/api/translatedContent/add';
     const response = fetch(url, { ...requestObj, headers })
         .then((data) => data.json())
         .catch((error) => {
