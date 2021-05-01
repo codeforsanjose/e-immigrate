@@ -27,7 +27,7 @@ connection.once('open', () => {
     console.log('MongoDB database connection established successfully');
 });
 app.get('/api/status', (req, res) => {
-    res.status(200);
+    res.sendStatus(200);
 });
 app.use('/api/users', usersRouter);
 app.use('/api/admins', adminsRouter);
