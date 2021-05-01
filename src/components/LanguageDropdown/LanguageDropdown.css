@@ -14,7 +14,7 @@
 
 .languageDropdown .languageSelect {
     justify-self: center;
-    width: 190px;
+    width: 200px;
     overflow: auto;
 }
 
@@ -33,8 +33,8 @@
 }
 
 .languageDropdown .languageSelect select {
-    padding: 6px 4px 6px 12px;
-    margin: 0 4px 0 -12px;
+    padding: 6px 0px 6px 12px;
+    margin: 0 8px 0 -12px;
     background-color: rgba(0, 0, 0, 0);
     color: var(--color-text-primary);
     align-self: center;
