@@ -37,7 +37,7 @@ router.route('/email').post((req, res) => {
                 );
             })
             .catch((error) => {
-                console.log('what is the error', error.body);
+                console.log('what is the error', error);
                 if (error && error.body) {
                     for (const reserror of error.body.errors) {
                         console.log('the error here', reserror);
