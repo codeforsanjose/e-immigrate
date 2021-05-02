@@ -2,11 +2,11 @@ FROM node:15.3.0-buster-slim
 
 WORKDIR /srv
 
-COPY package*.json .
+COPY package*.json ./
 RUN npm install
 
 # RUN mkdir /srv/backend
-COPY backend .
+COPY backend ./
 # RUN npm run server
 
 # RUN npm install express
