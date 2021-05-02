@@ -176,7 +176,6 @@ export const DropDown = ({
     useEffect(() => {
         collectAnswer(q.slug, answers[0]);
     }, []);
-
     return (
         <>
             <select
@@ -189,7 +188,7 @@ export const DropDown = ({
                     answers.map((option, idx) => {
                         return (
                             <option
-                                value={values[idx]}
+                                value={values[idx - 1]}
                                 key={`${q.slug}-${option}`}
                             >
                                 {option}
@@ -240,7 +239,7 @@ export const PhoneNumber = ({
                     if (e.target.checkValidity()) {
                         setErrors((prev) => ({ ...prev, [q.slug]: false }));
                     } else {
-                        setErrors((prev) => ({ ...prev, [q.slug]: false }));
+                        setErrors((prev) => ({ ...prev, [q.slug]: true }));
                     }
                     collectAnswer(q.slug, e.target.value);
                 }}
@@ -262,11 +261,10 @@ export const Zip = ({ q, bindField, collectAnswer, setErrors, content }) => {
                 className="TextInput"
                 {...bindField(q.slug)}
                 onChange={(e) => {
-                    // TODO : NEED TO FIX error setting, check validity is working properly but error flag is not propergating
                     if (e.target.checkValidity()) {
                         setErrors((prev) => ({ ...prev, [q.slug]: false }));
                     } else {
-                        setErrors((prev) => ({ ...prev, [q.slug]: false }));
+                        setErrors((prev) => ({ ...prev, [q.slug]: true }));
                     }
                     collectAnswer(q.slug, e.target.value);
                 }}
