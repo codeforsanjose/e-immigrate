@@ -24,6 +24,8 @@ const Question3 = ({
             maxDate: new Date(),
             closeOnSelect: true,
             toggleOnInputClick: true,
+            type: 'date',
+            showHeader: false,
         });
 
         // Loop on each calendar initialized
@@ -53,10 +55,9 @@ const Question3 = ({
             );
             setShowModal(true);
         };
-        const calendarMarkup = <input id="date-selection" type="date" />;
         const bulmaCssCalendar = (
-            <div className="bulma-calendar-container">
-                {calendarMarkup}
+            <div className="bulma-calendar-container is-mobile">
+                <input id="date-selection" type="date" />
                 <div className="RequiredError">*{content.errorMessage}</div>
                 <Button
                     type="submit"
