@@ -40,10 +40,7 @@ const Question3 = ({
         if (element) {
             // bulmaCalendar instance is available as element.bulmaCalendar
             element.bulmaCalendar.on('select', (datepicker) => {
-                if (q) {
-                    collectAnswer(q.slug, datepicker.data.value());
-                    setShowModal(true);
-                }
+                setDate(new Date(datepicker.data.value()));
             });
         }
     }, []);
