@@ -6,6 +6,7 @@ import { enUS } from 'date-fns/locale';
 import bulmaCalendar from 'bulma-calendar/dist/js/bulma-calendar.min';
 
 // source : https://gist.github.com/silkyfray/d46babf96c792ef99d09e38ed0ca583a
+// this for some reason is not importing the css correctly, using the cdn in index.css works
 import 'bulma-calendar/dist/css/bulma-calendar.min.css';
 
 const Question3 = ({
@@ -17,7 +18,6 @@ const Question3 = ({
     content,
     collectAnswer,
 }) => {
-    const [showCalendar, setShowCalendar] = useState(false);
     useEffect(() => {
         // Initialize all input of date type.
         const calendars = bulmaCalendar.attach('[type="date"]', {
