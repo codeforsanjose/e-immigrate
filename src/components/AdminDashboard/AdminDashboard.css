@@ -1,14 +1,53 @@
+.AdminDashboard {
+    margin: 0 10%;
+}
+
 .AdminDashboard .responses {
     border: solid 1px #efefef;
     display: grid;
 }
 
-.AdminDashboard .responses tbody tr td {
+.AdminDashboard table {
+    border-collapse: collapse;
+    table-layout: auto;
+}
+
+.AdminDashboard .responses tbody tr td,
+.AdminDashboard .responses thead tr th {
     overflow-x: scroll;
-    height: 30px;
     border: solid 1px #efefef;
-    height: 100px;
+    height: 48px;
     overflow-x: scroll;
+}
+
+.AdminDashboard .responses th:nth-child(1),
+.AdminDashboard .responses th:nth-child(2),
+.AdminDashboard .responses td:nth-child(1),
+.AdminDashboard .responses td:nth-child(2) {
+    min-width: 32px;
+}
+
+.AdminDashboard .responses th:nth-child(3),
+.AdminDashboard .responses td:nth-child(3) {
+    min-width: 112px;
+}
+
+.AdminDashboard .responses th:nth-child(4),
+.AdminDashboard .responses td:nth-child(4) {
+    min-width: 96px;
+}
+
+.AdminDashboard .responses th:nth-child(5) {
+    width: 112px;
+}
+
+.AdminDashboard .responses td:nth-child(5) {
+    min-width: 112px;
+}
+
+.AdminDashboard .responses th,
+.AdminDashboard .responses td {
+    padding: 8px;
 }
 
 .AdminDashboard .checkbox {
@@ -46,4 +85,45 @@
 }
 .AdminDashboard .red-outline {
     border: solid 1px red;
+}
+
+.AdminDashboard .dashboard-card {
+    display: grid;
+    width: 200px;
+    grid-template-columns: 200px;
+    grid-template-rows: auto auto auto auto;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25), 0px -2px 4px rgba(0, 0, 0, 0.1);
+    gap: 4px;
+    border-radius: 4px;
+    padding: 16px;
+}
+
+.AdminDashboard .dashboard-card div {
+    display: flex;
+    justify-content: space-between;
+}
+
+.AdminDashboard .dashboard-card .text-red {
+    color: var(--color-red);
+}
+
+.AdminDashboard .dashboard-card .text-green {
+    color: var(--color-green);
+}
+
+.AdminDashboard .dashboard-card .bold {
+    font-weight: 700;
+}
+.AdminDashboard .dashboard-card h4 {
+    font-weight: 600;
+    font-size: 17px;
+    margin: 0;
+}
+
+.AdminDashboard .dashboard-buttons-container {
+    margin-top: 32px;
+    display: flex;
+    grid-template-columns: auto auto;
+    grid-template-rows: auto;
+    gap: 16px;
 }

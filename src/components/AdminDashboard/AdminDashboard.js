@@ -5,19 +5,19 @@ import {
     emailQuestionnaireResponse,
     generateResponsesExcel,
     getQuestions,
-    getResponsesExcel,
-    deleteResponsesExcel,
     agencyAssignURL,
-    downloadStatusQuestionnaireResponse,
 } from '../../sendRequest/apis';
 import { getAuthToken } from '../../utilities/auth_utils';
 import './AdminDashboard.css';
 import { workshopTitle } from '../../data/LanguageOptions';
+import Navbar from '../../compositions/Navbar/Navbar';
+import Button from '../Button/Button';
 
 const AGENCIES = ['ALA', 'CAIR', 'CC', 'CET', 'IRC', 'PARS'];
 const AdminDashboard = (props) => {
     const [questionnaireResponses, setQuestionnaireResponses] = useState([]);
     const [questions, setQuestions] = useState();
+    const content = { buttonHome: 'Home' };
     useEffect(() => {
         const jwt = getAuthToken();
         if (jwt === null) {
@@ -70,10 +70,37 @@ const AdminDashboard = (props) => {
         setQuestionnaireResponses(updatedResponses);
     };
     const overviewMarkup = useMemo(() => {
+        console.log('questionnaireResponses :>> ', questionnaireResponses);
         return (
-            <section className="details-container">
-                total Responses: {questionnaireResponses.length}
-            </section>
+            <div className="dashboard-card">
+                <h4>Responses</h4>
+                <div>
+                    <span>Red:</span>
+                    <span className="text-red bold">
+                        {
+                            questionnaireResponses.filter(
+                                (response) => response.flag === true
+                            ).length
+                        }
+                    </span>
+                </div>
+                <div>
+                    Green:{' '}
+                    <span className="text-green bold">
+                        {
+                            questionnaireResponses.filter(
+                                (response) => response.flag === false
+                            ).length
+                        }
+                    </span>
+                </div>
+                <div>
+                    Total:{' '}
+                    <span className="bold">
+                        {questionnaireResponses.length}
+                    </span>
+                </div>
+            </div>
         );
     }, [questionnaireResponses]);
 
@@ -189,6 +216,16 @@ const AdminDashboard = (props) => {
 
     const responsesTable = (
         <table className="responses">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Dot</th>
+                    <th>Agency</th>
+                    <th>Email Sent</th>
+                    <th>Response Downloaded</th>
+                    <th>Responses</th>
+                </tr>
+            </thead>
             <tbody>{responsesMarkup}</tbody>
         </table>
     );
@@ -252,22 +289,28 @@ const AdminDashboard = (props) => {
     }, []);
 
     return (
-        <section className="AdminDashboard">
-            <article className="overview-container">
-                <h3>Overview</h3>
-                {overviewMarkup}
-            </article>
-            <section>
-                <button onClick={sendSelectedUsersToAgencies}>
-                    Send Email
-                </button>
-            </section>
-            <section>
-                <button onClick={downloadResponsesExcel}>Download Excel</button>
-            </section>
-            <section>
-                <h3>Details</h3>
-                {responsesTable}
+        <section>
+            <Navbar content={content} dashboard={true} />
+            <section className="AdminDashboard">
+                <article className="overview-container">
+                    <h2>Overview</h2>
+                    <div>{overviewMarkup}</div>
+                </article>
+                <section className="dashboard-buttons-container">
+                    <Button
+                        label="Send Email"
+                        onClick={sendSelectedUsersToAgencies}
+                    />
+                    <Button
+                        label="Download Excel"
+                        onClick={downloadResponsesExcel}
+                    />
+                </section>
+                <section></section>
+                <section>
+                    <h2>Details</h2>
+                    {responsesTable}
+                </section>
             </section>
         </section>
     );
