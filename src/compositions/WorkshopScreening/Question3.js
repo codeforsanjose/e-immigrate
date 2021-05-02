@@ -24,6 +24,8 @@ const Question3 = ({
             maxDate: new Date(),
             closeOnSelect: true,
             toggleOnInputClick: true,
+            type: 'date',
+            showHeader: false,
         });
 
         // Loop on each calendar initialized
@@ -42,7 +44,6 @@ const Question3 = ({
             element.bulmaCalendar.on('select', (datepicker) => {
                 if (q) {
                     collectAnswer(q.slug, datepicker.data.value());
-                    setShowModal(true);
                 }
             });
         }
@@ -50,16 +51,16 @@ const Question3 = ({
     if (q) {
         const onClick = (e) => {
             e.preventDefault();
+            console.log('what is the date', date);
             collectAnswer(
                 q.slug,
                 date && format(date, 'MM/dd/yyyy', { locale: enUS })
             );
             setShowModal(true);
         };
-        const calendarMarkup = <input id="date-selection" type="date" />;
         const bulmaCssCalendar = (
-            <div className="bulma-calendar-container">
-                {calendarMarkup}
+            <div className="bulma-calendar-container is-mobile">
+                <input id="date-selection" type="date" />
                 <div className="RequiredError">*{content.errorMessage}</div>
                 <Button
                     type="submit"
