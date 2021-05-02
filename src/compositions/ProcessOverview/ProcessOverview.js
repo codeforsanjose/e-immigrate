@@ -49,7 +49,7 @@ const ProcessOverview = ({ content }) => {
                         <QuestionnaireIcon className="stepSVG" />
                     </Step>
                     <Arrow className="arrow" />
-                    <Step content={content} stepNumber={'2'}>
+                    <Step content={content} stepNumber={'3'}>
                         <Blob3 className="blob blob3" />
                         <CheckMark className="stepSVG" />
                     </Step>
