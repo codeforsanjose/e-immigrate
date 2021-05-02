@@ -26,6 +26,7 @@ const Question3 = ({
             toggleOnInputClick: true,
             type: 'date',
             showHeader: false,
+            displayMode: 'default',
         });
 
         // Loop on each calendar initialized
