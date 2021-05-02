@@ -5,9 +5,8 @@ import { enUS } from 'date-fns/locale';
 
 import bulmaCalendar from 'bulma-calendar/dist/js/bulma-calendar.min';
 
+// source : https://gist.github.com/silkyfray/d46babf96c792ef99d09e38ed0ca583a
 import 'bulma-calendar/dist/css/bulma-calendar.min.css';
-
-import 'react-nice-dates/build/style.css';
 
 const Question3 = ({
     q,
@@ -18,16 +17,16 @@ const Question3 = ({
     content,
     collectAnswer,
 }) => {
-    const showCalendar = useState(false);
+    const [showCalendar, setShowCalendar] = useState(false);
     useEffect(() => {
         // Initialize all input of date type.
         const calendars = bulmaCalendar.attach('[type="date"]', {
             maxDate: new Date(),
-            isRange: false,
-            type: 'date',
-            enableYearSwitch: true,
             closeOnSelect: true,
-            closeOnOverlayClick: true,
+            toggleOnInputClick: true,
+            type: 'date',
+            showHeader: false,
+            displayMode: 'default',
         });
 
         // Loop on each calendar initialized
@@ -40,11 +39,11 @@ const Question3 = ({
 
         // To access to bulmaCalendar instance of an element
         // eslint-disable-next-line no-undef
-        const element = document.querySelector('#dob');
+        const element = document.querySelector('#date-selection');
         if (element) {
             // bulmaCalendar instance is available as element.bulmaCalendar
             element.bulmaCalendar.on('select', (datepicker) => {
-                collectAnswer(datepicker.data.value());
+                setDate(new Date(datepicker.data.value()));
             });
         }
     }, []);
@@ -57,12 +56,9 @@ const Question3 = ({
             );
             setShowModal(true);
         };
-        const calendarMarkup = showCalendar ? (
-            <input id="dob" type="date" />
-        ) : null;
         const bulmaCssCalendar = (
             <div className="bulma-calendar-container is-mobile">
-                {calendarMarkup}
+                <input id="date-selection" type="date" />
                 <div className="RequiredError">*{content.errorMessage}</div>
                 <Button
                     type="submit"
@@ -71,7 +67,6 @@ const Question3 = ({
                 />
             </div>
         );
-
         return (
             <div className="DatePicker">
                 <div className="QuestionText">{q.text}</div>

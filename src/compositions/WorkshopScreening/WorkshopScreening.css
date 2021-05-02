@@ -24,6 +24,19 @@ p {
     margin: 20px 0;
 }
 
+.WorkshopScreening .bulma-calendar-container .datepicker-nav-year {
+    border: solid 1px white;
+    padding: 2px;
+    margin-left: 4px;
+    border-radius: 3px;
+}
+.WorkshopScreening .bulma-calendar-container .datepicker-nav-month {
+    border: solid 1px white;
+    padding: 2px;
+    margin-left: 4px;
+    border-radius: 3px;
+}
+
 .WorkshopScreening .nice-dates input {
     border: 2px solid var(--color-foggyBlue);
     border-radius: 10px;
