@@ -1,14 +1,66 @@
+.AdminDashboard {
+    margin: 0 10%;
+}
+
 .AdminDashboard .responses {
-    border: solid 1px #efefef;
+    /* border: solid 1px #efefef; */
     display: grid;
 }
 
-.AdminDashboard .responses tbody tr td {
+.AdminDashboard table {
+    border-collapse: collapse;
+    table-layout: auto;
+}
+
+.AdminDashboard .responses tbody tr td,
+.AdminDashboard .responses tbody tr th {
+    border-bottom: solid 1px #efefef;
+    height: 32px;
     overflow-x: scroll;
-    height: 30px;
-    border: solid 1px #efefef;
-    height: 100px;
-    overflow-x: scroll;
+}
+
+.AdminDashboard .responses th:nth-child(1),
+.AdminDashboard .responses td:nth-child(1) {
+    min-width: 40px;
+}
+
+.AdminDashboard .responses th:nth-child(2),
+.AdminDashboard .responses td:nth-child(2) {
+    min-width: 52px;
+}
+
+.AdminDashboard .responses th:nth-child(3),
+.AdminDashboard .responses td:nth-child(3) {
+    min-width: 96px;
+}
+
+.AdminDashboard .responses th:nth-child(4),
+.AdminDashboard .responses td:nth-child(4) {
+    min-width: 104px;
+}
+
+.AdminDashboard .responses th:nth-child(5),
+.AdminDashboard .responses td:nth-child(5) {
+    min-width: 120px;
+}
+
+.AdminDashboard .responses th,
+.AdminDashboard .responses td {
+    padding: 8px;
+    text-align: center;
+}
+
+.AdminDashboard .responses th {
+    color: var(--color-primary);
+}
+
+.AdminDashboard .responses th svg {
+    margin-left: 6px;
+    cursor: pointer;
+}
+
+.AdminDashboard .responses th .up {
+    transform: rotate(180deg);
 }
 
 .AdminDashboard .checkbox {
@@ -23,27 +75,72 @@
     grid-auto-flow: column;
     grid-auto-columns: minmax(1fr, 160px);
     width: 700px;
+    overflow-x: scroll;
 }
 .AdminDashboard .all-answers .answer {
     width: 100%;
     padding: 6px;
+    align-self: center;
+    min-height: 40px;
 }
 
 .AdminDashboard .green {
-    background-color: greenyellow;
+    background-color: var(--color-green);
 }
 .AdminDashboard .red {
-    background-color: red;
+    background-color: var(--color-red);
 }
 
 .AdminDashboard .flag {
     width: 20px;
     height: 20px;
     border-radius: 25px;
+    margin: auto;
 }
 .AdminDashboard .green-outline {
-    border: solid 1px greenyellow;
+    border: solid 1px var(--color-green);
 }
 .AdminDashboard .red-outline {
-    border: solid 1px red;
+    border: solid 1px var(--color-red);
+}
+
+.AdminDashboard .dashboard-card {
+    display: grid;
+    width: 200px;
+    grid-template-columns: auto;
+    grid-template-rows: auto auto auto auto;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25), 0px -2px 4px rgba(0, 0, 0, 0.1);
+    gap: 4px;
+    border-radius: 4px;
+    padding: 16px;
+}
+
+.AdminDashboard .dashboard-card div {
+    display: flex;
+    justify-content: space-between;
+}
+
+.AdminDashboard .dashboard-card .text-red {
+    color: var(--color-red);
+}
+
+.AdminDashboard .dashboard-card .text-green {
+    color: var(--color-green);
+}
+
+.AdminDashboard .dashboard-card .bold {
+    font-weight: 700;
+}
+.AdminDashboard .dashboard-card h4 {
+    font-weight: 600;
+    font-size: 17px;
+    margin: 0;
+}
+
+.AdminDashboard .dashboard-buttons-container {
+    margin-top: 32px;
+    display: flex;
+    grid-template-columns: auto auto;
+    grid-template-rows: auto;
+    gap: 16px;
 }

@@ -25,16 +25,17 @@
 
 .languageDropdown .languageSelect .languageSelectContainer {
     display: grid;
-    grid-template-columns: 48px auto;
+    grid-template-columns: 48px auto auto;
     border: 1px solid var(--color-text-primary);
     color: var(--color-text-primary);
     border-radius: 25px;
     padding: 0 6px;
+    align-items: center;
 }
 
 .languageDropdown .languageSelect select {
-    padding: 6px 0px 6px 12px;
-    margin: 0 8px 0 -12px;
+    padding: 6px 0px 6px 8px;
+    margin: 0 0px 0 -12px;
     background-color: rgba(0, 0, 0, 0);
     color: var(--color-text-primary);
     align-self: center;
@@ -44,6 +45,7 @@
     font-size: 1rem;
     text-overflow: ellipsis;
     max-width: 100%;
+    -webkit-appearance: none;
 }
 
 .languageDropdown .languageSelect select:focus {
