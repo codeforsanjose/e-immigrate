@@ -53,7 +53,7 @@ const QuestionnaireForm = ({
                 return onSubmit();
             }
         } else {
-            alert(`Issues with ${Object.keys(errors)}`);
+            alert(`Please complete every question ${Object.keys(errors)}`);
         }
     };
 

@@ -21,7 +21,7 @@ const QuestionnaireIntro = ({ content, setIntroPage }) => {
                 </ul>
             </div>
             <div>
-                <h1>{content.step2Header2}</h1>
+                <h1 className="header2">{content.step2Header2}</h1>
                 <ul>
                     <li>{content.step2Tip4}</li>
                     <li>{content.step2Tip5}</li>

@@ -5,10 +5,6 @@
     justify-content: center;
 }
 
-/* .ProcessOverview .welcome-message {
-    text-align: center;
-} */
-
 .ProcessOverview .welcome-message {
     color: var(--color-text-primary);
 }
@@ -71,15 +67,15 @@
 }
 
 .ProcessOverview .blob1 {
-    fill: #C8EEFC;
+    fill: #c8eefc;
 }
 
 .ProcessOverview .blob2 {
-    fill: #E0ADB6;
+    fill: #e0adb6;
 }
 
 .ProcessOverview .blob3 {
-    fill: #8BA5CC;
+    fill: #8ba5cc;
 }
 
 .ProcessOverview .stepContainer .stepDescription {
@@ -106,22 +102,58 @@
 
 @media only screen and (max-width: 1024px) {
     .ProcessOverview .welcome-message h1 {
-        font-size: 2rem;
+        font-size: 20px;
         margin-bottom: 10px;
+    }
+
+    .ProcessOverview .welcome-message .line2 {
+        font-size: 24px;
     }
 
     .ProcessOverview .stepsGrid {
         display: grid;
-        grid-template-rows: auto 48px auto 48px auto;
-        grid-template-columns: 300px;
-        justify-items: center;
+        grid-template-columns: 25vw 24px 25vw 24px 25vw;
+        align-items: center;
+    }
+
+    .ProcessOverview .stepsGrid .stepContainer {
+        display: grid;
+        grid-template-rows: auto 60px 56px;
+        padding: 6px 6px;
+        overflow: auto;
+        word-wrap: break-word;
+        word-break: break-all;
+    }
+
+    .ProcessOverview .stepIcon .blob {
+        height: 42px;
+        width: 42px;
+    }
+
+    .ProcessOverview .stepsGrid .stepSVG {
+        width: 32px;
+        height: auto;
     }
 
     .ProcessOverview .stepsGrid .arrow {
-        -webkit-transform: rotate(90deg);
-        -moz-transform: rotate(90deg);
-        -ms-transform: rotate(90deg);
-        -o-transform: rotate(90deg);
-        transform: rotate(90deg);
+        width: 20px;
+        height: auto;
+    }
+
+    .ProcessOverview .stepsGrid .stepNumber {
+        font-size: 16px;
+    }
+
+    .ProcessOverview .stepsGrid .stepTitle {
+        font-size: 16px;
+    }
+
+    .ProcessOverview .stepContainer .stepDescription {
+        visibility: hidden;
+        display: none;
+    }
+
+    .ProcessOverview .gridContainer {
+        padding: 2rem 0;
     }
 }
