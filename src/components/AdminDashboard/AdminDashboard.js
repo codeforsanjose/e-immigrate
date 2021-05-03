@@ -74,7 +74,6 @@ const AdminDashboard = (props) => {
         setQuestionnaireResponses(updatedResponses);
     };
     const overviewMarkup = useMemo(() => {
-        console.log('questionnaireResponses :>> ', questionnaireResponses);
         return (
             <div className="dashboard-card">
                 <h4>Responses</h4>
@@ -155,17 +154,17 @@ const AdminDashboard = (props) => {
     };
     const sortEmail = () => {
         emailOrder
-            ? sortAscending('emailSent', emailOrder, setEmailOrder)
-            : sortDescending('emailSent', emailOrder, setEmailOrder);
+            ? sortAscendingUndefined('emailSent', emailOrder, setEmailOrder)
+            : sortDescendingUndefined('emailSent', emailOrder, setEmailOrder);
     };
     const sortDownload = () => {
         downloadOrder
-            ? sortAscending(
+            ? sortAscendingUndefined(
                   'responseDownloadedToExcel',
                   downloadOrder,
                   setDownloadOrder
               )
-            : sortDescending(
+            : sortDescendingUndefined(
                   'responseDownloadedToExcel',
                   downloadOrder,
                   setDownloadOrder
@@ -173,7 +172,6 @@ const AdminDashboard = (props) => {
     };
 
     const sortAscending = (property, headerState, setHeaderState) => {
-        console.log('here');
         const sortedResponses = questionnaireResponses.sort((a, b) => {
             if (a[property] < b[property]) return -1;
             if (a[property] > b[property]) return 1;
@@ -183,10 +181,27 @@ const AdminDashboard = (props) => {
         setHeaderState(!headerState);
     };
     const sortDescending = (property, headerState, setHeaderState) => {
-        console.log('here 2');
         const sortedResponses = questionnaireResponses.sort((a, b) => {
             if (a[property] > b[property]) return -1;
             if (a[property] < b[property]) return 1;
+            return 0;
+        });
+        setQuestionnaireResponses(sortedResponses);
+        setHeaderState(!headerState);
+    };
+    const sortAscendingUndefined = (property, headerState, setHeaderState) => {
+        const sortedResponses = questionnaireResponses.sort((a, b) => {
+            if (a[property] && !b[property]) return -1;
+            if (!a[property] && b[property]) return 1;
+            return 0;
+        });
+        setQuestionnaireResponses(sortedResponses);
+        setHeaderState(!headerState);
+    };
+    const sortDescendingUndefined = (property, headerState, setHeaderState) => {
+        const sortedResponses = questionnaireResponses.sort((a, b) => {
+            if (a[property] && !b[property]) return 1;
+            if (!a[property] && b[property]) return -1;
             return 0;
         });
         setQuestionnaireResponses(sortedResponses);
@@ -263,7 +278,7 @@ const AdminDashboard = (props) => {
                 </tr>
             );
         });
-    }, [questionnaireResponses, flagOrder]);
+    }, [questionnaireResponses, flagOrder, emailOrder, downloadOrder]);
 
     const responsesTable = (
         <table className="responses">
