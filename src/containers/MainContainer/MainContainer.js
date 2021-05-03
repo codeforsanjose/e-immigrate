@@ -134,6 +134,7 @@ const MainContainer = () => {
                         language={language}
                         setLanguage={changeLanguage}
                         content={content}
+                        dashboard={false}
                     />
                     <div className="main">
                         <div className="section">
