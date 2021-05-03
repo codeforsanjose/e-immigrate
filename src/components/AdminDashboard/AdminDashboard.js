@@ -43,7 +43,9 @@ const AdminDashboard = (props) => {
                         return key !== 'male' &&
                             key !== 'green_card_through_marriage' &&
                             key !== 'still_married_to_that_citizen' &&
-                            key !== 'receive_public_benefits'
+                            key !== 'receive_public_benefits' &&
+                            key !== 'live_US_18-26_and_are_26-31' &&
+                            key !== 'selective_service'
                             ? value.toUpperCase() === 'YES'
                                 ? true
                                 : acc
@@ -218,7 +220,9 @@ const AdminDashboard = (props) => {
                         questionKey !== 'male' &&
                         questionKey !== 'green_card_through_marriage' &&
                         questionKey !== 'still_married_to_that_citizen' &&
-                        questionKey !== 'receive_public_benefits'
+                        questionKey !== 'receive_public_benefits' &&
+                        questionKey !== 'live_US_18-26_and_are_26-31' &&
+                        questionKey !== 'selective_service'
                             ? questionnaireResponse[
                                   questionKey
                               ].toUpperCase() === 'YES'
