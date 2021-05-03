@@ -12,12 +12,16 @@ import './AdminDashboard.css';
 import { workshopTitle } from '../../data/LanguageOptions';
 import Navbar from '../../compositions/Navbar/Navbar';
 import Button from '../Button/Button';
+import { ReactComponent as Arrow } from '../../data/images/SortArrow.svg';
 
 const AGENCIES = ['ALA', 'CAIR', 'CC', 'CET', 'IRC', 'PARS'];
 const AdminDashboard = (props) => {
     const [questionnaireResponses, setQuestionnaireResponses] = useState([]);
     const [questions, setQuestions] = useState();
     const content = { buttonHome: 'Home' };
+    const [flagOrder, setFlagOrder] = useState(false);
+    const [emailOrder, setEmailOrder] = useState(false);
+    const [downloadOrder, setDownloadOrder] = useState(false);
     useEffect(() => {
         const jwt = getAuthToken();
         if (jwt === null) {
@@ -143,6 +147,52 @@ const AdminDashboard = (props) => {
             setQuestionnaireResponses(updatedResponses);
         });
     };
+
+    const sortFlags = () => {
+        flagOrder
+            ? sortAscending('flag', flagOrder, setFlagOrder)
+            : sortDescending('flag', flagOrder, setFlagOrder);
+    };
+    const sortEmail = () => {
+        emailOrder
+            ? sortAscending('emailSent', emailOrder, setEmailOrder)
+            : sortDescending('emailSent', emailOrder, setEmailOrder);
+    };
+    const sortDownload = () => {
+        downloadOrder
+            ? sortAscending(
+                  'responseDownloadedToExcel',
+                  downloadOrder,
+                  setDownloadOrder
+              )
+            : sortDescending(
+                  'responseDownloadedToExcel',
+                  downloadOrder,
+                  setDownloadOrder
+              );
+    };
+
+    const sortAscending = (property, headerState, setHeaderState) => {
+        console.log('here');
+        const sortedResponses = questionnaireResponses.sort((a, b) => {
+            if (a[property] < b[property]) return -1;
+            if (a[property] > b[property]) return 1;
+            return 0;
+        });
+        setQuestionnaireResponses(sortedResponses);
+        setHeaderState(!headerState);
+    };
+    const sortDescending = (property, headerState, setHeaderState) => {
+        console.log('here 2');
+        const sortedResponses = questionnaireResponses.sort((a, b) => {
+            if (a[property] > b[property]) return -1;
+            if (a[property] < b[property]) return 1;
+            return 0;
+        });
+        setQuestionnaireResponses(sortedResponses);
+        setHeaderState(!headerState);
+    };
+
     const responsesMarkup = useMemo(() => {
         return questionnaireResponses.map((response, index) => {
             const { questionnaireResponse = {} } = response;
@@ -197,12 +247,13 @@ const AdminDashboard = (props) => {
                     </td>
                     <td>
                         <span>
-                            Email Sent: {response.emailSent ? 'Yes' : 'No'}
+                            {/* Email Sent:  */}
+                            {response.emailSent ? 'Yes' : 'No'}
                         </span>
                     </td>
                     <td>
                         <span>
-                            Response Downloaded:{' '}
+                            {/* Response Downloaded:{' '} */}
                             {response.responseDownloadedToExcel ? 'Yes' : 'No'}
                         </span>
                     </td>
@@ -212,21 +263,39 @@ const AdminDashboard = (props) => {
                 </tr>
             );
         });
-    }, [questionnaireResponses]);
+    }, [questionnaireResponses, flagOrder]);
 
     const responsesTable = (
         <table className="responses">
-            <thead>
+            <tbody>
                 <tr>
                     <th>#</th>
-                    <th>Dot</th>
+                    <th>
+                        Flag
+                        <Arrow
+                            className={flagOrder ? 'up' : ''}
+                            onClick={sortFlags}
+                        />
+                    </th>
                     <th>Agency</th>
-                    <th>Email Sent</th>
-                    <th>Response Downloaded</th>
+                    <th>
+                        Email Sent
+                        <Arrow
+                            className={emailOrder ? 'up' : ''}
+                            onClick={sortEmail}
+                        />
+                    </th>
+                    <th>
+                        Response Downloaded
+                        <Arrow
+                            className={downloadOrder ? 'up' : ''}
+                            onClick={sortDownload}
+                        />
+                    </th>
                     <th>Responses</th>
                 </tr>
-            </thead>
-            <tbody>{responsesMarkup}</tbody>
+                {responsesMarkup}
+            </tbody>
         </table>
     );
 
