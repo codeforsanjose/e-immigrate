@@ -1,4 +1,5 @@
 .QuestionnaireIntro {
+    margin: 0 10%;
 }
 
 .QuestionnaireIntro h1 {
@@ -15,9 +16,14 @@
 
 .QuestionnaireIntro ul {
     list-style-image: url('../../../data/images/CIIT_bullet.svg');
+    margin-left: 16px;
 }
 
 .QuestionnaireIntro .ButtonContainer {
     margin: 48px 0 16px;
     display: grid;
+}
+
+.QuestionnaireIntro .header2 {
+    margin-top: 40px;
 }

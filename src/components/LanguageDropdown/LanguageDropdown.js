@@ -1,5 +1,6 @@
 import React from 'react';
 import { ReactComponent as LanguagePicker } from './LanguagePicker.svg';
+import { ReactComponent as ChevronDown } from './ChevronDown.svg';
 import { languageOptions } from '../../data/LanguageOptions';
 
 import './LanguageDropdown.css';
@@ -28,6 +29,7 @@ const LanguageSelect = ({ setLanguage, language }) => {
                     );
                 })}
             </select>
+            <ChevronDown className="chevronDown" height="16px" width="16px" />
         </div>
     );
 };
