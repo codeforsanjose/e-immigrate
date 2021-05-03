@@ -20,13 +20,13 @@
 }
 
 .AdminDashboard .responses th:nth-child(1),
-.AdminDashboard .responses th:nth-child(2) {
+.AdminDashboard .responses td:nth-child(1) {
     min-width: 40px;
 }
 
-.AdminDashboard .responses td:nth-child(1),
+.AdminDashboard .responses th:nth-child(2),
 .AdminDashboard .responses td:nth-child(2) {
-    min-width: 48px;
+    min-width: 52px;
 }
 
 .AdminDashboard .responses th:nth-child(3),
@@ -55,7 +55,7 @@
 }
 
 .AdminDashboard .responses th svg {
-    margin-left: 4px;
+    margin-left: 6px;
     cursor: pointer;
 }
 

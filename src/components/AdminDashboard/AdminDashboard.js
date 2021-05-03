@@ -42,7 +42,8 @@ const AdminDashboard = (props) => {
                     ).reduce((acc, [key, value]) => {
                         return key !== 'male' &&
                             key !== 'green_card_through_marriage' &&
-                            key !== 'still_married_to_that_citizen'
+                            key !== 'still_married_to_that_citizen' &&
+                            key !== 'receive_public_benefits'
                             ? value.toUpperCase() === 'YES'
                                 ? true
                                 : acc
@@ -216,7 +217,8 @@ const AdminDashboard = (props) => {
                     const flagIt =
                         questionKey !== 'male' &&
                         questionKey !== 'green_card_through_marriage' &&
-                        questionKey !== 'still_married_to_that_citizen'
+                        questionKey !== 'still_married_to_that_citizen' &&
+                        questionKey !== 'receive_public_benefits'
                             ? questionnaireResponse[
                                   questionKey
                               ].toUpperCase() === 'YES'
@@ -261,14 +263,10 @@ const AdminDashboard = (props) => {
                         </select>
                     </td>
                     <td>
-                        <span>
-                            {/* Email Sent:  */}
-                            {response.emailSent ? 'Yes' : 'No'}
-                        </span>
+                        <span>{response.emailSent ? 'Yes' : 'No'}</span>
                     </td>
                     <td>
                         <span>
-                            {/* Response Downloaded:{' '} */}
                             {response.responseDownloadedToExcel ? 'Yes' : 'No'}
                         </span>
                     </td>
