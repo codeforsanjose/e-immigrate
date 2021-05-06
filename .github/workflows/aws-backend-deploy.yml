@@ -12,7 +12,7 @@ on:
 env:
   AWS_SHARED_CLUSTER: multi-tenant-prod
   AWS_APP_NAME: e-immigrate-api
-  AWS_REGION: us-west-1
+  AWS_REGION: us-west-2
   DOCKERFILE: AWS-Deployment/backend/Dockerfile
   DOCKER_PATH: .
 jobs:
