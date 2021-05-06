@@ -20,30 +20,32 @@ router.route('/email').post((req, res) => {
         //send email
         const { questionnaireResponse = {}, flag, language = 'en' } = response;
         const { email = '' } = questionnaireResponse;
-        sendEmail(email, '', flag, language)
-            .then((result) => {
-                const tempUpdatedSuccessEmail = {
-                    ...response,
-                    emailSent: true,
-                };
-                QuestionnaireResponse.updateOne(
-                    { _id: ObjectID(response._id) },
-                    tempUpdatedSuccessEmail,
-                    (err, raw) => {
-                        if (err) {
-                            console.log('updated something err is', err);
+        if (email !== '') {
+            sendEmail(email, '', flag, language)
+                .then((result) => {
+                    const tempUpdatedSuccessEmail = {
+                        ...response,
+                        emailSent: true,
+                    };
+                    QuestionnaireResponse.updateOne(
+                        { _id: ObjectID(response._id) },
+                        tempUpdatedSuccessEmail,
+                        (err, raw) => {
+                            if (err) {
+                                console.log('updated something err is', err);
+                            }
+                        }
+                    );
+                })
+                .catch((error) => {
+                    console.log('what is the error', error);
+                    if (error && error.body) {
+                        for (const reserror of error.body.errors) {
+                            console.log('the error here', reserror);
                         }
                     }
-                );
-            })
-            .catch((error) => {
-                console.log('what is the error', error);
-                if (error && error.body) {
-                    for (const reserror of error.body.errors) {
-                        console.log('the error here', reserror);
-                    }
-                }
-            });
+                });
+        }
     }
     res.json({ msg: 'success' });
 });
