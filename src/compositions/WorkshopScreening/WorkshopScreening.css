@@ -35,6 +35,12 @@ p {
     padding: 2px;
     margin-left: 4px;
     border-radius: 3px;
+    padding: 6px;
+    width: 100px;
+    margin-left: 4px;
+    border-radius: 3px;
+    text-align: center;
+    box-shadow: 0 8px 6px -6px #474747;
 }
 
 .WorkshopScreening .nice-dates input {

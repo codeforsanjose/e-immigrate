@@ -17,7 +17,6 @@ const Question3 = ({
     content,
     collectAnswer,
 }) => {
-    const [showCalendar, setShowCalendar] = useState(false);
     useEffect(() => {
         // Initialize all input of date type.
         const calendars = bulmaCalendar.attach('[type="date"]', {
@@ -26,7 +25,7 @@ const Question3 = ({
             toggleOnInputClick: true,
             type: 'date',
             showHeader: false,
-            displayMode: 'default',
+            showFooter: false,
         });
 
         // Loop on each calendar initialized
