@@ -49,11 +49,13 @@ const Question3 = ({
     if (q) {
         const onClick = (e) => {
             e.preventDefault();
-            collectAnswer(
-                q.slug,
-                date && format(date, 'MM/dd/yyyy', { locale: enUS })
-            );
-            setShowModal(true);
+            if (date) {
+                collectAnswer(
+                    q.slug,
+                    date && format(date, 'MM/dd/yyyy', { locale: enUS })
+                );
+                setShowModal(true);
+            }
         };
         const bulmaCssCalendar = (
             <div className="bulma-calendar-container is-mobile">
