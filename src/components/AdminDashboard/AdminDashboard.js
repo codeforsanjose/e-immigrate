@@ -15,6 +15,13 @@ import Button from '../Button/Button';
 import { ReactComponent as Arrow } from '../../data/images/SortArrow.svg';
 
 const AGENCIES = ['ALA', 'CAIR', 'CC', 'CET', 'IRC', 'PARS'];
+const questionKeysThatAreNotRedFlagsButInARedFlagQuestionnaire = [
+    'male',
+    'still_married_to_that_citizen',
+    'receive_public_benefits',
+    'live_US_18-26_and_are_26-31',
+    'selective_service',
+];
 const AdminDashboard = (props) => {
     const [questionnaireResponses, setQuestionnaireResponses] = useState([]);
     const [questions, setQuestions] = useState();
@@ -40,12 +47,9 @@ const AdminDashboard = (props) => {
                     const newFlag = Object.entries(
                         questionnaireResponse
                     ).reduce((acc, [key, value]) => {
-                        return key !== 'male' &&
-                            key !== 'green_card_through_marriage' &&
-                            key !== 'still_married_to_that_citizen' &&
-                            key !== 'receive_public_benefits' &&
-                            key !== 'live_US_18-26_and_are_26-31' &&
-                            key !== 'selective_service'
+                        return !questionKeysThatAreNotRedFlagsButInARedFlagQuestionnaire.includes(
+                            key
+                        )
                             ? value.toUpperCase() === 'YES'
                                 ? true
                                 : acc
@@ -216,19 +220,14 @@ const AdminDashboard = (props) => {
             const { questionnaireResponse = {} } = response;
             const allAnswers = Object.keys(questionnaireResponse).reduce(
                 (accumulator, questionKey, index) => {
-                    const flagIt =
-                        questionKey !== 'male' &&
-                        questionKey !== 'green_card_through_marriage' &&
-                        questionKey !== 'still_married_to_that_citizen' &&
-                        questionKey !== 'receive_public_benefits' &&
-                        questionKey !== 'live_US_18-26_and_are_26-31' &&
-                        questionKey !== 'selective_service'
-                            ? questionnaireResponse[
-                                  questionKey
-                              ].toUpperCase() === 'YES'
-                                ? 'red-outline'
-                                : 'green-outline'
-                            : 'green-outline';
+                    const flagIt = !questionKeysThatAreNotRedFlagsButInARedFlagQuestionnaire.includes(
+                        questionKey
+                    )
+                        ? questionnaireResponse[questionKey].toUpperCase() ===
+                          'YES'
+                            ? 'red-outline'
+                            : 'green-outline'
+                        : 'green-outline';
                     const answerMarkup = (
                         <article
                             key={`td-answer-${index}`}
@@ -342,7 +341,31 @@ const AdminDashboard = (props) => {
             '/api/generateExcel/getLatest/ResponsesExcel.xlsx';
     };
 
-    const downloadResponsesExcel = (e) => {
+    const downloadLatestResponsesExcel = (e) => {
+        const includedResponses = questionnaireResponses
+            .sort((a, b) => {
+                if (a.agency < b.agency) return -1;
+                if (a.agency > b.agency) return 1;
+                return 0;
+            })
+            .filter((item) => !item.responseDownloadedToExcel);
+        const requestObj = {
+            url: generateResponsesExcel,
+            method: 'POST',
+            body: JSON.stringify({
+                questions: questions,
+                responses: includedResponses,
+            }),
+        };
+        const jwt = getAuthToken();
+        const headers = {
+            Authorization: `Bearer ${jwt}`,
+        };
+        sendRequest(requestObj, headers).then((response) => {
+            getExcelFile();
+        });
+    };
+    const downloadAllResponsesExcel = (e) => {
         const includedResponses = questionnaireResponses.sort((a, b) => {
             if (a.agency < b.agency) return -1;
             if (a.agency > b.agency) return 1;
@@ -388,8 +411,12 @@ const AdminDashboard = (props) => {
                         onClick={sendSelectedUsersToAgencies}
                     />
                     <Button
-                        label="Download Excel"
-                        onClick={downloadResponsesExcel}
+                        label="Download Latest Excel"
+                        onClick={downloadLatestResponsesExcel}
+                    />
+                    <Button
+                        label="Download All Excel"
+                        onClick={downloadAllResponsesExcel}
                     />
                 </section>
                 <section></section>
