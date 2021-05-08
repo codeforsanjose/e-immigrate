@@ -306,7 +306,6 @@ const AdminDashboard = (props) => {
                 policeExplinationMarkupQuestion,
                 ...allAnswers,
             ];
-
             return (
                 <tr key={response._id}>
                     <td>{index + 1}</td>
