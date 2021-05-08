@@ -116,17 +116,20 @@
 }
 
 .AdminDashboard .dashboard-card {
-    display: grid;
-    width: 200px;
-    grid-template-columns: auto;
-    grid-template-rows: auto auto auto auto;
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25), 0px -2px 4px rgba(0, 0, 0, 0.1);
-    gap: 4px;
     border-radius: 4px;
     padding: 16px;
+    height: 148px;
 }
 
-.AdminDashboard .dashboard-card div {
+.AdminDashboard .flag-dashboard-card {
+    display: grid;
+    grid-template-columns: auto;
+    grid-template-rows: auto auto auto auto;
+    gap: 4px;
+}
+
+.AdminDashboard .flag-dashboard-card div {
     display: flex;
     justify-content: space-between;
 }
@@ -154,4 +157,31 @@
     grid-template-columns: auto auto;
     grid-template-rows: auto;
     gap: 16px;
+}
+
+.AdminDashboard .overview-container {
+    display: grid;
+    grid-template-columns: 200px 412px;
+    grid-template-rows: auto;
+    gap: 50px;
+}
+
+.AdminDashboard .overview-container .agency-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, 150px);
+    grid-template-rows: repeat(3, auto);
+    column-gap: 76px;
+    row-gap: 4px;
+    margin-top: 4px;
+    column-rule: 1px solid black;
+}
+
+.AdminDashboard .overview-container .agency-grid .agency-row {
+    display: grid;
+    grid-template-columns: 45px repeat(3, 35px);
+    grid-template-rows: auto;
+}
+
+.AdminDashboard .overview-container .agency-grid .agency-row .sum {
+    text-align: end;
 }

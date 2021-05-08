@@ -84,16 +84,16 @@ const AdminDashboard = (props) => {
             setQuestionnaireResponses(updatedResponses);
         });
     };
-    const overviewMarkup = useMemo(() => {
+    const flagOverviewMarkup = useMemo(() => {
         return (
-            <div className="dashboard-card">
+            <div className="flag-dashboard-card">
                 <h4>Responses</h4>
                 <div>
                     <span>Red:</span>
                     <span className="text-red bold">
                         {
                             questionnaireResponses.filter(
-                                (response) => response.flag === true
+                                (response) => response.flag === 'true'
                             ).length
                         }
                     </span>
@@ -103,7 +103,7 @@ const AdminDashboard = (props) => {
                     <span className="text-green bold">
                         {
                             questionnaireResponses.filter(
-                                (response) => response.flag === false
+                                (response) => response.flag === 'false'
                             ).length
                         }
                     </span>
@@ -117,6 +117,50 @@ const AdminDashboard = (props) => {
             </div>
         );
     }, [questionnaireResponses]);
+
+    const agencyOverviewMarkup = useMemo(() => {
+        return (
+            <div className="agency-dashboard-card">
+                <h4>Assigned to</h4>
+                <div className="agency-grid">
+                    {AGENCIES.map((agency, idx) => {
+                        return (
+                            <div key={idx} className="agency-row">
+                                <div>{agency}</div>
+                                <div className="sum text-red bold">
+                                    {
+                                        questionnaireResponses.filter(
+                                            (response) =>
+                                                response.agency === agency &&
+                                                response.flag === 'true'
+                                        ).length
+                                    }
+                                </div>
+                                <div className="sum text-green bold">
+                                    {
+                                        questionnaireResponses.filter(
+                                            (response) =>
+                                                response.agency === agency &&
+                                                response.flag === 'false'
+                                        ).length
+                                    }
+                                </div>
+                                <div className="sum bold">
+                                    {
+                                        questionnaireResponses.filter(
+                                            (response) =>
+                                                response.agency === agency
+                                        ).length
+                                    }
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>
+            </div>
+        );
+    }, [questionnaireResponses]);
+    console.log('questionnaireResponses :>> ', questionnaireResponses);
 
     const firstOption = (
         <option key="agency-initial" value="">
@@ -478,10 +522,20 @@ const AdminDashboard = (props) => {
         <section>
             <Navbar content={content} dashboard={true} />
             <section className="AdminDashboard">
-                <article className="overview-container">
-                    <h2>Overview</h2>
-                    <div>{overviewMarkup}</div>
-                </article>
+                <section className="overview-container">
+                    <article>
+                        <h2>Overview</h2>
+                        <div className="dashboard-card">
+                            {flagOverviewMarkup}
+                        </div>
+                    </article>
+                    <article>
+                        <h2>By Agency</h2>
+                        <div className="dashboard-card">
+                            {agencyOverviewMarkup}
+                        </div>
+                    </article>
+                </section>
                 <section className="dashboard-buttons-container">
                     <Button
                         label="Send Email"
