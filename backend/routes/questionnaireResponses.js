@@ -88,7 +88,6 @@ router.route('/assign-agency').post((req, res) => {
 router.route('/assign-flag').post((req, res) => {
     const responseToAssignFlag = req.body.responsesToUpdate;
     for (const response of responseToAssignFlag) {
-        console.log('updating this guy', response);
         QuestionnaireResponse.updateOne(
             { _id: ObjectID(response._id) },
             response,
