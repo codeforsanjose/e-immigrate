@@ -29,7 +29,7 @@ const LanguageOptions = [
     {
         code: 'yue',
         full: '廣東話',
-        englishName: 'Mandarine',
+        englishName: 'Mandarin',
     },
     {
         code: 'fa',
