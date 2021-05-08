@@ -93,7 +93,7 @@ const AdminDashboard = (props) => {
                     <span className="text-red bold">
                         {
                             questionnaireResponses.filter(
-                                (response) => response.flag === 'true'
+                                (response) => response.flag === true
                             ).length
                         }
                     </span>
@@ -103,7 +103,7 @@ const AdminDashboard = (props) => {
                     <span className="text-green bold">
                         {
                             questionnaireResponses.filter(
-                                (response) => response.flag === 'false'
+                                (response) => response.flag === false
                             ).length
                         }
                     </span>
@@ -132,7 +132,7 @@ const AdminDashboard = (props) => {
                                         questionnaireResponses.filter(
                                             (response) =>
                                                 response.agency === agency &&
-                                                response.flag === 'true'
+                                                response.flag === true
                                         ).length
                                     }
                                 </div>
@@ -141,7 +141,7 @@ const AdminDashboard = (props) => {
                                         questionnaireResponses.filter(
                                             (response) =>
                                                 response.agency === agency &&
-                                                response.flag === 'false'
+                                                response.flag === false
                                         ).length
                                     }
                                 </div>
@@ -525,13 +525,13 @@ const AdminDashboard = (props) => {
             <section className="AdminDashboard">
                 <section className="overview-container">
                     <article>
-                        <h2>Overview</h2>
+                        <h2 className="dashboard-section-title">Overview</h2>
                         <div className="dashboard-card">
                             {flagOverviewMarkup}
                         </div>
                     </article>
                     <article>
-                        <h2>By Agency</h2>
+                        <h2 className="dashboard-section-title">By Agency</h2>
                         <div className="dashboard-card">
                             {agencyOverviewMarkup}
                         </div>
@@ -553,7 +553,7 @@ const AdminDashboard = (props) => {
                 </section>
                 <section></section>
                 <section>
-                    <h2>Details</h2>
+                    <h2 className="dashboard-section-title">Details</h2>
                     {responsesTable}
                 </section>
             </section>
