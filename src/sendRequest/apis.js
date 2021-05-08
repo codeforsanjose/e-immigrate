@@ -10,6 +10,7 @@ module.exports = {
     downloadStatusQuestionnaireResponse:
         '/api/questionnaire-responses/excel-download-status',
     agencyAssignURL: '/api/questionnaire-responses/assign-agency',
+    assignResponseFlag: '/api/questionnaire-responses/assign-flag',
     getUserById: '/api/users/:id',
     addUser: '/api/users/add',
     updateUser: '/api/users/update/:id',

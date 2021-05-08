@@ -73,14 +73,27 @@ router.route('/excel-download-status').post((req, res) => {
 router.route('/assign-agency').post((req, res) => {
     const responseToAssignAgency = req.body.responsesToEmail;
     for (const response of responseToAssignAgency) {
-        //send email
-        const { questionnaireResponse = {}, flag } = response;
         QuestionnaireResponse.updateOne(
             { _id: ObjectID(response._id) },
             response,
             (err, raw) => {
                 if (err) {
-                    console.log('updated something err is', err);
+                    console.log('updated agency err is', err);
+                }
+            }
+        );
+    }
+    res.json({ msg: 'success' });
+});
+router.route('/assign-flag').post((req, res) => {
+    const responseToAssignFlag = req.body.responsesToUpdate;
+    for (const response of responseToAssignFlag) {
+        QuestionnaireResponse.updateOne(
+            { _id: ObjectID(response._id) },
+            response,
+            (err, raw) => {
+                if (err) {
+                    console.log('updated flag err is', err);
                 }
             }
         );

@@ -4,6 +4,7 @@ const QuestionnaireResponse = require('../../models/questionnaireResponse');
 const ObjectID = require('mongodb').ObjectID;
 const xl = require('excel4node');
 const fs = require('fs');
+const langOptions = require('../../LanguageOptions');
 
 router.route('/responses').post((req, res) => {
     const responses = req.body.responses;
@@ -33,10 +34,13 @@ router.route('/responses').post((req, res) => {
     });
 
     responses.map((response, idx) => {
+        const langObject = langOptions.LanguageOptions.find(
+            (item) => item.code === response.language
+        );
         const row = idx + 2;
         ws.cell(row, 1).string(response.title).style(style);
         ws.cell(row, 2)
-            .string(response.flag.toString())
+            .string(response.flag ? 'true' : 'false')
             .style(style)
             .style({
                 fill: {
@@ -52,7 +56,7 @@ router.route('/responses').post((req, res) => {
         ws.cell(row, 4)
             .string(response.emailSent ? 'true' : 'false')
             .style(style);
-        ws.cell(row, 5).string(response.language).style(style);
+        ws.cell(row, 5).string(langObject.englishName).style(style);
         const qResponses = Object.keys(response.questionnaireResponse);
 
         qResponses.map((qResponse) => {
@@ -79,7 +83,10 @@ const updateResponseDownloadStatus = (questionnaireResponses = []) => {
             tempUpdatedResponse,
             (err, raw) => {
                 if (err) {
-                    console.log('updated something err is', err);
+                    console.log(
+                        'updated download status something err is',
+                        err
+                    );
                 }
             }
         );

@@ -10,8 +10,19 @@
 .AdminDashboard table {
     border-collapse: collapse;
     table-layout: auto;
+    max-height: 600px;
+    overflow-y: scroll;
 }
-
+.AdminDashboard .responses tbody tr .contact-with-police {
+    text-align: left;
+    font-size: 0.7em;
+    width: 200px;
+}
+.AdminDashboard .responses tbody tr .contact-with-police-explain {
+    text-align: left;
+    font-size: 0.7em;
+    width: 300px;
+}
 .AdminDashboard .responses tbody tr td,
 .AdminDashboard .responses tbody tr th {
     border-bottom: solid 1px #efefef;
