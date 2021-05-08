@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { sendRequest } from '../../sendRequest/sendRequest';
-import moment from 'moment';
+import { format } from 'date-fns';
 import {
     getQuestionnaireResponse,
     emailQuestionnaireResponse,
@@ -16,7 +16,7 @@ import Navbar from '../../compositions/Navbar/Navbar';
 import Button from '../Button/Button';
 import { ReactComponent as Arrow } from '../../data/images/SortArrow.svg';
 
-const DESCRIPTIVE_TIMESTAMP = 'MM/DD/YYYY, h:mm:ss a';
+const DESCRIPTIVE_TIMESTAMP = 'MM/dd/yyyy, h:mm:ss a';
 const AGENCIES = ['ALA', 'CAIR', 'CC', 'CET', 'IRC', 'PARS'];
 const questionKeysThatAreNotRedFlagsButInARedFlagQuestionnaire = [
     'male',
@@ -350,19 +350,20 @@ const AdminDashboard = (props) => {
                 policeExplinationMarkupQuestion,
                 ...allAnswers,
             ];
-
             return (
                 <tr key={response._id}>
                     <td>{index + 1}</td>
                     <td>
                         Created:{' '}
-                        {moment(response.createdAt).format(
+                        {format(
+                            new Date(response.createdAt),
                             DESCRIPTIVE_TIMESTAMP
                         )}
                     </td>
                     <td>
                         Updated:{' '}
-                        {moment(response.updatedAt).format(
+                        {format(
+                            new Date(response.updatedAt),
                             DESCRIPTIVE_TIMESTAMP
                         )}
                     </td>
