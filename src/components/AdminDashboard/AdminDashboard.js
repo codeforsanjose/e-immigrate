@@ -229,11 +229,14 @@ const AdminDashboard = (props) => {
             const fullLangText = languageOptions.find(
                 (item) => item.code === questionnaireResponse['languageCode']
             );
+            const langDisplay =
+                fullLangText.englishName |
+                `Unknown  ${questionnaireResponse['languageCode']}`;
             const languageMarkupQuestion = (
                 <article key={`td-answer-lang-${index}`} className={`answer `}>
                     <span>
                         Lang:
-                        {fullLangText.englishName}
+                        {langDisplay}
                     </span>
                 </article>
             );
