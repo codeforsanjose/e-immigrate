@@ -46,9 +46,32 @@ const AdminDashboard = (props) => {
             };
             sendRequest(requestObj, headers).then((response) => {
                 const { responses = [] } = response;
-                const updatedResponses = responses.sort((itemA, itemB) => {
-                    return itemA.agency > itemB.agency ? 1 : -1;
-                });
+                const updatedResponses = responses
+                    .map((item) => {
+                        const { questionnaireResponse = {} } = item;
+                        const newFlag = item.flagOverride
+                            ? item.flag
+                            : Object.entries(questionnaireResponse).reduce(
+                                  (acc, [key, value]) => {
+                                      return !questionKeysThatAreNotRedFlagsButInARedFlagQuestionnaire.includes(
+                                          key
+                                      )
+                                          ? value.toUpperCase() === 'YES'
+                                              ? true
+                                              : acc
+                                          : acc;
+                                  },
+                                  false
+                              );
+                        return {
+                            ...item,
+                            selected: false,
+                            flag: newFlag,
+                        };
+                    })
+                    .sort((itemA, itemB) => {
+                        return itemA.agency > itemB.agency ? 1 : -1;
+                    });
                 setQuestionnaireResponses(updatedResponses);
             });
         }
@@ -60,6 +83,7 @@ const AdminDashboard = (props) => {
                 return {
                     ...item,
                     flag: responseIndex === index ? !item.flag : item.flag,
+                    flagOverride: true,
                 };
             }
         );
@@ -160,7 +184,6 @@ const AdminDashboard = (props) => {
             </div>
         );
     }, [questionnaireResponses]);
-    console.log('questionnaireResponses :>> ', questionnaireResponses);
 
     const firstOption = (
         <option key="agency-initial" value="">
