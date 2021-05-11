@@ -2,9 +2,10 @@ const { response } = require('express');
 const express = require('express');
 const router = express.Router();
 const QuestionnaireResponse = require('../models/questionnaireResponse');
-const sendEmail = require('./sendEmail/sendEmail');
+const sendMassEmails = require('./sendEmail/sendEmail');
 const ObjectID = require('mongodb').ObjectID;
-
+const emailContents = require('../routes/sendEmail/emailContent.js');
+const senderEmail = process.env.SENDER_EMAIL;
 router.route('/').get((req, res) => {
     QuestionnaireResponse.find()
         .then((allResponses) => {
@@ -16,38 +17,62 @@ router.route('/').get((req, res) => {
 
 router.route('/email').post((req, res) => {
     const responsesToEmail = req.body.responsesToEmail;
-    for (const response of responsesToEmail) {
-        //send email
+    const totalEmailsToSend = responsesToEmail.length;
+    let emailsSentCurrent = 0;
+    let errors = {};
+    const messsagesToSend = responsesToEmail.map((response) => {
         const { questionnaireResponse = {}, flag, language = 'en' } = response;
         const { email = '' } = questionnaireResponse;
         if (email !== '') {
-            sendEmail(email, '', flag, language)
-                .then((result) => {
-                    const tempUpdatedSuccessEmail = {
-                        ...response,
-                        emailSent: true,
-                    };
-                    QuestionnaireResponse.updateOne(
-                        { _id: ObjectID(response._id) },
-                        tempUpdatedSuccessEmail,
-                        (err, raw) => {
-                            if (err) {
-                                console.log('updated something err is', err);
-                            }
+            const colorFlag = flag ? 'red' : 'green';
+            const emailContentForResponse = emailContents[language][colorFlag];
+            const translatedContents =
+                emailContentForResponse && emailContentForResponse === ''
+                    ? emailContents['en'][colorFlag]
+                    : emailContentForResponse;
+            const msg = {
+                to: email,
+                from: senderEmail,
+                subject: 'Your Response has been received',
+                html: translatedContents,
+            };
+            return msg;
+        }
+    });
+    sendMassEmails(messsagesToSend)
+        .then((result) => {
+            console.log('emails sent', result);
+            for (const response of responsesToEmail) {
+                const tempUpdatedSuccessEmail = {
+                    ...response,
+                    emailSent: true,
+                };
+
+                QuestionnaireResponse.updateOne(
+                    { _id: ObjectID(response._id) },
+                    tempUpdatedSuccessEmail,
+                    (err, raw) => {
+                        emailsSentCurrent = emailsSentCurrent + 1;
+                        if (err) {
+                            console.log('updated something err is', err);
                         }
-                    );
-                })
-                .catch((error) => {
-                    console.log('what is the error', error);
-                    if (error && error.body) {
-                        for (const reserror of error.body.errors) {
-                            console.log('the error here', reserror);
+                        if (emailsSentCurrent === totalEmailsToSend) {
+                            res.json({
+                                msg: 'attempted to send ' + emailsSentCurrent,
+                                errors: errors,
+                            });
                         }
                     }
-                });
-        }
-    }
-    res.json({ msg: 'success' });
+                );
+            }
+        })
+        .catch((emailErrors) => {
+            console.log('emails ERRORED', result);
+            res.json({
+                msg: 'attempted to send ' + totalEmailsToSend,
+                errors: emailErrors,
+            });
+        });
 });
 
 router.route('/excel-download-status').post((req, res) => {

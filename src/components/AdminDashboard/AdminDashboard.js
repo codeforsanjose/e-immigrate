@@ -33,7 +33,9 @@ const AdminDashboard = (props) => {
     const [flagOrder, setFlagOrder] = useState(false);
     const [emailOrder, setEmailOrder] = useState(false);
     const [downloadOrder, setDownloadOrder] = useState(false);
+    const [loading, setLoading] = useState(true);
     useEffect(() => {
+        setLoading(true);
         const jwt = getAuthToken();
         if (jwt === null) {
             return props.history.push('/login');
@@ -72,6 +74,7 @@ const AdminDashboard = (props) => {
                     .sort((itemA, itemB) => {
                         return itemA.agency > itemB.agency ? 1 : -1;
                     });
+                setLoading(false);
                 setQuestionnaireResponses(updatedResponses);
             });
         }
@@ -297,9 +300,8 @@ const AdminDashboard = (props) => {
                 (item) => item.code === questionnaireResponse['languageCode']
             );
             const langDisplay =
-                fullLangText &&
-                fullLangText.englishName |
-                    `Unknown  ${questionnaireResponse['languageCode']}`;
+                (fullLangText && fullLangText.englishName) ||
+                `Unknown  ${questionnaireResponse['languageCode']}`;
             const languageMarkupQuestion = (
                 <article key={`td-answer-lang-${index}`} className={`answer `}>
                     <span>
@@ -464,7 +466,7 @@ const AdminDashboard = (props) => {
         </table>
     );
 
-    const sendSelectedUsersToAgencies = (e) => {
+    const sendEmailsToUsers = (e) => {
         const responsesToEmail = questionnaireResponses.filter(
             (responseSelected) => !responseSelected.emailSent
         );
@@ -480,17 +482,29 @@ const AdminDashboard = (props) => {
         const headers = {
             Authorization: `Bearer ${jwt}`,
         };
-        sendRequest(requestObj, headers).then((response) => {
-            window.location.reload();
-        });
+        setLoading(true);
+        sendRequest(requestObj, headers)
+            .then((response) => {
+                setLoading(flase);
+                window.location.reload();
+            })
+            .catch((errors) => {
+                setLoading(flase);
+                console.log(
+                    'send emails to users failed errors is',
+                    JSON.stringify(errors)
+                );
+            });
     };
 
     const getExcelFile = () => {
+        setLoading(false);
         window.location.href =
             '/api/generateExcel/getLatest/ResponsesExcel.xlsx';
     };
 
     const downloadLatestResponsesExcel = (e) => {
+        setLoading(true);
         const includedResponses = questionnaireResponses
             .sort((a, b) => {
                 if (a.agency < b.agency) return -1;
@@ -510,9 +524,19 @@ const AdminDashboard = (props) => {
         const headers = {
             Authorization: `Bearer ${jwt}`,
         };
-        sendRequest(requestObj, headers).then((response) => {
-            getExcelFile();
-        });
+        sendRequest(requestObj, headers)
+            .then((response) => {
+                getExcelFile();
+            })
+            .catch((errors) => {
+                console.log(
+                    'Error writing the exel sheet',
+                    JSON.stringify(errors)
+                );
+                alert(
+                    'Error writing the exel sheet please contact administrator.'
+                );
+            });
     };
     const downloadAllResponsesExcel = (e) => {
         const includedResponses = questionnaireResponses.sort((a, b) => {
@@ -532,9 +556,19 @@ const AdminDashboard = (props) => {
         const headers = {
             Authorization: `Bearer ${jwt}`,
         };
-        sendRequest(requestObj, headers).then((response) => {
-            getExcelFile();
-        });
+        sendRequest(requestObj, headers)
+            .then((response) => {
+                getExcelFile();
+            })
+            .catch((errors) => {
+                console.log(
+                    'Error writing the exel sheet',
+                    JSON.stringify(errors)
+                );
+                alert(
+                    'Error writing the exel sheet please contact administrator.'
+                );
+            });
     };
 
     useEffect(() => {
@@ -546,10 +580,15 @@ const AdminDashboard = (props) => {
         });
     }, []);
 
+    const loadingMarkup = loading ? (
+        <div className="loading is-vcentered">Loading...</div>
+    ) : null;
+
     return (
         <section>
             <Navbar content={content} dashboard={true} />
             <section className="AdminDashboard">
+                {loadingMarkup}
                 <section className="overview-container">
                     <article>
                         <h2 className="dashboard-section-title">Overview</h2>
@@ -565,10 +604,7 @@ const AdminDashboard = (props) => {
                     </article>
                 </section>
                 <section className="dashboard-buttons-container">
-                    <Button
-                        label="Send Email"
-                        onClick={sendSelectedUsersToAgencies}
-                    />
+                    <Button label="Send Email" onClick={sendEmailsToUsers} />
                     <Button
                         label="Download Latest Excel"
                         onClick={downloadLatestResponsesExcel}
