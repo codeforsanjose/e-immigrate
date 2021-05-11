@@ -12,6 +12,8 @@ import WorkshopScreening from '../../compositions/WorkshopScreening/WorkshopScre
 import ProcessOverview from '../../compositions/ProcessOverview/ProcessOverview';
 import { workshopTitle } from '../../data/LanguageOptions';
 import Confirmation from '../../compositions/Confirmation/Confirmation';
+import Admin from '../../components/auth/Admin';
+import AdminDashboard from '../../components/AdminDashboard/AdminDashboard';
 
 import './MainContainer.css';
 import ProgressBar from '../../compositions/ProgressBar/ProgressBar';
@@ -130,88 +132,98 @@ const MainContainer = () => {
                     setShowModal={setShowModal}
                 />
                 <div className={`items ${showModal ? 'blur' : ''}`}>
-                    <Navbar
-                        language={language}
-                        setLanguage={changeLanguage}
-                        content={content}
-                        dashboard={false}
-                    />
-                    <div className="main">
-                        <div className="section">
-                            <Switch>
-                                <Route exact path="/">
-                                    <LandingPage content={content} />
-                                </Route>
-                                <Route path="/eligibility">
-                                    <WorkshopScreening
-                                        content={content}
-                                        questions={questions}
-                                        questionnaireResponse={
-                                            questionnaireResponse
-                                        }
-                                        setQuestionnaireResponse={
-                                            setQuestionnaireResponse
-                                        }
-                                        collectAnswer={collectAnswer}
-                                    />
-                                </Route>
-                                <Route path="/overview">
-                                    <ProcessOverview
-                                        content={
-                                            updatedContentForProcessOverview
-                                        }
-                                        nextStep={nextStep}
-                                    />
-                                </Route>
-                                <Route path="/video">
-                                    <ProgressBar
-                                        content={content}
-                                        step="1"
-                                        nextStep={nextStep}
-                                        previousStep={previousStep}
-                                    />
-                                    <Video
-                                        onEnd={videoEndedHandler}
-                                        video={content.step1VideoID}
-                                        videoState={videoState}
-                                        content={content}
-                                    />
-                                </Route>
-                                <Route path="/questionnaire">
-                                    <ProgressBar
-                                        content={content}
-                                        step="2"
-                                        nextStep={nextStep}
-                                        previousStep={previousStep}
-                                    />
-                                    <Questionnaire
-                                        questions={questions}
-                                        submitQuestionnaireResponse={
-                                            submitQuestionnaireResponse
-                                        }
-                                        questionnaireResponse={
-                                            questionnaireResponse
-                                        }
-                                        setQuestionnaireResponse={
-                                            setQuestionnaireResponse
-                                        }
-                                        content={content}
-                                        collectAnswer={collectAnswer}
-                                    />
-                                </Route>
-                                <Route path="/confirmation">
-                                    <ProgressBar
-                                        content={content}
-                                        step="3"
-                                        nextStep={nextStep}
-                                        previousStep={previousStep}
-                                    />
-                                    <Confirmation content={content} />
-                                </Route>
-                            </Switch>
-                        </div>
-                        <Footer content={content} />
-                    </div>
+                    <Switch>
+                        <Route path="/dashboard">
+                            <AdminDashboard />
+                        </Route>
+                        <Route path="/login">
+                            <Admin />
+                        </Route>
+                        <Route path="/">
+                            <Navbar
+                                language={language}
+                                setLanguage={changeLanguage}
+                                content={content}
+                                dashboard={false}
+                            />
+                            <div className="main">
+                                <div className="section">
+                                    <Switch>
+                                        <Route exact path="/">
+                                            <LandingPage content={content} />
+                                        </Route>
+                                        <Route path="/eligibility">
+                                            <WorkshopScreening
+                                                content={content}
+                                                questions={questions}
+                                                questionnaireResponse={
+                                                    questionnaireResponse
+                                                }
+                                                setQuestionnaireResponse={
+                                                    setQuestionnaireResponse
+                                                }
+                                                collectAnswer={collectAnswer}
+                                            />
+                                        </Route>
+                                        <Route path="/overview">
+                                            <ProcessOverview
+                                                content={
+                                                    updatedContentForProcessOverview
+                                                }
+                                                nextStep={nextStep}
+                                            />
+                                        </Route>
+                                        <Route path="/video">
+                                            <ProgressBar
+                                                content={content}
+                                                step="1"
+                                                nextStep={nextStep}
+                                                previousStep={previousStep}
+                                            />
+                                            <Video
+                                                onEnd={videoEndedHandler}
+                                                video={content.step1VideoID}
+                                                videoState={videoState}
+                                                content={content}
+                                            />
+                                        </Route>
+                                        <Route path="/questionnaire">
+                                            <ProgressBar
+                                                content={content}
+                                                step="2"
+                                                nextStep={nextStep}
+                                                previousStep={previousStep}
+                                            />
+                                            <Questionnaire
+                                                questions={questions}
+                                                submitQuestionnaireResponse={
+                                                    submitQuestionnaireResponse
+                                                }
+                                                questionnaireResponse={
+                                                    questionnaireResponse
+                                                }
+                                                setQuestionnaireResponse={
+                                                    setQuestionnaireResponse
+                                                }
+                                                content={content}
+                                                collectAnswer={collectAnswer}
+                                            />
+                                        </Route>
+                                        <Route path="/confirmation">
+                                            <ProgressBar
+                                                content={content}
+                                                step="3"
+                                                nextStep={nextStep}
+                                                previousStep={previousStep}
+                                            />
+                                            <Confirmation content={content} />
+                                        </Route>
+                                    </Switch>
+                                </div>
+                                <Footer content={content} />
+                            </div>
+                        </Route>
+                    </Switch>
                 </div>
             </div>
         </div>
