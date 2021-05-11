@@ -7,70 +7,103 @@ const fs = require('fs');
 const langOptions = require('../../LanguageOptions');
 
 router.route('/responses').post((req, res) => {
-    const responses = req.body.responses;
-    const questions = req.body.questions;
-    const questionsColumns = questions.reduce((acc, question, idx) => {
-        acc[question.slug] = idx + 6;
-        return acc;
-    }, {});
-    var wb = new xl.Workbook();
-    var ws = wb.addWorksheet('Questionnaire Responses');
-    var style = wb.createStyle({
-        font: {
-            color: '#000000',
-            size: 12,
-        },
-        numberFormat: '$#,##0.00; ($#,##0.00); -',
-    });
-
-    ws.cell(1, 1).string('Workshop Title');
-    ws.cell(1, 2).string('Red Dot?');
-    ws.cell(1, 3).string('Agency');
-    ws.cell(1, 4).string('Email Sent');
-    ws.cell(1, 5).string('Language');
-
-    Object.keys(questionsColumns).map((question) => {
-        ws.cell(1, questionsColumns[question]).string(question).style(style);
-    });
-
-    responses.map((response, idx) => {
-        const langObject = langOptions.LanguageOptions.find(
-            (item) => item.code === response.language
-        );
-        const row = idx + 2;
-        ws.cell(row, 1).string(response.title).style(style);
-        ws.cell(row, 2)
-            .string(response.flag ? 'true' : 'false')
-            .style(style)
-            .style({
-                fill: {
-                    type: 'pattern',
-                    patternType: 'solid',
-                    bgColor: response.flag ? '#EA2616' : '#ADFF3D',
-                    fgColor: response.flag ? '#EA2616' : '#ADFF3D',
-                },
-            });
-        ws.cell(row, 3)
-            .string(response.agency ? response.agency : '')
-            .style(style);
-        ws.cell(row, 4)
-            .string(response.emailSent ? 'true' : 'false')
-            .style(style);
-        ws.cell(row, 5).string(langObject.englishName).style(style);
-        const qResponses = Object.keys(response.questionnaireResponse);
-
-        qResponses.map((qResponse) => {
-            if (qResponse !== 'languageCode') {
-                ws.cell(row, questionsColumns[qResponse])
-                    .string(response.questionnaireResponse[qResponse])
-                    .style(style);
-            }
+    QuestionnaireResponse.find().then((allResponses) => {
+        const responses = allResponses.map((item) => {
+            const {
+                _id,
+                title,
+                language,
+                flag,
+                flagOverride = false,
+                createdAt,
+                updatedAt,
+                questionnaireResponse,
+                agency = '',
+                responseDownloadedToExcel,
+            } = item;
+            return {
+                _id,
+                title,
+                language,
+                flag,
+                flagOverride,
+                createdAt,
+                updatedAt,
+                questionnaireResponse,
+                agency,
+                responseDownloadedToExcel,
+            };
         });
+        const questions = req.body.questions;
+        const downloadAll = req.body.downloadAll;
+        const updatedResponses = downloadAll
+            ? allResponses
+            : allResponses.filter((item) => !item.responseDownloadedToExcel);
+        const questionsColumns = questions.reduce((acc, question, idx) => {
+            acc[question.slug] = idx + 6;
+            return acc;
+        }, {});
+        var wb = new xl.Workbook();
+        var ws = wb.addWorksheet('Questionnaire Responses');
+        var style = wb.createStyle({
+            font: {
+                color: '#000000',
+                size: 12,
+            },
+            numberFormat: '$#,##0.00; ($#,##0.00); -',
+        });
+
+        ws.cell(1, 1).string('Workshop Title');
+        ws.cell(1, 2).string('Red Dot?');
+        ws.cell(1, 3).string('Agency');
+        ws.cell(1, 4).string('Email Sent');
+        ws.cell(1, 5).string('Language');
+
+        Object.keys(questionsColumns).map((question) => {
+            ws.cell(1, questionsColumns[question])
+                .string(question)
+                .style(style);
+        });
+
+        updatedResponses.map((response, idx) => {
+            const langObject = langOptions.LanguageOptions.find(
+                (item) => item.code === response.language
+            );
+            const row = idx + 2;
+            ws.cell(row, 1).string(response.title).style(style);
+            ws.cell(row, 2)
+                .string(response.flag ? 'true' : 'false')
+                .style(style)
+                .style({
+                    fill: {
+                        type: 'pattern',
+                        patternType: 'solid',
+                        bgColor: response.flag ? '#EA2616' : '#ADFF3D',
+                        fgColor: response.flag ? '#EA2616' : '#ADFF3D',
+                    },
+                });
+            ws.cell(row, 3)
+                .string(response.agency ? response.agency : '')
+                .style(style);
+            ws.cell(row, 4)
+                .string(response.emailSent ? 'true' : 'false')
+                .style(style);
+            ws.cell(row, 5).string(langObject.englishName).style(style);
+            const qResponses = Object.keys(response.questionnaireResponse);
+
+            qResponses.map((qResponse) => {
+                if (qResponse !== 'languageCode') {
+                    ws.cell(row, questionsColumns[qResponse])
+                        .string(response.questionnaireResponse[qResponse])
+                        .style(style);
+                }
+            });
+        });
+        //in build step be sure to write reports directory with path below
+        wb.write('./routes/generateResponsesExcel/reports/ResponsesExcel.xlsx');
+        updateResponseDownloadStatus(responses);
+        res.json({ msg: 'success' });
     });
-    //in build step be sure to write reports directory with path below
-    wb.write('./routes/generateResponsesExcel/reports/ResponsesExcel.xlsx');
-    updateResponseDownloadStatus(responses);
-    res.json({ msg: 'success' });
 });
 const updateResponseDownloadStatus = (questionnaireResponses = []) => {
     for (const response of questionnaireResponses) {

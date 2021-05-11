@@ -467,10 +467,6 @@ const AdminDashboard = (props) => {
     );
 
     const sendEmailsToUsers = (e) => {
-        const responsesToEmail = questionnaireResponses.filter(
-            (responseSelected) => !responseSelected.emailSent
-        );
-
         const requestObj = {
             url: emailQuestionnaireResponse,
             method: 'POST',
@@ -519,7 +515,8 @@ const AdminDashboard = (props) => {
             method: 'POST',
             body: JSON.stringify({
                 questions: questions,
-                responses: includedResponses,
+                responses: [],
+                downloadAll: false,
             }),
         };
         const jwt = getAuthToken();
@@ -551,7 +548,8 @@ const AdminDashboard = (props) => {
             method: 'POST',
             body: JSON.stringify({
                 questions: questions,
-                responses: includedResponses,
+                responses: [],
+                downloadAll: true,
             }),
         };
         const jwt = getAuthToken();

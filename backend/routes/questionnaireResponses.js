@@ -20,6 +20,7 @@ router.route('/').get((req, res) => {
 
 router.route('/email').post((req, res) => {
     getAllResponses().then((allResponses) => {
+        // FIX THIS NEED THE !
         const responsesToEmail = allResponses.filter((item) => item.emailSent);
         const totalEmailsToSend = responsesToEmail.length;
         const messsagesToSend = responsesToEmail.map((response) => {
