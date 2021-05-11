@@ -485,11 +485,11 @@ const AdminDashboard = (props) => {
         setLoading(true);
         sendRequest(requestObj, headers)
             .then((response) => {
-                setLoading(flase);
+                setLoading(false);
                 window.location.reload();
             })
             .catch((errors) => {
-                setLoading(flase);
+                setLoading(false);
                 console.log(
                     'send emails to users failed errors is',
                     JSON.stringify(errors)
