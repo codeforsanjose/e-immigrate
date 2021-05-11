@@ -475,7 +475,7 @@ const AdminDashboard = (props) => {
             url: emailQuestionnaireResponse,
             method: 'POST',
             body: JSON.stringify({
-                responsesToEmail: responsesToEmail,
+                responsesToEmail: [],
             }),
         };
         const jwt = getAuthToken();
@@ -485,8 +485,10 @@ const AdminDashboard = (props) => {
         setLoading(true);
         sendRequest(requestObj, headers)
             .then((response) => {
+                console.log('emails sent?', response);
+
                 setLoading(false);
-                window.location.reload();
+                //window.location.reload();
             })
             .catch((errors) => {
                 setLoading(false);
