@@ -22,30 +22,37 @@ router.route('/email').post((req, res) => {
     getAllResponses().then((allResponses) => {
         const responsesToEmail = allResponses.filter((item) => !item.emailSent);
         const totalEmailsToSend = responsesToEmail.length;
-        const messsagesToSend = responsesToEmail.map((response) => {
-            const {
-                questionnaireResponse = {},
-                flag,
-                language = 'en',
-            } = response;
-            const { email = '' } = questionnaireResponse;
-            if (email !== '') {
-                const colorFlag = flag ? 'red' : 'green';
-                const emailContentForResponse =
-                    emailContents[language][colorFlag];
-                const translatedContents =
-                    emailContentForResponse && emailContentForResponse === ''
-                        ? emailContents['en'][colorFlag]
-                        : emailContentForResponse;
-                const msg = {
-                    to: email,
-                    from: senderEmail,
-                    subject: 'Your Response has been received',
-                    html: translatedContents,
-                };
-                return msg;
-            }
-        });
+        const messsagesToSend = responsesToEmail
+            .filter((response) => {
+                const { questionnaireResponse } = response;
+                const { email = '' } = questionnaireResponse;
+                return email !== '';
+            })
+            .map((response) => {
+                const {
+                    questionnaireResponse = {},
+                    flag,
+                    language = 'en',
+                } = response;
+                const { email = '' } = questionnaireResponse;
+                if (email !== '') {
+                    const colorFlag = flag ? 'red' : 'green';
+                    const emailContentForResponse =
+                        emailContents[language][colorFlag];
+                    const translatedContents =
+                        emailContentForResponse &&
+                        emailContentForResponse === ''
+                            ? emailContents['en'][colorFlag]
+                            : emailContentForResponse;
+                    const msg = {
+                        to: email,
+                        from: senderEmail,
+                        subject: 'Your Response has been received',
+                        html: translatedContents,
+                    };
+                    return msg;
+                }
+            });
         sendMassEmails(messsagesToSend)
             .then((result) => {
                 updateUserResponsesEmailFlag(responsesToEmail, res);
