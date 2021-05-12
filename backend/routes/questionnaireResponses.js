@@ -35,23 +35,21 @@ router.route('/email').post((req, res) => {
                     language = 'en',
                 } = response;
                 const { email = '' } = questionnaireResponse;
-                if (email !== '') {
-                    const colorFlag = flag ? 'red' : 'green';
-                    const emailContentForResponse =
-                        emailContents[language][colorFlag];
-                    const translatedContents =
-                        emailContentForResponse &&
-                        emailContentForResponse === ''
-                            ? emailContents['en'][colorFlag]
-                            : emailContentForResponse;
-                    const msg = {
-                        to: email,
-                        from: senderEmail,
-                        subject: 'Your Response has been received',
-                        html: translatedContents,
-                    };
-                    return msg;
-                }
+                const colorFlag = flag ? 'red' : 'green';
+                const emailContentForResponse = emailContents[language]
+                    ? emailContents[language][colorFlag]
+                    : emailContents['en'][colorFlag];
+                const translatedContents =
+                    emailContentForResponse && emailContentForResponse === ''
+                        ? emailContents['en'][colorFlag]
+                        : emailContentForResponse;
+                const msg = {
+                    to: email,
+                    from: senderEmail,
+                    subject: 'Your Response has been received',
+                    html: translatedContents,
+                };
+                return msg;
             });
         sendMassEmails(messsagesToSend)
             .then((result) => {
