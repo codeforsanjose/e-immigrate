@@ -492,6 +492,7 @@ const AdminDashboard = (props) => {
                     'send emails to users failed errors is',
                     JSON.stringify(errors)
                 );
+                window.location.reload();
             });
     };
 
