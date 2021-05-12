@@ -40,7 +40,9 @@ router.route('/email').post((req, res) => {
                     ? emailContents[language][colorFlag]
                     : emailContents['en'][colorFlag];
                 const translatedContents =
-                    emailContentForResponse && emailContentForResponse === ''
+                    emailContentForResponse &&
+                    emailContentForResponse === '' &&
+                    emailContentForResponse.length < 2
                         ? emailContents['en'][colorFlag]
                         : emailContentForResponse;
                 const msg = {
@@ -51,6 +53,7 @@ router.route('/email').post((req, res) => {
                 };
                 return msg;
             });
+        console.log('messages to send', messsagesToSend);
         sendMassEmails(messsagesToSend)
             .then((result) => {
                 updateUserResponsesEmailFlag(responsesToEmail, res);
