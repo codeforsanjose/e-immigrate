@@ -467,15 +467,11 @@ const AdminDashboard = (props) => {
     );
 
     const sendEmailsToUsers = (e) => {
-        const responsesToEmail = questionnaireResponses.filter(
-            (responseSelected) => !responseSelected.emailSent
-        );
-
         const requestObj = {
             url: emailQuestionnaireResponse,
             method: 'POST',
             body: JSON.stringify({
-                responsesToEmail: responsesToEmail,
+                responsesToEmail: [],
             }),
         };
         const jwt = getAuthToken();
@@ -485,6 +481,8 @@ const AdminDashboard = (props) => {
         setLoading(true);
         sendRequest(requestObj, headers)
             .then((response) => {
+                console.log('emails sent?', response);
+
                 setLoading(false);
                 window.location.reload();
             })
@@ -517,7 +515,8 @@ const AdminDashboard = (props) => {
             method: 'POST',
             body: JSON.stringify({
                 questions: questions,
-                responses: includedResponses,
+                responses: [],
+                downloadAll: false,
             }),
         };
         const jwt = getAuthToken();
@@ -549,7 +548,8 @@ const AdminDashboard = (props) => {
             method: 'POST',
             body: JSON.stringify({
                 questions: questions,
-                responses: includedResponses,
+                responses: [],
+                downloadAll: true,
             }),
         };
         const jwt = getAuthToken();
