@@ -484,7 +484,7 @@ const AdminDashboard = (props) => {
                 console.log('emails sent?', response);
 
                 setLoading(false);
-                //window.location.reload();
+                window.location.reload();
             })
             .catch((errors) => {
                 setLoading(false);
@@ -492,7 +492,6 @@ const AdminDashboard = (props) => {
                     'send emails to users failed errors is',
                     JSON.stringify(errors)
                 );
-                window.location.reload();
             });
     };
 
