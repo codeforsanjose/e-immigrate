@@ -46,7 +46,6 @@ router.route('/email').post((req, res) => {
                 return msg;
             }
         });
-        console.log('messages to send', messsagesToSend);
         sendMassEmails(messsagesToSend)
             .then((result) => {
                 updateUserResponsesEmailFlag(responsesToEmail, res);
