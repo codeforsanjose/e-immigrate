@@ -5,7 +5,6 @@ const ObjectID = require('mongodb').ObjectID;
 const xl = require('excel4node');
 const fs = require('fs');
 const langOptions = require('../../LanguageOptions');
-
 router.route('/responses').post((req, res) => {
     QuestionnaireResponse.find().then((allResponses) => {
         const responses = allResponses.map((item) => {
@@ -69,6 +68,8 @@ router.route('/responses').post((req, res) => {
             const langObject = langOptions.LanguageOptions.find(
                 (item) => item.code === response.language
             );
+            const langDisplay =
+                (langObject && langObject.englishName) || `Unknown `;
             const row = idx + 2;
             ws.cell(row, 1).string(response.title).style(style);
             ws.cell(row, 2)
@@ -88,7 +89,7 @@ router.route('/responses').post((req, res) => {
             ws.cell(row, 4)
                 .string(response.emailSent ? 'true' : 'false')
                 .style(style);
-            ws.cell(row, 5).string(langObject.englishName).style(style);
+            ws.cell(row, 5).string(langDisplay).style(style);
             const qResponses = Object.keys(response.questionnaireResponse);
 
             qResponses.map((qResponse) => {
