@@ -17,7 +17,11 @@ router.route('/').get((req, res) => {
         })
         .catch((err) => console.log(err));
 });
-
+// source https://stackoverflow.com/questions/46155/how-to-validate-an-email-address-in-javascript
+function validateEmail(email) {
+    const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(email).toLowerCase());
+}
 router.route('/email').post((req, res) => {
     getAllResponses().then((allResponses) => {
         const responsesToEmail = allResponses.filter((item) => !item.emailSent);
@@ -26,7 +30,7 @@ router.route('/email').post((req, res) => {
             .filter((response) => {
                 const { questionnaireResponse } = response;
                 const { email = '' } = questionnaireResponse;
-                return email !== '';
+                return email !== '' && validateEmail(email.toLowerCase());
             })
             .map((response) => {
                 const {
@@ -40,20 +44,19 @@ router.route('/email').post((req, res) => {
                     ? emailContents[language][colorFlag]
                     : emailContents['en'][colorFlag];
                 const translatedContents =
-                    emailContentForResponse &&
-                    emailContentForResponse === '' &&
-                    emailContentForResponse.length < 2
+                    emailContentForResponse ||
+                    emailContentForResponse === '' ||
+                    emailContentForResponse.length === 0
                         ? emailContents['en'][colorFlag]
                         : emailContentForResponse;
                 const msg = {
-                    to: email,
+                    to: email.toLowerCase(),
                     from: senderEmail,
                     subject: 'Your Response has been received',
                     html: translatedContents,
                 };
                 return msg;
             });
-        console.log('messages to send', messsagesToSend);
         sendMassEmails(messsagesToSend)
             .then((result) => {
                 updateUserResponsesEmailFlag(responsesToEmail, res);
