@@ -2,10 +2,10 @@ FROM node:alpine as builder
 
 WORKDIR /srv
 
-COPY package*.json .
+COPY package*.json ./
 RUN npm install
 
-COPY . .
+COPY . ./
 RUN npm run build
 
 FROM openresty/openresty

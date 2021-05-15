@@ -1,4 +1,4 @@
-name: Build Push and Deploy into AWS ECS
+name: Backend Build and Deploy
 on:
   workflow_dispatch:
     inputs:
@@ -10,7 +10,8 @@ on:
         description: 'Branch, Tag, or SHA'
         required: true
 env:
-  AWS_APP_NAME: e-immigrate
+  AWS_SHARED_CLUSTER: multi-tenant-prod
+  AWS_APP_NAME: e-immigrate-api
   AWS_REGION: us-west-2
   DOCKERFILE: AWS-Deployment/backend/Dockerfile
   DOCKER_PATH: .
@@ -34,8 +35,8 @@ jobs:
             echo IMAGE_TAG=$SHORT_SHA >> $GITHUB_ENV
         fi
     outputs:
-          AWS_APPENV: e-immigrate-client-dev
-          IMAGE_TAG: ${{ env.IMAGE_TAG }}
+      AWS_APPENV: ${{ env.AWS_APPENV }}
+      IMAGE_TAG: ${{ env.IMAGE_TAG }}
   build:
     name: Build & Push Docker Image
     runs-on: ubuntu-latest
@@ -45,11 +46,6 @@ jobs:
       uses: actions/checkout@v2
       with:
         ref: ${{ github.event.inputs.ref }}
-    - name: Import Github SSH Key
-      run: |
-        cat >github_action <<EOF
-        ${{ secrets.GIT_SSH_KEY }}
-        EOF
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
@@ -92,24 +88,23 @@ jobs:
     - name: Pull Task Definition & write to file
       id: aws-task-definition
       run: |
-        echo "::set-output name=task-definition::$(\
-          aws ecs describe-task-definition \
-            --task-definition ${{ needs.setup_env.outputs.AWS_APPENV }}-td \
-            --query taskDefinition | \
-            jq 'del(.taskDefinitionArn,.revision,.status,.registeredBy,.registeredAt,.compatibilities,.requiresAttributes)' > task-def.json)"
+        aws ecs describe-task-definition \
+          --task-definition ${{ needs.setup_env.outputs.AWS_APPENV }} \
+          --query taskDefinition | \
+          jq 'del(.taskDefinitionArn,.revision,.status,.registeredBy,.registeredAt,.compatibilities,.requiresAttributes)' > task-def.json
     - name: Interpolate new Docker Image into Task Definition
       id: task-definition
       uses: aws-actions/amazon-ecs-render-task-definition@v1
       with:
         task-definition: task-def.json
-        container-name: ${{ needs.setup_env.outputs.AWS_APPENV }}-container
+        container-name: ${{ needs.setup_env.outputs.AWS_APPENV }}
         image: ${{ steps.login-ecr.outputs.registry }}/${{ needs.setup_env.outputs.AWS_APPENV }}:${{ needs.setup_env.outputs.IMAGE_TAG }}
     - name: Deploy Amazon ECS
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
       with:
         task-definition: ${{ steps.task-definition.outputs.task-definition }}
         service: ${{ needs.setup_env.outputs.AWS_APPENV }}
-        cluster: multi-tenant-dev
+        cluster: ${{ env.AWS_SHARED_CLUSTER }}
         wait-for-service-stability: true
         wait-for-minutes: 5 minutes
 
