@@ -6,7 +6,11 @@ const sendEmail = require('./sendEmail/sendEmail');
 const ObjectID = require('mongodb').ObjectID;
 
 router.route('/').get((req, res) => {
-    QuestionnaireResponse.find()
+    QuestionnaireResponse.find({
+        $or: [
+            { deleted: { $exists: false} },
+            { deleted: false }  
+        ]})
         .then((allResponses) => {
             const responsesInfo = { responses: allResponses };
             res.json(responsesInfo);
@@ -100,7 +104,7 @@ router.route('/add').post((req, res) => {
     //todo: extract userEmail, name from request.body
 
     const userEmail = '';
-    const userFirstName = '';
+    const userFirstName = ''; 
 
     const newQuestionnaireResponse = new QuestionnaireResponse({
         title,
@@ -121,6 +125,20 @@ router.route('/:id').delete((req, res) => {
     QuestionnaireResponse.findByIdAndDelete(req.params.id)
         .then((users) => res.json('questionnaire response Deleted'))
         .catch((err) => console.log(err));
+});
+
+router.route('/delete/:id').put((req, res) => {
+    QuestionnaireResponse.findByIdAndUpdate(
+        req.params.id, 
+        { deleted: true }, 
+        function (err, questionnaireResponse) {
+            if (err) {
+                console.log(err);
+            } else {
+                console.log('questionnaire response ' + questionnaireResponse._id + ' soft-deleted');
+                res.status(202).json({ msg: 'questionnaire response deleted softly' });
+            }
+        });
 });
 
 router.route('');

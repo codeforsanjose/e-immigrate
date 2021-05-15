@@ -15,6 +15,7 @@ const questionnaireSchema = new Schema(
             required: false,
             unique: false,
         },
+        deleted: { type: Boolean, required: false, unique: false, default: false},
     },
     {
         timestamps: true,
