@@ -8,6 +8,7 @@ import {
     getQuestions,
     agencyAssignURL,
     assignResponseFlag,
+    deleteQuestionnaireResponse,
 } from '../../sendRequest/apis';
 import { getAuthToken } from '../../utilities/auth_utils';
 import './AdminDashboard.css';
@@ -292,6 +293,38 @@ const AdminDashboard = (props) => {
         setQuestionnaireResponses(sortedResponses);
         setHeaderState(!headerState);
     };
+    const softDeleteResponse = (resIndex) => {
+        const confirmBox = window.confirm(
+            'Do you really want to delete this questionnaire response?'
+        );
+        if (confirmBox === false) {
+            return;
+        }
+
+        const response_id = questionnaireResponses[resIndex]._id;
+        const updatedResponses = questionnaireResponses.filter(
+            (item, index) => resIndex !== index
+        );
+
+        const requestObj = {
+            url: deleteQuestionnaireResponse.replace(':id', response_id),
+            method: 'PUT',
+        };
+        const jwt = getAuthToken();
+        const headers = {
+            Authorization: `Bearer ${jwt}`,
+        };
+        sendRequest(requestObj, headers)
+            .then((response) => {
+                setQuestionnaireResponses(updatedResponses);
+            })
+            .catch((err) => {
+                console.log(
+                    `error soft-deleting questionnaire response ${response_id}`,
+                    err
+                );
+            });
+    };
 
     const responsesMarkup = useMemo(() => {
         return questionnaireResponses.map((response, index) => {
@@ -423,6 +456,13 @@ const AdminDashboard = (props) => {
                         </span>
                     </td>
                     <td>
+                        <div
+                            title="Delete this response"
+                            className="delete"
+                            onClick={(e) => softDeleteResponse(index)}
+                        ></div>
+                    </td>
+                    <td>
                         <div className="all-answers">{allTheAnswers}</div>
                     </td>
                 </tr>
@@ -459,6 +499,7 @@ const AdminDashboard = (props) => {
                             onClick={sortDownload}
                         />
                     </th>
+                    <th></th>
                     <th>Responses</th>
                 </tr>
                 {responsesMarkup}

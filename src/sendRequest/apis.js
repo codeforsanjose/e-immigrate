@@ -14,6 +14,7 @@ module.exports = {
     updateUser: '/api/users/update/:id',
     deleteUser: '/api/users/delete/:id',
     addQuestionnaireResponse: '/api/questionnaire-responses/add',
+    deleteQuestionnaireResponse: '/api/questionnaire-responses/delete/:id',
     addQuestionnaires: '/api/questionnaires/add',
     deleteQuestionnaire: '/api/questionnaires/delete/:id',
     getQuestions: '/api/questionnaires',
