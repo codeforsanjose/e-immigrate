@@ -1,12 +1,15 @@
-.LoginBox, .RegisterBox {
+.Login,
+.Register {
     transition: visibility 0.2s ease-out;
 }
 
-.LoginBox .show, .RegisterBox .show {
+.Login .show,
+.Register .show {
     visibility: visible;
 }
 
-.LoginBox .header, .RegisterBox .header {
+.Login .header,
+.Register .header {
     text-align: center;
     padding: 5px;
     margin-bottom: 17px;
@@ -14,18 +17,20 @@
     border-bottom: 2px solid blue;
 }
 
-.LoginBox .login-form, .RegisterBox .login-form {
+.Login .login-form,
+.Register .login-form {
     display: grid;
-   
 }
 
-.LoginBox .input-group, .RegisterBox .input-group {
+.Login .input-group,
+.Register .input-group {
     display: grid;
     margin-top: 5px;
     margin-bottom: 5px;
 }
 
-.LoginBox .login-input, .RegisterBox .login-input {
+.Login .login-input,
+.Register .login-input {
     border-radius: 3px;
     border: 2px solid blue;
     transition: border 0.2s ease-out;
@@ -36,20 +41,24 @@
     margin: 5px 0;
 }
 
-.LoginBox .login-input:hover, .RegisterBox .login-input:hover {
+.Login .login-input:hover,
+.Register .login-input:hover {
     border: 2px solid lightblue;
 }
 
-.LoginBox .login-input:focus, .RegisterBox .login-input:focus {
+.Login .login-input:focus,
+.Register .login-input:focus {
     border: 2px solid lightblue;
     box-shadow: 0px 0px 20px rgba(15, 15, 15, 0.2);
 }
 
-.LoginBox .login-input::placeholder, .RegisterBox .login-input::placeholder {
+.Login .login-input::placeholder,
+.Register .login-input::placeholder {
     color: rgba(15, 15, 15, 0.4);
 }
 
-.LoginBox .login-btn, .RegisterBox .login-btn {
+.Login .login-btn,
+.Register .login-btn {
     padding: 5px 30px;
     border: 0;
     font-size: 18px;
@@ -61,10 +70,10 @@
     cursor: pointer;
 }
 
-.LoginBox .login-btn:hover,
-.login-btn:focus, .RegisterBox .login-btn:hover,
+.Login .login-btn:hover,
+.login-btn:focus,
+.Register .login-btn:hover,
 .login-btn:focus {
     background-color: #417cef;
     color: white;
 }
-

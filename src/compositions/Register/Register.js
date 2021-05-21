@@ -3,9 +3,9 @@ import { sendRequest } from '../../sendRequest/sendRequest';
 import { registerApi } from '../../sendRequest/apis';
 import { Redirect } from 'react-router-dom';
 
-import './LoginRegister.css';
+import '../Admin/LoginRegister.css';
 
-const RegisterBox = (props) => {
+const Register = (props) => {
     const [registerBoxState, setRegisterBoxState] = useState({
         email: '',
         password: '',
@@ -55,7 +55,7 @@ const RegisterBox = (props) => {
     }
 
     return (
-        <div className="RegisterBox">
+        <div className="Register">
             <div className="header">Register</div>
             <div className="login-form">
                 <div className="input-group">
@@ -102,4 +102,4 @@ const RegisterBox = (props) => {
     );
 };
 
-export default RegisterBox;
+export default Register;

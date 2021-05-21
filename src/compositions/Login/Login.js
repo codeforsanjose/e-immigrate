@@ -3,10 +3,10 @@ import { sendRequest } from '../../sendRequest/sendRequest';
 import { Redirect } from 'react-router-dom';
 import { loginApi } from '../../sendRequest/apis';
 
-import './LoginRegister.css';
+import '../Admin/LoginRegister.css';
 
-const LoginBox = (props) => {
-    const [loginBoxState, setLoginBoxState] = useState({
+const Login = (props) => {
+    const [loginState, setLoginState] = useState({
         email: '',
         password: '',
         loggedIn: false,
@@ -16,8 +16,8 @@ const LoginBox = (props) => {
         url: loginApi,
         method: 'POST',
         body: JSON.stringify({
-            email: loginBoxState.email,
-            password: btoa(loginBoxState.password),
+            email: LoginState.email,
+            password: btoa(LoginState.password),
         }),
     };
 
@@ -25,17 +25,17 @@ const LoginBox = (props) => {
         sendRequest(requestObj).then((body) => {
             if (body.jwt && body.name) {
                 localStorage.setItem('jwt-eimmigrate', body.jwt);
-                setLoginBoxState({ loggedIn: true, name: body.name });
+                setLoginState({ loggedIn: true, name: body.name });
             }
         });
     };
 
-    if (loginBoxState.loggedIn) {
+    if (loginState.loggedIn) {
         return (
             <Redirect
                 to={{
                     pathname: '/dashboard',
-                    state: { name: loginBoxState.name },
+                    state: { name: LoginState.name },
                 }}
             />
         );
@@ -43,14 +43,14 @@ const LoginBox = (props) => {
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
-        setLoginBoxState((loginBoxState) => ({
-            ...loginBoxState,
+        setLoginState((LoginState) => ({
+            ...LoginState,
             [name]: value,
         }));
     };
 
     return (
-        <div className="LoginBox">
+        <div className="Login">
             <div className="header">Login</div>
             <div className="login-form">
                 <div className="input-group">
@@ -87,4 +87,4 @@ const LoginBox = (props) => {
     );
 };
 
-export default LoginBox;
+export default Login;

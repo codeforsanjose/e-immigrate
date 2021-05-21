@@ -14,7 +14,7 @@ import { getAuthToken } from '../../utilities/auth_utils';
 import './AdminDashboard.css';
 import { languageOptions, workshopTitle } from '../../data/LanguageOptions';
 import Navbar from '../../compositions/Navbar/Navbar';
-import Button from '../Button/Button';
+import Button from '../../components/Button/Button';
 import { ReactComponent as Arrow } from '../../data/images/SortArrow.svg';
 
 const DESCRIPTIVE_TIMESTAMP = 'MM/dd/yyyy, h:mm:ss a';
