@@ -1,0 +1,14 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Select renders correctly 1`] = `
+Array [
+  <select
+    onChange={[Function]}
+  />,
+  <div
+    className="RequiredError"
+  >
+    *
+  </div>,
+]
+`;

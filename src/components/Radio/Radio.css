@@ -1,25 +1,3 @@
-.TextInput {
-    border: 2px solid var(--color-foggyBlue);
-    border-radius: 10px;
-    font-size: 1rem;
-    padding: 10px 12px;
-    width: 100%;
-    outline: none;
-}
-
-.TextInput[touched='true']:focus {
-    border: 2px solid #0072ff;
-}
-
-.TextInput[data-touched='true']:invalid {
-    border: 2px solid var(--color-secondary);
-}
-
-.RequiredError {
-    display: none;
-    color: var(--color-secondary);
-}
-
 .RadioGroup .Radio {
     margin: 0.5em;
     font-size: 1rem;
@@ -68,4 +46,9 @@
 .RadioButton[data-touched='true']:invalid:first-of-type ~ .RequiredError {
     display: inline;
     margin-left: 8px;
+}
+
+.RequiredError {
+    display: none;
+    color: var(--color-secondary);
 }

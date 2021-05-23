@@ -1,0 +1,16 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Email renders correctly 1`] = `
+Array [
+  <input
+    className="TextInput"
+    onChange={[Function]}
+    type="email"
+  />,
+  <div
+    className="RequiredError"
+  >
+    *
+  </div>,
+]
+`;

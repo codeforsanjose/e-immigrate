@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PhoneNumber renders correctly 1`] = `
+Array [
+  <input
+    className="TextInput"
+    onChange={[Function]}
+    pattern="^(\\\\+\\\\d{1,2}\\\\s)?\\\\(?\\\\d{3}\\\\)?[\\\\s.-]?\\\\d{3}[\\\\s.-]?\\\\d{4}$"
+    type="tel"
+  />,
+  <div
+    className="RequiredError"
+  >
+    *
+  </div>,
+]
+`;
