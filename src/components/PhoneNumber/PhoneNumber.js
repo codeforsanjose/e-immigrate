@@ -1,7 +1,8 @@
 import React from 'react';
 import './PhoneNumber.css';
 
-const PhoneNumber = ({ q, bindField, collectAnswer, setErrors, content }) => {
+const PhoneNumber = ({ attributes }) => {
+    const { q, bindField, collectAnswer, setErrors, content } = attributes;
     return (
         <>
             <input

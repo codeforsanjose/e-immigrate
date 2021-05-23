@@ -1,7 +1,8 @@
 import React from 'react';
 import './Email.css';
 
-const Email = ({ q, bindField, collectAnswer, content }) => {
+const Email = ({ attributes }) => {
+    const { q, bindField, collectAnswer, content } = attributes;
     return (
         <>
             <input

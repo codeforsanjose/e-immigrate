@@ -1,7 +1,8 @@
 import React from 'react';
 import './TextArea.css';
 
-const TextArea = ({ q, bindField, collectAnswer, content }) => {
+const TextArea = ({ attributes }) => {
+    const { q, bindField, collectAnswer, content } = attributes;
     return (
         <>
             <textarea

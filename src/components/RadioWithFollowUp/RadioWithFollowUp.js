@@ -1,16 +1,16 @@
 import React from 'react';
 import './RadioWithFollowUp.css';
 
-const RadioWithFollowUp = ({
-    q,
-    answers,
-    values,
-    bindField,
-    showFollowUp,
-    setShowFollowUp,
-    collectAnswer,
-    content,
-}) => {
+const RadioWithFollowUp = ({ attributes }) => {
+    const {
+        q,
+        answers,
+        values,
+        bindField,
+        setShowFollowUp,
+        collectAnswer,
+        content,
+    } = attributes;
     return (
         <div className="RadioGroup">
             {answers &&

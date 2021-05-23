@@ -19,72 +19,7 @@ const QuestionnaireForm = ({
     categoryIndex,
     setCategoryIndex,
     categories,
-}) => {
-    const [errors, setErrors] = useState({});
-    const [introPage, setIntroPage] = useState(true);
-    const onSubmit = (e) => {
-        submitQuestionnaireResponse(questionnaireResponse);
-    };
-
-    const nextStep = (e) => {
-        e.preventDefault();
-        const allRequiredFieldsCompleted = filteredQuestions.every((q) => {
-            if (q.required && !questionnaireResponse[q.slug]) {
-                if (q.parentQuestionSlug) {
-                    if (questionnaireResponse[q.parentQuestionSlug] === 'Yes') {
-                        return true;
-                    } else {
-                        return true;
-                    }
-                }
-                return true;
-            } else {
-                return true;
-            }
-        });
-        setAllFieldsTouched();
-        if (allRequiredFieldsCompleted) {
-            if (categoryIndex < categories.length - 1) {
-                setCategoryIndex((prev) => prev + 1);
-            } else {
-                return onSubmit();
-            }
-        } else {
-            alert(`Please complete every question ${Object.keys(errors)}`);
-        }
-    };
-
-    return (
-        <div className="Questionnaire">
-            {introPage ? (
-                <QuestionnaireIntro
-                    content={content}
-                    setIntroPage={setIntroPage}
-                />
-            ) : (
-                <>
-                    <Questions
-                        filteredQuestions={filteredQuestions}
-                        bindField={bindField}
-                        questions={questions}
-                        collectAnswer={collectAnswer}
-                        setErrors={setErrors}
-                        content={content}
-                    />
-                    <Button
-                        label={
-                            categoryIndex < categories.length - 1
-                                ? content.step2ProceedButton2
-                                : content.step2ProceedButton3
-                        }
-                        type="submit"
-                        onClick={nextStep}
-                    />
-                </>
-            )}
-        </div>
-    );
-};
+}) => {};
 
 const Questions = ({
     filteredQuestions,
@@ -131,21 +66,69 @@ const Questionnaire = ({
         (q) => q.category === categories[categoryIndex]
     );
     const [bindField, setAllFieldsTouched] = useMarkFieldAsTouched();
+    const [errors, setErrors] = useState({});
+    const [introPage, setIntroPage] = useState(true);
+    const onSubmit = (e) => {
+        submitQuestionnaireResponse(questionnaireResponse);
+    };
+
+    const nextStep = (e) => {
+        e.preventDefault();
+        const allRequiredFieldsCompleted = filteredQuestions.every((q) => {
+            if (q.required && !questionnaireResponse[q.slug]) {
+                if (q.parentQuestionSlug) {
+                    if (questionnaireResponse[q.parentQuestionSlug] === 'Yes') {
+                        return true; //should be false
+                    } else {
+                        return true;
+                    }
+                }
+                return true; //should be false
+            } else {
+                return true;
+            }
+        });
+        setAllFieldsTouched();
+        if (allRequiredFieldsCompleted) {
+            if (categoryIndex < categories.length - 1) {
+                setCategoryIndex((prev) => prev + 1);
+            } else {
+                return onSubmit();
+            }
+        } else {
+            alert(`Please complete every question`);
+        }
+    };
+
     return (
-        <QuestionnaireForm
-            filteredQuestions={filteredQuestions}
-            bindField={bindField}
-            questions={questions}
-            setAllFieldsTouched={setAllFieldsTouched}
-            submitQuestionnaireResponse={submitQuestionnaireResponse}
-            questionnaireResponse={questionnaireResponse}
-            setQuestionnaireResponse={setQuestionnaireResponse}
-            content={content}
-            collectAnswer={collectAnswer}
-            categoryIndex={categoryIndex}
-            setCategoryIndex={setCategoryIndex}
-            categories={categories}
-        />
+        <div className="Questionnaire">
+            {introPage ? (
+                <QuestionnaireIntro
+                    content={content}
+                    setIntroPage={setIntroPage}
+                />
+            ) : (
+                <>
+                    <Questions
+                        filteredQuestions={filteredQuestions}
+                        bindField={bindField}
+                        questions={questions}
+                        collectAnswer={collectAnswer}
+                        setErrors={setErrors}
+                        content={content}
+                    />
+                    <Button
+                        label={
+                            categoryIndex < categories.length - 1
+                                ? content.step2ProceedButton2
+                                : content.step2ProceedButton3
+                        }
+                        type="submit"
+                        onClick={nextStep}
+                    />
+                </>
+            )}
+        </div>
     );
 };
 

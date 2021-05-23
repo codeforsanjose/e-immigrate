@@ -15,7 +15,7 @@ import TextInput from '../../../components/TextInput/TextInput';
 import Zip from '../../../components/Zip/Zip';
 
 const Question = ({
-    question = { text: '', required: true },
+    question,
     bindField,
     followUpQuestions,
     collectAnswer,
@@ -24,138 +24,53 @@ const Question = ({
 }) => {
     const [showFollowUp, setShowFollowUp] = useState(false);
 
-    const { text, required } = question;
-
-    const getInputType = (q) => {
-        switch (q.questionType) {
-            case 'date':
-                return (
-                    <Date
-                        q={q}
-                        bindField={bindField}
-                        collectAnswer={collectAnswer}
-                        content={content}
-                    />
-                );
-            case 'radio':
-                if (q.followUpQuestionSlug) {
-                    return (
-                        <RadioWithFollowUp
-                            q={q}
-                            answers={q.answerSelections.split(', ')}
-                            values={q.answerValues.split(', ')}
-                            bindField={bindField}
-                            showFollowUp={showFollowUp}
-                            setShowFollowUp={setShowFollowUp}
-                            className="RadioGroup"
-                            collectAnswer={collectAnswer}
-                            content={content}
-                        />
-                    );
-                } else {
-                    return (
-                        <Radio
-                            q={q}
-                            answers={q.answerSelections.split(', ')}
-                            values={q.answerValues.split(', ')}
-                            bindField={bindField}
-                            className="RadioGroup"
-                            collectAnswer={collectAnswer}
-                            content={content}
-                        />
-                    );
-                }
-            case 'checkbox':
-                return (
-                    <Checkbox
-                        q={q}
-                        answers={q.answerSelections.split(', ')}
-                        values={q.answerValues.split(', ')}
-                        bindField={bindField}
-                        collectAnswer={collectAnswer}
-                        content={content}
-                    />
-                );
-            case 'input':
-                return (
-                    <TextInput
-                        q={q}
-                        bindField={bindField}
-                        collectAnswer={collectAnswer}
-                        content={content}
-                    />
-                );
-            case 'textArea':
-                return (
-                    <TextArea
-                        q={q}
-                        bindField={bindField}
-                        collectAnswer={collectAnswer}
-                        content={content}
-                    />
-                );
-            case 'dropDown':
-                return (
-                    <Select
-                        q={q}
-                        answers={['--', ...q.answerSelections.split(', ')]}
-                        bindField={bindField}
-                        collectAnswer={collectAnswer}
-                        content={content}
-                        values={q.answerValues.split(', ')}
-                    />
-                );
-            case 'email':
-                return (
-                    <Email
-                        q={q}
-                        bindField={bindField}
-                        collectAnswer={collectAnswer}
-                        content={content}
-                    />
-                );
-            case 'phoneNumber':
-                return (
-                    <PhoneNumber
-                        q={q}
-                        bindField={bindField}
-                        collectAnswer={collectAnswer}
-                        setErrors={setErrors}
-                        content={content}
-                    />
-                );
-            case 'zip':
-                return (
-                    <Zip
-                        q={q}
-                        bindField={bindField}
-                        collectAnswer={collectAnswer}
-                        setErrors={setErrors}
-                        content={content}
-                    />
-                );
-            default:
-                return (
-                    <div>
-                        An error has occurred. Please return to the home page.
-                    </div>
-                );
-        }
+    const formElements = {
+        checkbox: Checkbox,
+        date: Date,
+        email: Email,
+        phoneNumber: PhoneNumber,
+        radio: Radio,
+        radioWithFollowUp: RadioWithFollowUp,
+        dropDown: Select,
+        textArea: TextArea,
+        input: TextInput,
+        zip: Zip,
     };
+
+    const attributes = (q) => {
+        return {
+            q: q,
+            bindField: bindField,
+            collectAnswer: collectAnswer,
+            content: content,
+            answers: q.answerSelections ? q.answerSelections.split(', ') : null,
+            selectAnswers: q.answerSelections
+                ? ['--', ...q.answerSelections.split(', ')]
+                : null,
+            values: q.answerSelections ? q.answerValues.split(', ') : null,
+            showFollowUp: showFollowUp,
+            setShowFollowUp: setShowFollowUp,
+            setErrors: setErrors,
+        };
+    };
+
+    const FormElement = formElements[question.questionType];
 
     return (
         <>
             <fieldset className="Question">
                 <div className="QuestionText">
-                    {text}
-                    {required
+                    {question.text}
+                    {question.required
                         ? ` (${content.required})`
                         : ` (${content.optional})`}
                 </div>
-                {getInputType(question)}
+                <FormElement attributes={attributes(question)} />
             </fieldset>
             {showFollowUp &&
                 followUpQuestions.map((followUpQuestion) => {
+                    const FollowUpFormElement =
+                        formElements[followUpQuestion.questionType];
                     return (
                         <div className="FollowUp" key={followUpQuestion.slug}>
                             <Arrow height="36px" width="36px" />
@@ -166,7 +81,9 @@ const Question = ({
                                         ? ` (${content.required})`
                                         : ` (${content.optional})`}
                                 </div>
-                                {getInputType(followUpQuestion)}
+                                <FollowUpFormElement
+                                    attributes={attributes(followUpQuestion)}
+                                />
                             </fieldset>
                         </div>
                     );
