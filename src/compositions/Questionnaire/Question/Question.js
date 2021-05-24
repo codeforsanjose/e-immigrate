@@ -21,9 +21,9 @@ const Question = ({
     collectAnswer,
     setErrors,
     content,
+    showFollowUp,
+    setShowFollowUp,
 }) => {
-    const [showFollowUp, setShowFollowUp] = useState(false);
-
     const formElements = {
         checkbox: Checkbox,
         date: Date,
@@ -67,7 +67,7 @@ const Question = ({
                 </div>
                 <FormElement attributes={attributes(question)} />
             </fieldset>
-            {showFollowUp &&
+            {showFollowUp[question.slug] &&
                 followUpQuestions.map((followUpQuestion) => {
                     const FollowUpFormElement =
                         formElements[followUpQuestion.questionType];

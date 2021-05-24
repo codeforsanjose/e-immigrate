@@ -6,21 +6,6 @@ import QuestionnaireIntro from '../QuestionnaireIntro/QuestionnaireIntro';
 
 import './Questionnaire.css';
 
-const QuestionnaireForm = ({
-    filteredQuestions,
-    bindField,
-    questions,
-    setAllFieldsTouched,
-    submitQuestionnaireResponse,
-    questionnaireResponse,
-    setQuestionnaireResponse,
-    content = { step2ProceedButton3: '' },
-    collectAnswer,
-    categoryIndex,
-    setCategoryIndex,
-    categories,
-}) => {};
-
 const Questions = ({
     filteredQuestions,
     bindField,
@@ -28,6 +13,8 @@ const Questions = ({
     collectAnswer,
     setErrors,
     content,
+    showFollowUp,
+    setShowFollowUp,
 }) => (
     <>
         {filteredQuestions.map((question) => {
@@ -46,6 +33,8 @@ const Questions = ({
                     collectAnswer={collectAnswer}
                     setErrors={setErrors}
                     content={content}
+                    showFollowUp={showFollowUp}
+                    setShowFollowUp={setShowFollowUp}
                 />
             );
         })}
@@ -68,6 +57,7 @@ const Questionnaire = ({
     const [bindField, setAllFieldsTouched] = useMarkFieldAsTouched();
     const [errors, setErrors] = useState({});
     const [introPage, setIntroPage] = useState(true);
+    const [showFollowUp, setShowFollowUp] = useState({});
     const onSubmit = (e) => {
         submitQuestionnaireResponse(questionnaireResponse);
     };
@@ -99,7 +89,7 @@ const Questionnaire = ({
             alert(`Please complete every question`);
         }
     };
-
+    console.log('showFollowUp :>> ', showFollowUp);
     return (
         <div className="Questionnaire">
             {introPage ? (
@@ -109,14 +99,31 @@ const Questionnaire = ({
                 />
             ) : (
                 <>
-                    <Questions
-                        filteredQuestions={filteredQuestions}
-                        bindField={bindField}
-                        questions={questions}
-                        collectAnswer={collectAnswer}
-                        setErrors={setErrors}
-                        content={content}
-                    />
+                    <>
+                        {filteredQuestions.map((question) => {
+                            if (question.parentQuestionSlug) {
+                                return null;
+                            }
+
+                            return (
+                                <Question
+                                    key={question.slug}
+                                    question={question}
+                                    bindField={bindField}
+                                    followUpQuestions={questions.filter(
+                                        (q) =>
+                                            q.parentQuestionSlug ===
+                                            question.slug
+                                    )}
+                                    collectAnswer={collectAnswer}
+                                    setErrors={setErrors}
+                                    content={content}
+                                    showFollowUp={showFollowUp}
+                                    setShowFollowUp={setShowFollowUp}
+                                />
+                            );
+                        })}
+                    </>
                     <Button
                         label={
                             categoryIndex < categories.length - 1

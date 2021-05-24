@@ -27,8 +27,14 @@ const RadioWithFollowUp = ({ attributes }) => {
                                     onChange={(e) => {
                                         collectAnswer(q.slug, e.target.value);
                                         values[idx] === 'Yes'
-                                            ? setShowFollowUp(true)
-                                            : setShowFollowUp(false);
+                                            ? setShowFollowUp((prev) => ({
+                                                  ...prev,
+                                                  [q.slug]: true,
+                                              }))
+                                            : setShowFollowUp((prev) => ({
+                                                  ...prev,
+                                                  [q.slug]: false,
+                                              }));
                                     }}
                                     className="RadioButton"
                                     {...bindField(q.slug)}
