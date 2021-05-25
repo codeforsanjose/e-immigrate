@@ -3,18 +3,16 @@ import { ReactComponent as Arrow } from '../../../data/images/Arrow-Down-Right.s
 
 import './Question.css';
 
-import {
-    Date,
-    Radio,
-    RadioWithFollowUp,
-    Checkbox,
-    TextInput,
-    TextArea,
-    DropDown,
-    Email,
-    PhoneNumber,
-    Zip,
-} from '../../../components/FormComponents/FormComponents';
+import Checkbox from '../../../components/Checkbox/Checkbox';
+import Date from '../../../components/Date/Date';
+import Email from '../../../components/Email/Email';
+import PhoneNumber from '../../../components/PhoneNumber/PhoneNumber';
+import Radio from '../../../components/Radio/Radio';
+import RadioWithFollowUp from '../../../components/RadioWithFollowUp/RadioWithFollowUp';
+import Select from '../../../components/Select/Select';
+import TextArea from '../../../components/TextArea/TextArea';
+import TextInput from '../../../components/TextInput/TextInput';
+import Zip from '../../../components/Zip/Zip';
 
 const Question = ({
     question = { text: '', required: true },
@@ -98,7 +96,7 @@ const Question = ({
                 );
             case 'dropDown':
                 return (
-                    <DropDown
+                    <Select
                         q={q}
                         answers={['--', ...q.answerSelections.split(', ')]}
                         bindField={bindField}

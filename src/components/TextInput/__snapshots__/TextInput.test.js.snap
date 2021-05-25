@@ -1,0 +1,16 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TextInput renders correctly 1`] = `
+Array [
+  <input
+    className="TextInput"
+    onChange={[Function]}
+    type="text"
+  />,
+  <div
+    className="RequiredError"
+  >
+    *
+  </div>,
+]
+`;
