@@ -1,9 +1,17 @@
 import React, { useEffect } from 'react';
 import './Select.css';
 
-const Select = ({ q, answers, bindField, collectAnswer, content, values }) => {
+const Select = ({ attributes }) => {
+    const {
+        q,
+        selectAnswers,
+        bindField,
+        collectAnswer,
+        content,
+        values,
+    } = attributes;
     useEffect(() => {
-        collectAnswer(q.slug, answers[0]);
+        collectAnswer(q.slug, selectAnswers[0]);
     }, []);
     return (
         <>
@@ -13,8 +21,8 @@ const Select = ({ q, answers, bindField, collectAnswer, content, values }) => {
                 {...bindField(q.slug)}
                 onChange={(e) => collectAnswer(q.slug, e.target.value)}
             >
-                {answers &&
-                    answers.map((option, idx) => {
+                {selectAnswers &&
+                    selectAnswers.map((option, idx) => {
                         return (
                             <option
                                 value={values[idx - 1]}

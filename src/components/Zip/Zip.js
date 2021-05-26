@@ -1,7 +1,8 @@
 import React from 'react';
 import './Zip.css';
 
-const Zip = ({ q, bindField, collectAnswer, setErrors, content }) => {
+const Zip = ({ attributes }) => {
+    const { q, bindField, collectAnswer, setErrors, content } = attributes;
     return (
         <>
             <input

@@ -1,7 +1,8 @@
 import React from 'react';
 import './TextInput.css';
 
-const TextInput = ({ q, bindField, collectAnswer, content }) => {
+const TextInput = ({ attributes }) => {
+    const { q, bindField, collectAnswer, content } = attributes;
     return (
         <>
             <input
