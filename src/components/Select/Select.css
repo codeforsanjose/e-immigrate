@@ -1,0 +1,4 @@
+.RequiredError {
+    display: none;
+    color: var(--color-secondary);
+}

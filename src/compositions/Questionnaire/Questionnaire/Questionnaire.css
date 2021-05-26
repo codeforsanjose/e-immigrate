@@ -7,3 +7,33 @@
 .Questionnaire button {
     margin: 48px auto 16px;
 }
+
+.Questionnaire .Question {
+    border: none;
+    padding: 1rem;
+}
+
+.Questionnaire .FollowUp {
+    margin-left: 2rem;
+    display: grid;
+    grid-template-columns: 30px auto;
+}
+
+.Questionnaire .Question .QuestionText {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.Questionnaire .QuestionInput:invalid {
+    border: 2px solid var(--color-secondary);
+}
+
+.Questionnaire .Question .RequiredError {
+    display: none;
+    color: var(--color-secondary);
+}
+
+.Questionnaire .TextInput:invalid[data-touched='true'] ~ .RequiredError {
+    display: block;
+}

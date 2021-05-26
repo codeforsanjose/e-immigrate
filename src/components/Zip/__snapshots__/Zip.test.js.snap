@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Zip renders correctly 1`] = `
+Array [
+  <input
+    className="TextInput"
+    onChange={[Function]}
+    pattern="[0-9]{5}"
+    type="text"
+  />,
+  <div
+    className="RequiredError"
+  >
+    *
+  </div>,
+]
+`;

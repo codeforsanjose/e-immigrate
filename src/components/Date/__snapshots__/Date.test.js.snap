@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Date renders correctly 1`] = `
+Array [
+  <input
+    className="TextInput"
+    type="date"
+  />,
+  <div
+    className="RequiredError"
+  >
+    *
+  </div>,
+]
+`;
