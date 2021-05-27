@@ -194,7 +194,7 @@ router.route('/questionnairefile').post((req, res) => {
                 .status(400)
                 .json({ error: { message: 'Questionnaire File is too large' } });
         }
-        let excelFileContent = req.files.questionnaire.data;
+        const excelFileContent = req.files.questionnaire.data;
         return loadQuestionnaireXlsxIntoDB(excelFileContent).then(() => {
             res.status(200).send("Questionnaire Documenent Recieved");
         }).catch((err) => {
@@ -216,7 +216,7 @@ router.route('/translateContent').post((req, res) => {
                 .status(400)
                 .json({ error: { message: 'Translation File is too large' } });
         }
-        let excelFileContent = req.files.translations.data;
+        const excelFileContent = req.files.translations.data;
         return loadTranslationXlsxIntoDB(excelFileContent).then(() => {
             res.status(200).send("Translation Document Recieved");
         }).catch((err) => {

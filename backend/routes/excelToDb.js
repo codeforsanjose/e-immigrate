@@ -4,7 +4,7 @@
 const Questionnaires = require('../models/questionnaires');
 const TranslatedContent = require('../models/translatedContent');
 const xlsxFile = require('read-excel-file/node');
-let Readable = require('stream').Readable;
+const Readable = require('stream').Readable;
 const { LanguageOptions, WorkshopTitle } = require('../LanguageOptions');
 
 /**
@@ -14,8 +14,8 @@ const { LanguageOptions, WorkshopTitle } = require('../LanguageOptions');
  * returns; a promise that resolves when operaiton is done
  * */
 function loadQuestionnaireXlsxIntoDB(excelFileContent) {
-    let questionnairePromises = LanguageOptions.map((language, idx) => {
-        let stream = new Readable();
+    const questionnairePromises = LanguageOptions.map((language, idx) => {
+        const stream = new Readable();
         stream.push(excelFileContent);
         stream.push(null);
         return xlsxFile(stream, {
@@ -60,9 +60,9 @@ function loadQuestionnaireXlsxIntoDB(excelFileContent) {
         });
     });
     return Promise.all(questionnairePromises).then((questionnaires) => {
-        let title = WorkshopTitle;
-        let insertPromises = LanguageOptions.map((language, idx) => {
-            let questions = questionnaires[idx];
+        const title = WorkshopTitle;
+        const insertPromises = LanguageOptions.map((language, idx) => {
+            const questions = questionnaires[idx];
 
             const insertNewQuestionnaire = () => {
                 return Questionnaires.insertMany({ title, language: language.code, questions })
@@ -93,14 +93,14 @@ function loadQuestionnaireXlsxIntoDB(excelFileContent) {
  * returns; a promise that resolves when operaiton is done
  * */
 function loadTranslationXlsxIntoDB(excelFileContent) {
-    let stream = new Readable();
+    const stream = new Readable();
     stream.push(excelFileContent);
     stream.push(null);
     return xlsxFile(stream).then((rows) => {
 
         const data = rows.reduce((obj, row) => {
             for (let i = 1; i < row.length; i++) {
-                let languageObject = obj[LanguageOptions[i - 1].code];
+                const languageObject = obj[LanguageOptions[i - 1].code];
 
                 if (languageObject) {
                     languageObject[row[0]] = row[i];
@@ -115,7 +115,7 @@ function loadTranslationXlsxIntoDB(excelFileContent) {
         return data;
     }).then((translations) => {
         const title = WorkshopTitle;
-        let insertPromises = LanguageOptions.map((language) => {
+        const insertPromises = LanguageOptions.map((language) => {
             const content = translations[language.code];
             const insertNewTranslatedContent = () => {
                 return TranslatedContent.insertMany({ title, language: language.code, content })
