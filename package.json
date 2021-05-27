@@ -17,6 +17,7 @@
         "dotenv": "^8.2.0",
         "excel4node": "^1.7.2",
         "express": "^4.17.1",
+        "express-fileupload": "^1.2.1",
         "fs": "^0.0.1-security",
         "jsonwebtoken": "^8.5.1",
         "mongodb": "^3.5.9",
