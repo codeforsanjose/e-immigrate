@@ -16,8 +16,8 @@ const Login = (props) => {
         url: loginApi,
         method: 'POST',
         body: JSON.stringify({
-            email: LoginState.email,
-            password: btoa(LoginState.password),
+            email: loginState.email,
+            password: btoa(loginState.password),
         }),
     };
 
@@ -35,7 +35,7 @@ const Login = (props) => {
             <Redirect
                 to={{
                     pathname: '/dashboard',
-                    state: { name: LoginState.name },
+                    state: { name: loginState.name },
                 }}
             />
         );
@@ -43,8 +43,8 @@ const Login = (props) => {
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
-        setLoginState((LoginState) => ({
-            ...LoginState,
+        setLoginState((loginState) => ({
+            ...loginState,
             [name]: value,
         }));
     };

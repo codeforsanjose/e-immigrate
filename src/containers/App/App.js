@@ -1,7 +1,7 @@
 import React from 'react';
 import MainContainer from '../MainContainer/MainContainer';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import Admin from '../../compositions/auth/Admin';
+import Admin from '../../compositions/Admin/Admin.js';
 import AdminDashboard from '../../containers/AdminDashboard/AdminDashboard';
 import './App.css';
 
