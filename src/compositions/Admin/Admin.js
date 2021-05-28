@@ -1,19 +1,19 @@
 import React, { useState } from 'react';
-import LoginBox from './LoginBox.js';
-import RegisterBox from './RegisterBox.js';
+import Login from '../Login/Login';
+import Register from '../Register/Register';
 import './Admin.css';
 
-const Admin = (props) => {
+const Admin = ({}) => {
     const [adminState, setAdminState] = useState({
         isLoginOpen: true,
         isRegisterOpen: false,
     });
 
-    const showLoginBox = () => {
+    const showLogin = () => {
         setAdminState({ isLoginOpen: true, isRegisterOpen: false });
     };
 
-    const showRegisterBox = () => {
+    const showRegister = () => {
         setAdminState({ isRegisterOpen: true, isLoginOpen: false });
     };
 
@@ -26,22 +26,22 @@ const Admin = (props) => {
         registerClassName = 'tab selected-tab';
     }
 
-    const loginBox = adminState.isLoginOpen && <LoginBox />;
-    const registerBox = adminState.isRegisterOpen && <RegisterBox />;
+    const login = adminState.isLoginOpen && <Login />;
+    const register = adminState.isRegisterOpen && <Register />;
     return (
         <div className="Admin">
             <div className="admin-tab-nav">
-                <div className={loginClassName} onClick={showLoginBox}>
+                <div className={loginClassName} onClick={showLogin}>
                     Login
                 </div>
-                <div className={registerClassName} onClick={showRegisterBox}>
+                <div className={registerClassName} onClick={showRegister}>
                     Register
                 </div>
             </div>
 
             <div className="tab-container">
-                {loginBox}
-                {registerBox}
+                {login}
+                {register}
             </div>
         </div>
     );
