@@ -3,7 +3,7 @@ import { sendRequest } from '../../sendRequest/sendRequest';
 import { Redirect } from 'react-router-dom';
 import { loginApi } from '../../sendRequest/apis';
 
-import '../Admin/LoginRegister.css';
+import './LoginRegister.css';
 
 const Login = (props) => {
     const [loginState, setLoginState] = useState({
