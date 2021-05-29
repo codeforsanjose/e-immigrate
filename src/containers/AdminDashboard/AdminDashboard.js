@@ -35,6 +35,8 @@ const AdminDashboard = (props) => {
     const [emailOrder, setEmailOrder] = useState(false);
     const [downloadOrder, setDownloadOrder] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [createdOrder, setCreatedOrder] = useState(true);
+    const [updatedOrder, setUpdatedOrder] = useState(true);
     useEffect(() => {
         setLoading(true);
         const jwt = getAuthToken();
@@ -256,6 +258,16 @@ const AdminDashboard = (props) => {
                   setDownloadOrder
               );
     };
+    const sortCreated = () => {
+        createdOrder
+            ? sortAscending('createdAt', createdOrder, setCreatedOrder)
+            : sortDescending('createdAt', createdOrder, setCreatedOrder);
+    };
+    const sortUpdated = () => {
+        updatedOrder
+            ? sortAscending('updatedAt', updatedOrder, setUpdatedOrder)
+            : sortDescending('updatedAt', updatedOrder, setUpdatedOrder);
+    };
 
     const sortAscending = (property, headerState, setHeaderState) => {
         const sortedResponses = questionnaireResponses.sort((a, b) => {
@@ -468,15 +480,34 @@ const AdminDashboard = (props) => {
                 </tr>
             );
         });
-    }, [questionnaireResponses, flagOrder, emailOrder, downloadOrder]);
+    }, [
+        questionnaireResponses,
+        flagOrder,
+        emailOrder,
+        downloadOrder,
+        createdOrder,
+        updatedOrder,
+    ]);
 
     const responsesTable = (
         <table className="responses">
             <tbody>
                 <tr className="header-row">
                     <th>#</th>
-                    <th>Created</th>
-                    <th>Updated</th>
+                    <th>
+                        Created
+                        <Arrow
+                            className={createdOrder ? '' : 'up'}
+                            onClick={sortCreated}
+                        />
+                    </th>
+                    <th>
+                        Updated
+                        <Arrow
+                            className={updatedOrder ? '' : 'up'}
+                            onClick={sortUpdated}
+                        />
+                    </th>
                     <th>
                         Flag
                         <Arrow
