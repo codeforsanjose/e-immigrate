@@ -1,118 +1,104 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Project New Citizen
 
-## Available Scripts
+Project New Citizen is a web application created for the Center for Employment Training Immigration and Citizenship Program (CET-ICP) in collaboration with Code for San Jose.
 
-In the project directory, you can run:
+CET-ICP regularly holds workshops to help immigrants on their paths to become U.S. Citizens, but when they could no longer hold their in-person workshops due to COVID-19 they reached out to Code for San Jose to help move the workshop online.
 
-### `npm start`
+The purpose of the project is to have users watch an informational video and answer a series of questions so that immigration attourneys and DOJ accredited representatives can help them become U.S. Citizens.
+
+## Run Locally
+
+### Clone the project
+
+```bash
+  git clone https://github.com/noelsner/e-immigrate.git
+```
+
+Go to the project directory
+
+```bash
+  cd e-immigrate
+```
+
+Install dependencies
+
+```bash
+  npm install
+```
+
+### Run MongoDB Locally
+
+In order to run mongoDB locally, you will need to have mongoDB installed in your device.
+
+```bash
+which mongo
+```
+
+Checks if you have mongoDB installed on your device. It should return a directory path like `/usr/local/bin/mongo`. If it doesn't, you will need to install mongoDB on your device.
+
+**Installing MongoDB**
+
+In order to install mongoDB on you device, go to [mongoDB manual](https://docs.mongodb.com/manual/administration/install-community/) and follow the instructions.
+
+**Connecting to MongoDB**
+
+After installing mongoDB, navigate to the `backend` folder and create a `.env` file
+
+```bash
+cd backend
+
+touch .env
+```
+
+In the `.env` file add the following:
+
+```bash
+MONGO_URI = mongodb://localhost/test
+JWT_KEY = <secret key>
+```
+
+_Note:_ The `secret key` can be a "string, buffer, or object containing either the secret for HMAC algorithms or the PEM encoded private key for RSA and ECDSA".
+For more information on jwt, visit [JWT Documentation](https://www.npmjs.com/package/jsonwebtoken).
+
+_Note:_ `test` in the line above is the name of the database that you want your application to connect to. You can choose your own name for the database.
+
+Now, still in the `backend` folder, run the following command in the terminal:
+
+```bash
+node index.js
+```
+
+or
+
+```bash
+nodemon index.js
+```
+
+You should see a response as shown below, if mongoDB is connected to your application.
+
+```bash
+listening on port 5000
+MongoDB database connection established successfully
+```
+
+### Start the Frontend
+
+From the main project directory
+
+```bash
+  npm run start
+```
 
 Runs the app in the development mode.<br />
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+## Update Excel Files
 
-### `npm start:dev`
+Drag and drop the updated `Questionnaire for Upload.xlsx` and/or `Website Content.xlsx` file(s) into the `backend` folder
 
-Runs *npm start* starts up the server using nodemon
+In the terminal, from the `backend` folder, run the following command(s):
 
-<br />
-<br />
-<br />
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Running MongoDB Locally
-
-In order to run mongoDB locally, you will need to have mongoDB installed in your device.
-
-### `which mongo`
-
-Checks if you have mongoDB installed on your device. It should return a directory path like `/usr/local/bin/mongo`. If it doesn't, you will need to install mongoDB on your device. 
-
-### Installing MongoDB
-
-In order to install mongoDB on you device, go to [mongoDB manual](https://docs.mongodb.com/manual/administration/install-community/) and follow the instructions. 
-
-### Connecting to MongoDB
-
-After installing mongoDB, create a file with filename `.env` inside the backend folder. Add the following line in the file:
-
-`MONGO_URI = mongodb://localhost/test`
-
-Now, navigate to the `backend` folder in your terminal, and run the command `node index.js`. You should see a response as shown below, if mongoDB is connected to your application. 
-
-`listening on port 5000`<br>
-`MongoDB database connection established successfully`
-
-Note: `test` in the line above is the name of the database that you want your application to connect to. You can choose your own name for the database. 
-
-## JWT Authentication
-
-In your `.env` folder, add the following line:
-
-`JWT_KEY = <secret key>`
-
-The `secret key` can be a "string, buffer, or object containing either the secret for HMAC algorithms or the PEM encoded private key for RSA and ECDSA".   
-For more information on jwt, visit [JWT Documentation](https://www.npmjs.com/package/jsonwebtoken). 
-
-## Viewing Registered Users
-
-In order to view the registered users as an admin:
-
-Navigate to [http://localhost:3000/login](http://localhost:3000/login)
-Sign up/Sign in to see the registered users. 
-
-## Adding Twilio API Key and Sender Email
-
-Please refer to the [Twilio documentation](https://www.twilio.com/blog/how-to-send-emails-in-javascript-with-sendgrid).
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-To learn mongoDB, check out the [mongoDB documentation](https://docs.mongodb.com/manual/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+```bash
+node uploadQuestionnaireFromExcel.js
+node uploadTranslatedContentFromExcel.js
+```
