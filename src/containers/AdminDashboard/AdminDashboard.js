@@ -15,6 +15,7 @@ import './AdminDashboard.css';
 import { languageOptions, workshopTitle } from '../../data/LanguageOptions';
 import Navbar from '../../compositions/Navbar/Navbar';
 import Button from '../../components/Button/Button';
+import Fuse from 'fuse.js';
 import { ReactComponent as Arrow } from '../../data/images/SortArrow.svg';
 
 const DESCRIPTIVE_TIMESTAMP = 'MM/dd/yyyy, h:mm:ss a';
@@ -37,6 +38,8 @@ const AdminDashboard = (props) => {
     const [loading, setLoading] = useState(true);
     const [createdOrder, setCreatedOrder] = useState(true);
     const [updatedOrder, setUpdatedOrder] = useState(true);
+    const [filterBy, setFilterBy] = useState('');
+    const [searchTerm, setSearchTerm] = useState('');
     useEffect(() => {
         setLoading(true);
         const jwt = getAuthToken();
@@ -339,7 +342,19 @@ const AdminDashboard = (props) => {
     };
 
     const responsesMarkup = useMemo(() => {
-        return questionnaireResponses.map((response, index) => {
+        let filterQuestionnaireResponses;
+        if (searchTerm) {
+            const fuse = new Fuse(questionnaireResponses, {
+                keys: [`questionnaireResponse.${filterBy}`],
+                minMatchCharLength: 3,
+            });
+            filterQuestionnaireResponses = fuse
+                .search(searchTerm)
+                .map((result) => result.item);
+        } else {
+            filterQuestionnaireResponses = questionnaireResponses;
+        }
+        return filterQuestionnaireResponses.map((response, index) => {
             const { questionnaireResponse = {} } = response;
             const fullLangText = languageOptions.find(
                 (item) => item.code === questionnaireResponse['languageCode']
@@ -487,6 +502,8 @@ const AdminDashboard = (props) => {
         downloadOrder,
         createdOrder,
         updatedOrder,
+        filterBy,
+        searchTerm,
     ]);
 
     const responsesTable = (
@@ -687,6 +704,27 @@ const AdminDashboard = (props) => {
                     />
                 </section>
                 <section></section>
+                <section className="dashboard-section-title">
+                    <input
+                        placeholder="Search"
+                        className="input-box"
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        type="text"
+                        name="name"
+                    />
+                    <select
+                        className="dropdown-select"
+                        value={filterBy}
+                        onChange={(e) => setFilterBy(e.target.value)}
+                        name="cars"
+                        id="cars"
+                    >
+                        <option value="full_name">Name</option>
+                        <option value="email">Email</option>
+                        <option value="mobile_phone">Phone</option>
+                        <option value="US_zipcode">Zip</option>
+                    </select>
+                </section>
                 <section>
                     <h2 className="dashboard-section-title">Details</h2>
                     {responsesTable}
