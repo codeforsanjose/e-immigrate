@@ -11,11 +11,11 @@ import {
     deleteQuestionnaireResponse,
 } from '../../sendRequest/apis';
 import { getAuthToken } from '../../utilities/auth_utils';
+import { searchArrayObjects } from '../../utilities/search_array';
 import './AdminDashboard.css';
 import { languageOptions, workshopTitle } from '../../data/LanguageOptions';
 import Navbar from '../../compositions/Navbar/Navbar';
 import Button from '../../components/Button/Button';
-import Fuse from 'fuse.js';
 import { ReactComponent as Arrow } from '../../data/images/SortArrow.svg';
 
 const DESCRIPTIVE_TIMESTAMP = 'MM/dd/yyyy, h:mm:ss a';
@@ -38,7 +38,7 @@ const AdminDashboard = (props) => {
     const [loading, setLoading] = useState(true);
     const [createdOrder, setCreatedOrder] = useState(true);
     const [updatedOrder, setUpdatedOrder] = useState(true);
-    const [filterBy, setFilterBy] = useState('');
+    const [filterBy, setFilterBy] = useState('full_name');
     const [searchTerm, setSearchTerm] = useState('');
     useEffect(() => {
         setLoading(true);
@@ -342,18 +342,12 @@ const AdminDashboard = (props) => {
     };
 
     const responsesMarkup = useMemo(() => {
-        let filterQuestionnaireResponses;
-        if (searchTerm) {
-            const fuse = new Fuse(questionnaireResponses, {
-                keys: [`questionnaireResponse.${filterBy}`],
-                minMatchCharLength: 3,
-            });
-            filterQuestionnaireResponses = fuse
-                .search(searchTerm)
-                .map((result) => result.item);
-        } else {
-            filterQuestionnaireResponses = questionnaireResponses;
-        }
+        let filterQuestionnaireResponses = searchArrayObjects(
+            questionnaireResponses,
+            `questionnaireResponse.${filterBy}`,
+            searchTerm,
+            3
+        );
         return filterQuestionnaireResponses.map((response, index) => {
             const { questionnaireResponse = {} } = response;
             const fullLangText = languageOptions.find(
