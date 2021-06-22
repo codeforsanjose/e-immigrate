@@ -126,6 +126,9 @@
     border: solid 1px var(--color-red);
 }
 
+.AdminDashboard .dropdown-select {
+    margin: .5rem;
+}
 .AdminDashboard .dashboard-section-title {
     font-weight: 800;
     margin: 2rem 0 1rem;
