@@ -9,7 +9,7 @@ const LanguageOptions = [
     {
         code: 'es',
         full: 'Español',
-        englishName: 'Espanol',
+        englishName: 'Spanish',
     },
     {
         code: 'vi',
@@ -29,7 +29,7 @@ const LanguageOptions = [
     {
         code: 'yue',
         full: '廣東話',
-        englishName: 'Mandarin',
+        englishName: 'Cantonese',
     },
     {
         code: 'fa',
@@ -49,7 +49,7 @@ const LanguageOptions = [
     {
         code: 'cmn',
         full: '普通话',
-        englishName: 'Cambodian',
+        englishName: 'Mandarin',
     },
     {
         code: 'pt',
