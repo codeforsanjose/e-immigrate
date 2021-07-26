@@ -12,6 +12,8 @@ const SALT_ROUNDS = 10;
 const ERRMSG = { error: { message: 'Not logged in or auth failed' } };
 const EMAIL_REGEX = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
 
+const auth = require('../middleware/auth');
+
 router.route('/').get((req, res) => {
     Admin.find()
         .then((admins) => {
@@ -223,6 +225,83 @@ router.route('/translateContent').post((req, res) => {
             res.status(500).send("Error, Storing Translation in database");
         });
     }
+});
+
+router.use(auth);  //all apis AFTER this line will require authentication as implemented in auth.js
+
+//set one or more admins to be super admins:
+//request body looks like the following:
+//  {"admins":["abcde@gmail.com", "xyz@123.org"]}
+router.route('/super').post((req, res) => {
+    if (!req.body || !req.body.admins) {
+        return res.status(400)
+                    .json('Admin identifiers not found');
+    }
+    Admin.updateMany({email: {'$in': req.body.admins}},
+                        {issuper: true})
+         .exec()
+         .then((result) => {
+            return res.status(200).json('Admins to super status - '+result.n+' selected, '+result.nModified+' updated');
+         }) 
+         .catch((err) => {
+            console.log(req.body, err);
+            return res.status(500).json('Error updating super admin status');
+         });
+});
+
+//link questionnaires to admin identified by email
+const updateLinks = (email, titles, insert=true) => {
+    return Admin.findOne({email: email})
+        .exec()
+        .then((admin) => {
+            if (admin) {
+                if (insert) {
+                    titles.forEach((title) => {
+                        if (!admin.questionnaires.includes(title)) {//don't add duplicates
+                            admin.questionnaires.push(title);
+                        }
+                    });
+                } else {
+                    admin.questionnaires = admin.questionnaires.filter(title => !titles.includes(title));
+                }
+                admin.save()
+                    .then((admin) => {
+                        console.log('Success updating admin and questionnaires links - ', admin.email);
+                    })
+                    .catch((err) => {
+                        console.log('Error updating admin and questionnaires links', err);
+                    });
+            }
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+}
+
+const updateQuestionnairesLinks = (req, res, insert=true) => {
+    if (!req.body || !req.body.links) {
+        return res.status(400)
+            .json('Admins and questionnaires links not found in the request');
+    }
+    const linkPromises = req.body.links.map((link, idx) => {
+        return updateLinks(link.admin, link.questionnaires, insert);
+    });
+    Promise.all(linkPromises).then((links) => {
+        return res.status(200)
+            .json('Admin and questionnaires links are updated');
+    })
+}
+
+//link admin(s) with corresponding questionnaires (by 'title' since it's the unique id)
+//request body looks like the following:
+//  {"links": [{"admin":"abc@gmail.com", "questionnaires":["CIIT_Workshop_Spring_2021"]}]}"
+router.route('/questionnaires/link').post((req, res) => {
+    updateQuestionnairesLinks(req, res, true);
+});
+
+//unlink admin(s) with corresponding questionnaires 
+router.route('/questionnaires/unlink').post((req, res) => {
+    updateQuestionnairesLinks(req, res, false);
 });
 
 router.route('');
