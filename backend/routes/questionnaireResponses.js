@@ -7,6 +7,28 @@ const ObjectID = require('mongodb').ObjectID;
 const emailContents = require('../routes/sendEmail/emailContent.js');
 const senderEmail = process.env.SENDER_EMAIL;
 
+//TODO: revisit access control
+router.route('/add').post((req, res) => {
+    const title = req.body.title;
+    const language = req.body.language;
+    const questionnaireResponse = req.body.questionnaireResponse;
+    const newQuestionnaireResponse = new QuestionnaireResponse({
+        title,
+        language,
+        questionnaireResponse,
+    });
+
+    newQuestionnaireResponse
+        .save()
+        .then(() => {
+            res.json('QuestionnaireResponse response added');
+        })
+        .catch((err) => console.log(err));
+});
+
+const auth = require('../middleware/auth');
+router.use(auth);  //all apis AFTER this line will require authentication as implemented in auth.js
+
 const getAllResponses = () => {
     return QuestionnaireResponse.find({
         $or: [
@@ -23,9 +45,6 @@ const getResponsesForAdmin = (admin) => {
             { deleted: false }
     ]});
 };
-
-const auth = require('../middleware/auth');
-router.use(auth);  //all apis AFTER this line will require authentication as implemented in auth.js
 
 router.route('/').get((req, res) => {
     const getResponses = req.user.issuper ? getAllResponses(): getResponsesForAdmin(req.user);
@@ -216,25 +235,6 @@ router.route('/assign-flag').post((req, res) => {
 router.route('/:id').get((req, res) => {
     QuestionnaireResponse.findById(req.params.id)
         .then((questionnaireResponse) => res.json(questionnaireResponse))
-        .catch((err) => console.log(err));
-});
-
-//TODO: move to before router.use(auth)?
-router.route('/add').post((req, res) => {
-    const title = req.body.title;
-    const language = req.body.language;
-    const questionnaireResponse = req.body.questionnaireResponse;
-    const newQuestionnaireResponse = new QuestionnaireResponse({
-        title,
-        language,
-        questionnaireResponse,
-    });
-
-    newQuestionnaireResponse
-        .save()
-        .then(() => {
-            res.json('QuestionnaireResponse response added');
-        })
         .catch((err) => console.log(err));
 });
 
