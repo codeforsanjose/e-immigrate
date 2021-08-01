@@ -6,29 +6,68 @@ const sendMassEmails = require('./sendEmail/sendEmail');
 const ObjectID = require('mongodb').ObjectID;
 const emailContents = require('../routes/sendEmail/emailContent.js');
 const senderEmail = process.env.SENDER_EMAIL;
+
+//TODO: revisit access control
+router.route('/add').post((req, res) => {
+    const title = req.body.title;
+    const language = req.body.language;
+    const questionnaireResponse = req.body.questionnaireResponse;
+    const newQuestionnaireResponse = new QuestionnaireResponse({
+        title,
+        language,
+        questionnaireResponse,
+    });
+
+    newQuestionnaireResponse
+        .save()
+        .then(() => {
+            res.json('QuestionnaireResponse response added');
+        })
+        .catch((err) => console.log(err));
+});
+
+const auth = require('../middleware/auth');
+router.use(auth);  //all apis AFTER this line will require authentication as implemented in auth.js
+
 const getAllResponses = () => {
     return QuestionnaireResponse.find({
         $or: [
             { deleted: { $exists: false} },
             { deleted: false }  
-        ]});
-    };
+    ]});
+};
+
+const getResponsesForAdmin = (admin) => {
+    return QuestionnaireResponse.find({
+        title: { $in: admin.questionnaires }, 
+        $or: [
+            { deleted: { $exists: false} },
+            { deleted: false }
+    ]});
+};
+
 router.route('/').get((req, res) => {
-    getAllResponses()
-        .then((allResponses) => {
-            const responsesInfo = { responses: allResponses };
-            res.json(responsesInfo);
-        })
-        .catch((err) => console.log(err));
+    const getResponses = req.user.issuper ? getAllResponses(): getResponsesForAdmin(req.user);
+    
+    getResponses
+    .then((qResponses) => {
+        const responsesInfo = { responses: qResponses };
+        res.json(responsesInfo);
+    })
+    .catch((err) => console.log(err))
 });
+
 // source https://stackoverflow.com/questions/46155/how-to-validate-an-email-address-in-javascript
 function validateEmail(email) {
     const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(String(email).toLowerCase());
 }
+
 router.route('/email').post((req, res) => {
-    getAllResponses().then((allResponses) => {
-        const responsesToEmail = allResponses.filter((item) => !item.emailSent);
+    const getResponses = req.user.issuper ? getAllResponses(): getResponsesForAdmin(req.user);
+
+    getResponses.then((qResponses) => {
+        const responsesToEmail = qResponses.filter((item) => !item.emailSent);
         const totalEmailsToSend = responsesToEmail.length;
         const messsagesToSend = responsesToEmail
             .filter((response) => {
@@ -196,24 +235,6 @@ router.route('/assign-flag').post((req, res) => {
 router.route('/:id').get((req, res) => {
     QuestionnaireResponse.findById(req.params.id)
         .then((questionnaireResponse) => res.json(questionnaireResponse))
-        .catch((err) => console.log(err));
-});
-
-router.route('/add').post((req, res) => {
-    const title = req.body.title;
-    const language = req.body.language;
-    const questionnaireResponse = req.body.questionnaireResponse;
-    const newQuestionnaireResponse = new QuestionnaireResponse({
-        title,
-        language,
-        questionnaireResponse,
-    });
-
-    newQuestionnaireResponse
-        .save()
-        .then(() => {
-            res.json('QuestionnaireResponse response added');
-        })
         .catch((err) => console.log(err));
 });
 
