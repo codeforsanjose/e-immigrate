@@ -183,8 +183,7 @@ function enforceAdminOnly(req, res, isAdminCallBack) {
 }
 //route for uploading the questionnaires spreadsheet in the database
 router.route('/questionnairefile').post((req, res) => {
-    // enforceAdminOnly(req, res, processQuestionnaireAsAdmin);
-    processQuestionnaireAsAdmin();
+    enforceAdminOnly(req, res, processQuestionnaireAsAdmin);
     function processQuestionnaireAsAdmin() {
         console.log(req.files, req.body);
         if (!req.files || !req.files.questionnaire) {
@@ -215,8 +214,7 @@ router.route('/questionnairefile').post((req, res) => {
 });
 //route for deleteing a questionnaire by title
 router.route('/deletequestionnaire/:title').delete((req, res) => {
-    // enforceAdminOnly(req, res, deleteQuestionnaireByTitle);
-    deleteQuestionnaireByTitle();
+    enforceAdminOnly(req, res, deleteQuestionnaireByTitle);
     function deleteQuestionnaireByTitle() {
         return Questionnaires.deleteMany({
             title: decodeURIComponent(req.params.title),

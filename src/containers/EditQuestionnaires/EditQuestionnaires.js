@@ -11,7 +11,7 @@ import Navbar from '../../compositions/Navbar/Navbar';
 import Button from '../../components/Button/Button';
 import LanguageDropdown from '../../components/LanguageDropdown/LanguageDropdown';
 import './EditQuestionnaires.css';
-import { workshopTitle } from '../../data/LanguageOptions';
+
 const EditQuestionnaires = () => {
     const [chooseFile, toggleChooseFile] = useState(false);
     const [questionnaireStatus, setQuestionnaireStatus] = useState(false);
@@ -49,11 +49,11 @@ const EditQuestionnaires = () => {
             ),
             method: 'DELETE',
         };
-        // const jwt = getAuthToken();
-        // const headers = {
-        //     Authorization: `Bearer ${jwt}`,
-        // };
-        sendRequest(requestObj)
+        const jwt = getAuthToken();
+        const headers = {
+            Authorization: `Bearer ${jwt}`,
+        };
+        sendRequest(requestObj, headers)
             .then((response) => {
                 setRefetch(true);
             })
@@ -122,8 +122,7 @@ const EditQuestionnaires = () => {
             qustionnaireFile,
             qustionnaireFile.name
         );
-        //change from hardcoded
-        formData.append('title', 'CIIT_Workshop_Spring_2021');
+        formData.append('title', workshopTitle);
         const jwt = getAuthToken();
         const headers = {
             Authorization: `Bearer ${jwt}`,
@@ -158,7 +157,6 @@ const EditQuestionnaires = () => {
         changeLanguage('en');
     };
     const switchViews = () => {
-        console.log('Sdfs');
         toggleLanguageDropDown(false);
         setListOfQuestions([]);
     };
@@ -166,17 +164,26 @@ const EditQuestionnaires = () => {
     return (
         <section>
             <Navbar content={content} dashboard={true} />
-            <Navbar />
             <section>
                 {chooseFile ? (
-                    <input
-                        required
-                        type="file"
-                        accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                        onChange={(e) =>
-                            uploadNewQuestionnaire(e.target.files[0])
-                        }
-                    />
+                    <form>
+                        <label>WorkshopTitle</label>
+                        <input
+                            onChange={(e) => setWorkshopTitle(e.target.value)}
+                            required
+                            type="text"
+                        ></input>
+                        <br></br>
+                        <input
+                            disabled={!workshopTitle}
+                            required
+                            type="file"
+                            accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                            onChange={(e) =>
+                                uploadNewQuestionnaire(e.target.files[0])
+                            }
+                        />
+                    </form>
                 ) : (
                     <Button
                         label="Upload New Questionnaire"
