@@ -13,7 +13,7 @@ router.route('/').get((req, res) => {
 
 router.route('/:title.:language').get((req, res) => {
     Questionnaires.findOne({
-        title: req.params.title,
+        title: decodeURIComponent(req.params.title),
         language: req.params.language,
     })
         .then((questionnaires) => {
