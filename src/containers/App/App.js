@@ -3,7 +3,9 @@ import MainContainer from '../MainContainer/MainContainer';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Admin from '../../compositions/Admin/Admin.js';
 import AdminDashboard from '../../containers/AdminDashboard/AdminDashboard';
+import EditQuestionnaires from '../../containers/EditQuestionnaires/EditQuestionnaires';
 import './App.css';
+import { uploadQuestinnaires } from '../../sendRequest/apis';
 
 function App() {
     return (
@@ -15,6 +17,9 @@ function App() {
                     </Route>
                     <Route path="/login">
                         <Admin />
+                    </Route>
+                    <Route path="/questionnaires">
+                        <EditQuestionnaires />
                     </Route>
                     <Route path="/">
                         <MainContainer />

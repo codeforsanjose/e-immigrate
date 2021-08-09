@@ -4,9 +4,13 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 const Admin = require('../models/admin');
+const Questionnaires = require('../models/questionnaires');
 const mongoose = require('mongoose');
 
-const { loadQuestionnaireXlsxIntoDB, loadTranslationXlsxIntoDB } = require('./excelToDb');
+const {
+    loadQuestionnaireXlsxIntoDB,
+    loadTranslationXlsxIntoDB,
+} = require('./excelToDb');
 
 const SALT_ROUNDS = 10;
 const ERRMSG = { error: { message: 'Not logged in or auth failed' } };
@@ -151,57 +155,90 @@ router.route('/:id').delete((req, res) => {
 
 /**
  * verify that the http request comes from a admin user
- * detect the user from the body containing the JWT token 
+ * detect the user from the body containing the JWT token
  * respond the request with an error if the token is missing or the user identified
  * in token is not an admin user
  * call the isAdminCallBack function if the user is an admin
-**/
+ **/
 function enforceAdminOnly(req, res, isAdminCallBack) {
-
     //verify the request has a jwtToken beloning to an Admin User
     if (!req.body || !req.body.jwToken) {
         return res
             .status(401)
-            .json({ error: { message: 'Missing JWT Token' } })
+            .json({ error: { message: 'Missing JWT Token' } });
     }
     jwt.verify(req.body.jwToken, process.env.JWT_KEY, function (err, token) {
         if (err) {
             return res
                 .status(401)
-                .json({ error: { message: 'Invalid JWT Token' } })
+                .json({ error: { message: 'Invalid JWT Token' } });
         }
-        Admin.findOne({ email: token.email })
-            .exec((error, admin) => {
-                if (error || !admin) {
-                    return res
-                        .status(401)
-                        .json({ error: { message: 'Invalid Admin User' } })
-                }
-                isAdminCallBack();
-            });
+        Admin.findOne({ email: token.email }).exec((error, admin) => {
+            if (error || !admin) {
+                return res
+                    .status(401)
+                    .json({ error: { message: 'Invalid Admin User' } });
+            }
+            isAdminCallBack();
+        });
     });
-
 }
 //route for uploading the questionnaires spreadsheet in the database
 router.route('/questionnairefile').post((req, res) => {
     enforceAdminOnly(req, res, processQuestionnaireAsAdmin);
     function processQuestionnaireAsAdmin() {
+        console.log(req.files, req.body);
         if (!req.files || !req.files.questionnaire) {
             return res
                 .status(400)
                 .json({ error: { message: 'Missing Questionnaire File' } });
         }
         if (req.files.questionnaire.truncated) {
-            return res
-                .status(400)
-                .json({ error: { message: 'Questionnaire File is too large' } });
+            return res.status(400).json({
+                error: { message: 'Questionnaire File is too large' },
+            });
         }
         const excelFileContent = req.files.questionnaire.data;
-        return loadQuestionnaireXlsxIntoDB(excelFileContent).then(() => {
-            res.status(200).send("Questionnaire Documenent Recieved");
-        }).catch((err) => {
-            res.status(500).send("Error, Storing Questionnaire in database");
-        });
+        const title = req.body.title;
+        return loadQuestionnaireXlsxIntoDB(excelFileContent, title)
+            .then(() => {
+                res.status(200).json({
+                    message: 'Questionnaire Documenent Recieved',
+                });
+            })
+            .catch((err) => {
+                console.log(err);
+                res.status(500).json({
+                    message: 'Error, Storing Questionnaire in database',
+                });
+            });
+    }
+});
+//route for deleteing a questionnaire by title
+router.route('/deletequestionnaire/:title').delete((req, res) => {
+    enforceAdminOnly(req, res, deleteQuestionnaireByTitle);
+    function deleteQuestionnaireByTitle() {
+        return Questionnaires.deleteMany({
+            title: decodeURIComponent(req.params.title),
+        })
+            .then((results) => {
+                if (!results.ok) {
+                    console.log('Delete Failed');
+                    res.status(500).json({ message: 'Delete Failed' });
+                    return;
+                }
+                if (result.deletedCount === 0) {
+                    res.status(404).json({ message: 'Title not found' });
+                    return;
+                }
+
+                res.status(200).json({ message: 'Questionnaire Removed' });
+            })
+            .catch((err) => {
+                res.status(500).json({
+                    message: 'Error, Deleting Questionnaires from database',
+                });
+            });
     }
 });
 //route for uploading the translation spreadsheet in the database
@@ -219,11 +256,13 @@ router.route('/translateContent').post((req, res) => {
                 .json({ error: { message: 'Translation File is too large' } });
         }
         const excelFileContent = req.files.translations.data;
-        return loadTranslationXlsxIntoDB(excelFileContent).then(() => {
-            res.status(200).send("Translation Document Recieved");
-        }).catch((err) => {
-            res.status(500).send("Error, Storing Translation in database");
-        });
+        return loadTranslationXlsxIntoDB(excelFileContent)
+            .then(() => {
+                res.status(200).send('Translation Document Recieved');
+            })
+            .catch((err) => {
+                res.status(500).send('Error, Storing Translation in database');
+            });
     }
 });
 

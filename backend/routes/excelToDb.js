@@ -9,11 +9,11 @@ const { LanguageOptions, WorkshopTitle } = require('../LanguageOptions');
 
 /**
  * load questionnaire excel file into objects in the Questionnaires collection
- * excelFileContent - Node Buffer containing the excel file, this assumes must be formmated 
+ * excelFileContent - Node Buffer containing the excel file, this assumes must be formmated
  *                    with proper sheets for each langauge
  * returns; a promise that resolves when operaiton is done
  * */
-function loadQuestionnaireXlsxIntoDB(excelFileContent) {
+function loadQuestionnaireXlsxIntoDB(excelFileContent, title = WorkshopTitle) {
     const questionnairePromises = LanguageOptions.map((language, idx) => {
         const stream = new Readable();
         stream.push(excelFileContent);
@@ -25,14 +25,24 @@ function loadQuestionnaireXlsxIntoDB(excelFileContent) {
             rows.forEach((row, id) => {
                 if (id === 0) {
                     let errorMessage = '';
-                    const validHeaders = ["#(id)", "Slug", "Category", "Text", "QuestionType", "AnswerSelections", "AnswerSelectionsValues", "Required?", "FollowUpQuestionSlug", "ParentQuestionSlug"];
+                    const validHeaders = [
+                        '#(id)',
+                        'Slug',
+                        'Category',
+                        'Text',
+                        'QuestionType',
+                        'AnswerSelections',
+                        'AnswerSelectionsValues',
+                        'Required?',
+                        'FollowUpQuestionSlug',
+                        'ParentQuestionSlug',
+                    ];
                     if (row.length !== validHeaders.length) {
-                        errorMessage = "invalid column name row";
-                    }
-                    else {
+                        errorMessage = 'invalid column name row';
+                    } else {
                         for (let i = 0; i < validHeaders.length; i++) {
                             if (row[i] !== validHeaders[i]) {
-                                errorMessage = "invalid column name: " + row[i];
+                                errorMessage = 'invalid column name: ' + row[i];
                             }
                         }
                     }
@@ -40,7 +50,6 @@ function loadQuestionnaireXlsxIntoDB(excelFileContent) {
                         throw new Error(errorMessage);
                     }
                     return;
-
                 }
 
                 data.push({
@@ -60,27 +69,33 @@ function loadQuestionnaireXlsxIntoDB(excelFileContent) {
         });
     });
     return Promise.all(questionnairePromises).then((questionnaires) => {
-        const title = WorkshopTitle;
         const insertPromises = LanguageOptions.map((language, idx) => {
             const questions = questionnaires[idx];
-
             const insertNewQuestionnaire = () => {
-                return Questionnaires.insertMany({ title, language: language.code, questions })
+                return Questionnaires.insertMany({
+                    title,
+                    language: language.code,
+                    questions,
+                });
             };
 
             const removeExistingQuestionnaires = (_id) => {
-                return Questionnaires.findByIdAndDelete({ _id })
+                return Questionnaires.findByIdAndDelete({ _id });
             };
 
-            return Questionnaires.find({ title, language: language.code }).then((result) => {
-                if (result.length !== 0) {
-                    return removeExistingQuestionnaires(result[0]._id).then(() => {
+            return Questionnaires.find({ title, language: language.code }).then(
+                (result) => {
+                    if (result.length !== 0) {
+                        return removeExistingQuestionnaires(result[0]._id).then(
+                            () => {
+                                return insertNewQuestionnaire();
+                            }
+                        );
+                    } else {
                         return insertNewQuestionnaire();
-                    });
-                } else {
-                    return insertNewQuestionnaire();
+                    }
                 }
-            });
+            );
         });
         return Promise.all(insertPromises);
     });
@@ -88,7 +103,7 @@ function loadQuestionnaireXlsxIntoDB(excelFileContent) {
 
 /**
  * load translation excel file into objects in the TranslatedContent collection
- * excelFileContent - Node Buffer containing the excel file, this assumes must be formmated 
+ * excelFileContent - Node Buffer containing the excel file, this assumes must be formmated
  *                    with proper translation sheet format
  * returns; a promise that resolves when operaiton is done
  * */
@@ -96,47 +111,56 @@ function loadTranslationXlsxIntoDB(excelFileContent) {
     const stream = new Readable();
     stream.push(excelFileContent);
     stream.push(null);
-    return xlsxFile(stream).then((rows) => {
+    return xlsxFile(stream)
+        .then((rows) => {
+            const data = rows.reduce((obj, row) => {
+                for (let i = 1; i < row.length; i++) {
+                    const languageObject = obj[LanguageOptions[i - 1].code];
 
-        const data = rows.reduce((obj, row) => {
-            for (let i = 1; i < row.length; i++) {
-                const languageObject = obj[LanguageOptions[i - 1].code];
-
-                if (languageObject) {
-                    languageObject[row[0]] = row[i];
-                } else {
-                    obj[LanguageOptions[i - 1].code] = {
-                        [row[0]]: row[i],
-                    };
+                    if (languageObject) {
+                        languageObject[row[0]] = row[i];
+                    } else {
+                        obj[LanguageOptions[i - 1].code] = {
+                            [row[0]]: row[i],
+                        };
+                    }
                 }
-            }
-            return obj;
-        }, {});
-        return data;
-    }).then((translations) => {
-        const title = WorkshopTitle;
-        const insertPromises = LanguageOptions.map((language) => {
-            const content = translations[language.code];
-            const insertNewTranslatedContent = () => {
-                return TranslatedContent.insertMany({ title, language: language.code, content })
-            };
+                return obj;
+            }, {});
+            return data;
+        })
+        .then((translations) => {
+            const title = WorkshopTitle;
+            const insertPromises = LanguageOptions.map((language) => {
+                const content = translations[language.code];
+                const insertNewTranslatedContent = () => {
+                    return TranslatedContent.insertMany({
+                        title,
+                        language: language.code,
+                        content,
+                    });
+                };
 
-            const removeExistingTranslatedContent = (_id) => {
-                return TranslatedContent.findByIdAndDelete({ _id })
-            };
+                const removeExistingTranslatedContent = (_id) => {
+                    return TranslatedContent.findByIdAndDelete({ _id });
+                };
 
-            return TranslatedContent.find({ title, language: language.code }).then((result) => {
-                if (result.length !== 0) {
-                    return removeExistingTranslatedContent(result[0]._id).then(() => {
+                return TranslatedContent.find({
+                    title,
+                    language: language.code,
+                }).then((result) => {
+                    if (result.length !== 0) {
+                        return removeExistingTranslatedContent(
+                            result[0]._id
+                        ).then(() => {
+                            return insertNewTranslatedContent();
+                        });
+                    } else {
                         return insertNewTranslatedContent();
-                    })
-                }
-                else {
-                    return insertNewTranslatedContent();
-                }
+                    }
+                });
             });
+            return Promise.all(insertPromises);
         });
-      return  Promise.all(insertPromises);
-    });
 }
 module.exports = { loadQuestionnaireXlsxIntoDB, loadTranslationXlsxIntoDB };
