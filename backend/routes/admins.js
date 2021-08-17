@@ -69,7 +69,19 @@ router.route('/').post((req, res) => {
                             admin
                                 .save()
                                 .then((result) => {
-                                    console.log(result);
+                                    console.log(
+                                        'newly created admin user: ',
+                                        result
+                                    );
+                                    let jwToken = jwt.sign(
+                                        { email: email },
+                                        process.env.JWT_KEY
+                                    );
+                                    return res.status(201).json({
+                                        name: name,
+                                        email: email,
+                                        jwt: jwToken,
+                                    });
                                 })
                                 .catch((err) => {
                                     if (err) {
@@ -81,16 +93,6 @@ router.route('/').post((req, res) => {
                                         });
                                     }
                                 });
-
-                            let jwToken = jwt.sign(
-                                { email: email },
-                                process.env.JWT_KEY
-                            );
-                            return res.status(201).json({
-                                name: name,
-                                email: email,
-                                jwt: jwToken,
-                            });
                         }
                     });
                 }
@@ -266,70 +268,88 @@ router.route('/translateContent').post((req, res) => {
     }
 });
 
-router.use(auth);  //all apis AFTER this line will require authentication as implemented in auth.js
+router.use(auth); //all apis AFTER this line will require authentication as implemented in auth.js
 
 //set one or more admins to be super admins:
 //request body looks like the following:
 //  {"admins":["abcde@gmail.com", "xyz@123.org"]}
 router.route('/super').post((req, res) => {
     if (!req.body || !req.body.admins) {
-        return res.status(400)
-                    .json('Admin identifiers not found');
+        return res.status(400).json('Admin identifiers not found');
     }
-    Admin.updateMany({email: {'$in': req.body.admins}},
-                        {issuper: true})
-         .exec()
-         .then((result) => {
-            return res.status(200).json('Admins to super status - '+result.n+' selected, '+result.nModified+' updated');
-         }) 
-         .catch((err) => {
+    Admin.updateMany({ email: { $in: req.body.admins } }, { issuper: true })
+        .exec()
+        .then((result) => {
+            return res
+                .status(200)
+                .json(
+                    'Admins to super status - ' +
+                        result.n +
+                        ' selected, ' +
+                        result.nModified +
+                        ' updated'
+                );
+        })
+        .catch((err) => {
             console.log(req.body, err);
             return res.status(500).json('Error updating super admin status');
-         });
+        });
 });
 
 //link questionnaires to admin identified by email
-const updateLinks = (email, titles, insert=true) => {
-    return Admin.findOne({email: email})
+const updateLinks = (email, titles, insert = true) => {
+    return Admin.findOne({ email: email })
         .exec()
         .then((admin) => {
             if (admin) {
                 if (insert) {
                     titles.forEach((title) => {
-                        if (!admin.questionnaires.includes(title)) {//don't add duplicates
+                        if (!admin.questionnaires.includes(title)) {
+                            //don't add duplicates
                             admin.questionnaires.push(title);
                         }
                     });
                 } else {
-                    admin.questionnaires = admin.questionnaires.filter(title => !titles.includes(title));
+                    admin.questionnaires = admin.questionnaires.filter(
+                        (title) => !titles.includes(title)
+                    );
                 }
-                admin.save()
+                admin
+                    .save()
                     .then((admin) => {
-                        console.log('Success updating admin and questionnaires links - ', admin.email);
+                        console.log(
+                            'Success updating admin and questionnaires links - ',
+                            admin.email
+                        );
                     })
                     .catch((err) => {
-                        console.log('Error updating admin and questionnaires links', err);
+                        console.log(
+                            'Error updating admin and questionnaires links',
+                            err
+                        );
                     });
             }
         })
         .catch((err) => {
             console.log(err);
         });
-}
+};
 
-const updateQuestionnairesLinks = (req, res, insert=true) => {
+const updateQuestionnairesLinks = (req, res, insert = true) => {
     if (!req.body || !req.body.links) {
-        return res.status(400)
+        return res
+            .status(400)
             .json('Admins and questionnaires links not found in the request');
     }
     const linkPromises = req.body.links.map((link, idx) => {
         return updateLinks(link.admin, link.questionnaires, insert);
     });
     Promise.all(linkPromises).then((links) => {
-        return res.status(200)
+        return res
+            .status(200)
             .json('Admin and questionnaires links are updated');
-    })
-}
+    });
+};
 
 //link admin(s) with corresponding questionnaires (by 'title' since it's the unique id)
 //request body looks like the following:
@@ -338,7 +358,7 @@ router.route('/questionnaires/link').post((req, res) => {
     updateQuestionnairesLinks(req, res, true);
 });
 
-//unlink admin(s) with corresponding questionnaires 
+//unlink admin(s) with corresponding questionnaires
 router.route('/questionnaires/unlink').post((req, res) => {
     updateQuestionnairesLinks(req, res, false);
 });
