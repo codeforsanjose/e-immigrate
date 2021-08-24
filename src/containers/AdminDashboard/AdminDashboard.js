@@ -399,14 +399,16 @@ const AdminDashboard = (props) => {
             ];
             const allAnswers = Object.keys(questionnaireResponse).reduce(
                 (accumulator, questionKey, index) => {
-                    const flagIt = !questionKeysThatAreNotRedFlagsButInARedFlagQuestionnaire.includes(
-                        questionKey
-                    )
-                        ? questionnaireResponse[questionKey].toUpperCase() ===
-                          'YES'
-                            ? 'red-outline'
-                            : 'green-outline'
-                        : 'green-outline';
+                    const flagIt =
+                        !questionKeysThatAreNotRedFlagsButInARedFlagQuestionnaire.includes(
+                            questionKey
+                        )
+                            ? questionnaireResponse[
+                                  questionKey
+                              ].toUpperCase() === 'YES'
+                                ? 'red-outline'
+                                : 'green-outline'
+                            : 'green-outline';
                     const answerMarkup = !alreadyQuestionKeyMarkupedUp.includes(
                         questionKey
                     ) ? (

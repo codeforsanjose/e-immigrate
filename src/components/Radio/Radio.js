@@ -2,14 +2,8 @@ import React from 'react';
 import './Radio.css';
 
 const Radio = ({ attributes }) => {
-    const {
-        q,
-        answers,
-        values,
-        bindField,
-        collectAnswer,
-        content,
-    } = attributes;
+    const { q, answers, values, bindField, collectAnswer, content } =
+        attributes;
     return (
         <div className="RadioGroup">
             {answers &&

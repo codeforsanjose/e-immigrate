@@ -2,14 +2,8 @@ import React from 'react';
 import './Checkbox.css';
 
 const Checkbox = ({ attributes }) => {
-    const {
-        q,
-        answers,
-        values,
-        bindField,
-        collectAnswer,
-        content,
-    } = attributes;
+    const { q, answers, values, bindField, collectAnswer, content } =
+        attributes;
     return (
         <div>
             {answers &&
