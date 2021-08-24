@@ -2,14 +2,8 @@ import React, { useEffect } from 'react';
 import './Select.css';
 
 const Select = ({ attributes }) => {
-    const {
-        q,
-        selectAnswers,
-        bindField,
-        collectAnswer,
-        content,
-        values,
-    } = attributes;
+    const { q, selectAnswers, bindField, collectAnswer, content, values } =
+        attributes;
     useEffect(() => {
         collectAnswer(q.slug, selectAnswers[0]);
     }, []);
