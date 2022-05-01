@@ -27,44 +27,45 @@ router.route('/add').post((req, res) => {
 });
 
 const auth = require('../middleware/auth');
-router.use(auth);  //all apis AFTER this line will require authentication as implemented in auth.js
+router.use(auth); //all apis AFTER this line will require authentication as implemented in auth.js
 
 const getAllResponses = () => {
     return QuestionnaireResponse.find({
-        $or: [
-            { deleted: { $exists: false} },
-            { deleted: false }  
-    ]});
+        $or: [{ deleted: { $exists: false } }, { deleted: false }],
+    });
 };
 
 const getResponsesForAdmin = (admin) => {
     return QuestionnaireResponse.find({
-        title: { $in: admin.questionnaires }, 
-        $or: [
-            { deleted: { $exists: false} },
-            { deleted: false }
-    ]});
+        title: { $in: admin.questionnaires },
+        $or: [{ deleted: { $exists: false } }, { deleted: false }],
+    });
 };
 
 router.route('/').get((req, res) => {
-    const getResponses = req.user.issuper ? getAllResponses(): getResponsesForAdmin(req.user);
-    
+    const getResponses = req.user.issuper
+        ? getAllResponses()
+        : getResponsesForAdmin(req.user);
+
     getResponses
-    .then((qResponses) => {
-        const responsesInfo = { responses: qResponses };
-        res.json(responsesInfo);
-    })
-    .catch((err) => console.log(err))
+        .then((qResponses) => {
+            const responsesInfo = { responses: qResponses };
+            res.json(responsesInfo);
+        })
+        .catch((err) => console.log(err));
 });
 
 // source https://stackoverflow.com/questions/46155/how-to-validate-an-email-address-in-javascript
 function validateEmail(email) {
-    const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    const re =
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(String(email).toLowerCase());
 }
 
 router.route('/email').post((req, res) => {
-    const getResponses = req.user.issuper ? getAllResponses(): getResponsesForAdmin(req.user);
+    const getResponses = req.user.issuper
+        ? getAllResponses()
+        : getResponsesForAdmin(req.user);
 
     getResponses.then((qResponses) => {
         const responsesToEmail = qResponses.filter((item) => !item.emailSent);
@@ -246,16 +247,23 @@ router.route('/:id').delete((req, res) => {
 
 router.route('/delete/:id').put((req, res) => {
     QuestionnaireResponse.findByIdAndUpdate(
-        req.params.id, 
-        { deleted: true }, 
+        req.params.id,
+        { deleted: true },
         function (err, questionnaireResponse) {
             if (err) {
                 console.log(err);
             } else {
-                console.log('questionnaire response ' + questionnaireResponse._id + ' soft-deleted');
-                res.status(202).json({ msg: 'questionnaire response deleted softly' });
+                console.log(
+                    'questionnaire response ' +
+                        questionnaireResponse._id +
+                        ' soft-deleted'
+                );
+                res.status(202).json({
+                    msg: 'questionnaire response deleted softly',
+                });
             }
-        });
+        }
+    );
 });
 
 router.route('');

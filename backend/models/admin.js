@@ -14,15 +14,16 @@ const adminSchema = new Schema({
         type: String,
         required: true,
     },
-    password: { 
-        type: String, 
-        required: true 
+    password: {
+        type: String,
+        required: true,
     },
-    issuper: { 
-        type: Boolean, 
-        required: false, 
+    issuper: {
+        type: Boolean,
+        required: false,
     },
-    questionnaires: {   //list of questionnaires.title
+    questionnaires: {
+        //list of questionnaires.title
         type: [String],
         required: false,
     },

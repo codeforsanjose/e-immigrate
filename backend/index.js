@@ -17,7 +17,7 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
-app.use(fileUpload( { limits: { fileSize: MAX_EXCEL_FILE_SIZE},}));
+app.use(fileUpload({ limits: { fileSize: MAX_EXCEL_FILE_SIZE } }));
 
 const uri = process.env.MONGO_URI;
 console.log('connecting to', uri);

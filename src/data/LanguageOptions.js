@@ -52,11 +52,6 @@ export const languageOptions = [
         englishName: 'Mandarin',
     },
     {
-        code: 'pt',
-        full: 'Português',
-        englishName: 'Portuguese',
-    },
-    {
         code: 'pa',
         full: 'ਪੰਜਾਬੀ',
         englishName: 'Punjabi',
@@ -72,8 +67,8 @@ export const languageOptions = [
         englishName: 'Tagalog',
     },
     {
-        code: 'ti',
-        full: 'ትግርኛ',
-        englishName: 'Tigrinya',
+        code: 'ps',
+        full: 'پښتو',
+        englishName: 'Pashto',
     },
 ];

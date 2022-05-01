@@ -24,9 +24,6 @@ const LandingPage = ({ content }) => {
                         <p>{content.homeText2}</p>
                         <p>{content.homeText3}</p>
                         <h2>
-                            {
-                                'This event is now closed. Thank you for your interest in Citizenship Day 2021. If you would like to check for other events in your area please check'
-                            }
                             <a href="www.e-immigrate.info" target="_blank">
                                 www.e-immigrate.info
                             </a>

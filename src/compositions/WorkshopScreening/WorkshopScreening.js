@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import useMarkFieldAsTouched from '../../compositions/Questionnaire/hooks/useMarkFieldAsTouched';
 import LogicBranches from './LogicBranches';
 import Modal from './Modal/Modal';
+import moment from 'moment-timezone';
 
 import './WorkshopScreening.css';
 
@@ -12,15 +13,27 @@ const WorkshopScreening = ({
     setQuestionnaireResponse,
     collectAnswer,
 }) => {
+    const { screeningDate, screeningDateMarried } = content;
+
     const [question1, setQuestion1] = useState('');
     const [question2, setQuestion2] = useState('');
     const [question3, setQuestion3] = useState('');
     const [showModal, setShowModal] = useState(false);
-    const [date, setDate] = useState();
-
+    const dateToUse =
+        question1.toLocaleLowerCase() === 'yes'
+            ? screeningDate
+            : screeningDateMarried;
+    //console.log('dateToUse to use----->', dateToUse);
+    const [date, setDate] = useState(dateToUse);
+    console.log('date to use----->', date, date.split('-'));
+    const formattedDate = new Date(date);
     const filteredQuestions = questions.filter(
         (q) => q.category === 'Workshop Eligibility'
     );
+
+    // console.log('what is question 1', question1);
+    // console.log('what is question 2', question2);
+    console.log('date to use', formattedDate);
     const [bindField] = useMarkFieldAsTouched();
     return (
         <div className="WorkshopScreening">
@@ -38,7 +51,7 @@ const WorkshopScreening = ({
                 setQuestion3={setQuestion3}
                 showModal={showModal}
                 setShowModal={setShowModal}
-                date={date}
+                date={formattedDate}
                 setDate={setDate}
                 collectAnswer={collectAnswer}
             />
