@@ -57,7 +57,8 @@
         ]
     },
     "devDependencies": {
-        "eslint-plugin-prettier": "^3.1.4"
+        "eslint-plugin-prettier": "^3.1.4",
+        "nodemon": "^2.0.12"
     },
     "proxy": "http://localhost:5000"
 }
