@@ -23,17 +23,13 @@ const WorkshopScreening = ({
         question1.toLocaleLowerCase() === 'yes'
             ? screeningDate
             : screeningDateMarried;
-    //console.log('dateToUse to use----->', dateToUse);
+
     const [date, setDate] = useState(dateToUse);
-    console.log('date to use----->', date, date.split('-'));
     const formattedDate = new Date(date);
     const filteredQuestions = questions.filter(
         (q) => q.category === 'Workshop Eligibility'
     );
 
-    // console.log('what is question 1', question1);
-    // console.log('what is question 2', question2);
-    console.log('date to use', formattedDate);
     const [bindField] = useMarkFieldAsTouched();
     return (
         <div className="WorkshopScreening">

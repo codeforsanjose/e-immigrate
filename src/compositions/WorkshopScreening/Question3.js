@@ -162,7 +162,6 @@ const Question3 = ({
             <div className="DatePicker">
                 <div className="QuestionText">{q.text}</div>
                 {simpleCalendarContainer}
-                {bulmaCssCalendar}
             </div>
         );
     } else {
