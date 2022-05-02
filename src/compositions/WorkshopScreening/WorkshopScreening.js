@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import useMarkFieldAsTouched from '../../compositions/Questionnaire/hooks/useMarkFieldAsTouched';
 import LogicBranches from './LogicBranches';
 import Modal from './Modal/Modal';
-import moment from 'moment-timezone';
 
 import './WorkshopScreening.css';
 
