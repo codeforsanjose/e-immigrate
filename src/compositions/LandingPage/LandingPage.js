@@ -29,8 +29,8 @@ const LandingPage = ({ content }) => {
                             </a>
                         </h2>
                     </div>
-                    {/* <Button onClick={goToStep1} label={'Start'} /> */}
-                    <Button label={'Coming Soon...'} />
+                    <Button onClick={goToStep1} label={'Start'} />
+                    {/* <Button label={'Coming Soon...'} /> */}
                 </div>
                 <img src={image} alt="CIIT Logo" width="100%" height="auto" />
             </div>
