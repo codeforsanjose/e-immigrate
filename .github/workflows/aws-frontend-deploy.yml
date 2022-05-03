@@ -3,9 +3,10 @@ on:
   workflow_dispatch:
     inputs:
       env:
-        description: 'AWS Env'     
-        required: true
-        default: 'dev'
+        type: choice
+        description: AWS Environment
+        options:
+          - prod
       ref:
         description: 'Branch, Tag, or SHA'
         required: true
