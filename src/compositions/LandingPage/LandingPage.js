@@ -24,7 +24,10 @@ const LandingPage = ({ content }) => {
                         <p>{content.homeText2}</p>
                         <p>{content.homeText3}</p>
                         <h2>
-                            <a href="www.e-immigrate.info" target="_blank">
+                            <a
+                                href="https://www.e-immigrate.info"
+                                target="_blank"
+                            >
                                 www.e-immigrate.info
                             </a>
                         </h2>
