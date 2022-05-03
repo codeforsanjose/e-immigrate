@@ -1,4 +1,4 @@
-FROM node:alpine as builder
+FROM node:15.3.0-buster-slim as builder
 
 WORKDIR /srv
 
