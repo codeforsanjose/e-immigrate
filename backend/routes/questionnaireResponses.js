@@ -43,10 +43,11 @@ const getResponsesForAdmin = (admin) => {
 };
 
 router.route('/').get((req, res) => {
-    const getResponses = req.user.issuper
-        ? getAllResponses()
-        : getResponsesForAdmin(req.user);
+    // const getResponses = req.user.issuper
+    //     ? getAllResponses()
+    //     : getResponsesForAdmin(req.user);
 
+    const getResponses = getAllResponses();
     getResponses
         .then((qResponses) => {
             const responsesInfo = { responses: qResponses };
