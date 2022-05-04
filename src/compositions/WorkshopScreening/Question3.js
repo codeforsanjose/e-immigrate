@@ -73,13 +73,8 @@ const Question3 = ({
     if (q) {
         const onClick = (e) => {
             e.preventDefault();
-            const selectedDate = `${month}/${day}/${year}`;
-            const selectedDateObject = new Date(selectedDate);
-            const isValidDateForWorkship =
-                date.getTime() > selectedDateObject.getTime();
-
-            if (date && isValidDateForWorkship) {
-                collectAnswer(q.slug, selectedDate);
+            if (date) {
+                collectAnswer(q.slug, date);
                 setShowModal(true);
             }
         };

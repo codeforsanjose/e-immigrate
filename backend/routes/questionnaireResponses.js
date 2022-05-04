@@ -50,7 +50,10 @@ router.route('/').get((req, res) => {
     const getResponses = getAllResponses();
     getResponses
         .then((qResponses) => {
-            const responsesInfo = { responses: qResponses };
+            const updatedResponses = qResponses.filter((item) => {
+                return !item.title.toLowerCase().includes('spring_2021');
+            });
+            const responsesInfo = { responses: updatedResponses };
             res.json(responsesInfo);
         })
         .catch((err) => console.log(err));
