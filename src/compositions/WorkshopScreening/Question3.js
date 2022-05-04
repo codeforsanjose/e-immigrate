@@ -49,7 +49,6 @@ const Question3 = ({
             type: 'date',
             showHeader: false,
             showFooter: false,
-            dateFormat: 'mm/dd/yyyy',
         });
 
         // Loop on each calendar initialized
@@ -66,7 +65,8 @@ const Question3 = ({
         if (element) {
             // bulmaCalendar instance is available as element.bulmaCalendar
             element.bulmaCalendar.on('select', (datepicker) => {
-                setDate(new Date(datepicker.data.value()));
+                const selectedDate = new Date(datepicker.data.value());
+                setDate(selectedDate);
             });
         }
     }, []);
@@ -75,7 +75,6 @@ const Question3 = ({
             e.preventDefault();
             const selectedDate = `${month}/${day}/${year}`;
             const selectedDateObject = new Date(selectedDate);
-
             const isValidDateForWorkship =
                 date.getTime() > selectedDateObject.getTime();
 
