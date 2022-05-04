@@ -1,4 +1,4 @@
-const WorkshopTitle = 'CIIT_Workshop_Spring_2021';
+const WorkshopTitle = 'CIIT_Workshop_Spring_2022';
 
 const LanguageOptions = [
     {
@@ -52,6 +52,16 @@ const LanguageOptions = [
         englishName: 'Mandarin',
     },
     {
+        code: 'ps',
+        full: 'پښتو',
+        englishName: 'Pashto',
+    },
+    {
+        code: 'pt',
+        full: 'Português',
+        englishName: 'Portuguese',
+    },
+    {
         code: 'pa',
         full: 'ਪੰਜਾਬੀ',
         englishName: 'Punjabi',
@@ -65,11 +75,6 @@ const LanguageOptions = [
         code: 'tl',
         full: 'Wikang Tagalog',
         englishName: 'Tagalog',
-    },
-    {
-        code: 'ps',
-        full: 'پښتو',
-        englishName: 'Pashto',
     },
 ];
 
