@@ -67,10 +67,10 @@ function validateEmail(email) {
 }
 
 router.route('/email').post((req, res) => {
-    const getResponses = req.user.issuper
-        ? getAllResponses()
-        : getResponsesForAdmin(req.user);
-
+    // const getResponses = req.user.issuper
+    //     ? getAllResponses()
+    //     : getResponsesForAdmin(req.user);
+    const getResponses = getAllResponses();
     getResponses.then((qResponses) => {
         const responsesToEmail = qResponses.filter((item) => !item.emailSent);
         const totalEmailsToSend = responsesToEmail.length;

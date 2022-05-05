@@ -1,6 +1,7 @@
 const xlsxFile = require('read-excel-file/node');
 const fetch = require('node-fetch');
 const { LanguageOptions, WorkshopTitle } = require('./LanguageOptions');
+const { workshopTitle } = require('../src/data/LanguageOptions');
 
 const DEFAULT_HEADERS = {
     'Content-Type': 'application/json',

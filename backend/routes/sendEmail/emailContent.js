@@ -1,17 +1,20 @@
 const emailContents = {
     en: {
-        red: `Thank you for completing all questions for the upcoming Citizenship Day 2021 event. Unfortunately, your case appears too complex and we will give priority to those who have qualified. Your phone information will be given to our staff and they will contact you by phone first. Our staff will attempt to contact you two times. You may receive a call in the first half of June 2021. We expect many applicants, so it may take as long as one week before you receive a call.
-If you do not wish to wait, please visit <a href="https://www.e-immigrate.info/partners/santa-clara-county-immigration-legal-services-referral-list/">SANTA CLARA COUNTY IMMIGRATION LEGAL SERVICES LIST</a>, select an agency and contact them to make an appointment - the services you choose may not be free and are not part of Citizenship Day 2021event.
-Due to limited space and COVID-19, we cannot guarantee that you will receive services.
+        red: `Thank you for completing all questions for the upcoming Citizenship Day 2022 event. Unfortunately, your case appears too complex and we will give priority to those who have qualified. Your phone information will be given to our staff and they will contact you by phone first. Our staff will attempt to contact you two times. You may receive a call in the first half of June 2022. We expect many applicants, so it may take one week or more before you receive a call
+If you do not wish to wait, please visit <a href="https://www.e-immigrate.info/partners/santa-clara-county-immigration-legal-services-referral-list/">SANTA CLARA COUNTY IMMIGRATION LEGAL SERVICES LIST</a>, select an agency and contact them to make an appointment - the services you choose may not be free and are not part of Citizenship Day 2022 event.
+Due to limited space, we cannot guarantee that you will receive services.
 Thank you for your cooperation, patience, and understanding.
 Sincerely, 
 PROJECT NEW CITIZEN
 `,
-        green: `Thank you for completing all questions for the upcoming Citizenship Day 2021 event. Congratulations, you have qualified to participate! There is no physical address for this event. We will contact you by phone first. Our staff will attempt to contact you two times. Our staff will give you instructions on what you need to do. We will begin calling all qualified candidates starting Monday, May 17th. We expect many applicants, so it may take as long as one week before you receive a call. 
-        Due to limited space and COVID-19, we cannot guarantee that you will receive services.<br /><br />Thank you for your cooperation, patience, and understanding. <br /><br />Sincerely, PROJECT NEW CITIZEN`,
+        green: `Thank you for completing all questions for the upcoming Citizenship Day 2022 event. Congratulations, you have qualified to participate! There is no physical address for this event. We will contact you by phone first. Our staff will attempt to contact you two times. Our staff will give you instructions on what you need to do. We will begin calling all qualified candidates starting Monday, May 16th. We expect many applicants, so it may take one week or more before you receive a call.
+        Due to limited space  we cannot guarantee that you will receive services.<br /><br />Thank you for your cooperation, patience, and understanding. <br /><br />Sincerely, PROJECT NEW CITIZEN`,
     },
     es: {
-        red: `Gracias por completar todas las preguntas para el Día de la Ciudadanía del 2021. Desafortunadamente, su caso parece demasiado complejo y le daremos prioridad a los que calificaron. Desafortunadamente, su caso parece demasiado complejo y no podemos ayudarlo a completar su solicitud. (If you decide to  go with my last suggestion, here is the version in Spanish.)  Su información será compartida con nuestro personal y ellos intentarán comunicarse por teléfono con usted dos veces. Es posible que reciba una llamada durante las primeras dos semanas de junio del 2021. Esperamos muchos solicitantes, por lo que puede tomar hasta una semana antes de recibir una llamada. Si no desea esperar, visite la http://bit.ly/SCCreferralSPANISH, seleccione una agencia y comuníquese con ellos para programar una cita; es posible que los servicios que elija tengan algún costo y no forman parte del evento, Día de la Ciudadanía del 2021.<br /><br />Debido al espacio limitado y al COVID-19, no podemos garantizar que recibirá los servicios.
+        red: `Gracias por completar todas las preguntas para el Día de la Ciudadanía del 2022. Desafortunadamente, su caso parece demasiado complejo y le daremos prioridad a los que calificaron. Su información será compartida con nuestro personal y ellos intentarán comunicarse por teléfono con usted dos veces.
+<br /><br />Es posible que reciba una llamada durante las primeras dos semanas de junio del 2022. Esperamos muchos solicitantes, por lo que puede tomar hasta una semana antes de recibir una llamada.
+<br /><br />Si no desea esperar, visite, <a href="http://bit.ly/SCCreferralSPANISH" >http://bit.ly/SCCreferralSPANISH</a>, seleccione una agencia y comuníquese con ellos para programar una cita; es posible que los servicios que elija tengan algún costo y no forman parte del evento, Día de la Ciudadanía del 2022.
+<br /><br />Debido al espacio limitado y al COVID-19, no podemos garantizar que recibirá los servicios.
 <br /><br />
 Gracias por su cooperación, paciencia y comprensión.
 <br /><br />
@@ -19,25 +22,29 @@ Atentamente,
 <br /><br />
 PROYECTO NUEVO CIUDADANO
 `,
-        green: `Gracias por completar todas las preguntas para el evento, Día de la Ciudadanía del 2021. ¡Felicitaciones, has calificado para participar! No hay una dirección física para este evento. Primero, nos comunicaremos con usted por teléfono. Nuestro personal intentará comunicarse con usted dos veces. Nuestro personal le dará instrucciones sobre lo que debe hacer. Comenzaremos a llamar a todos los candidatos calificados a partir del lunes 17 de mayo. Esperamos muchos solicitantes, por lo que puede tomar hasta una semana antes de recibir una llamada.<br /><br />Debido al espacio limitado y al COVID-19, no podemos garantizar que recibirá servicios.
+        green: `Gracias por completar todas las preguntas para el evento, Día de la Ciudadanía del 2022. ¡Felicitaciones, has calificado para participar! No hay una dirección física para este evento. Primero, nos comunicaremos con usted por teléfono. Nuestro personal intentará comunicarse con usted dos veces. Nuestro personal le dará instrucciones sobre lo que debe hacer. Comenzaremos a llamar a todos los candidatos calificados a partir del lunes 16 de mayo. Esperamos muchos solicitantes, por lo que puede tomar hasta una semana antes de recibir una llamada.
+        <br /><br />Debido al espacio limitado, no podemos garantizar que recibirá servicios.
 <br /><br />Gracias por su cooperación, paciencia y comprensión.<br /><br />Atentamente,<br /><br />PROYECTO NUEVO CIUDADANO
 `,
     },
     vi: {
-        red: `Cảm ơn bạn đã hoàn thành tất cả các câu hỏi cho Ngày nhập tịch 2021 sắp tới. Rất tiếc, trường hợp của bạn có vẻ quá phức tạp và chúng tôi sẽ ưu tiên những người đủ điều kiện. Thông tin điện thoại của bạn sẽ được cung cấp cho nhân viên của chúng tôi và họ sẽ liên hệ với bạn qua điện thoại trước. Nhân viên của chúng tôi sẽ cố gắng liên hệ với bạn hai lần. Bạn có thể nhận được cuộc gọi vào nửa đầu tháng 6 năm 2021. Sẽ có nhiều người nộp đơn, vì vậy có thể mất một tuần trước khi bạn nhận được cuộc gọi.
-
-Nếu bạn không muốn đợi, vui lòng truy cập <a href="http://bit.ly/SCCreferralVIETNAMESE">http://bit.ly/SCCreferralVIETNAMESE"></a>, chọn một cơ quan và liên hệ với họ để đặt lịch hẹn - các dịch vụ bạn chọn có thể không miễn phí và không nằm trong Ngày Nhập tịch năm 2021.
+        red: `Không đủ điều kiện cho các dịch vụ<br /><br />
+        Cảm ơn bạn đã hoàn thành tất cả các câu hỏi cho Ngày nhập tịch 2022 sắp tới. Rất tiếc, trường hợp của bạn có vẻ quá phức tạp và chúng tôi sẽ ưu tiên những người đủ điều kiện. Thông tin điện thoại của bạn sẽ được cung cấp cho nhân viên của chúng tôi và họ sẽ liên hệ với bạn qua điện thoại trước. Nhân viên của chúng tôi sẽ cố gắng liên hệ với bạn hai lần. Bạn có thể nhận được cuộc gọi vào nửa đầu tháng 6 năm 2022. Sẽ có nhiều người nộp đơn, vì vậy có thể mất một tuần trước khi bạn nhận được cuộc gọi.
 <br /><br />
-Do vì chỗ có giới hạn và COVID-19, chúng tôi không thể đảm bảo rằng bạn sẽ nhận được dịch vụ.
+Nếu bạn không muốn đợi, vui lòng truy cập <a href="http://bit.ly/SCCreferralVIETNAMESE" >http://bit.ly/SCCreferralVIETNAMESE</a>, chọn một cơ quan và liên hệ với họ để đặt lịch hẹn - các dịch vụ bạn chọn có thể không miễn phí và không nằm trong Ngày Nhập tịch năm 2022.
+
+<br /><br />
+Do vì chỗ có giới hạn, chúng tôi không thể đảm bảo rằng bạn sẽ nhận được dịch vụ.
 <br /><br />
 Cảm ơn bạn đã hợp tác, kiên nhẫn và thông cảm.
 <br /><br />
 Thân mến,
 Project New Citizen
 `,
-        green: `Cảm ơn bạn đã hoàn thành tất cả các câu hỏi cho Ngày nhập tịch 2021 sắp tới. Xin chúc mừng, bạn đã đủ điều kiện để tham gia! Không có địa chỉ để bạn đến cho ngày nhập tịch này. Chúng tôi sẽ liên hệ với bạn qua điện thoại trước. Nhân viên của chúng tôi sẽ cố gắng liên hệ với bạn hai lần. Nhân viên của chúng tôi sẽ hướng dẫn bạn những việc bạn cần làm. Chúng tôi sẽ bắt đầu gọi tất cả các ứng viên đủ điều kiện bắt đầu từ Thứ Hai, ngày 17 tháng Năm. Sẽ có nhiều người nộp đơn, vì vậy có thể mất một tuần trước khi bạn nhận được cuộc gọi.
+        green: `Đủ điều kiện cho các dịch vụ<br /><br />
+        Cảm ơn bạn đã hoàn thành tất cả các câu hỏi cho Ngày nhập tịch 2022 sắp tới. Xin chúc mừng, bạn đã đủ điều kiện để tham gia! Không có địa chỉ để bạn đến cho ngày nhập tịch này. Chúng tôi sẽ liên hệ với bạn qua điện thoại trước. Nhân viên của chúng tôi sẽ cố gắng liên hệ với bạn hai lần. Nhân viên của chúng tôi sẽ hướng dẫn bạn những việc bạn cần làm. Chúng tôi sẽ bắt đầu gọi tất cả các ứng viên đủ điều kiện bắt đầu từ Thứ Hai, ngày 16 tháng Năm. Sẽ có nhiều người nộp đơn, vì vậy có thể mất một tuần trước khi bạn nhận được cuộc gọi.
 <br /><br />
-Do vì chỗ có giới hạn và COVID-19, chúng tôi không thể đảm bảo rằng bạn sẽ nhận được dịch vụ.
+Do vì chỗ có giới hạn, chúng tôi không thể đảm bảo rằng bạn sẽ nhận được dịch vụ.
 <br /><br />
 Cảm ơn bạn đã hợp tác, kiên nhẫn và thông cảm.
 <br /><br />
@@ -46,7 +53,7 @@ Project New Citizen
 `,
     },
     // Mandarin
-    zho: {
+    cmn: {
         red: `谢谢您回答有关即将举行的2021年公民日活动的问卷里所有的问题。不好意思，您的个案看来太复杂。我们会优先处理那些符合资格的人士。您的电话号码会交给我们的员工，他们将会先打电话和您联系。我们的员工会尝试两次和您联络。您可能在2021年6月上半月收到电话。我们期待会有很多申请人，所以您有可能需时一周才能收到我们的电话。
 
 如果您不想等待，请浏览 <a href="http://bit.ly/SCCreferralMANDARIN">http://bit.ly/SCCreferralMANDARIN</a>，选择一个机构，与他们联络并预约 -- 您选择的服务未必是免费的，并且也不是2021年公民日的活动范围。
