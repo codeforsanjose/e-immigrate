@@ -17,6 +17,26 @@ const LanguageOptions = [
         englishName: 'Vietnamese',
     },
     {
+        code: 'tl',
+        full: 'Wikang Tagalog',
+        englishName: 'Tagalog',
+    },
+    {
+        code: 'cmn',
+        full: '普通话',
+        englishName: 'Mandarin',
+    },
+    {
+        code: 'yue',
+        full: '廣東話',
+        englishName: 'Cantonese',
+    },
+    {
+        code: 'ru',
+        full: 'русский',
+        englishName: 'Russian',
+    },
+    {
         code: 'am',
         full: 'አማርኛ',
         englishName: 'Amharic',
@@ -26,11 +46,7 @@ const LanguageOptions = [
         full: 'العربية',
         englishName: 'Arabic',
     },
-    {
-        code: 'yue',
-        full: '廣東話',
-        englishName: 'Cantonese',
-    },
+
     {
         code: 'fa',
         full: 'فارسی',
@@ -46,11 +62,7 @@ const LanguageOptions = [
         full: '한국어',
         englishName: 'Korean',
     },
-    {
-        code: 'cmn',
-        full: '普通话',
-        englishName: 'Mandarin',
-    },
+
     {
         code: 'ps',
         full: 'پښتو',
@@ -60,16 +72,6 @@ const LanguageOptions = [
         code: 'pa',
         full: 'ਪੰਜਾਬੀ',
         englishName: 'Punjabi',
-    },
-    {
-        code: 'ru',
-        full: 'русский',
-        englishName: 'Russian',
-    },
-    {
-        code: 'tl',
-        full: 'Wikang Tagalog',
-        englishName: 'Tagalog',
     },
 ];
 
