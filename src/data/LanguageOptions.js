@@ -57,11 +57,6 @@ const languageOptions = [
         englishName: 'Pashto',
     },
     {
-        code: 'pt',
-        full: 'Português',
-        englishName: 'Portuguese',
-    },
-    {
         code: 'pa',
         full: 'ਪੰਜਾਬੀ',
         englishName: 'Punjabi',
