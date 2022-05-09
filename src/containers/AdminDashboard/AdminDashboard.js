@@ -53,6 +53,7 @@ const AdminDashboard = (props) => {
                 Authorization: `Bearer ${jwt}`,
             };
             sendRequest(requestObj, headers).then((response) => {
+                console.log('the ful response', response);
                 const { responses = [] } = response;
                 const updatedResponses = responses
                     .map((item) => {
@@ -60,11 +61,15 @@ const AdminDashboard = (props) => {
                         const newFlag = item.flagOverride
                             ? item.flag
                             : Object.entries(questionnaireResponse).reduce(
-                                  (acc, [key, value]) => {
+                                  (acc, stuff) => {
+                                      console.log('STUFFFF', stuff);
+                                      const [key, value] = stuff;
+                                      console.log('we are here', key, value);
                                       return !questionKeysThatAreNotRedFlagsButInARedFlagQuestionnaire.includes(
                                           key
                                       )
-                                          ? value.toUpperCase() === 'YES'
+                                          ? value &&
+                                            value.toUpperCase() === 'YES'
                                               ? true
                                               : acc
                                           : acc;
@@ -399,16 +404,15 @@ const AdminDashboard = (props) => {
             ];
             const allAnswers = Object.keys(questionnaireResponse).reduce(
                 (accumulator, questionKey, index) => {
-                    const flagIt =
-                        !questionKeysThatAreNotRedFlagsButInARedFlagQuestionnaire.includes(
-                            questionKey
-                        )
-                            ? questionnaireResponse[
-                                  questionKey
-                              ].toUpperCase() === 'YES'
-                                ? 'red-outline'
-                                : 'green-outline'
-                            : 'green-outline';
+                    const flagIt = !questionKeysThatAreNotRedFlagsButInARedFlagQuestionnaire.includes(
+                        questionKey
+                    )
+                        ? questionnaireResponse[questionKey] &&
+                          questionnaireResponse[questionKey].toUpperCase() ===
+                              'YES'
+                            ? 'red-outline'
+                            : 'green-outline'
+                        : 'green-outline';
                     const answerMarkup = !alreadyQuestionKeyMarkupedUp.includes(
                         questionKey
                     ) ? (
