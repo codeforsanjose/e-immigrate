@@ -73,6 +73,11 @@ const LanguageOptions = [
         full: 'ਪੰਜਾਬੀ',
         englishName: 'Punjabi',
     },
+    {
+        code: 'pt',
+        full: 'português',
+        englishName: 'Portuguese',
+    },
 ];
 
 module.exports = { LanguageOptions, WorkshopTitle };
