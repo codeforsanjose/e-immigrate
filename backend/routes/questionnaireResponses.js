@@ -236,6 +236,21 @@ router.route('/assign-flag').post((req, res) => {
     }
     res.json({ msg: 'success' });
 });
+router.route('/assign-email').post((req, res) => {
+    const responseToEmailReset = req.body.responsesToUpdate;
+    for (const response of responseToEmailReset) {
+        QuestionnaireResponse.updateOne(
+            { _id: ObjectID(response._id) },
+            { ...response, emailSent: false },
+            (err, raw) => {
+                if (err) {
+                    console.log('updated email to false err is', err);
+                }
+            }
+        );
+    }
+    res.json({ msg: 'success' });
+});
 
 router.route('/:id').get((req, res) => {
     QuestionnaireResponse.findById(req.params.id)

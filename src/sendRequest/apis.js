@@ -9,6 +9,7 @@ module.exports = {
     emailQuestionnaireResponse: '/api/questionnaire-responses/email',
     agencyAssignURL: '/api/questionnaire-responses/assign-agency',
     assignResponseFlag: '/api/questionnaire-responses/assign-flag',
+    assignEmail: '/api/questionnaire-responses/assign-email',
     getUserById: '/api/users/:id',
     addUser: '/api/users/add',
     updateUser: '/api/users/update/:id',

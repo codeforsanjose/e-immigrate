@@ -8,6 +8,7 @@ import {
     getQuestions,
     agencyAssignURL,
     assignResponseFlag,
+    assignEmail,
     deleteQuestionnaireResponse,
 } from '../../sendRequest/apis';
 import { getAuthToken } from '../../utilities/auth_utils';
@@ -53,7 +54,6 @@ const AdminDashboard = (props) => {
                 Authorization: `Bearer ${jwt}`,
             };
             sendRequest(requestObj, headers).then((response) => {
-                console.log('the ful response', response);
                 const { responses = [] } = response;
                 const updatedResponses = responses
                     .map((item) => {
@@ -62,9 +62,7 @@ const AdminDashboard = (props) => {
                             ? item.flag
                             : Object.entries(questionnaireResponse).reduce(
                                   (acc, stuff) => {
-                                      console.log('STUFFFF', stuff);
                                       const [key, value] = stuff;
-                                      console.log('we are here', key, value);
                                       return !questionKeysThatAreNotRedFlagsButInARedFlagQuestionnaire.includes(
                                           key
                                       )
@@ -109,6 +107,36 @@ const AdminDashboard = (props) => {
         );
         const requestObj = {
             url: assignResponseFlag,
+            method: 'POST',
+            body: JSON.stringify({
+                responsesToUpdate: [responseToUpdate],
+            }),
+        };
+        const jwt = getAuthToken();
+        const headers = {
+            Authorization: `Bearer ${jwt}`,
+        };
+        sendRequest(requestObj, headers).then((response) => {
+            setQuestionnaireResponses(updatedResponses);
+        });
+    };
+    const resetEmail = (index) => {
+        const updatedResponses = questionnaireResponses.map(
+            (item, responseIndex) => {
+                return {
+                    ...item,
+                    emailSent: responseIndex === index ? false : item.emailSent,
+                };
+            }
+        );
+        const responseToUpdate = updatedResponses.reduce(
+            (accumulator, item, responseIndex) => {
+                return responseIndex === index ? item : accumulator;
+            },
+            {}
+        );
+        const requestObj = {
+            url: assignEmail,
             method: 'POST',
             body: JSON.stringify({
                 responsesToUpdate: [responseToUpdate],
@@ -476,6 +504,9 @@ const AdminDashboard = (props) => {
                     </td>
                     <td>
                         <span>{response.emailSent ? 'Yes' : 'No'}</span>
+                        <button onClick={(e) => resetEmail(index)}>
+                            RESET
+                        </button>
                     </td>
                     <td>
                         <span>
