@@ -22,7 +22,7 @@
         "fuse.js": "^6.4.6",
         "jsonwebtoken": "^8.5.1",
         "mongodb": "^3.5.9",
-        "mongoose": "^5.9.20",
+        "mongoose": "^5.13.15",
         "node-fetch": "^2.6.1",
         "prettier": "^2.2.1",
         "react": "^16.13.1",
