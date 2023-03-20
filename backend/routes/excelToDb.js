@@ -1,5 +1,5 @@
 /**
- * this module exports interfaces for taking in excel spreadesheets and loaidng into objects in the database
+ * this module exports interfaces for taking in excel spreadesheets and loading into objects in the database
  * */
 const Questionnaires = require('../models/questionnaires');
 const TranslatedContent = require('../models/translatedContent');

@@ -3,7 +3,7 @@ const express = require('express');
 const router = express.Router();
 const QuestionnaireResponse = require('../models/questionnaireResponse');
 const sendMassEmails = require('./sendEmail/sendEmail');
-const ObjectID = require('mongodb').ObjectID;
+const { ObjectId } = require('mongodb');
 const emailContents = require('../routes/sendEmail/emailContent.js');
 const senderEmail = process.env.SENDER_EMAIL;
 
@@ -179,7 +179,7 @@ const updateUserResponsesEmailFlag = (responsesToEmail, res) => {
         };
         try {
             QuestionnaireResponse.updateOne(
-                { _id: ObjectID(response._id) },
+                { _id: ObjectId(response._id) },
                 tempUpdatedSuccessEmail,
                 (err, raw) => {
                     emailsSentCurrent = emailsSentCurrent + 1;
@@ -210,7 +210,7 @@ router.route('/assign-agency').post((req, res) => {
     const responseToAssignAgency = req.body.responsesToEmail;
     for (const response of responseToAssignAgency) {
         QuestionnaireResponse.updateOne(
-            { _id: ObjectID(response._id) },
+            { _id: ObjectId(response._id) },
             response,
             (err, raw) => {
                 if (err) {
@@ -225,7 +225,7 @@ router.route('/assign-flag').post((req, res) => {
     const responseToAssignFlag = req.body.responsesToUpdate;
     for (const response of responseToAssignFlag) {
         QuestionnaireResponse.updateOne(
-            { _id: ObjectID(response._id) },
+            { _id: ObjectId(response._id) },
             response,
             (err, raw) => {
                 if (err) {
@@ -240,7 +240,7 @@ router.route('/assign-email').post((req, res) => {
     const responseToEmailReset = req.body.responsesToUpdate;
     for (const response of responseToEmailReset) {
         QuestionnaireResponse.updateOne(
-            { _id: ObjectID(response._id) },
+            { _id: ObjectId(response._id) },
             { ...response, emailSent: false },
             (err, raw) => {
                 if (err) {

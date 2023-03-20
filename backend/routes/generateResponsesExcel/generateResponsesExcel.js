@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const QuestionnaireResponse = require('../../models/questionnaireResponse');
-const ObjectID = require('mongodb').ObjectID;
+const { ObjectId } = require('mongodb');
 const xl = require('excel4node');
 const fs = require('fs');
 const langOptions = require('../../LanguageOptions');
@@ -113,7 +113,7 @@ const updateResponseDownloadStatus = (questionnaireResponses = []) => {
             responseDownloadedToExcel: true,
         };
         QuestionnaireResponse.updateOne(
-            { _id: ObjectID(response._id) },
+            { _id: ObjectId(response._id) },
             tempUpdatedResponse,
             (err, raw) => {
                 if (err) {
