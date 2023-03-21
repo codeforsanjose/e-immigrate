@@ -27,7 +27,7 @@
                 }
             ]
         }
-      ],
-      "family": "e-immigrate-client-dev-td",
-      "networkMode": "bridge"
+    ],
+    "family": "e-immigrate-client-dev-td",
+    "networkMode": "bridge"
 }
