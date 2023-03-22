@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const QuestionnaireResponse = require('../../models/questionnaireResponse');
-const { ObjectId } = require('mongodb');
+const { ObjectId } = require('mongoose').Types;
 const xl = require('excel4node');
 const fs = require('fs');
 const langOptions = require('../../LanguageOptions');

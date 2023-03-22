@@ -3,7 +3,7 @@ const express = require('express');
 const router = express.Router();
 const QuestionnaireResponse = require('../models/questionnaireResponse');
 const sendMassEmails = require('./sendEmail/sendEmail');
-const { ObjectId } = require('mongodb');
+const { ObjectId } = require('mongoose').Types;
 const emailContents = require('../routes/sendEmail/emailContent.js');
 const senderEmail = process.env.SENDER_EMAIL;
 
