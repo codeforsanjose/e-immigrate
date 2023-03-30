@@ -53,11 +53,9 @@ touch .env
 In the `.env` file add the following:
 
 ```bash
-MONGO_URI = mongodb://127.0.0.1/test
+MONGO_URI = mongodb://localhost/test
 JWT_KEY = <secret key>
 ```
-
-[Do not use localhost](https://github.com/Automattic/mongoose/issues/12134)
 
 _Note:_ The `secret key` can be a "string, buffer, or object containing either the secret for HMAC algorithms or the PEM encoded private key for RSA and ECDSA".
 For more information on jwt, visit [JWT Documentation](https://www.npmjs.com/package/jsonwebtoken).
