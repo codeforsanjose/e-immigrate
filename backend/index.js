@@ -21,11 +21,7 @@ app.use(fileUpload({ limits: { fileSize: MAX_EXCEL_FILE_SIZE } }));
 
 const uri = process.env.MONGO_URI;
 console.log('connecting to', uri);
-mongoose.connect(uri, {
-    useNewUrlParser: true,
-    useCreateIndex: true,
-    useUnifiedTopology: true,
-});
+mongoose.connect(uri);
 const connection = mongoose.connection;
 connection.on('error', console.error.bind(console, 'connection error:'));
 connection.once('open', () => {

@@ -1,4 +1,4 @@
-FROM node:15.3.0-buster-slim as builder
+FROM node:18.15.0-buster-slim as builder
 
 WORKDIR /srv
 
