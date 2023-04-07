@@ -1,4 +1,4 @@
-const WorkshopTitle = 'CIIT_Workshop_Spring_2021';
+const WorkshopTitle = 'CIIT_Workshop_Spring_2022';
 
 const LanguageOptions = [
     {
@@ -17,6 +17,26 @@ const LanguageOptions = [
         englishName: 'Vietnamese',
     },
     {
+        code: 'tl',
+        full: 'Wikang Tagalog',
+        englishName: 'Tagalog',
+    },
+    {
+        code: 'cmn',
+        full: '普通话',
+        englishName: 'Mandarin',
+    },
+    {
+        code: 'yue',
+        full: '廣東話',
+        englishName: 'Cantonese',
+    },
+    {
+        code: 'ru',
+        full: 'русский',
+        englishName: 'Russian',
+    },
+    {
         code: 'am',
         full: 'አማርኛ',
         englishName: 'Amharic',
@@ -26,11 +46,7 @@ const LanguageOptions = [
         full: 'العربية',
         englishName: 'Arabic',
     },
-    {
-        code: 'yue',
-        full: '廣東話',
-        englishName: 'Cantonese',
-    },
+
     {
         code: 'fa',
         full: 'فارسی',
@@ -46,15 +62,11 @@ const LanguageOptions = [
         full: '한국어',
         englishName: 'Korean',
     },
+
     {
-        code: 'cmn',
-        full: '普通话',
-        englishName: 'Mandarin',
-    },
-    {
-        code: 'pt',
-        full: 'Português',
-        englishName: 'Portuguese',
+        code: 'ps',
+        full: 'پښتو',
+        englishName: 'Pashto',
     },
     {
         code: 'pa',
@@ -62,19 +74,9 @@ const LanguageOptions = [
         englishName: 'Punjabi',
     },
     {
-        code: 'ru',
-        full: 'русский',
-        englishName: 'Russian',
-    },
-    {
-        code: 'tl',
-        full: 'Wikang Tagalog',
-        englishName: 'Tagalog',
-    },
-    {
-        code: 'ti',
-        full: 'ትግርኛ',
-        englishName: 'Tigrinya',
+        code: 'pt',
+        full: 'português',
+        englishName: 'Portuguese',
     },
 ];
 

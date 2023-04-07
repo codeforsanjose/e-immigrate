@@ -127,7 +127,7 @@
 }
 
 .AdminDashboard .dropdown-select {
-    margin: .5rem;
+    margin: 0.5rem;
 }
 .AdminDashboard .dashboard-section-title {
     font-weight: 800;
@@ -210,12 +210,11 @@
     height: 20px;
     border-radius: 25px;
     margin: auto;
-    background: #FA6900;
+    background: #fa6900;
     color: #fff;
     opacity: 0.3;
-  }
+}
 
-  .AdminDashboard .delete:hover{
+.AdminDashboard .delete:hover {
     opacity: 1;
-  }
-  
+}

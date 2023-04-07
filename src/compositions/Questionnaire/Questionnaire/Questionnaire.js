@@ -47,16 +47,19 @@ const Questionnaire = ({
         zip: Zip,
     };
     const attributes = (q) => {
+        const answers = q.answerSelections
+            ? q.answerSelections.split(',\n ').join(', ')
+            : null;
         return {
             q: q,
             bindField: bindField,
             collectAnswer: collectAnswer,
             content: content,
-            answers: q.answerSelections ? q.answerSelections.split(', ') : null,
+            answers: q.answerSelections ? answers.split(', ') : null,
             selectAnswers: q.answerSelections
-                ? ['--', ...q.answerSelections.split(', ')]
+                ? ['--', ...answers.split(', ')]
                 : null,
-            values: q.answerSelections ? q.answerValues.split(', ') : null,
+            values: q.answerSelections ? answers.split(', ') : null,
             showFollowUp: showFollowUp,
             setShowFollowUp: setShowFollowUp,
             setErrors: setErrors,

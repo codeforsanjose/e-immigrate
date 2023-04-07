@@ -8,6 +8,7 @@ import {
     getQuestions,
     agencyAssignURL,
     assignResponseFlag,
+    assignEmail,
     deleteQuestionnaireResponse,
 } from '../../sendRequest/apis';
 import { getAuthToken } from '../../utilities/auth_utils';
@@ -60,11 +61,13 @@ const AdminDashboard = (props) => {
                         const newFlag = item.flagOverride
                             ? item.flag
                             : Object.entries(questionnaireResponse).reduce(
-                                  (acc, [key, value]) => {
+                                  (acc, stuff) => {
+                                      const [key, value] = stuff;
                                       return !questionKeysThatAreNotRedFlagsButInARedFlagQuestionnaire.includes(
                                           key
                                       )
-                                          ? value.toUpperCase() === 'YES'
+                                          ? value &&
+                                            value.toUpperCase() === 'YES'
                                               ? true
                                               : acc
                                           : acc;
@@ -104,6 +107,36 @@ const AdminDashboard = (props) => {
         );
         const requestObj = {
             url: assignResponseFlag,
+            method: 'POST',
+            body: JSON.stringify({
+                responsesToUpdate: [responseToUpdate],
+            }),
+        };
+        const jwt = getAuthToken();
+        const headers = {
+            Authorization: `Bearer ${jwt}`,
+        };
+        sendRequest(requestObj, headers).then((response) => {
+            setQuestionnaireResponses(updatedResponses);
+        });
+    };
+    const resetEmail = (index) => {
+        const updatedResponses = questionnaireResponses.map(
+            (item, responseIndex) => {
+                return {
+                    ...item,
+                    emailSent: responseIndex === index ? false : item.emailSent,
+                };
+            }
+        );
+        const responseToUpdate = updatedResponses.reduce(
+            (accumulator, item, responseIndex) => {
+                return responseIndex === index ? item : accumulator;
+            },
+            {}
+        );
+        const requestObj = {
+            url: assignEmail,
             method: 'POST',
             body: JSON.stringify({
                 responsesToUpdate: [responseToUpdate],
@@ -403,7 +436,8 @@ const AdminDashboard = (props) => {
                         !questionKeysThatAreNotRedFlagsButInARedFlagQuestionnaire.includes(
                             questionKey
                         )
-                            ? questionnaireResponse[
+                            ? questionnaireResponse[questionKey] &&
+                              questionnaireResponse[
                                   questionKey
                               ].toUpperCase() === 'YES'
                                 ? 'red-outline'
@@ -472,6 +506,9 @@ const AdminDashboard = (props) => {
                     </td>
                     <td>
                         <span>{response.emailSent ? 'Yes' : 'No'}</span>
+                        <button onClick={(e) => resetEmail(index)}>
+                            RESET
+                        </button>
                     </td>
                     <td>
                         <span>

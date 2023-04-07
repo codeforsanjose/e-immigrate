@@ -21,6 +21,9 @@ const Checkbox = ({ attributes }) => {
                             }
                         />
                         <label for={q.slug}>{option}</label>
+                        <span className="RequiredError">
+                            *{content.errorMessage}
+                        </span>
                     </div>
                 ))}
         </div>

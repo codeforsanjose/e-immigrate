@@ -12,15 +12,23 @@ const WorkshopScreening = ({
     setQuestionnaireResponse,
     collectAnswer,
 }) => {
+    const { screeningDate, screeningDateMarried } = content;
+
     const [question1, setQuestion1] = useState('');
     const [question2, setQuestion2] = useState('');
     const [question3, setQuestion3] = useState('');
     const [showModal, setShowModal] = useState(false);
-    const [date, setDate] = useState();
+    const dateToUse =
+        question1.toLocaleLowerCase() === 'yes'
+            ? screeningDate
+            : screeningDateMarried;
 
+    const [date, setDate] = useState(dateToUse);
+    const formattedDate = new Date(date);
     const filteredQuestions = questions.filter(
         (q) => q.category === 'Workshop Eligibility'
     );
+
     const [bindField] = useMarkFieldAsTouched();
     return (
         <div className="WorkshopScreening">
@@ -38,7 +46,7 @@ const WorkshopScreening = ({
                 setQuestion3={setQuestion3}
                 showModal={showModal}
                 setShowModal={setShowModal}
-                date={date}
+                date={formattedDate}
                 setDate={setDate}
                 collectAnswer={collectAnswer}
             />

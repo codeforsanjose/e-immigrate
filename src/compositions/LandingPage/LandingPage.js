@@ -24,15 +24,16 @@ const LandingPage = ({ content }) => {
                         <p>{content.homeText2}</p>
                         <p>{content.homeText3}</p>
                         <h2>
-                            {
-                                'This event is now closed. Thank you for your interest in Citizenship Day 2021. If you would like to check for other events in your area please check'
-                            }
-                            <a href="www.e-immigrate.info" target="_blank">
+                            <a
+                                href="https://www.e-immigrate.info"
+                                target="_blank"
+                            >
                                 www.e-immigrate.info
                             </a>
                         </h2>
                     </div>
-                    <Button onClick={goToStep1} label={'Start'} />
+                    <h3>{content.closedMessage}</h3>
+                    <Button label={'Registration is Closed'} />
                 </div>
                 <img src={image} alt="CIIT Logo" width="100%" height="auto" />
             </div>
