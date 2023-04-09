@@ -26,6 +26,7 @@ const monthsRange = () => {
     }
     return months;
 };
+
 const Question3 = ({
     q,
     bindField,
@@ -38,7 +39,8 @@ const Question3 = ({
     const [day, setDay] = useState(1);
     const [month, setMonth] = useState(1);
     const [year, setYear] = useState(1);
-
+    const marriedDate = new Date(content.screeningDateMarried);
+    const nonMarriedDate = new Date(content.screeningDate);
     useEffect(() => {
         // Initialize all input of date type.
         const maxDate = new Date().toLocaleDateString();
