@@ -163,7 +163,7 @@ const Question3 = ({
                         <select onChange={selectYear}>{yearsOptions}</select>
                     </label>
                 </section>
-                <button onClick={onClick}>Ssubmit</button>
+                <button onClick={onClick}>Submit</button>
             </section>
         );
         return (
