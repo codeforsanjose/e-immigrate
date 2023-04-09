@@ -30,7 +30,7 @@ router.route('/add').post((req, res) => {
     const content = req.body.content;
     res.json('translated content added');
     console.log('language', language);
-    console.log('content', content);
+    //console.log('content', content);
     const insertNewTranslatedContent = () => {
         TranslatedContent.insertMany({ title, language, content })
             .then(() => console.log('translated content inserted'))

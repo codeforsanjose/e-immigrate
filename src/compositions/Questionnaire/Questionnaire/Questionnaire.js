@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import Button from '../../../components/Button/Button';
 import useMarkFieldAsTouched from '../hooks/useMarkFieldAsTouched';
 import QuestionnaireIntro from '../QuestionnaireIntro/QuestionnaireIntro';
@@ -31,6 +32,7 @@ const Questionnaire = ({
     const [introPage, setIntroPage] = useState(true);
     const [showFollowUp, setShowFollowUp] = useState({});
 
+    const history = useHistory();
     const filteredQuestions = questions.filter(
         (q) => q.category === categories[categoryIndex]
     );
@@ -39,10 +41,14 @@ const Questionnaire = ({
         date: Date,
         email: Email,
         phoneNumber: PhoneNumber,
+        phonenumber: PhoneNumber,
         radio: Radio,
         radioWithFollowUp: RadioWithFollowUp,
+        radiowithfollowup: RadioWithFollowUp,
         dropDown: Select,
+        dropdown: Select,
         textArea: TextArea,
+        textarea: TextArea,
         input: TextInput,
         zip: Zip,
     };
@@ -67,7 +73,15 @@ const Questionnaire = ({
     };
 
     const onSubmit = (e) => {
-        submitQuestionnaireResponse(questionnaireResponse);
+        const { legal_resident_date } = questionnaireResponse;
+        if (legal_resident_date && legal_resident_date.valid) {
+            submitQuestionnaireResponse(questionnaireResponse);
+        } else {
+            alert(
+                'Invalid Resident Date Please select a valid date of residence at the start of the workshop.'
+            );
+            history.push('/eligibility');
+        }
     };
     const nextStep = (e) => {
         e.preventDefault();
@@ -107,11 +121,12 @@ const Questionnaire = ({
                 <>
                     <>
                         {filteredQuestions.map((question) => {
+                            const questionType =
+                                question.questionType.toLowerCase();
                             const followUpQuestions = filteredQuestions.filter(
                                 (q) => q.parentQuestionSlug === question.slug
                             );
-                            const FormElement =
-                                formElements[question.questionType];
+                            const FormElement = formElements[questionType];
                             if (question.parentQuestionSlug) {
                                 return null;
                             }

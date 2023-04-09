@@ -32,8 +32,11 @@ const LandingPage = ({ content }) => {
                             </a>
                         </h2>
                     </div>
-                    <h3>{content.closedMessage}</h3>
-                    <Button label={'Registration is Closed'} />
+                    {/* <h3>{content.closedMessage}</h3> */}
+                    <Button
+                        label={content.homeProceedButton}
+                        onClick={goToStep1}
+                    />
                 </div>
                 <img src={image} alt="CIIT Logo" width="100%" height="auto" />
             </div>
