@@ -3,6 +3,8 @@ import Button from '../../components/Button/Button';
 
 import bulmaCalendar from 'bulma-calendar/dist/js/bulma-calendar.min';
 
+import { checkDateEligibility } from '../../utilities/utilityFunctions';
+import { getFromStorage } from '../../utilities/storage_utils';
 // source : https://gist.github.com/silkyfray/d46babf96c792ef99d09e38ed0ca583a
 import 'bulma-calendar/dist/css/bulma-calendar.min.css';
 const yearsRange = () => {
@@ -26,9 +28,15 @@ const monthsRange = () => {
     }
     return months;
 };
+const LOCALSTORE_CONTENT = getFromStorage(
+    `CIIT_Workshop_Spring_2023-content-en`
+);
+const marriedDate = new Date(LOCALSTORE_CONTENT.screeningDateMarried);
+const nonMarriedDate = new Date(LOCALSTORE_CONTENT.screeningDate);
 const Question3 = ({
     q,
     bindField,
+    question2,
     setShowModal,
     date,
     setDate,
@@ -74,7 +82,16 @@ const Question3 = ({
         const onClick = (e) => {
             e.preventDefault();
             if (date) {
-                collectAnswer(q.slug, date);
+                const dateToCheck =
+                    question2.toLowerCase() === 'yes'
+                        ? marriedDate
+                        : nonMarriedDate;
+                const isEligable = checkDateEligibility(date, dateToCheck);
+                const dateObject = {
+                    date,
+                    valid: isEligable,
+                };
+                collectAnswer(q.slug, dateObject);
                 setShowModal(true);
             }
         };
@@ -146,7 +163,7 @@ const Question3 = ({
                         <select onChange={selectYear}>{yearsOptions}</select>
                     </label>
                 </section>
-                <button onClick={onClick}>---></button>
+                <button onClick={onClick}>Submit</button>
             </section>
         );
         return (
