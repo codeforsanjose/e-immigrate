@@ -68,7 +68,7 @@ function loadQuestionnaireXlsxIntoDB(excelFileContent, title = WorkshopTitle) {
             return data;
         });
     });
-    return Promise.all(questionnairePromises).then((questionnaires) => {
+    return Promise.allSettled(questionnairePromises).then((questionnaires) => {
         const insertPromises = LanguageOptions.map((language, idx) => {
             const questions = questionnaires[idx];
             const insertNewQuestionnaire = () => {

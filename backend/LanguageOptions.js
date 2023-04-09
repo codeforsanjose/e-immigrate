@@ -1,4 +1,4 @@
-const WorkshopTitle = 'CIIT_Workshop_Spring_2022';
+const WorkshopTitle = 'CIIT_Workshop_Spring_2023';
 
 const LanguageOptions = [
     {
