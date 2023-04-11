@@ -4,7 +4,7 @@ import Button from '../../components/Button/Button';
 const Question1 = ({ q, bindField, setQuestion1, content, collectAnswer }) => {
     const [question1Answer, setQuestion1Answer] = useState(null);
     if (q) {
-        const answers = q.answerSelections.split(', ');
+        const answers = q.answerSelections.split(/, |，/);
         const values = q.answerValues.split(', ');
         const onClick = (e) => {
             e.preventDefault();
