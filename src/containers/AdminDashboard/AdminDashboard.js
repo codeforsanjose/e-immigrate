@@ -41,6 +41,7 @@ const AdminDashboard = (props) => {
     const [updatedOrder, setUpdatedOrder] = useState(true);
     const [filterBy, setFilterBy] = useState('full_name');
     const [searchTerm, setSearchTerm] = useState('');
+    const [times, setTimes] = useState([]);
     useEffect(() => {
         setLoading(true);
         const jwt = getAuthToken();
@@ -67,7 +68,8 @@ const AdminDashboard = (props) => {
                                           key
                                       )
                                           ? value &&
-                                            value.toUpperCase() === 'YES'
+                                            value.toString().toUpperCase() ===
+                                                'YES'
                                               ? true
                                               : acc
                                           : acc;
@@ -84,6 +86,7 @@ const AdminDashboard = (props) => {
                         return itemA.agency > itemB.agency ? 1 : -1;
                     });
                 setLoading(false);
+                setTimes(updatedResponses.map((_) => null));
                 setQuestionnaireResponses(updatedResponses);
             });
         }
@@ -226,6 +229,44 @@ const AdminDashboard = (props) => {
             </div>
         );
     }, [questionnaireResponses]);
+
+    const TimesSelected = useMemo(() => {
+        return () => (
+            <div className="times-dashboard-card">
+                <h4>Times</h4>
+                <div>
+                    9:00 AM - 10:00 AM
+                    <span className="bold">
+                        {times.filter((time) => time === 9).length}
+                    </span>
+                </div>
+                <div>
+                    10:00 AM - 11:00 AM
+                    <span className="bold">
+                        {times.filter((time) => time === 10).length}
+                    </span>
+                </div>
+                <div>
+                    11:00 AM - 12:00 AM
+                    <span className="bold">
+                        {times.filter((time) => time === 11).length}
+                    </span>
+                </div>
+                <div>
+                    12:00 AM - 1:00 PM
+                    <span className="bold">
+                        {times.filter((time) => time === 12).length}
+                    </span>
+                </div>
+                <div>
+                    1:00 PM - 2:00 PM
+                    <span className="bold">
+                        {times.filter((time) => time === 13).length}
+                    </span>
+                </div>
+            </div>
+        );
+    }, [times]);
 
     const firstOption = (
         <option key="agency-initial" value="">
@@ -437,9 +478,9 @@ const AdminDashboard = (props) => {
                             questionKey
                         )
                             ? questionnaireResponse[questionKey] &&
-                              questionnaireResponse[
-                                  questionKey
-                              ].toUpperCase() === 'YES'
+                              questionnaireResponse[questionKey]
+                                  .toString()
+                                  .toUpperCase() === 'YES'
                                 ? 'red-outline'
                                 : 'green-outline'
                             : 'green-outline';
@@ -453,7 +494,7 @@ const AdminDashboard = (props) => {
                             <b>{index + 1}.</b>
                             <span>
                                 {questionKey}:
-                                {questionnaireResponse[questionKey]}
+                                {questionnaireResponse[questionKey].toString()}
                             </span>
                         </article>
                     ) : null;
@@ -469,6 +510,24 @@ const AdminDashboard = (props) => {
                 policeExplinationMarkupQuestion,
                 ...allAnswers,
             ];
+            const TimeSelect = ({ index }) => {
+                return (
+                    <select
+                        onChange={(e) => {
+                            const newTimes = [...times];
+                            newTimes[index] = parseInt(e.target.value);
+                            setTimes(newTimes);
+                        }}
+                    >
+                        <option value={null}>Please select a time</option>
+                        <option value={9}>9:00 AM - 10:00 AM</option>
+                        <option value={10}>10:00 AM - 11:00 AM</option>
+                        <option value={11}>11:00 AM - 12:00 AM</option>
+                        <option value={12}>12:00 AM - 1:00 PM</option>
+                        <option value={13}>1:00 PM - 2:00 PM</option>
+                    </select>
+                );
+            };
             return (
                 <tr key={response._id}>
                     <td>{index + 1}</td>
@@ -525,6 +584,9 @@ const AdminDashboard = (props) => {
                     <td>
                         <div className="all-answers">{allTheAnswers}</div>
                     </td>
+                    <td>
+                        <TimeSelect index={index} />
+                    </td>
                 </tr>
             );
         });
@@ -580,8 +642,9 @@ const AdminDashboard = (props) => {
                             onClick={sortDownload}
                         />
                     </th>
-                    <th></th>
                     <th>Responses</th>
+                    <th></th>
+                    <th>Select Time</th>
                 </tr>
                 {responsesMarkup}
             </tbody>
@@ -722,6 +785,14 @@ const AdminDashboard = (props) => {
                         <h2 className="dashboard-section-title">By Agency</h2>
                         <div className="dashboard-card">
                             {agencyOverviewMarkup}
+                        </div>
+                    </article>
+                    <article>
+                        <h2 className="dashboard-section-title">
+                            Times Enrolled
+                        </h2>
+                        <div className="dashboard-card">
+                            <TimesSelected />
                         </div>
                     </article>
                 </section>

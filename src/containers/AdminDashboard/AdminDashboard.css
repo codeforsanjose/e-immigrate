@@ -138,7 +138,7 @@
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25), 0px -2px 4px rgba(0, 0, 0, 0.1);
     border-radius: 4px;
     padding: 16px;
-    height: 148px;
+    height: 176px;
 }
 
 .AdminDashboard .flag-dashboard-card {
@@ -180,7 +180,7 @@
 
 .AdminDashboard .overview-container {
     display: grid;
-    grid-template-columns: 200px 412px;
+    grid-template-columns: 200px 412px 250px;
     grid-template-rows: auto;
     gap: 50px;
 }
@@ -217,4 +217,9 @@
 
 .AdminDashboard .delete:hover {
     opacity: 1;
+}
+
+.AdminDashboard .times-dashboard-card > div {
+    display: flex;
+    justify-content: space-between;
 }
