@@ -9,6 +9,7 @@ const questionnaireSchema = new Schema(
         flag: { type: Boolean, required: false, unique: false },
         flagOverride: { type: Boolean, required: false, unique: false },
         emailSent: { type: Boolean, required: false, unique: false },
+        sessionTime: { type: String, required: false, unique: false },
         agency: { type: String, required: false, unique: false },
         questionnaireResponse: { type: Object, required: true },
         responseDownloadedToExcel: {

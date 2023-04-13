@@ -77,26 +77,29 @@ router.route('/email').post((req, res) => {
         const totalEmailsToSend = responsesToEmail.length;
         const messsagesToSend = responsesToEmail
             .filter((response) => {
-                const { questionnaireResponse } = response;
+                const { questionnaireResponse, flag } = response;
                 const { email = '' } = questionnaireResponse;
-                return email !== '' && validateEmail(email.toLowerCase());
+                return (
+                    email !== '' && validateEmail(email.toLowerCase()) && flag // must be a green dot to get an email, 2023
+                );
             })
             .map((response) => {
                 const {
                     questionnaireResponse = {},
                     flag,
                     language = 'en',
+                    sessionTime,
                 } = response;
                 const { email = '' } = questionnaireResponse;
                 const colorFlag = flag ? 'red' : 'green';
                 const emailContentForResponse = emailContents[language]
-                    ? emailContents[language][colorFlag]
-                    : emailContents['en'][colorFlag];
+                    ? emailContents[language][colorFlag](sessionTime)
+                    : emailContents['en'][colorFlag](sessionTime);
                 const translatedContents =
                     emailContentForResponse ||
                     emailContentForResponse === '' ||
                     emailContentForResponse.length === 0
-                        ? emailContents['en'][colorFlag]
+                        ? emailContents['en'][colorFlag](sessionTime)
                         : emailContentForResponse;
                 const msg = {
                     to: email.toLowerCase(),
