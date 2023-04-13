@@ -264,6 +264,12 @@ const AdminDashboard = (props) => {
                         {times.filter((time) => time === 13).length}
                     </span>
                 </div>
+                <div>
+                    2:00 PM - 3:00 PM
+                    <span className="bold">
+                        {times.filter((time) => time === 13).length}
+                    </span>
+                </div>
             </div>
         );
     }, [times]);
