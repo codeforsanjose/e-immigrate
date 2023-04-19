@@ -88,7 +88,7 @@ router.route('/email').post((req, res) => {
                     questionnaireResponse = {},
                     flag,
                     language = 'en',
-                    sessionTime,
+                    sessionTime = 'Please contact (510) 944-9595 for details',
                 } = response;
                 const { email = '' } = questionnaireResponse;
                 const colorFlag = flag ? 'red' : 'green';

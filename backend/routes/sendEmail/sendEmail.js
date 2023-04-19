@@ -4,7 +4,13 @@ const emailContents = require('./emailContent.js');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 //todo: set senderEmail that has access to to e-immigrate SENDGRID_API_KEY key
 
-const sendEmail = (email, name, flag, language, sessionTime) => {
+const sendEmail = (
+    email,
+    name,
+    flag,
+    language,
+    sessionTime = 'Please contact (510) 944-9595 for details'
+) => {
     const colorFlag = 'green';
     const emailContentForResponse =
         emailContents[language][colorFlag](sessionTime);
