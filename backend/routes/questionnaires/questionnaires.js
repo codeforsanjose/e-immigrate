@@ -12,13 +12,11 @@ router.route('/').get((req, res) => {
 });
 
 router.route('/:title.:language').get((req, res) => {
-    console.log(req.params.title, decodeURIComponent(req.params.language));
     Questionnaires.findOne({
         title: decodeURIComponent(req.params.title),
         language: req.params.language,
     })
         .then((questionnaires) => {
-            console.log('oh here', questionnaires);
             res.json(questionnaires);
         })
         .catch((err) => console.log(err));
@@ -31,7 +29,6 @@ router.route('/add').post((req, res) => {
     const title = req.body.title;
     const language = req.body.language;
     const questions = req.body.questions;
-    console.log('THE TITLE OF ADD QUESTIONNAIRE', title, language);
     res.json('questionnaire added');
 
     const insertNewQuestionnaire = () => {

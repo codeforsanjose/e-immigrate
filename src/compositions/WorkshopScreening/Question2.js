@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import Button from '../../components/Button/Button';
+import { answerSelectionRegexSplit } from '../../utilities/utilityFunctions';
 
 const Question2 = ({ q, bindField, setQuestion2, content, collectAnswer }) => {
     const [question2Answer, setQuestion2Answer] = useState(null);
     if (q) {
-        const answers = q.answerSelections.split(', ');
-        const values = q.answerValues.split(', ');
+        const answers = q.answerSelections.split(answerSelectionRegexSplit);
+        const values = q.answerValues.split(answerSelectionRegexSplit);
         const onClick = (e) => {
             e.preventDefault();
             setQuestion2(question2Answer);

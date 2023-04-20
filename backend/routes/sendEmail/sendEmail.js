@@ -2,6 +2,7 @@ const sgMail = require('@sendgrid/mail');
 require('dotenv').config();
 const emailContents = require('./emailContent.js');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+const senderEmail = process.env.SENDER_EMAIL;
 //todo: set senderEmail that has access to to e-immigrate SENDGRID_API_KEY key
 
 const sendEmail = (
@@ -24,9 +25,11 @@ const sendEmail = (
         subject: 'Your Response has been received',
         html: translatedContents,
     };
+    console.log('MESSAGE SENDING -----> ', msg);
     return sgMail.send(msg);
 };
 const sendMassEmails = (messages) => {
+    console.log('MESSAGE SENDING -----> ', messages.length);
     return sgMail.send(messages);
 };
 

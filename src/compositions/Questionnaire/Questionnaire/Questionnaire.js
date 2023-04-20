@@ -14,6 +14,7 @@ import Select from '../../../components/Select/Select';
 import TextArea from '../../../components/TextArea/TextArea';
 import TextInput from '../../../components/TextInput/TextInput';
 import Zip from '../../../components/Zip/Zip';
+import { answerSelectionRegexSplit } from '../../../utilities/utilityFunctions';
 
 import './Questionnaire.css';
 
@@ -54,18 +55,22 @@ const Questionnaire = ({
     };
     const attributes = (q) => {
         const answers = q.answerSelections
-            ? q.answerSelections.split(',\n ').join(', ')
+            ? q.answerSelections.split(answerSelectionRegexSplit).join(', ')
             : null;
         return {
             q: q,
             bindField: bindField,
             collectAnswer: collectAnswer,
             content: content,
-            answers: q.answerSelections ? answers.split(', ') : null,
-            selectAnswers: q.answerSelections
-                ? ['--', ...answers.split(', ')]
+            answers: q.answerSelections
+                ? answers.split(answerSelectionRegexSplit)
                 : null,
-            values: q.answerSelections ? answers.split(', ') : null,
+            selectAnswers: q.answerSelections
+                ? ['--', ...answers.split(answerSelectionRegexSplit)]
+                : null,
+            values: q.answerSelections
+                ? answers.split(answerSelectionRegexSplit)
+                : null,
             showFollowUp: showFollowUp,
             setShowFollowUp: setShowFollowUp,
             setErrors: setErrors,

@@ -88,7 +88,8 @@ const Question3 = ({
                     date,
                     valid: isEligable,
                 };
-                collectAnswer(q.slug, dateObject);
+                const formattedDate = `${dateObject.getFullYear()} - ${dateObject.getMonth()} - ${dateObject.getDay()} :: ${dateObject.getHours()}:${dateObject.getMinutes()}:${dateObject.getSeconds()}`;
+                collectAnswer(q.slug, formattedDate);
                 setShowModal(true);
             }
         };

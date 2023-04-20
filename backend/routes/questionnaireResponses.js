@@ -1,4 +1,3 @@
-const { response } = require('express');
 const express = require('express');
 const router = express.Router();
 const QuestionnaireResponse = require('../models/questionnaireResponse');
@@ -53,7 +52,6 @@ router.route('/').get((req, res) => {
             const updatedResponses = qResponses.filter((item) => {
                 return !item.title.toLowerCase().includes('spring_2021');
             });
-            console.log('ohh boy', updatedResponses);
             const responsesInfo = { responses: updatedResponses };
             res.json(responsesInfo);
         })
@@ -77,10 +75,16 @@ router.route('/email').post((req, res) => {
         const totalEmailsToSend = responsesToEmail.length;
         const messsagesToSend = responsesToEmail
             .filter((response) => {
-                const { questionnaireResponse, flag } = response;
+                const { questionnaireResponse, flag, createdAt } = response;
+                const currentWorkShopYearResponse =
+                    new Date(createdAt).getFullYear() == 2023; // needs to look at the title maybe, this is magic bad number
+
                 const { email = '' } = questionnaireResponse;
                 return (
-                    email !== '' && validateEmail(email.toLowerCase()) && flag // must be a green dot to get an email, 2023
+                    currentWorkShopYearResponse &&
+                    email !== '' &&
+                    validateEmail(email.toLowerCase()) &&
+                    flag == false // must be a green dot to get an email, 2023
                 );
             })
             .map((response) => {
@@ -101,6 +105,7 @@ router.route('/email').post((req, res) => {
                     emailContentForResponse.length === 0
                         ? emailContents['en'][colorFlag](sessionTime)
                         : emailContentForResponse;
+                console.log('THE SENDER EMAIL', senderEmail);
                 const msg = {
                     to: email.toLowerCase(),
                     from: senderEmail,
@@ -111,6 +116,7 @@ router.route('/email').post((req, res) => {
             });
         sendMassEmails(messsagesToSend)
             .then((result) => {
+                console.log('THE RESZULT ', result);
                 updateUserResponsesEmailFlag(responsesToEmail, res);
             })
             .catch((emailErrors) => {
@@ -150,7 +156,7 @@ const updateUserResponsesEmailFlag = (responsesToEmail, res) => {
     const totalEmailsToSend = responsesToEmail.length;
     let emailsSentCurrent = 0;
     let errors = {};
-
+    console.log('ok now we are here updateUserResponsesEmailFlag');
     for (const response of responsesToEmail) {
         // pull out only what we need since coming from backend not frontne response contains lots more than what we need
         const {
@@ -249,6 +255,22 @@ router.route('/assign-email').post((req, res) => {
             (err, raw) => {
                 if (err) {
                     console.log('updated email to false err is', err);
+                }
+            }
+        );
+    }
+    res.json({ msg: 'success' });
+});
+
+router.route('/assign-session').post((req, res) => {
+    const responseToEmailReset = req.body.responsesToUpdate;
+    for (const response of responseToEmailReset) {
+        QuestionnaireResponse.updateOne(
+            { _id: ObjectId(response._id) },
+            { ...response, sessionTime: response.sessionTime },
+            (err, raw) => {
+                if (err) {
+                    console.log('updated sessionTime err is', err);
                 }
             }
         );

@@ -10,6 +10,7 @@ import {
     assignResponseFlag,
     assignEmail,
     deleteQuestionnaireResponse,
+    assignSession,
 } from '../../sendRequest/apis';
 import { getAuthToken } from '../../utilities/auth_utils';
 import { searchArrayObjects } from '../../utilities/search_array';
@@ -85,14 +86,58 @@ const AdminDashboard = (props) => {
                     .sort((itemA, itemB) => {
                         return itemA.agency > itemB.agency ? 1 : -1;
                     });
+                const sessionTimes = [];
+                updatedResponses.map((responseItem, index) => {
+                    if (responseItem.sessionTime) {
+                        sessionTimes[index] = responseItem.sessionTime;
+                    }
+                });
+                setTimes(sessionTimes);
                 setLoading(false);
-                setTimes(updatedResponses.map((_) => null));
                 setQuestionnaireResponses(updatedResponses);
             });
         }
     }, [props.history]);
 
+    const setSessionTime = (e, index) => {
+        setLoading(true);
+        const newTimes = [...times];
+        newTimes[index] = parseInt(e.target.value);
+        setTimes(newTimes);
+
+        const updatedResponses = questionnaireResponses.map(
+            (item, responseIndex) => {
+                return {
+                    ...item,
+                    sessionTime:
+                        responseIndex === index ? e.target.value : null,
+                };
+            }
+        );
+        const responseToUpdate = updatedResponses.reduce(
+            (accumulator, item, responseIndex) => {
+                return responseIndex === index ? item : accumulator;
+            },
+            {}
+        );
+        const requestObj = {
+            url: assignSession,
+            method: 'POST',
+            body: JSON.stringify({
+                responsesToUpdate: [responseToUpdate],
+            }),
+        };
+        const jwt = getAuthToken();
+        const headers = {
+            Authorization: `Bearer ${jwt}`,
+        };
+        sendRequest(requestObj, headers).then((response) => {
+            setQuestionnaireResponses(updatedResponses);
+            setLoading(false);
+        });
+    };
     const toggleFlag = (index) => {
+        setLoading(true);
         const updatedResponses = questionnaireResponses.map(
             (item, responseIndex) => {
                 return {
@@ -121,9 +166,11 @@ const AdminDashboard = (props) => {
         };
         sendRequest(requestObj, headers).then((response) => {
             setQuestionnaireResponses(updatedResponses);
+            setLoading(false);
         });
     };
     const resetEmail = (index) => {
+        setLoading(true);
         const updatedResponses = questionnaireResponses.map(
             (item, responseIndex) => {
                 return {
@@ -151,6 +198,7 @@ const AdminDashboard = (props) => {
         };
         sendRequest(requestObj, headers).then((response) => {
             setQuestionnaireResponses(updatedResponses);
+            setLoading(false);
         });
     };
     const flagOverviewMarkup = useMemo(() => {
@@ -237,37 +285,59 @@ const AdminDashboard = (props) => {
                 <div>
                     9:00 AM - 10:00 AM
                     <span className="bold">
-                        {times.filter((time) => time === 9).length}
+                        {
+                            times.filter(
+                                (time) => time === '9:00 AM - 10:00 AM'
+                            ).length
+                        }
                     </span>
                 </div>
                 <div>
                     10:00 AM - 11:00 AM
                     <span className="bold">
-                        {times.filter((time) => time === 10).length}
+                        {
+                            times.filter(
+                                (time) => time === '10:00 AM - 11:00 AM'
+                            ).length
+                        }
                     </span>
                 </div>
                 <div>
                     11:00 AM - 12:00 AM
                     <span className="bold">
-                        {times.filter((time) => time === 11).length}
+                        {
+                            times.filter(
+                                (time) => time === '11:00 AM - 12:00 AM'
+                            ).length
+                        }
                     </span>
                 </div>
                 <div>
                     12:00 AM - 1:00 PM
                     <span className="bold">
-                        {times.filter((time) => time === 12).length}
+                        {
+                            times.filter(
+                                (time) => time === '12:00 AM - 1:00 PM'
+                            ).length
+                        }
                     </span>
                 </div>
                 <div>
                     1:00 PM - 2:00 PM
                     <span className="bold">
-                        {times.filter((time) => time === 13).length}
+                        {
+                            times.filter((time) => time === '1:00 PM - 2:00 PM')
+                                .length
+                        }
                     </span>
                 </div>
                 <div>
                     2:00 PM - 3:00 PM
                     <span className="bold">
-                        {times.filter((time) => time === 13).length}
+                        {
+                            times.filter((time) => time === '2:00 PM - 3:00 PM')
+                                .length
+                        }
                     </span>
                 </div>
             </div>
@@ -289,6 +359,7 @@ const AdminDashboard = (props) => {
     const allOptions = [firstOption, agenciesOptions];
 
     const assignResponseAgency = (e, resIndex) => {
+        setLoading(true);
         const updatedResponses = questionnaireResponses.map((item, index) => {
             return resIndex === index
                 ? {
@@ -313,8 +384,8 @@ const AdminDashboard = (props) => {
             Authorization: `Bearer ${jwt}`,
         };
         sendRequest(requestObj, headers).then((response) => {
-            console.log('wow agency success response', response);
             setQuestionnaireResponses(updatedResponses);
+            setLoading(false);
         });
     };
 
@@ -389,6 +460,7 @@ const AdminDashboard = (props) => {
         setHeaderState(!headerState);
     };
     const softDeleteResponse = (resIndex) => {
+        setLoading(true);
         const confirmBox = window.confirm(
             'Do you really want to delete this questionnaire response?'
         );
@@ -412,8 +484,10 @@ const AdminDashboard = (props) => {
         sendRequest(requestObj, headers)
             .then((response) => {
                 setQuestionnaireResponses(updatedResponses);
+                setLoading(false);
             })
             .catch((err) => {
+                setLoading(false);
                 console.log(
                     `error soft-deleting questionnaire response ${response_id}`,
                     err
@@ -518,22 +592,33 @@ const AdminDashboard = (props) => {
             ];
             const TimeSelect = ({ index }) => {
                 return (
-                    <select
-                        onChange={(e) => {
-                            const newTimes = [...times];
-                            newTimes[index] = parseInt(e.target.value);
-                            setTimes(newTimes);
-                        }}
-                    >
-                        <option value={null}>Please select a time</option>
-                        <option value={9}>9:00 AM - 10:00 AM</option>
-                        <option value={10}>10:00 AM - 11:00 AM</option>
-                        <option value={11}>11:00 AM - 12:00 AM</option>
-                        <option value={12}>12:00 AM - 1:00 PM</option>
-                        <option value={13}>1:00 PM - 2:00 PM</option>
+                    <select onChange={(e) => setSessionTime(e, index)}>
+                        <option value={''}>Please select a time</option>
+                        <option value={'9:00 AM - 10:00 AM'}>
+                            9:00 AM - 10:00 AM
+                        </option>
+                        <option value={'10:00 AM - 11:00 AM'}>
+                            10:00 AM - 11:00 AM
+                        </option>
+                        <option value={'11:00 AM - 12:00 AM'}>
+                            11:00 AM - 12:00 AM
+                        </option>
+                        <option value={'12:00 AM - 1:00 PM'}>
+                            12:00 AM - 1:00 PM
+                        </option>
+                        <option value={'1:00 PM - 2:00 PM'}>
+                            1:00 PM - 2:00 PM
+                        </option>
+                        <option value={'2:00 PM - 3:00 PM'}>
+                            2:00 PM - 3:00 PM
+                        </option>
                     </select>
                 );
             };
+            const sessionTimeSet = questionnaireResponses[index];
+            const setSessionTimeMarkup = sessionTimeSet.sessionTime ? (
+                <p>{sessionTimeSet.sessionTime}</p>
+            ) : null;
             return (
                 <tr key={response._id}>
                     <td>{index + 1}</td>
@@ -592,6 +677,7 @@ const AdminDashboard = (props) => {
                     </td>
                     <td>
                         <TimeSelect index={index} />
+                        {setSessionTimeMarkup}
                     </td>
                 </tr>
             );
