@@ -80,6 +80,10 @@ const Questionnaire = ({
     const onSubmit = (e) => {
         const { legal_resident_date } = questionnaireResponse;
         if (legal_resident_date && legal_resident_date.valid) {
+            const { date } = legal_resident_date;
+            const formattedDate = `${date.getFullYear()}/${date.getMonth()}/${date.getDay()}`;
+            questionnaireResponse['legal_resident_date'] = formattedDate;
+            console.log('formatted date', formattedDate);
             submitQuestionnaireResponse(questionnaireResponse);
         } else {
             alert(
