@@ -37,6 +37,7 @@
         "express-fileupload": "^1.2.1",
         "fuse.js": "^6.4.6",
         "jsonwebtoken": "^9.0.0",
+        "moment-timezone": "^0.5.43",
         "mongoose": "^6.10.3",
         "node-fetch": "^2.6.1",
         "react": "^16.13.1",

@@ -4,6 +4,7 @@ const QuestionnaireResponse = require('../../models/questionnaireResponse');
 const { ObjectId } = require('mongoose').Types;
 const xl = require('excel4node');
 const fs = require('fs');
+const moment = require('moment-timezone');
 const langOptions = require('../../LanguageOptions');
 router.route('/responses').post((req, res) => {
     QuestionnaireResponse.find().then((allResponses) => {
@@ -53,10 +54,11 @@ router.route('/responses').post((req, res) => {
         });
 
         ws.cell(1, 1).string('Workshop Title');
-        ws.cell(1, 2).string('Red Dot?');
-        ws.cell(1, 3).string('Agency');
-        ws.cell(1, 4).string('Email Sent');
-        ws.cell(1, 5).string('Language');
+        ws.cell(1, 2).string('Created At');
+        ws.cell(1, 3).string('Red Dot?');
+        ws.cell(1, 4).string('Agency');
+        ws.cell(1, 5).string('Email Sent');
+        ws.cell(1, 6).string('Language');
 
         Object.keys(questionsColumns).map((question) => {
             ws.cell(1, questionsColumns[question])
@@ -65,6 +67,10 @@ router.route('/responses').post((req, res) => {
         });
 
         updatedResponses.map((response, idx) => {
+            const createdAtFormatted = moment(response.createdAt).format(
+                'MM/DD/YYYYThh:mm:ss'
+            );
+
             const langObject = langOptions.LanguageOptions.find(
                 (item) => item.code === response.language
             );
@@ -72,7 +78,8 @@ router.route('/responses').post((req, res) => {
                 (langObject && langObject.englishName) || `Unknown `;
             const row = idx + 2;
             ws.cell(row, 1).string(response.title).style(style);
-            ws.cell(row, 2)
+            ws.cell(row, 2).string(createdAtFormatted).style(style);
+            ws.cell(row, 3)
                 .string(response.flag ? 'true' : 'false')
                 .style(style)
                 .style({
@@ -83,13 +90,13 @@ router.route('/responses').post((req, res) => {
                         fgColor: response.flag ? '#EA2616' : '#ADFF3D',
                     },
                 });
-            ws.cell(row, 3)
+            ws.cell(row, 4)
                 .string(response.agency ? response.agency : '')
                 .style(style);
-            ws.cell(row, 4)
+            ws.cell(row, 5)
                 .string(response.emailSent ? 'true' : 'false')
                 .style(style);
-            ws.cell(row, 5).string(langDisplay).style(style);
+            ws.cell(row, 6).string(langDisplay).style(style);
             const qResponses = Object.keys(response.questionnaireResponse);
 
             qResponses.map((qResponse) => {
