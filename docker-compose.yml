@@ -1,33 +1,26 @@
-version: "3.9"  # optional since v1.27.0
+---
+version: "3.9"
+
 services:
-  frontend:
+  app:
+    image: e-immigrate
     build:
       context: ./
-      dockerfile: AWS-Deployment/client/Dockerfile
-    ports:
-      - "8080:80"
-    environment:
-      - PROD_API_URL=backend
-      - PROD_API_PORT=5000
-    links:
-      - backend
-    depends_on:
-      - "backend"
-  backend:
-    build:
-      context: ./
-      dockerfile: AWS-Deployment/backend/Dockerfile
+      dockerfile: Dockerfile
     ports:
       - "5000:5000"
     environment:
-      - MONGO_URI=mongodb+srv://appuser:<REDACTED>@eimmigrate.khn2l.mongodb.net/eimmigrate?retryWrites=true&w=majority
-      - SENDGRID_API_KEY=SG.hxxxx
-      - JWT_KEY=mysecret
-    # depends_on:
-    #   - "mongodb"
-  # mongodb:
-  #   image: mongo:latest
-  #   links:
-  #     - backend
-    
-  
+      - MONGO_URI=mongodb://eimmigrate:eimmigrate@mongo/eimmigrate?authSource=admin
+      # - SENDGRID_API_KEY=SG.hxxxx
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: eimmigrate
+      MONGO_INITDB_ROOT_PASSWORD: eimmigrate
+      MONGO_INITDB_DATABASE: eimmigrate

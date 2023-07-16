@@ -40,6 +40,7 @@ app.use('/api/questionnaire-responses', questionnaireResponsesRouter);
 app.use('/api/questionnaires', questionnairesRouter);
 app.use('/api/translatedContent', translatedContentRouter);
 app.use('/api/generateExcel', generateResponsesExcelRouter);
+app.use(express.static('build'))
 
 const port = process.env.PORT || 5000;
 

@@ -2,8 +2,8 @@ import React from 'react';
 import MainContainer from '../MainContainer/MainContainer';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Admin from '../../compositions/Admin/Admin.js';
-import AdminDashboard from '../../containers/AdminDashboard/AdminDashboard';
-import EditQuestionnaires from '../../containers/EditQuestionnaires/EditQuestionnaires';
+import AdminDashboard from '../AdminDashboard/AdminDashboard';
+import EditQuestionnaires from '../EditQuestionnaires/EditQuestionnaires';
 import './App.css';
 import { uploadQuestinnaires } from '../../sendRequest/apis';
 
