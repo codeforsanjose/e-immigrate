@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import useMarkFieldAsTouched from '../../compositions/Questionnaire/hooks/useMarkFieldAsTouched';
+import useMarkFieldAsTouched from '../Questionnaire/hooks/useMarkFieldAsTouched';
 import LogicBranches from './LogicBranches';
 import Modal from './Modal/Modal';
 
