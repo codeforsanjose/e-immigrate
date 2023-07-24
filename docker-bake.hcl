@@ -22,7 +22,7 @@ variable "AWS_ACCOUNT_ID" {}
 variable "PRIVATE_REGISTRY" { default = "${AWS_ACCOUNT_ID}.dkr.ecr.us-west-2.amazonaws.com" }
 variable "REFERENCE" { default = "latest" }
 variable "GITHUB_ACTIONS" { default = "false" }
-variable "DOCKER_TAG" { default = notequal("false",GITHUB_ACTIONS) ? "${REFERENCE}-${hostArch()}": "latest" }
+variable "DOCKER_TAG" { default = notequal("false",GITHUB_ACTIONS) ? "${REFERENCE}": "latest" }
 function "dockerTag" {
     params = [image, tag, prefix]
     result = concat(
