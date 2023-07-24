@@ -8,6 +8,12 @@ on:
   push:
     branches: [master]
   workflow_dispatch:
+    inputs:
+      env:
+        type: environment
+      ref:
+        description: 'Branch, Tag, or SHA'
+        required: true
 
 concurrency:
   group: test-${{ github.head_ref || github.run_id }}
@@ -17,6 +23,9 @@ permissions:
   id-token: write
   contents: read
 
+env:
+  REFERENCE: ${{ github.event.pull_request.head.sha || github.event.push.head_commit.id }}
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -25,14 +34,19 @@ jobs:
         with:
           role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github-actions
           role-session-name: gha
-          aws-region: us-west-1
+          aws-region: us-west-2
       - uses: actions/checkout@v3
         with:
           ref: ${{ github.event.pull_request.head.sha || github.event.push.head_commit.id }}
           fetch-depth: 0
+      - uses: docker/setup-qemu-action@v2
       - uses: docker/setup-buildx-action@v2
         with:
           version: latest
       - id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
-      - run: make build
+      - name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          push: true
+          tags: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-west-2.amazonaws.com/eimmigrate:${{ env.REFERENCE }}
