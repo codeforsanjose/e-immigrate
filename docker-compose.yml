@@ -12,6 +12,8 @@ services:
     environment:
       - MONGO_URI=mongodb://eimmigrate:eimmigrate@mongo/eimmigrate?authSource=admin
       # - SENDGRID_API_KEY=SG.hxxxx
+    labels:
+      - "org.opensourcesanjose.app=eimmigrate"
     depends_on:
       - mongo
 

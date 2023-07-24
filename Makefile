@@ -16,6 +16,7 @@ DEPLOYMENT ?= eimmigrate-dev
 
 #   Docker local development
 ## ------------------------
+build: aws-cli-creds
 build: ## Build Docker image
 	docker buildx bake --print
 	docker buildx bake
@@ -46,13 +47,13 @@ restore-mongo: ## Restore DB from dump file
 ## ------------------------
 buildx: ## Create Docker buildx instance
 	-docker buildx create \
-		--name recentive \
+		--name cfsj \
 		--bootstrap --use \
 		--driver docker-container \
 		--platform linux/amd64,linux/arm64
 
 clean: ## Clean up old images, stopped containers, and other build artifacts for this service.
-	-docker system prune -f -a --filter label='tech.recentive.app=ra-master' ${EXTRA_CLEAN_ARGS}
+	-docker system prune -f -a --filter label='org.opensourcesanjose.app=eimmigrate' ${EXTRA_CLEAN_ARGS}
 
 scorched-earth: ## Factory reset. This will also remove the database volume!
 	-docker compose down
@@ -90,6 +91,12 @@ deploy-status: ## View status of Helm release/deploy
 logs-%: login-eks-cluster
 logs-%: ## Tail logs for k8s deployment
 	kubectl logs deploy/$* -c $* -n ${DEPLOYMENT} -f
+
+aws-cli-creds:
+ifndef CI
+	export AWS_ACCESS_KEY_ID=$(shell aws configure get cfsj.aws_access_key_id)
+	export AWS_SECRET_ACCESS_KEY=$(shell aws configure get cfsj.aws_secret_access_key)
+endif
 
 help: ## Show this help.
 	@sed -ne '/@sed/!s/## //p' $(MAKEFILE_LIST) | \
