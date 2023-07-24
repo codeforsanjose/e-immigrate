@@ -9,6 +9,6 @@ dependencies:
 - name: eimmigrate
   version: 0.0.1
   repository: file://../../charts/eimmigrate
-- name: postgresql
-  version: 12.6.8
-  repository: oci://registry-1.docker.io/bitnamicharts
+# - name: mongodb
+#   version: 13.16.0
+#   repository: oci://registry-1.docker.io/bitnamicharts
