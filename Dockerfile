@@ -1,4 +1,4 @@
-FROM --platform=amd64 node:15.3.0-buster-slim as npm-cache
+FROM --platform=arm64 node:15.3.0-buster-slim as npm-cache
 
 ENV NODE_ENV=production
 WORKDIR /srv
