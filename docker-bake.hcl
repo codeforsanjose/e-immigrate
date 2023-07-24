@@ -41,7 +41,7 @@ function "dockerTag" {
 variable "AWS_ACCESS_KEY_ID" { default = "false" }
 variable "AWS_SECRET_ACCESS_KEY" { default = "false" }
 variable "DOCKER_S3_CACHE" {
-    default = "type=s3,mode=max,region=us-west-1"
+    default = "type=s3,mode=max,region=us-west-1,bucket=recentive-cache"
 }
 function "dockerS3Cache" {
     params = [cacheid]
