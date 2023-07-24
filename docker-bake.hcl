@@ -68,7 +68,6 @@ target "_common" {
     cache-from = [dockerS3Cache("${CACHE_ID}")]
     cache-to   = [notequal("false",GITHUB_ACTIONS) ? dockerS3Cache("${CACHE_ID}"): ""]
     output = ["${OUTPUT}"]
-    platforms = ["linux/arm64"]
 }
 
 /*
