@@ -1,0 +1,3 @@
+{{- include "shared-lib.serviceaccount" . }}
+---
+{{- include "shared-lib.deployment" . }}
