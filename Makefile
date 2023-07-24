@@ -11,6 +11,7 @@ COMMIT_SHA := ${REFERENCE}
 
 # AWS EKS / Helm deployments
 DEPLOYMENT ?= eimmigrate-dev
+EKS_CLUSTER_NAME := shared-cluster-prod
 
 .EXPORT_ALL_VARIABLES:
 
@@ -61,14 +62,14 @@ scorched-earth: ## Factory reset. This will also remove the database volume!
 	docker volume rm ra-master-db-data ra-master-redis-data ra-master-cache ra-master-tmp
 
 login-ecr: ## Log into AWS Elastic Container Registry (ECR)
-	aws ecr get-login-password --region us-east-1 | \
+	aws ecr get-login-password --region us-west-2 | \
 	docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
 
 
 #   Helm/Kubectl commands
 ## ------------------------
 login-eks-cluster: ## Update kubeconfig for AWS EKS Cluster
-	aws eks --region us-east-1 update-kubeconfig \
+	aws eks --region us-west-2 update-kubeconfig \
 		--name ${EKS_CLUSTER_NAME}
 
 deploy: login-eks-cluster

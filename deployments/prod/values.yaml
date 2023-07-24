@@ -1,7 +1,0 @@
-global:
-  image:
-    repository: 402056942761.dkr.ecr.us-east-1.amazonaws.com/ubiquia
-    tag: ""
-  deployed_url: precastdemo-dev.recentive.io
-  eks_shared_environment: dev
-  doppler_secret_ref: precastdemo-dev-doppler-secrets
