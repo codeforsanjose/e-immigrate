@@ -1,0 +1,9 @@
+dependencies:
+- name: eimmigrate
+  repository: file://../../charts/eimmigrate
+  version: 0.0.1
+- name: postgresql
+  repository: oci://registry-1.docker.io/bitnamicharts
+  version: 12.6.8
+digest: sha256:5553f70ba6640d9fcca368df059aece05775d5cd0bef9fd1d5ff7899226e9810
+generated: "2023-07-23T22:51:12.267151-07:00"

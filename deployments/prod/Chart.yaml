@@ -1,0 +1,14 @@
+apiVersion: v2
+name: eimmigrate-prod
+description: This Chart deploys eimmigrate-prod
+type: application
+version: 0.0.1
+appVersion: 0.0.1
+
+dependencies:
+- name: eimmigrate
+  version: 0.0.1
+  repository: file://../../charts/eimmigrate
+- name: postgresql
+  version: 12.6.8
+  repository: oci://registry-1.docker.io/bitnamicharts
