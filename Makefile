@@ -1,23 +1,18 @@
 SHELL := /bin/bash -e -o pipefail
 
 # Location of Docker images and Helm charts
-AWS_ECR_REGISTRY := 402056942761.dkr.ecr.us-east-1.amazonaws.com
+AWS_ACCOUNT_ID ?= 000000000000
+AWS_REGION ?= us-west-2
 
 # Docker image build arguments
 BUILD_ID := $(shell git rev-parse --short HEAD)
 REFERENCE := $(shell git rev-parse HEAD)
 COMMIT_SHA := ${REFERENCE}
 
-# Docker local development
-# MASTER_TEAM_NAME ?= livgolf
-MASTER_TEAM_NAME := livgolf
-
 # AWS EKS / Helm deployments
-DEPLOYMENT ?= demo-dev
-EKS_CLUSTER_NAME := shared-cluster-$(shell echo ${DEPLOYMENT} | cut -d'-' -f2)
+DEPLOYMENT ?= eimmigrate-dev
 
 .EXPORT_ALL_VARIABLES:
-
 
 #   Docker local development
 ## ------------------------
@@ -66,7 +61,35 @@ scorched-earth: ## Factory reset. This will also remove the database volume!
 
 login-ecr: ## Log into AWS Elastic Container Registry (ECR)
 	aws ecr get-login-password --region us-east-1 | \
-	docker login --username AWS --password-stdin ${AWS_ECR_REGISTRY}
+	docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
+
+
+#   Helm/Kubectl commands
+## ------------------------
+login-eks-cluster: ## Update kubeconfig for AWS EKS Cluster
+	aws eks --region us-east-1 update-kubeconfig \
+		--name ${EKS_CLUSTER_NAME}
+
+deploy: login-eks-cluster
+deploy: ## Deploy Helm chart into AWS EKS
+	helm dependency update deployments/${DEPLOYMENT}
+	helm upgrade \
+		--set global.image.tag=${COMMIT_SHA} \
+		${DEPLOYMENT} deployments/${DEPLOYMENT} \
+		--install --wait \
+		--dependency-update \
+		--namespace ${DEPLOYMENT}
+
+deploy-status: login-eks-cluster
+deploy-status: ## View status of Helm release/deploy
+	helm status \
+		${DEPLOYMENT} \
+		--namespace ${DEPLOYMENT} \
+		--show-resources
+
+logs-%: login-eks-cluster
+logs-%: ## Tail logs for k8s deployment
+	kubectl logs deploy/$* -c $* -n ${DEPLOYMENT} -f
 
 help: ## Show this help.
 	@sed -ne '/@sed/!s/## //p' $(MAKEFILE_LIST) | \
