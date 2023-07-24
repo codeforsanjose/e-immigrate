@@ -46,6 +46,8 @@ jobs:
       - id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
       - run: make build
+        env:
+          AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
       # - uses: docker/build-push-action@v4
       #   with:
       #     push: true
