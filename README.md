@@ -53,7 +53,7 @@ touch .env
 In the `.env` file add the following:
 
 ```bash
-MONGO_URI = mongodb://localhost/test
+MONGO_URI = mongodb://127.0.0.1/test
 JWT_KEY = <secret key>
 ```
 
