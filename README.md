@@ -20,6 +20,9 @@ Go to the project directory
   cd e-immigrate
 ```
 
+**Installing CORRECT version of Node**
+Engines is defined in package.json and is `14.21.3`
+
 Install dependencies
 
 ```bash
@@ -39,6 +42,9 @@ Checks if you have mongoDB installed on your device. It should return a director
 **Installing MongoDB**
 
 In order to install mongoDB on you device, go to [mongoDB manual](https://docs.mongodb.com/manual/administration/install-community/) and follow the instructions.
+
+**Running MongoDB**
+Need to run the mongodb service for server to be listening: `brew services start mongodb-community`
 
 **Connecting to MongoDB**
 

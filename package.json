@@ -60,5 +60,8 @@
         "eslint-plugin-prettier": "^3.1.4",
         "nodemon": "^2.0.12"
     },
-    "proxy": "http://localhost:5000"
+    "proxy": "http://localhost:5000",
+    "engines": {
+        "node": "14.21.3"
+    }
 }
