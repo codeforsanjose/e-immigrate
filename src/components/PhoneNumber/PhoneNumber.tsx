@@ -1,8 +1,31 @@
 import React from 'react';
 import './PhoneNumber.css';
+import { BindFieldFunction, CollectAnswerFunction, QData, ReactSetter } from '../../types/common';
 
-const PhoneNumber = ({ attributes }) => {
-    const { q, bindField, collectAnswer, setErrors, content } = attributes;
+
+
+
+type PhoneNumberProps = {
+    attributes: {
+        q: QData;
+        bindField: BindFieldFunction;
+        collectAnswer: CollectAnswerFunction;
+        setErrors: ReactSetter<Record<string, unknown>>;
+        content: {
+            errorMessagePhone: string;
+        };
+    }
+};
+export function PhoneNumber(props: PhoneNumberProps) {
+    const {
+        attributes: { 
+            q, 
+            bindField, 
+            collectAnswer, 
+            setErrors, 
+            content,
+        },
+    } = props;
     return (
         <>
             <input
@@ -20,11 +43,8 @@ const PhoneNumber = ({ attributes }) => {
                         setErrors((prev) => ({ ...prev, [q.slug]: false }));
                     }
                     collectAnswer(q.slug, e.target.value);
-                }}
-            />
+                } } />
             <div className="RequiredError">*{content.errorMessagePhone}</div>
         </>
     );
-};
-
-export default PhoneNumber;
+}

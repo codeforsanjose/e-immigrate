@@ -1,7 +1,14 @@
 import React from 'react';
 import './Date.css';
+import { BindFieldFunction, ContentData, QData } from '../../types/common';
 
-const Date = ({ q, bindField, content }) => {
+type DateProps = {
+    q: QData;
+    bindField: BindFieldFunction;
+    content: ContentData;
+}
+export function Date(props: DateProps) {
+    const { q, bindField, content } = props;
     return (
         <>
             <input
@@ -9,11 +16,8 @@ const Date = ({ q, bindField, content }) => {
                 name={q.slug}
                 required={q.required}
                 className="TextInput"
-                {...bindField(q.slug)}
-            />
+                {...bindField(q.slug)} />
             <div className="RequiredError">*{content.errorMessage}</div>
         </>
     );
-};
-
-export default Date;
+}

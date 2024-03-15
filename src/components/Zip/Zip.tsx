@@ -1,8 +1,27 @@
 import React from 'react';
 import './Zip.css';
-
-const Zip = ({ attributes }) => {
-    const { q, bindField, collectAnswer, setErrors, content } = attributes;
+import { QData, BindFieldFunction, CollectAnswerFunction, ReactSetter } from '../../types/common';
+type ZipProps = {
+    attributes: {
+        q: QData;
+        bindField: BindFieldFunction;
+        collectAnswer: CollectAnswerFunction;
+        setErrors: ReactSetter<Record<string, unknown>>;
+        content: {
+            errorMessageZip: string;
+        };
+    }
+};
+function Zip(props: ZipProps) {
+    const {
+        attributes: { 
+            q, 
+            bindField, 
+            collectAnswer, 
+            setErrors, 
+            content,
+        },
+    } = props;
     return (
         <>
             <input
@@ -21,11 +40,10 @@ const Zip = ({ attributes }) => {
                         setErrors((prev) => ({ ...prev, [q.slug]: false }));
                     }
                     collectAnswer(q.slug, e.target.value);
-                }}
-            />
+                } } />
             <div className="RequiredError">*{content.errorMessageZip}</div>
         </>
     );
-};
+}
 
 export default Zip;

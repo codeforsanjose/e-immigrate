@@ -1,18 +1,21 @@
 import React from 'react';
-import { ReactComponent as LanguagePicker } from './LanguagePicker.svg';
-import { ReactComponent as ChevronDown } from './ChevronDown.svg';
+import LanguagePicker from './LanguagePicker.svg';
+import ChevronDown from './ChevronDown.svg';
 import { languageOptions } from '../../data/LanguageOptions';
 
 import './LanguageDropdown.css';
-
-const LanguageSelect = ({ setLanguage, language }) => {
+type LanguageDropdownProps = {
+    language: string,
+    setLanguage: (value: string) => void;
+};
+function LanguageSelect(props: LanguageDropdownProps) {
+    const { setLanguage, language } = props;
     return (
         <div className="languageSelectContainer">
             <LanguagePicker
                 className="languageIcon"
                 height="26px"
-                width="26px"
-            />
+                width="26px" />
             <select
                 value={language}
                 onChange={(ev) => setLanguage(ev.target.value)}
@@ -32,9 +35,11 @@ const LanguageSelect = ({ setLanguage, language }) => {
             <ChevronDown className="chevronDown" height="16px" width="16px" />
         </div>
     );
-};
+}
 
-const LanguageDropdown = ({ language, setLanguage }) => {
+
+export const LanguageDropdown = (props: LanguageDropdownProps) => {
+    const { language, setLanguage } = props;
     return (
         <div className="languageDropdown">
             <div className="languageSelect">
@@ -43,5 +48,3 @@ const LanguageDropdown = ({ language, setLanguage }) => {
         </div>
     );
 };
-
-export default LanguageDropdown;

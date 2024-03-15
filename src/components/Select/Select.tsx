@@ -1,10 +1,35 @@
 import React, { useEffect } from 'react';
 import './Select.css';
-
-const Select = ({ attributes }) => {
-    const { q, selectAnswers, bindField, collectAnswer, content, values } =
-        attributes;
+import { QData, BindFieldFunction, CollectAnswerFunction, ReactSetter } from '../../types/common';
+type SelectProps = {
+    attributes: {
+        q: QData;
+        selectAnswers?: Array<string>;
+        values: Array<string>;
+        bindField: BindFieldFunction;
+        collectAnswer: CollectAnswerFunction;
+        setShowFollowUp: ReactSetter<Record<string, boolean>>;
+        content: {
+            errorMessage: string;
+        };
+    }
+};
+export function Select(props: SelectProps) {
+    const {
+        attributes: { 
+            q, 
+            selectAnswers, 
+            bindField, 
+            collectAnswer, 
+            content, 
+            values,
+        },
+    } = props;
     useEffect(() => {
+        if (selectAnswers == null) {
+            console.error(`'selectAnswers' was null`)
+            return;
+        }
         collectAnswer(q.slug, selectAnswers[0]);
     }, []);
     return (
@@ -30,6 +55,5 @@ const Select = ({ attributes }) => {
             <div className="RequiredError">*{content.errorMessage}</div>
         </>
     );
-};
+}
 
-export default Select;
