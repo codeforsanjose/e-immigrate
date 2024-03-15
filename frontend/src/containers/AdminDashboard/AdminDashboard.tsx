@@ -1,6 +1,5 @@
 import React from 'react';
 import { sendRequest } from '../../sendRequest/sendRequest';
-import { History } from 'history';
 import { format } from 'date-fns';
 import { apis } from '../../sendRequest/apis';
 import { getAuthToken } from '../../utilities/auth_utils';
@@ -12,7 +11,7 @@ import { Button } from '../../components/Button/Button';
 import SortArrow from '../../data/images/SortArrow.svg';
 import { WithEventTarget } from '../../types/WithEventTarget';
 import { defaultCompare } from '../../utilities/defaultCompare';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 const {
     getQuestionnaireResponse,
     emailQuestionnaireResponse,
@@ -52,7 +51,7 @@ type QuestionnaireResponseElement = {
     updatedAt: number | Date;
 };
 export function AdminDashboard() {
-    const history = useHistory();
+    const navigate = useNavigate();
     const [questionnaireResponses, setQuestionnaireResponses] = React.useState<Array<QuestionnaireResponseElement>>([]);
     const [questions, setQuestions] = React.useState<Array<string>>([]);
     const content = { buttonHome: 'Home' };
@@ -69,7 +68,7 @@ export function AdminDashboard() {
         setLoading(true);
         const jwt = getAuthToken();
         if (jwt === null) {
-            history.push('/login');
+            navigate('/login');
             return;
         }
         else {
@@ -118,7 +117,7 @@ export function AdminDashboard() {
                 setQuestionnaireResponses(updatedResponses);
             });
         }
-    }, [history]);
+    }, [navigate]);
 
     const toggleFlag = React.useCallback((index: number) => {
         const updatedResponses = questionnaireResponses.map(

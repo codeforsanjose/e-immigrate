@@ -1,6 +1,5 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
-import { History } from 'history';
+import { useNavigate, NavigateFunction } from 'react-router-dom';
 import { isAfter } from 'date-fns';
 
 import './Modal.css';
@@ -9,7 +8,7 @@ import { ModalContent } from './types';
 function checkEligibility(
     userDate: number | Date, 
     question2: string | null,
-    history: History<unknown>, 
+    navigate: NavigateFunction, 
     content: ModalContent,
 ) {
     const cutoffDate = new Date();
@@ -21,7 +20,7 @@ function checkEligibility(
             return <div className="Reason">{content.modalText3}</div>;
         }
         else {
-            history.push('/overview');
+            navigate('/overview');
             return null;
         }
     }
@@ -30,7 +29,7 @@ function checkEligibility(
             return <div className="Reason">{content.modalText4}</div>;
         }
         else {
-            history.push('/overview');
+            navigate('/overview');
             return null;
         }
     }
@@ -45,7 +44,7 @@ type ModalProps = {
 
 export function Modal(props: ModalProps) {
     const { showModal, question2, date, content } = props;
-    const history = useHistory();
+    const navigate = useNavigate();
 
     if (!showModal) {
         return null;
@@ -56,7 +55,7 @@ export function Modal(props: ModalProps) {
             <div className="Modal">
                 <h2>{content.modalText1}</h2>
                 <h3>{content.modalText2}</h3>
-                <div>{checkEligibility(date, question2, history, content)}</div>
+                <div>{checkEligibility(date, question2, navigate, content)}</div>
                 <a href="https://e-immigrate.info/" className="ExitButton">
                     {content.modalExitButton}
                 </a>

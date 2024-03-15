@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useMarkFieldAsTouched } from '../Questionnaire/hooks/useMarkFieldAsTouched';
 import { LogicBranches } from './LogicBranches';
 import { Modal } from './Modal/Modal';
@@ -31,15 +31,15 @@ export function WorkshopScreening(props: WorkshopScreeningProps) {
     } = props;
     const { screeningDate, screeningDateMarried } = content;
 
-    const [question1, setQuestion1] = useState<string | null>('');
-    const [question2, setQuestion2] = useState<string | null>('');
-    const [question3, setQuestion3] = useState<string | null>('');
-    const [showModal, setShowModal] = useState(false);
+    const [question1, setQuestion1] = React.useState<string | null>('');
+    const [question2, setQuestion2] = React.useState<string | null>('');
+    const [question3, setQuestion3] = React.useState<string | null>('');
+    const [showModal, setShowModal] = React.useState(false);
     const dateToUse = question1?.toLocaleLowerCase() === 'yes'
         ? screeningDate
         : screeningDateMarried;
 
-    const [date, setDate] = useState(dateToUse);
+    const [date, setDate] = React.useState(dateToUse);
     const formattedDate = new Date(date);
     const filteredQuestions = questions.filter(
         (q) => q.category === 'Workshop Eligibility',

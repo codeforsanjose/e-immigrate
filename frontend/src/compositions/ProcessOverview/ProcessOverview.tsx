@@ -7,7 +7,7 @@ import Blob2 from '../../data/images/Blob2.svg';
 import Blob3 from '../../data/images/Blob3.svg';
 import Arrow from '../../data/images/Arrow.svg';
 import { Button } from '../../components/Button/Button';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import './ProcessOverview.css';
 
@@ -41,9 +41,9 @@ type ProcessOverviewProps = {
 };
 export function ProcessOverview(props: ProcessOverviewProps) {
     const { content } = props;
-    const history = useHistory();
+    const navigate = useNavigate();
     const goToStep1 = () => {
-        history.push('/video');
+        navigate('/video');
     };
     return (
         <div className="ProcessOverview">

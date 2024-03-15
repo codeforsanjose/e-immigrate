@@ -6,7 +6,7 @@ import { Footer } from '../../compositions/Footer/Footer';
 import { LandingPage } from '../../compositions/LandingPage/LandingPage';
 import { Video } from '../../compositions/Video/Video';
 import { Questionnaire, QuestionnaireResponse } from '../../compositions/Questionnaire/Questionnaire/Questionnaire';
-import { Switch, Route, useHistory } from 'react-router-dom';
+import { Route, Routes, useNavigate } from 'react-router-dom';
 import { sendRequest } from '../../sendRequest/sendRequest';
 import { WorkshopScreening } from '../../compositions/WorkshopScreening/WorkshopScreening';
 import ProcessOverview from '../../compositions/ProcessOverview/ProcessOverview';
@@ -261,7 +261,7 @@ function MainContainer() {
     });
     const [content, setContent] = React.useState(LOCALSTORE_CONTENT);
 
-    const history = useHistory();
+    const navigate = useNavigate();
     const browserLanguage = getNavigatorLanguage();
 
     React.useEffect(() => {
@@ -327,7 +327,7 @@ function MainContainer() {
         };
         sendRequest(requestObj).then((response) => {
             console.log('success', response);
-            history.push('/confirmation');
+            navigate('/confirmation');
         });
     };
     function changeStep(nextStep: number) {
@@ -366,8 +366,8 @@ function MainContainer() {
                     />
                     <div className="main">
                         <div className="section">
-                            <Switch>
-                                <Route exact path="/">
+                            <Routes>
+                                <Route path="/">
                                     <LandingPage content={content} />
                                 </Route>
                                 <Route path="/eligibility">
@@ -421,7 +421,7 @@ function MainContainer() {
                                     />
                                     <Confirmation content={content} />
                                 </Route>
-                            </Switch>
+                            </Routes>
                         </div>
                         <Footer content={content} />
                     </div>

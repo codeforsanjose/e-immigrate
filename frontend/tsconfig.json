@@ -19,12 +19,12 @@
         "resolveJsonModule": true,
         "isolatedModules": true,
         "noEmit": true,
-        "ts-node": {
-            "compilerOptions": {
-                "module": "commonjs"
-            }
-        },
         "jsx": "react-jsx"
+    },
+    "ts-node": {
+        "compilerOptions": {
+            "module": "commonjs"
+        }
     },
     "include": [
         "src"

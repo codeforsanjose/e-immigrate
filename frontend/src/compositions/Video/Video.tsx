@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
-import YouTube, { Options } from 'react-youtube';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import YouTube from 'react-youtube';
 import { Button } from '../../components/Button/Button';
 import './Video.css';
 
-const opts: Options = {
+const opts = {
     height: '315',
     width: '560',
     playerVars: {
@@ -35,11 +35,11 @@ export function Video(props: VideoProps) {
         onStateChange = (event) => { },
     } = props;
     const hasWatchedVideo = videoState.hasWatchedVideo;
-    const history = useHistory();
+    const navigate = useNavigate();
     const goToStep2 = () => {
-        history.push('/questionnaire');
+        navigate('/questionnaire');
     };
-    const [watchingVideo, setWatchingVideo] = useState(false);
+    const [watchingVideo, setWatchingVideo] = React.useState(false);
     const onPlay = () => {
         setWatchingVideo(true);
     };

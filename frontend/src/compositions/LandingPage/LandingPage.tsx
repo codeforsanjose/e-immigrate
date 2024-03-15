@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from '../../components/Button/Button';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import image from '../../data/images/CiiT Logo.png';
 
 import './LandingPage.css';
@@ -20,9 +20,9 @@ export function LandingPage(props: LandingPageProps) {
     const {
         content,
     } = props;
-    const history = useHistory();
+    const navigate = useNavigate();
     const goToStep1 = () => {
-        history.push('/eligibility');
+        navigate('/eligibility');
     };
     return (
         <div className="LandingPage">

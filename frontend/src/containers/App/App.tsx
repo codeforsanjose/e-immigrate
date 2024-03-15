@@ -1,6 +1,6 @@
 import React from 'react';
 import MainContainer from '../MainContainer/MainContainer';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { Admin } from '../../compositions/Admin/Admin.js';
 import { AdminDashboard } from '../AdminDashboard/AdminDashboard';
 import { EditQuestionnaires } from '../EditQuestionnaires/EditQuestionnaires';
@@ -11,7 +11,7 @@ export default function App() {
     return (
         <Router>
             <div className="App">
-                <Switch>
+                <Routes>
                     <Route path="/dashboard">
                         <AdminDashboard 
                         />
@@ -25,7 +25,7 @@ export default function App() {
                     <Route path="/">
                         <MainContainer />
                     </Route>
-                </Switch>
+                </Routes>
             </div>
         </Router>
     );
