@@ -67,5 +67,3 @@ export function RadioWithFollowUp(props: RadioWithFollowUpProps) {
         </div>
     );
 };
-
-export default RadioWithFollowUp;

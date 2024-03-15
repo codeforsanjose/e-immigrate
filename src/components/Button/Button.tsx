@@ -4,13 +4,19 @@ import './Button.css';
 
 type ButtonProps = {
     label: string;
+    type?: HTMLButtonElement['type'];
     onClick?: React.MouseEventHandler<HTMLButtonElement>;
-    value: string;
+    value?: string;
 }
 export function Button(props: ButtonProps) {
-    const { label, onClick, value } = props;
+    const { 
+        label, 
+        onClick, 
+        value,
+        type: buttonType = 'button',
+    } = props;
     return (
-        <button className="buttonComponent" onClick={onClick} value={value}>
+        <button className="buttonComponent" type={buttonType} onClick={onClick} value={value}>
             {label}
         </button>
     );

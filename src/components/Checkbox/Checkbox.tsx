@@ -1,11 +1,11 @@
 import React from 'react';
 import './Checkbox.css';
 import { BindFieldFunction, CollectAnswerFunction, ContentData, QData } from '../../types/common';
-type InputValue = string | readonly string[] | number | undefined;
+type InputValue = string | string[] | number | undefined;
 type CheckboxProps = {
     attributes: {
         q: QData;
-        answers?: Array<string>;
+        answers?: Array<string> | undefined;
         values: Array<InputValue>;
         bindField: BindFieldFunction; 
         collectAnswer: CollectAnswerFunction;
@@ -13,9 +13,16 @@ type CheckboxProps = {
     };
 };
 export function Checkbox(props: CheckboxProps) {
-    const { attributes } = props;
-
-    const { q, answers, values, bindField, collectAnswer, content } = attributes;
+    const {
+        attributes: { 
+            q, 
+            answers, 
+            values, 
+            bindField, 
+            collectAnswer, 
+            content,
+        },
+    } = props;
     return (
         <div>
             {answers &&

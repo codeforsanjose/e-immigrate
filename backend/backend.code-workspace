@@ -7,10 +7,6 @@
 	"settings": {
 		"files.exclude": {
 			"node_modules/": true,
-			"backend/": true,
-			"charts/": true,
-			"deployments/": true,
-			"dump/": true,
 		},
 		// "typescript.preferences.importModuleSpecifierEnding": "js",
 		"typescript.tsdk": "node_modules\\typescript\\lib",

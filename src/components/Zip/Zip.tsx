@@ -12,7 +12,7 @@ type ZipProps = {
         };
     }
 };
-function Zip(props: ZipProps) {
+export function Zip(props: ZipProps) {
     const {
         attributes: { 
             q, 
@@ -45,5 +45,3 @@ function Zip(props: ZipProps) {
         </>
     );
 }
-
-export default Zip;

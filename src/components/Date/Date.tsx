@@ -3,12 +3,17 @@ import './Date.css';
 import { BindFieldFunction, ContentData, QData } from '../../types/common';
 
 type DateProps = {
-    q: QData;
-    bindField: BindFieldFunction;
-    content: ContentData;
+    attributes: {
+
+        q: QData;
+        bindField: BindFieldFunction;
+        content: ContentData;
+    };
 }
 export function Date(props: DateProps) {
-    const { q, bindField, content } = props;
+    const {
+        attributes: { q, bindField, content },
+    } = props;
     return (
         <>
             <input

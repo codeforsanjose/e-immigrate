@@ -13,8 +13,14 @@ type EmailProps = {
     };
 };
 export function Email(props: EmailProps) {
-    const { attributes } = props;
-    const { q, bindField, collectAnswer, content } = attributes;
+    const {
+        attributes: { 
+            q, 
+            bindField, 
+            collectAnswer, 
+            content,
+        },
+    } = props;
     return (
         <>
             <input

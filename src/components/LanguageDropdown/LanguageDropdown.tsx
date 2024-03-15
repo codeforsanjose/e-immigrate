@@ -2,14 +2,20 @@ import React from 'react';
 import LanguagePicker from './LanguagePicker.svg';
 import ChevronDown from './ChevronDown.svg';
 import { languageOptions } from '../../data/LanguageOptions';
-
+import classnames from "classnames";
 import './LanguageDropdown.css';
-type LanguageDropdownProps = {
+import { getEffectiveLanguage } from '../../utilities/languages/getEffectiveLanguage';
+type LanguageSelectProps = {
     language: string,
     setLanguage: (value: string) => void;
 };
-function LanguageSelect(props: LanguageDropdownProps) {
-    const { setLanguage, language } = props;
+
+function LanguageSelect(props: LanguageSelectProps) {
+    const { 
+        setLanguage, 
+        language: propLanguage,
+    } = props;
+    const language = getEffectiveLanguage(propLanguage);
     return (
         <div className="languageSelectContainer">
             <LanguagePicker
@@ -37,11 +43,20 @@ function LanguageSelect(props: LanguageDropdownProps) {
     );
 }
 
-
+type LanguageDropdownProps = {
+    className?: string;
+    language: string,
+    setLanguage: (value: string) => void;
+};
 export const LanguageDropdown = (props: LanguageDropdownProps) => {
-    const { language, setLanguage } = props;
+    const { 
+        language, 
+        setLanguage,
+        className,
+    } = props;
+    const effectiveClassName = classnames('languageDropdown', className);
     return (
-        <div className="languageDropdown">
+        <div className={effectiveClassName}>
             <div className="languageSelect">
                 <LanguageSelect setLanguage={setLanguage} language={language} />
             </div>
