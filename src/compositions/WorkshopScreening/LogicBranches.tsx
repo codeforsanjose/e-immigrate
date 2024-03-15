@@ -3,10 +3,10 @@ import { Question1 } from './Question1';
 import { Question2 } from './Question2';
 import { Question3 } from './Question3';
 import { BindFieldFunction, CollectAnswerFunction, QData } from '../../types/common';
-import { QuestionProps } from './QuestionTypes';
+import { QuestionProps, QuestionProps_Q } from './QuestionTypes';
 
 type Branch1Props = {
-    filteredQuestions: Array<QuestionProps['q']>;
+    filteredQuestions: Array<QuestionProps_Q>;
     bindField: BindFieldFunction;
     setQuestion2: QuestionProps['setQuestion'];
     setQuestion3: QuestionProps['setQuestion'];
@@ -80,7 +80,7 @@ function Branch2(props: Branch1Props) {
 }
 
 type LogicBranchesProps = {
-    filteredQuestions: Array<QuestionProps['q']>;
+    filteredQuestions: Array<QuestionProps_Q>;
     bindField: BindFieldFunction;
     content: QuestionProps['content'];
     collectAnswer: CollectAnswerFunction;

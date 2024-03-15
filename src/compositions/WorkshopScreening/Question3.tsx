@@ -31,7 +31,6 @@ const monthsRange = () => {
     return months;
 };
 type Question3Props = QuestionProps & {
-    // q?: QuestionProps['q'];
     setShowModal: (value: boolean) => void;
     date: number | Date;
     setDate: (value: number | Date) => void;

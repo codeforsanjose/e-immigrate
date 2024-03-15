@@ -17,6 +17,7 @@ import { Zip } from '../../../components/Zip/Zip';
 import './Questionnaire.css';
 import { ComponentPropsWithAttributes } from '../../../types/ComponentWithAttributes';
 import { CollectAnswerFunction } from '../../../types/common';
+import { FormElementName } from '../../../utilities/formElements';
 
 type Question = {
     category: string;
@@ -29,8 +30,8 @@ type Question = {
 };
 export type QuestionnaireResponse = Record<string, unknown>;
 type Content = {
-    required: boolean;
-    optional: boolean;
+    required: string;
+    optional: string;
     step2ProceedButton2: string;
     step2ProceedButton3: string;
     errorMessage?: string;
@@ -53,19 +54,6 @@ type QuestionnaireProps = {
     content: Content;
     collectAnswer: CollectAnswerFunction;
 };
-const formElements = {
-    checkbox: Checkbox,
-    date: Date,
-    email: Email,
-    phoneNumber: PhoneNumber,
-    radio: Radio,
-    radioWithFollowUp: RadioWithFollowUp,
-    dropDown: Select,
-    textArea: TextArea,
-    input: TextInput,
-    zip: Zip,
-};
-type FormElementName = keyof typeof formElements;
 // type FormElementComponent<TElementName extends FormElementName> = (typeof formElements)[TElementName];
 // type FormElementProps<TElementName extends FormElementName> = React.ComponentProps<FormElementComponent<TElementName>>['attributes'];
 // function getFormElementProps<

@@ -1,6 +1,6 @@
 export type ModalContent = {
-    screeningDateMarried: number | Date;
-    screeningDate: number | Date;
+    screeningDateMarried: string;
+    screeningDate: string;
     modalText1: string;
     modalText2: string;
     modalText3: string;

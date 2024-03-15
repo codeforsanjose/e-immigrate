@@ -7,6 +7,7 @@ import './WorkshopScreening.css';
 import { CollectAnswerFunction, QData } from '../../types/common';
 import { ModalContent } from './Modal/types';
 import { QuestionProps } from './QuestionTypes';
+import { GetQuestionsByLanguageElement } from '../../types/ApiResults';
 
 type WorkshopScreeningProps = {
     content: ModalContent & {
@@ -15,7 +16,7 @@ type WorkshopScreeningProps = {
         screeningHeader: string;
         screeningHeader2: string;
     }; 
-    questions: Array<NonNullable<QuestionProps['q']>>;
+    questions: Array<GetQuestionsByLanguageElement>;
     // questionnaireResponse, 
     // setQuestionnaireResponse, 
     collectAnswer: CollectAnswerFunction;
