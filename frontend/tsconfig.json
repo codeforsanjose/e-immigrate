@@ -1,0 +1,32 @@
+{
+    "compilerOptions": {
+        "target": "ES2021",
+        "outDir": "./dist/",
+        "lib": [
+            "dom",
+            "dom.iterable",
+            "ES2021.String"
+        ],
+        "allowJs": true,
+        "skipLibCheck": true,
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "strict": true,
+        "forceConsistentCasingInFileNames": true,
+        "noFallthroughCasesInSwitch": true,
+        "module": "esnext",
+        "moduleResolution": "node",
+        "resolveJsonModule": true,
+        "isolatedModules": true,
+        "noEmit": true,
+        "ts-node": {
+            "compilerOptions": {
+                "module": "commonjs"
+            }
+        },
+        "jsx": "react-jsx"
+    },
+    "include": [
+        "src"
+    ]
+}
