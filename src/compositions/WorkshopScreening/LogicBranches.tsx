@@ -17,7 +17,7 @@ type Branch1Props = {
     setDate: (value: number | Date) => void;
     collectAnswer: CollectAnswerFunction;
     content: QuestionProps['content'];
-}
+};
 function Branch1(props: Branch1Props) {
     const {
         filteredQuestions, 
@@ -40,7 +40,8 @@ function Branch1(props: Branch1Props) {
                 content={content}
                 collectAnswer={collectAnswer} />
         );
-    } else {
+    } 
+    else {
         return (
             <Question2
                 q={filteredQuestions[1]}
@@ -51,7 +52,6 @@ function Branch1(props: Branch1Props) {
         );
     }
 }
-
 
 function Branch2(props: Branch1Props) {
     const {
@@ -95,7 +95,7 @@ type LogicBranchesProps = {
     setQuestion2: QuestionProps['setQuestion'];
     question3: string | null;
     setQuestion3: QuestionProps['setQuestion'];
-}
+};
 export function LogicBranches(props: LogicBranchesProps) {
     const {
         content,
@@ -128,7 +128,8 @@ export function LogicBranches(props: LogicBranchesProps) {
                 content={content}
                 collectAnswer={collectAnswer} />
         );
-    } else if (question1 === 'No') {
+    } 
+    else if (question1 === 'No') {
         return (
             <Branch2
                 filteredQuestions={filteredQuestions}
@@ -143,7 +144,8 @@ export function LogicBranches(props: LogicBranchesProps) {
                 content={content}
                 collectAnswer={collectAnswer} />
         );
-    } else {
+    } 
+    else {
         return (
             <Question1
                 q={filteredQuestions[0]}

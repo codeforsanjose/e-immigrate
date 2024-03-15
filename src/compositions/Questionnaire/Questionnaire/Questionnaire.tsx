@@ -19,14 +19,14 @@ import { ComponentPropsWithAttributes } from '../../../types/ComponentWithAttrib
 import { CollectAnswerFunction } from '../../../types/common';
 
 type Question = {
-    category: string
+    category: string;
     required?: boolean;
     parentQuestionSlug?: string;
     answerSelections?: string;
     slug: string;
     text: string;
     questionType: FormElementName;
-}
+};
 export type QuestionnaireResponse = Record<string, unknown>;
 type Content = {
     required: boolean;
@@ -52,7 +52,7 @@ type QuestionnaireProps = {
     setQuestionnaireResponse: (value: QuestionnaireResponse) => void;
     content: Content;
     collectAnswer: CollectAnswerFunction;
-}
+};
 const formElements = {
     checkbox: Checkbox,
     date: Date,
@@ -138,13 +138,13 @@ type FormElementName = keyof typeof formElements;
 
 type FormElementWrapperProps<TElementName extends FormElementName> = {
     elementName: TElementName;
-    question: Question,
-    content: Content,
+    question: Question;
+    content: Content;
     others: {
         bindField: ReturnType<typeof useMarkFieldAsTouched>['bindField'];
         collectAnswer: CollectAnswerFunction;
-    },
-}
+    };
+};
 function FormElementWrapper<
     TElementName extends FormElementName,
 >(props: FormElementWrapperProps<TElementName>) {
@@ -187,34 +187,34 @@ function FormElementWrapper<
                     },
                 }}
             />
-        )
+        );
     }
     else if (elementName === 'dropDown') {
-        throw new Error(`Unsupported component '${componentName}'`)
+        throw new Error(`Unsupported component '${componentName}'`);
     }
     else if (elementName === 'email') {
-        throw new Error(`Unsupported component '${componentName}'`)
+        throw new Error(`Unsupported component '${componentName}'`);
     }
     else if (elementName === 'input') {
-        throw new Error(`Unsupported component '${componentName}'`)
+        throw new Error(`Unsupported component '${componentName}'`);
     }
     else if (elementName === 'phoneNumber') {
-        throw new Error(`Unsupported component '${componentName}'`)
+        throw new Error(`Unsupported component '${componentName}'`);
     }
     else if (elementName === 'radio') {
-        throw new Error(`Unsupported component '${componentName}'`)
+        throw new Error(`Unsupported component '${componentName}'`);
     }
     else if (elementName === 'radioWithFollowUp') {
-        throw new Error(`Unsupported component '${componentName}'`)
+        throw new Error(`Unsupported component '${componentName}'`);
     }
     else if (elementName === 'textArea') {
-        throw new Error(`Unsupported component '${componentName}'`)
+        throw new Error(`Unsupported component '${componentName}'`);
     }
     else if (elementName === 'zip') {
-        throw new Error(`Unsupported component '${componentName}'`)
+        throw new Error(`Unsupported component '${componentName}'`);
     }
     elementName satisfies never;
-    throw new Error(`Unsupported component '${componentName}'`)
+    throw new Error(`Unsupported component '${componentName}'`);
 }
 export function Questionnaire(props: QuestionnaireProps) {
     const {
@@ -236,30 +236,30 @@ export function Questionnaire(props: QuestionnaireProps) {
     const [showFollowUp, setShowFollowUp] = React.useState<Record<string, boolean>>({});
 
     const filteredQuestions = questions.filter(
-        (q) => q.category === categories[categoryIndex]
+        (q) => q.category === categories[categoryIndex],
     );
 
-    const attributes = (q: {
-        answerSelections?: string;
-    }) => {
-        const answers = q.answerSelections
-            ? q.answerSelections.split(',\n ').join(', ')
-            : null;
-        return {
-            q: q,
-            bindField: bindField,
-            collectAnswer: collectAnswer,
-            content: content,
-            answers: answers != null ? answers.split(', ') : null,
-            selectAnswers: answers != null
-                ? ['--', ...answers.split(', ')]
-                : null,
-            values: answers != null ? answers.split(', ') : null,
-            showFollowUp: showFollowUp,
-            setShowFollowUp: setShowFollowUp,
-            setErrors: setErrors,
-        };
-    };
+    // const attributes = (q: {
+    //     answerSelections?: string;
+    // }) => {
+    //     const answers = (q.answerSelections != null)
+    //         ? q.answerSelections.split(',\n ').join(', ')
+    //         : null;
+    //     return {
+    //         q,
+    //         bindField: bindField,
+    //         collectAnswer: collectAnswer,
+    //         content: content,
+    //         answers: answers != null ? answers.split(', ') : null,
+    //         selectAnswers: answers != null
+    //             ? ['--', ...answers.split(', ')]
+    //             : null,
+    //         values: answers != null ? answers.split(', ') : null,
+    //         showFollowUp: showFollowUp,
+    //         setShowFollowUp: setShowFollowUp,
+    //         setErrors: setErrors,
+    //     };
+    // };
 
     const onSubmit = () => {
         submitQuestionnaireResponse(questionnaireResponse);
@@ -269,16 +269,18 @@ export function Questionnaire(props: QuestionnaireProps) {
     }) => {
         e.preventDefault();
         const allRequiredFieldsCompleted = filteredQuestions.every((q) => {
-            if (q.required && !questionnaireResponse[q.slug]) {
-                if (q.parentQuestionSlug) {
+            if ((q.required ?? false) && !(Boolean(questionnaireResponse[q.slug]))) {
+                if (q.parentQuestionSlug != null) {
                     if (questionnaireResponse[q.parentQuestionSlug] === 'Yes') {
                         return false;
-                    } else {
+                    }
+                    else {
                         return true;
                     }
                 }
                 return false;
-            } else {
+            }
+            else {
                 return true;
             }
         });
@@ -286,50 +288,55 @@ export function Questionnaire(props: QuestionnaireProps) {
         if (allRequiredFieldsCompleted) {
             if (categoryIndex < categories.length - 1) {
                 setCategoryIndex((prev) => prev + 1);
-            } else {
-                return onSubmit();
             }
-        } else {
+            else {
+                onSubmit();
+                return;
+            }
+        }
+        else {
             alert(`Please complete every question`);
         }
     };
     return (
         <div className="Questionnaire">
-            {introPage ? (
-                <QuestionnaireIntro
-                    content={content}
-                    setIntroPage={setIntroPage} />
-            ) : (
-                <>
+            {introPage
+                ? (
+                    <QuestionnaireIntro
+                        content={content}
+                        setIntroPage={setIntroPage} />
+                )
+                : (
                     <>
-                        {filteredQuestions.map((question) => {
-                            const followUpQuestions = filteredQuestions.filter(
-                                (q) => q.parentQuestionSlug === question.slug
-                            );
-                            if (question.parentQuestionSlug) {
-                                return null;
-                            }
-                            return (
-                                <div key={question.slug}>
-                                    <fieldset className="Question">
-                                        <div className="QuestionText">
-                                            {question.text}
-                                            {question.required
-                                                ? ` (${content.required})`
-                                                : ` (${content.optional})`}
-                                        </div>
-                                        <FormElementWrapper
-                                            elementName={question.questionType}
-                                            content={content}
-                                            others={{
-                                                bindField,
-                                                collectAnswer,
-                                            }}
-                                            question={question}
-                                        />
+                        <>
+                            {filteredQuestions.map((question) => {
+                                const followUpQuestions = filteredQuestions.filter(
+                                    (q) => q.parentQuestionSlug === question.slug,
+                                );
+                                if (question.parentQuestionSlug != null) {
+                                    return null;
+                                }
+                                return (
+                                    <div key={question.slug}>
+                                        <fieldset className="Question">
+                                            <div className="QuestionText">
+                                                {question.text}
+                                                {(question.required ?? false)
+                                                    ? ` (${content.required})`
+                                                    : ` (${content.optional})`}
+                                            </div>
+                                            <FormElementWrapper
+                                                elementName={question.questionType}
+                                                content={content}
+                                                others={{
+                                                    bindField,
+                                                    collectAnswer,
+                                                }}
+                                                question={question}
+                                            />
                                         
-                                    </fieldset>
-                                    {showFollowUp[question.slug] &&
+                                        </fieldset>
+                                        {showFollowUp[question.slug] &&
                                         followUpQuestions.map(
                                             (followUpQuestion) => {
                                                 return (
@@ -343,7 +350,7 @@ export function Questionnaire(props: QuestionnaireProps) {
                                                         <fieldset className="Question">
                                                             <div className="QuestionText">
                                                                 {followUpQuestion.text}
-                                                                {followUpQuestion.required
+                                                                {(followUpQuestion.required ?? false)
                                                                     ? ` (${content.required})`
                                                                     : ` (${content.optional})`}
                                                             </div>
@@ -359,21 +366,20 @@ export function Questionnaire(props: QuestionnaireProps) {
                                                         </fieldset>
                                                     </div>
                                                 );
-                                            }
+                                            },
                                         )}
-                                </div>
-                            );
-                        })}
+                                    </div>
+                                );
+                            })}
+                        </>
+                        <Button
+                            label={categoryIndex < categories.length - 1
+                                ? content.step2ProceedButton2
+                                : content.step2ProceedButton3}
+                            type="submit"
+                            onClick={nextStep} />
                     </>
-                    <Button
-                        label={categoryIndex < categories.length - 1
-                            ? content.step2ProceedButton2
-                            : content.step2ProceedButton3}
-                        type="submit"
-                        onClick={nextStep} />
-                </>
-            )}
+                )}
         </div>
     );
 }
-

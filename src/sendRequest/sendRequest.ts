@@ -15,12 +15,12 @@ function getEffectiveHeaders(headers: HeadersInit, browser_gen_content_type: boo
     return actualHeaders;
 }
 type RequestObject = RequestInit & {
-  url: URL | RequestInfo;
-}
+    url: URL | RequestInfo;
+};
 export async function sendRequest<TResponse = unknown>(
     requestObj: RequestObject,
     headers: HeadersInit = DEFAULT_HEADERS,
-    browser_gen_content_type = false
+    browser_gen_content_type = false,
 ): Promise<TResponse> {
     const {
         url,
@@ -33,4 +33,3 @@ export async function sendRequest<TResponse = unknown>(
     });
     return await data.json();
 }
-

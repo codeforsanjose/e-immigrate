@@ -25,7 +25,8 @@ type VideoProps = {
     };
     onEnd?: () => void;
     onStateChange?: (event: unknown) => void; 
-}
+};
+
 export function Video(props: VideoProps) {
     const {
         content,
@@ -34,7 +35,7 @@ export function Video(props: VideoProps) {
         onStateChange = (event) => { },
     } = props;
     const hasWatchedVideo = videoState.hasWatchedVideo;
-    let history = useHistory();
+    const history = useHistory();
     const goToStep2 = () => {
         history.push('/questionnaire');
     };

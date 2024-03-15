@@ -14,14 +14,14 @@ import { WithEventTarget } from '../../types/WithEventTarget';
 import { defaultCompare } from '../../utilities/defaultCompare';
 import { useHistory } from 'react-router-dom';
 const {
-  getQuestionnaireResponse,
-  emailQuestionnaireResponse,
-  generateResponsesExcel,
-  getQuestions,
-  agencyAssignURL,
-  assignResponseFlag,
-  assignEmail,
-  deleteQuestionnaireResponse,
+    getQuestionnaireResponse,
+    emailQuestionnaireResponse,
+    generateResponsesExcel,
+    getQuestions,
+    agencyAssignURL,
+    assignResponseFlag,
+    assignEmail,
+    deleteQuestionnaireResponse,
 } = apis;
 const DESCRIPTIVE_TIMESTAMP = 'MM/dd/yyyy, h:mm:ss a';
 const AGENCIES = ['ALA', 'CAIR', 'CC', 'CET', 'IRC', 'PARS'];
@@ -34,7 +34,7 @@ const questionKeysThatAreNotRedFlagsButInARedFlagQuestionnaire = [
     'green_card_through_marriage',
 ];
 
-function isAgencyObject(value: unknown): value is { agency: string } {
+function isAgencyObject(value: unknown): value is { agency: string, } {
     if (value == null) return false;
     else if (typeof value !== 'object') return false;
     if (!('agency' in value)) return false;
@@ -42,10 +42,10 @@ function isAgencyObject(value: unknown): value is { agency: string } {
 }
 type QuestionnaireResponseElement = {
     _id: string;
-    responseDownloadedToExcel: unknown;
-    questionnaireResponse: Record<string, string>,
+    responseDownloadedToExcel: boolean;
+    questionnaireResponse: Record<string, string>;
     flagOverride?: boolean;
-    flag?: unknown;
+    flag?: boolean;
     agency: string;
     emailSent?: boolean;
     createdAt: number | Date;
@@ -69,8 +69,10 @@ export function AdminDashboard() {
         setLoading(true);
         const jwt = getAuthToken();
         if (jwt === null) {
-            return history.push('/login');
-        } else {
+            history.push('/login');
+            return;
+        }
+        else {
             const requestObj = {
                 url: getQuestionnaireResponse,
             };
@@ -84,21 +86,21 @@ export function AdminDashboard() {
                 const updatedResponses = responses
                     .map((item) => {
                         const { questionnaireResponse = {} } = item;
-                        const newFlag = item.flagOverride
+                        const newFlag = (item.flagOverride ?? false)
                             ? item.flag
                             : Object.entries(questionnaireResponse).reduce(
                                 (acc, stuff) => {
                                     const [key, value] = stuff;
                                     return !questionKeysThatAreNotRedFlagsButInARedFlagQuestionnaire.includes(
-                                        key
+                                        key,
                                     )
-                                        ? value &&
+                                        ? (value.length > 0) &&
                                             value.toUpperCase() === 'YES'
                                             ? true
                                             : acc
                                         : acc;
                                 },
-                                false
+                                false,
                             );
                         return {
                             ...item,
@@ -118,21 +120,21 @@ export function AdminDashboard() {
         }
     }, [history]);
 
-    const toggleFlag = (index: number) => {
+    const toggleFlag = React.useCallback((index: number) => {
         const updatedResponses = questionnaireResponses.map(
             (item, responseIndex) => {
                 return {
                     ...item,
-                    flag: responseIndex === index ? !item.flag : item.flag,
+                    flag: responseIndex === index ? !(item.flag ?? false) : item.flag,
                     flagOverride: true,
                 };
-            }
+            },
         );
         const responseToUpdate = updatedResponses.reduce(
             (accumulator, item, responseIndex) => {
                 return responseIndex === index ? item : accumulator;
             },
-            {}
+            {},
         );
         const requestObj = {
             url: assignResponseFlag,
@@ -148,21 +150,21 @@ export function AdminDashboard() {
         sendRequest(requestObj, headers).then((response) => {
             setQuestionnaireResponses(updatedResponses);
         });
-    };
-    const resetEmail = (index: number) => {
+    }, [questionnaireResponses]);
+    const resetEmail = React.useCallback((index: number) => {
         const updatedResponses = questionnaireResponses.map(
             (item, responseIndex) => {
                 return {
                     ...item,
                     emailSent: responseIndex === index ? false : item.emailSent,
                 };
-            }
+            },
         );
         const responseToUpdate = updatedResponses.reduce(
             (accumulator, item, responseIndex) => {
                 return responseIndex === index ? item : accumulator;
             },
-            {}
+            {},
         );
         const requestObj = {
             url: assignEmail,
@@ -178,7 +180,7 @@ export function AdminDashboard() {
         sendRequest(requestObj, headers).then((response) => {
             setQuestionnaireResponses(updatedResponses);
         });
-    };
+    }, [questionnaireResponses]);
     const flagOverviewMarkup = React.useMemo(() => {
         return (
             <div className="flag-dashboard-card">
@@ -187,7 +189,7 @@ export function AdminDashboard() {
                     <span>Red:</span>
                     <span className="text-red bold">
                         {questionnaireResponses.filter(
-                            (response) => response.flag === true
+                            (response) => response.flag === true,
                         ).length}
                     </span>
                 </div>
@@ -195,7 +197,7 @@ export function AdminDashboard() {
                     Green:{' '}
                     <span className="text-green bold">
                         {questionnaireResponses.filter(
-                            (response) => response.flag === false
+                            (response) => response.flag === false,
                         ).length}
                     </span>
                 </div>
@@ -221,18 +223,18 @@ export function AdminDashboard() {
                                 <div className="sum text-red bold">
                                     {questionnaireResponses.filter(
                                         (response) => response.agency === agency &&
-                                            response.flag === true
+                                            response.flag === true,
                                     ).length}
                                 </div>
                                 <div className="sum text-green bold">
                                     {questionnaireResponses.filter(
                                         (response) => response.agency === agency &&
-                                            response.flag === false
+                                            response.flag === false,
                                     ).length}
                                 </div>
                                 <div className="sum bold">
                                     {questionnaireResponses.filter(
-                                        (response) => response.agency === agency
+                                        (response) => response.agency === agency,
                                     ).length}
                                 </div>
                             </div>
@@ -243,21 +245,23 @@ export function AdminDashboard() {
         );
     }, [questionnaireResponses]);
 
-    const firstOption = (
-        <option key="agency-initial" value="">
-            Please select
-        </option>
-    );
-    const agenciesOptions = AGENCIES.map((agency, index) => {
-        return (
-            <option key={`agency-${index}`} value={agency}>
-                {agency}
+    const allOptions = React.useMemo(() => {
+        const firstOption = (
+            <option key="agency-initial" value="">
+                Please select
             </option>
         );
-    });
-    const allOptions = [firstOption, agenciesOptions];
+        const agenciesOptions = AGENCIES.map((agency, index) => {
+            return (
+                <option key={`agency-${index}`} value={agency}>
+                    {agency}
+                </option>
+            );
+        });
+        return [firstOption, agenciesOptions];
+    }, []);
 
-    const assignResponseAgency = (e: WithEventTarget<string>, resIndex: number) => {
+    const assignResponseAgency = React.useCallback((e: WithEventTarget<string>, resIndex: number) => {
         const updatedResponses = questionnaireResponses.map((item, index) => {
             return resIndex === index
                 ? {
@@ -285,7 +289,7 @@ export function AdminDashboard() {
             console.log('wow agency success response', response);
             setQuestionnaireResponses(updatedResponses);
         });
-    };
+    }, [questionnaireResponses]);
 
     const sortFlags = () => {
         flagOrder
@@ -302,12 +306,12 @@ export function AdminDashboard() {
             ? sortAscendingUndefined(
                 'responseDownloadedToExcel',
                 downloadOrder,
-                setDownloadOrder
+                setDownloadOrder,
             )
             : sortDescendingUndefined(
                 'responseDownloadedToExcel',
                 downloadOrder,
-                setDownloadOrder
+                setDownloadOrder,
             );
     };
     const sortCreated = () => {
@@ -340,8 +344,8 @@ export function AdminDashboard() {
     };
     const sortAscendingUndefined: SortFunction = (property, headerState, setHeaderState) => {
         const sortedResponses = questionnaireResponses.sort((a, b) => {
-            if (a[property] && !b[property]) return -1;
-            if (!a[property] && b[property]) return 1;
+            if ((Boolean(a[property])) && !(Boolean(b[property]))) return -1;
+            if (!(Boolean(a[property])) && (Boolean(b[property]))) return 1;
             return 0;
         });
         setQuestionnaireResponses(sortedResponses);
@@ -349,24 +353,24 @@ export function AdminDashboard() {
     };
     const sortDescendingUndefined: SortFunction = (property, headerState, setHeaderState) => {
         const sortedResponses = questionnaireResponses.sort((a, b) => {
-            if (a[property] && !b[property]) return 1;
-            if (!a[property] && b[property]) return -1;
+            if ((Boolean(a[property])) && !(Boolean(b[property]))) return 1;
+            if (!(Boolean(a[property])) && (Boolean(b[property]))) return -1;
             return 0;
         });
         setQuestionnaireResponses(sortedResponses);
         setHeaderState(!headerState);
     };
-    const softDeleteResponse = (resIndex: number) => {
+    const softDeleteResponse = React.useCallback((resIndex: number) => {
         const confirmBox = window.confirm(
-            'Do you really want to delete this questionnaire response?'
+            'Do you really want to delete this questionnaire response?',
         );
-        if (confirmBox === false) {
+        if (!confirmBox) {
             return;
         }
 
         const response_id = questionnaireResponses[resIndex]._id;
         const updatedResponses = questionnaireResponses.filter(
-            (item, index) => resIndex !== index
+            (item, index) => resIndex !== index,
         );
 
         const requestObj = {
@@ -384,25 +388,24 @@ export function AdminDashboard() {
             .catch((err) => {
                 console.log(
                     `error soft-deleting questionnaire response ${response_id}`,
-                    err
+                    err,
                 );
             });
-    };
+    }, [questionnaireResponses]);
 
     const responsesMarkup = React.useMemo(() => {
-        let filterQuestionnaireResponses = searchArrayObjects(
+        const filterQuestionnaireResponses = searchArrayObjects(
             questionnaireResponses,
             `questionnaireResponse.${filterBy}`,
             searchTerm,
-            3
+            3,
         );
         return filterQuestionnaireResponses.map((response, index) => {
             const { questionnaireResponse = {} } = response;
             const fullLangText = languageOptions.find(
-                (item) => item.code === questionnaireResponse['languageCode']
+                (item) => item.code === questionnaireResponse.languageCode,
             );
-            const langDisplay = (fullLangText && fullLangText.englishName) ||
-                `Unknown  ${questionnaireResponse['languageCode']}`;
+            const langDisplay = (fullLangText?.englishName) ?? `Unknown  ${questionnaireResponse.languageCode}`;
             const languageMarkupQuestion = (
                 <article key={`td-answer-lang-${index}`} className={`answer `}>
                     <span>
@@ -418,40 +421,42 @@ export function AdminDashboard() {
                 >
                     <span>
                         contact with police:
-                        {questionnaireResponse['contact_with_police']}
+                        {questionnaireResponse.contact_with_police}
                     </span>
                 </article>
             );
-            const policeExplinationMarkupQuestion = questionnaireResponse['contact_with_police_explanation'] ? (
-                <article
-                    key={`td-answer-police-exp-${index}`}
-                    className={`answer  contact-with-police-explain`}
-                >
-                    <span>
+            const policeExplinationMarkupQuestion = (questionnaireResponse.contact_with_police_explanation.length > 0)
+                ? (
+                    <article
+                        key={`td-answer-police-exp-${index}`}
+                        className={`answer  contact-with-police-explain`}
+                    >
+                        <span>
                         police explination:
-                        {questionnaireResponse['contact_with_police_explanation']}
-                    </span>
-                </article>
-            ) : null;
+                            {questionnaireResponse.contact_with_police_explanation}
+                        </span>
+                    </article>
+                )
+                : null;
             const alreadyQuestionKeyMarkupedUp = [
                 'languageCode',
                 'contact_with_police',
                 'contact_with_police_explanation',
             ];
-            const allAnswers = Object.keys(questionnaireResponse)
-                .reduce((accumulator, questionKey, index) => {
-                    const flagIt = !questionKeysThatAreNotRedFlagsButInARedFlagQuestionnaire.includes(
-                        questionKey
-                    )
-                        ? questionnaireResponse[questionKey] &&
+            const allAnswers = Object.keys(questionnaireResponse).reduce<Array<JSX.Element>>((accumulator, questionKey, index) => {
+                const flagIt = !questionKeysThatAreNotRedFlagsButInARedFlagQuestionnaire.includes(
+                    questionKey,
+                )
+                    ? (questionnaireResponse[questionKey].length > 0) &&
                             questionnaireResponse[questionKey].toUpperCase() ===
                             'YES'
-                            ? 'red-outline'
-                            : 'green-outline'
-                        : 'green-outline';
-                    const answerMarkup = !alreadyQuestionKeyMarkupedUp.includes(
-                        questionKey
-                    ) ? (
+                        ? 'red-outline'
+                        : 'green-outline'
+                    : 'green-outline';
+                const answerMarkup = !alreadyQuestionKeyMarkupedUp.includes(
+                    questionKey,
+                )
+                    ? (
                         <article
                             key={`td-answer-${index}`}
                             className={`answer ${flagIt}`}
@@ -462,11 +467,12 @@ export function AdminDashboard() {
                                 {questionnaireResponse[questionKey]}
                             </span>
                         </article>
-                    ) : null;
-                    return answerMarkup
-                        ? [...accumulator, answerMarkup]
-                        : accumulator;
-                }, [] as Array<JSX.Element>);
+                    )
+                    : null;
+                return (answerMarkup != null)
+                    ? [...accumulator, answerMarkup]
+                    : accumulator;
+            }, []);
             const allTheAnswers = [
                 languageMarkupQuestion,
                 policeMarkupQuestion,
@@ -480,19 +486,19 @@ export function AdminDashboard() {
                         Created:{' '}
                         {format(
                             new Date(response.createdAt),
-                            DESCRIPTIVE_TIMESTAMP
+                            DESCRIPTIVE_TIMESTAMP,
                         )}
                     </td>
                     <td>
                         Updated:{' '}
                         {format(
                             new Date(response.updatedAt),
-                            DESCRIPTIVE_TIMESTAMP
+                            DESCRIPTIVE_TIMESTAMP,
                         )}
                     </td>
                     <td>
                         <div
-                            className={`flag ${response.flag ? 'red' : 'green'}`}
+                            className={`flag ${(response.flag ?? false) ? 'red' : 'green'}`}
                             onClick={(e) => toggleFlag(index)}
                         ></div>
                     </td>
@@ -507,7 +513,7 @@ export function AdminDashboard() {
                         </select>
                     </td>
                     <td>
-                        <span>{response.emailSent ? 'Yes' : 'No'}</span>
+                        <span>{(response.emailSent ?? false) ? 'Yes' : 'No'}</span>
                         <button onClick={(e) => resetEmail(index)}>
                             RESET
                         </button>
@@ -530,16 +536,7 @@ export function AdminDashboard() {
                 </tr>
             );
         });
-    }, [
-        questionnaireResponses,
-        flagOrder,
-        emailOrder,
-        downloadOrder,
-        createdOrder,
-        updatedOrder,
-        filterBy,
-        searchTerm,
-    ]);
+    }, [questionnaireResponses, filterBy, searchTerm, allOptions, toggleFlag, assignResponseAgency, resetEmail, softDeleteResponse]);
 
     const responsesTable = (
         <table className="responses">
@@ -609,7 +606,7 @@ export function AdminDashboard() {
                 setLoading(false);
                 console.log(
                     'send emails to users failed errors is',
-                    JSON.stringify(errors)
+                    JSON.stringify(errors),
                 );
             });
     };
@@ -633,7 +630,7 @@ export function AdminDashboard() {
             url: generateResponsesExcel,
             method: 'POST',
             body: JSON.stringify({
-                questions: questions,
+                questions,
                 responses: [],
                 downloadAll: false,
             }),
@@ -649,10 +646,10 @@ export function AdminDashboard() {
             .catch((errors) => {
                 console.log(
                     'Error writing the exel sheet',
-                    JSON.stringify(errors)
+                    JSON.stringify(errors),
                 );
                 alert(
-                    'Error writing the exel sheet please contact administrator.'
+                    'Error writing the exel sheet please contact administrator.',
                 );
             });
     };
@@ -666,7 +663,7 @@ export function AdminDashboard() {
             url: generateResponsesExcel,
             method: 'POST',
             body: JSON.stringify({
-                questions: questions,
+                questions,
                 responses: [],
                 downloadAll: true,
             }),
@@ -682,10 +679,10 @@ export function AdminDashboard() {
             .catch((errors) => {
                 console.log(
                     'Error writing the exel sheet',
-                    JSON.stringify(errors)
+                    JSON.stringify(errors),
                 );
                 alert(
-                    'Error writing the exel sheet please contact administrator.'
+                    'Error writing the exel sheet please contact administrator.',
                 );
             });
     };
@@ -694,14 +691,16 @@ export function AdminDashboard() {
         const requestObj = {
             url: `${getQuestions}/${workshopTitle}.en`,
         };
-        sendRequest<{ questions: Array<string> }>(requestObj).then((response) => {
+        sendRequest<{ questions: Array<string>, }>(requestObj).then((response) => {
             setQuestions(response.questions);
         });
     }, []);
 
-    const loadingMarkup = loading ? (
-        <div className="loading is-vcentered">Loading...</div>
-    ) : null;
+    const loadingMarkup = loading
+        ? (
+            <div className="loading is-vcentered">Loading...</div>
+        )
+        : null;
 
     return (
         <section>
@@ -765,4 +764,3 @@ export function AdminDashboard() {
         </section>
     );
 }
-

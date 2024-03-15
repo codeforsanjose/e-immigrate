@@ -10,21 +10,21 @@ import { QuestionProps } from './QuestionTypes';
 import { WithPreventDefault } from "../../types/WithPreventDefault";
 import { CollectAnswerFunction } from '../../types/common';
 const yearsRange = () => {
-    let years = [];
+    const years = [];
     for (let i = 1900; i < 2023; i++) {
         years.push(i);
     }
     return years;
 };
 const daysRange = () => {
-    let days = [];
+    const days = [];
     for (let i = 1; i <= 31; i++) {
         days.push(i);
     }
     return days;
 };
 const monthsRange = () => {
-    let months = [];
+    const months = [];
     for (let i = 1; i <= 12; i++) {
         months.push(i);
     }
@@ -46,7 +46,7 @@ type Question3Props = QuestionProps & {
 function tryGetBulmaCalendar(element?: Element | null | undefined): bulmaCalendar | undefined {
     if (element == null) return;
     if (!('bulmaCalendar' in element)) return;
-    return element.bulmaCalendar as unknown as bulmaCalendar;
+    return element.bulmaCalendar as bulmaCalendar;
 }
 export function Question3(props: Question3Props) {
     const {
@@ -69,7 +69,7 @@ export function Question3(props: Question3Props) {
         const maxDate = new Date();
         
         const calendars = bulmaCalendar.attach('[type="date"]', {
-            maxDate: maxDate,
+            maxDate,
             closeOnSelect: true,
             toggleOnInputClick: true,
             type: 'date',
@@ -99,98 +99,95 @@ export function Question3(props: Question3Props) {
                 const value = datepicker.data.value();
                 console.log(`BULMACALENDAR 'select' event has a date value of`, {
                     value,
-                })
-                console.error(`BULMACALENDAR 'select' event's date value is not parseable by Date! using 'startDate' for now`)
+                });
+                console.error(`BULMACALENDAR 'select' event's date value is not parseable by Date! using 'startDate' for now`);
                 const selectedDate = new Date(value.startDate);
                 setDate(selectedDate);
             });
         }
-    }, []);
-    if (q) {
-        const onClick = (e: WithPreventDefault) => {
-            e.preventDefault();
-            if (date) {
-                collectAnswer(q.slug, date);
-                setShowModal(true);
-            }
-        };
-        const bulmaCssCalendar = (
-            <div className="bulma-calendar-container is-mobile">
-                <input id="date-selection" type="date" />
-                <div className="RequiredError">*{content.errorMessage}</div>
-                <Button
-                    type="submit"
-                    label={content.screeningProceedButton}
-                    onClick={onClick} />
-            </div>
-        );
+    }, [setDate]);
+    if (q == null) return null;
+    const onClick = (e: WithPreventDefault) => {
+        e.preventDefault();
+        if (date != null) {
+            collectAnswer(q.slug, date);
+            setShowModal(true);
+        }
+    };
+    const bulmaCssCalendar = (
+        <div className="bulma-calendar-container is-mobile">
+            <input id="date-selection" type="date" />
+            <div className="RequiredError">*{content.errorMessage}</div>
+            <Button
+                type="submit"
+                label={content.screeningProceedButton}
+                onClick={onClick} />
+        </div>
+    );
 
-        const selectDay = (e: React.ChangeEvent<HTMLSelectElement>) => {
-            const value = e.target.value;
-            setDay(parseInt(value));
-        };
-        const selectMonth = (e: React.ChangeEvent<HTMLSelectElement>) => {
-            const value = e.target.value;
-            setMonth(parseInt(value));
-        };
-        const selectYear = (e: React.ChangeEvent<HTMLSelectElement>) => {
-            const value = e.target.value;
-            setYear(parseInt(value));
-        };
-        const daysOptions = daysRange().map((item, index) => {
-            return (
-                <option key={`day-option-${index}`} value={item}>
-                    {item}
-                </option>
-            );
-        });
-        const monthsOptions = monthsRange().map((item, index) => {
-            return (
-                <option key={`month-option-${index}`} value={item}>
-                    {item}
-                </option>
-            );
-        });
-        const yearsOptions = yearsRange().map((item, index) => {
-            return (
-                <option key={`year-option-${index}`} value={item}>
-                    {item}
-                </option>
-            );
-        });
-        const simpleCalendarContainer = (
-            <section className="simple-calendar-container">
-                <h3>Format: dd/mm/yyyy</h3>
-                <h4>
-                    {day} / {month} / {year}
-                </h4>
-                <section className="day-selection">
-                    <label>
-                        Day: <select onChange={selectDay}>{daysOptions}</select>
-                    </label>
-                </section>
-                <section className="month-selection">
-                    <label>
-                        Month:{' '}
-                        <select onChange={selectMonth}>{monthsOptions}</select>
-                    </label>
-                </section>
-                <section className="year-selection">
-                    <label>
-                        Year:
-                        <select onChange={selectYear}>{yearsOptions}</select>
-                    </label>
-                </section>
-                <button onClick={onClick}>{`--->`}</button>
-            </section>
-        );
+    const selectDay = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const value = e.target.value;
+        setDay(parseInt(value));
+    };
+    const selectMonth = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const value = e.target.value;
+        setMonth(parseInt(value));
+    };
+    const selectYear = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const value = e.target.value;
+        setYear(parseInt(value));
+    };
+    const daysOptions = daysRange().map((item, index) => {
         return (
-            <div className="DatePicker">
-                <div className="QuestionText">{q.text}</div>
-                {bulmaCssCalendar}
-            </div>
+            <option key={`day-option-${index}`} value={item}>
+                {item}
+            </option>
         );
-    } else {
-        return null;
-    }
+    });
+    const monthsOptions = monthsRange().map((item, index) => {
+        return (
+            <option key={`month-option-${index}`} value={item}>
+                {item}
+            </option>
+        );
+    });
+    const yearsOptions = yearsRange().map((item, index) => {
+        return (
+            <option key={`year-option-${index}`} value={item}>
+                {item}
+            </option>
+        );
+    });
+    const simpleCalendarContainer = (
+        <section className="simple-calendar-container">
+            <h3>Format: dd/mm/yyyy</h3>
+            <h4>
+                {day} / {month} / {year}
+            </h4>
+            <section className="day-selection">
+                <label>
+                    Day: <select onChange={selectDay}>{daysOptions}</select>
+                </label>
+            </section>
+            <section className="month-selection">
+                <label>
+                    Month:{' '}
+                    <select onChange={selectMonth}>{monthsOptions}</select>
+                </label>
+            </section>
+            <section className="year-selection">
+                <label>
+                    Year:
+                    <select onChange={selectYear}>{yearsOptions}</select>
+                </label>
+            </section>
+            <button onClick={onClick}>{`--->`}</button>
+        </section>
+    );
+    return (
+        <div className="DatePicker">
+            <div className="QuestionText">{q.text}</div>
+            {bulmaCssCalendar}
+        </div>
+    );
 }

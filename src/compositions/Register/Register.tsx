@@ -5,10 +5,8 @@ import { Redirect } from 'react-router-dom';
 
 import '../Login/LoginRegister.css';
 const { registerApi } = apis;
-type RegisterProps = {
 
-};
-export function Register(props: RegisterProps) {
+export function Register() {
     const [registerBoxState, setRegisterBoxState] = React.useState({
         email: '',
         password: '',
@@ -16,7 +14,7 @@ export function Register(props: RegisterProps) {
         loggedIn: false,
     });
 
-    let requestObj = {
+    const requestObj = {
         url: registerApi,
         method: 'POST',
         headers: {
@@ -34,7 +32,7 @@ export function Register(props: RegisterProps) {
             jwt?: string;
             name?: string;
         }>(requestObj).then((body) => {
-            if (body.jwt && body.name) {
+            if (body.jwt != null && body.name != null) {
                 const _name = body.name;
                 localStorage.setItem('jwt-eimmigrate', body.jwt);
                 setRegisterBoxState(current => {

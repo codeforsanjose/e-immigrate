@@ -1,4 +1,5 @@
 export const getAuthToken = () => {
     const jwt = localStorage.getItem('jwt-eimmigrate');
-    return jwt ? jwt : null;
+    if (jwt == null || jwt === '') return null;
+    return jwt;
 };

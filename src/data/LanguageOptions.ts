@@ -80,7 +80,7 @@ export const languageOptions = [
     },
 ];
 
-const languageOptionsOld = [
+export const languageOptionsOld = [
     {
         code: 'en',
         full: 'English',

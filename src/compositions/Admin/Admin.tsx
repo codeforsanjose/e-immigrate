@@ -22,7 +22,8 @@ export function Admin() {
 
     if (adminState.isLoginOpen) {
         loginClassName = 'tab selected-tab';
-    } else {
+    } 
+    else {
         registerClassName = 'tab selected-tab';
     }
 

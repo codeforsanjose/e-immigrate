@@ -15,7 +15,7 @@ type StepProps = {
     content: Record<string, string>;
     stepNumber: number | string;
     children?: React.ReactNode;
-}
+};
 function Step(props: StepProps) {
     const { content, stepNumber, children } = props;
     const step = `step${stepNumber}Header`;
@@ -38,10 +38,10 @@ type ProcessOverviewProps = {
         stepsHeader3: string;
         stepsProceedButton: string;
     };
-}
+};
 export function ProcessOverview(props: ProcessOverviewProps) {
     const { content } = props;
-    let history = useHistory();
+    const history = useHistory();
     const goToStep1 = () => {
         history.push('/video');
     };

@@ -9,7 +9,7 @@ type HubspotFormProps = {
     hubspot: HubspotInfo;
     language?: string;
     hasWatchedVideo?: boolean;
-}
+};
 export function HubspotForm(props: HubspotFormProps) {
     const { 
         hubspot, 
@@ -23,12 +23,15 @@ export function HubspotForm(props: HubspotFormProps) {
         if (hasWatchedVideo) {
             if (language === 'en') {
                 return englishForm;
-            } else if (language === 'es') {
+            }
+            else if (language === 'es') {
                 return spanishForm;
-            } else if (language === 'vi') {
+            }
+            else if (language === 'vi') {
                 return vietForm;
             }
-        } else {
+        }
+        else {
             return null;
         }
     };

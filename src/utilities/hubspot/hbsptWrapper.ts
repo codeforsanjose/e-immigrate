@@ -1,4 +1,4 @@
-import { HbsptGlobal } from "./types";
+import { type HbsptGlobal } from "./types";
 
 export function getHbspt(): HbsptGlobal | undefined {
     if (!('hbspt' in window)) return;

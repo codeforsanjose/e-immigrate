@@ -46,7 +46,7 @@ export function Confirmation(props: ConfirmationProps) {
             <p>{content.step3Text5}</p>
             <p>
                 {content.step3Text6}{' '}
-                <a href="https://www.e-immigrate.info/" target="_blank">
+                <a href="https://www.e-immigrate.info/" target="_blank" rel="noreferrer">
                     e-immigrate.info
                 </a>
             </p>

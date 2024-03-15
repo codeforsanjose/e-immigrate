@@ -16,4 +16,4 @@ export type QuestionProps = {
         screeningProceedButton: string;
     }; 
     collectAnswer: CollectAnswerFunction;
-}
+};

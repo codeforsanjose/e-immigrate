@@ -20,7 +20,7 @@ export function LandingPage(props: LandingPageProps) {
     const {
         content,
     } = props;
-    let history = useHistory();
+    const history = useHistory();
     const goToStep1 = () => {
         history.push('/eligibility');
     };
@@ -40,7 +40,7 @@ export function LandingPage(props: LandingPageProps) {
                         <h2>
                             <a
                                 href="https://www.e-immigrate.info"
-                                target="_blank"
+                                target="_blank" rel="noreferrer"
                             >
                                 www.e-immigrate.info
                             </a>
@@ -54,4 +54,3 @@ export function LandingPage(props: LandingPageProps) {
         </div>
     );
 }
-

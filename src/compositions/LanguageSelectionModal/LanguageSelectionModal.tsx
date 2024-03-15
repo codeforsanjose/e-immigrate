@@ -13,7 +13,7 @@ type LanguageSelectionModalProps = {
 };
 type LanguageButtonsProps = {
     onClick: (value: string) => void;
-}
+};
 function LanguageButtons(props: LanguageButtonsProps) {
     const {
         onClick,
@@ -43,9 +43,7 @@ export function LanguageSelectionModal(props: LanguageSelectionModalProps) {
     const onClick = React.useCallback((value: string) => {
         setShowModal(false);
         setLanguage(value);
-    }, []);
-
-    
+    }, [setLanguage, setShowModal]);
 
     if (!showModal) {
         return null;
@@ -58,4 +56,3 @@ export function LanguageSelectionModal(props: LanguageSelectionModalProps) {
         </div>
     );
 }
-

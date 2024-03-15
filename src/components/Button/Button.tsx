@@ -7,7 +7,8 @@ type ButtonProps = {
     type?: HTMLButtonElement['type'];
     onClick?: React.MouseEventHandler<HTMLButtonElement>;
     value?: string;
-}
+};
+
 export function Button(props: ButtonProps) {
     const { 
         label, 

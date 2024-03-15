@@ -7,17 +7,15 @@ import './LoginRegister.css';
 const {
     loginApi,
 } = apis;
-type LoginProps = {
 
-};
 type LoginState = 
 | {
     email: string;
     password: string;
     loggedIn: boolean;
     name?: string;
-}
-export function Login(props: LoginProps) {
+};
+export function Login() {
     const [loginState, setLoginState] = React.useState<LoginState>({
         email: '',
         password: '',
@@ -38,7 +36,7 @@ export function Login(props: LoginProps) {
             jwt?: string;
             name?: string;
         }>(requestObj).then((body) => {
-            if (body.jwt && body.name) {
+            if ((body.jwt != null) && (body.name != null)) {
                 localStorage.setItem('jwt-eimmigrate', body.jwt);
                 setLoginState(curr => {
                     return { 
@@ -104,4 +102,3 @@ export function Login(props: LoginProps) {
         </div>
     );
 }
-

@@ -1,4 +1,4 @@
-const hostName = process.env.HOSTNAME || 'http://localhost:5000';
+// const hostName = process.env.HOSTNAME || 'http://localhost:5000';
 
 export const apis = {
     loginApi: '/api/admins/sessions',

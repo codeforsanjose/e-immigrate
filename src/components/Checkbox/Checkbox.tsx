@@ -1,7 +1,7 @@
 import React from 'react';
 import './Checkbox.css';
 import { BindFieldFunction, CollectAnswerFunction, ContentData, QData } from '../../types/common';
-type InputValue = string | string[] | number | undefined;
+type InputValue = string | Array<string> | number | undefined;
 type CheckboxProps = {
     attributes: {
         q: QData;
@@ -25,23 +25,22 @@ export function Checkbox(props: CheckboxProps) {
     } = props;
     return (
         <div>
-            {answers &&
-                answers.map((option, idx) => (
-                    <div key={option}>
-                        <input
-                            type="checkbox"
-                            id={`${q.slug}-${option}`}
-                            name={q.slug}
-                            required={q.required}
-                            value={values[idx]}
-                            {...bindField(q.slug)}
-                            onChange={(e) => collectAnswer(q.slug, e.target.value)} />
-                        <label htmlFor={q.slug}>{option}</label>
-                        <span className="RequiredError">
+            {answers?.map((option, idx) => (
+                <div key={option}>
+                    <input
+                        type="checkbox"
+                        id={`${q.slug}-${option}`}
+                        name={q.slug}
+                        required={q.required}
+                        value={values[idx]}
+                        {...bindField(q.slug)}
+                        onChange={(e) => collectAnswer(q.slug, e.target.value)} />
+                    <label htmlFor={q.slug}>{option}</label>
+                    <span className="RequiredError">
                             *{content.errorMessage}
-                        </span>
-                    </div>
-                ))}
+                    </span>
+                </div>
+            ))}
         </div>
     );
 }

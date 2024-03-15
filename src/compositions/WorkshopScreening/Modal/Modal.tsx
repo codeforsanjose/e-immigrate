@@ -6,7 +6,6 @@ import { isAfter } from 'date-fns';
 import './Modal.css';
 import { ModalContent } from './types';
 
-
 function checkEligibility(
     userDate: number | Date, 
     question2: string | null,
@@ -20,14 +19,17 @@ function checkEligibility(
     if (question2 === 'Yes') {
         if (isAfter(userDate, marriedDate)) {
             return <div className="Reason">{content.modalText3}</div>;
-        } else {
+        }
+        else {
             history.push('/overview');
             return null;
         }
-    } else {
+    }
+    else {
         if (isAfter(userDate, nonMarriedDate)) {
             return <div className="Reason">{content.modalText4}</div>;
-        } else {
+        }
+        else {
             history.push('/overview');
             return null;
         }
@@ -39,10 +41,11 @@ type ModalProps = {
     question2: string | null;
     date: number | Date;
     content: ModalContent;
-}
+};
+
 export function Modal(props: ModalProps) {
     const { showModal, question2, date, content } = props;
-    let history = useHistory();
+    const history = useHistory();
 
     if (!showModal) {
         return null;

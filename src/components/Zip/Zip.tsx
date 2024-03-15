@@ -10,7 +10,7 @@ type ZipProps = {
         content: {
             errorMessageZip: string;
         };
-    }
+    };
 };
 export function Zip(props: ZipProps) {
     const {
@@ -36,7 +36,8 @@ export function Zip(props: ZipProps) {
                     // TODO : NEED TO FIX error setting, check validity is working properly but error flag is not propergating
                     if (e.target.checkValidity()) {
                         setErrors((prev) => ({ ...prev, [q.slug]: true }));
-                    } else {
+                    }
+                    else {
                         setErrors((prev) => ({ ...prev, [q.slug]: false }));
                     }
                     collectAnswer(q.slug, e.target.value);

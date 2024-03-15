@@ -10,7 +10,7 @@ export function HubspotSpanishForm(props: HubspotSpanishFormProps) {
     const {
         hubspot: {
             step, line1, line2, hubspotFormId,
-        }
+        },
     } = props;
 
     React.useEffect(() => {

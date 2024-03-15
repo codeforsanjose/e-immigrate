@@ -18,7 +18,7 @@ type QuestionnaireElement = {
 };
 type GetQuestionsApiResponse = {
     responses: Array<QuestionnaireElement>;
-}
+};
 type GetQuestionsByLanguageElement = {
     id: string;
     text: string;
@@ -44,22 +44,23 @@ export const EditQuestionnaires = () => {
     const setToggleChooseFile = () => {
         if (chooseFile) {
             toggleChooseFile(false);
-        } else {
+        }
+        else {
             toggleChooseFile(true);
         }
     };
     const softDeleteResponse = (title: string) => {
         const confirmBox = window.confirm(
-            'Do you really want to delete this questionnaire response?'
+            'Do you really want to delete this questionnaire response?',
         );
-        if (confirmBox === false) {
+        if (!confirmBox) {
             return;
         }
 
         const requestObj = {
             url: deleteQuestionnaireByTitle.replace(
                 ':title',
-                encodeURIComponent(title)
+                encodeURIComponent(title),
             ),
             method: 'DELETE',
         };
@@ -74,7 +75,7 @@ export const EditQuestionnaires = () => {
             .catch((err) => {
                 console.log(
                     `error soft-deleting questionnaire response ${title}`,
-                    err
+                    err,
                 );
             });
     };
@@ -85,7 +86,7 @@ export const EditQuestionnaires = () => {
     };
     const getByLanguage = () => {
         toggleLanguageDropDown(true);
-        let encodedTitle = encodeURIComponent(questionnaireTitle);
+        const encodedTitle = encodeURIComponent(questionnaireTitle);
         const requestObj = {
             url: getQuestionsByLanguage
                 .replace(':title', encodedTitle)
@@ -106,7 +107,8 @@ export const EditQuestionnaires = () => {
     React.useEffect(() => {
         if (fetchQuestionnaire || (questionnaires.length > 0 && !reFetch)) {
             return;
-        } else {
+        }
+        else {
             const requestObj = {
                 url: getQuestions,
                 method: 'GET',
@@ -114,19 +116,19 @@ export const EditQuestionnaires = () => {
             setFetchQuestionnaire(true);
             sendRequest<GetQuestionsApiResponse>(requestObj)
                 .then((response) => {
-                    let objs = response.responses;
-                    let newArray = [];
+                    const objs = response.responses;
+                    const newArray = [];
                     setQuestionnaires(objs);
                     const titles = Array.from(new Set(objs.map((obj) => obj.title)));
                     setTitleList(titles);
                     setFetchQuestionnaire(false);
                     setRefetch(false);
                 })
-                .catch((error) => {
+                .catch(() => {
                     setFetchQuestionnaire(false);
                 });
         }
-    });
+    }, [fetchQuestionnaire, questionnaires.length, reFetch]);
     const uploadNewQuestionnaire = (qustionnaireFile: File | undefined) => {
         if (qustionnaireFile == null) {
             console.error('No file selected');
@@ -137,7 +139,7 @@ export const EditQuestionnaires = () => {
         formData.append(
             'questionnaire',
             qustionnaireFile,
-            qustionnaireFile.name
+            qustionnaireFile.name,
         );
         formData.append('title', workshopTitle);
         const jwt = getAuthToken();
@@ -159,9 +161,9 @@ export const EditQuestionnaires = () => {
                 setTimeout(() => setQuestionnaireStatus(''), 10 * 1000);
                 setToggleChooseFile();
             })
-            .catch((error) => {
+            .catch(() => {
                 setQuestionnaireStatus(
-                    'Error! Upload of ' + qustionnaireFile.name + ' failed'
+                    'Error! Upload of ' + qustionnaireFile.name + ' failed',
                 );
 
                 setTimeout(() => setQuestionnaireStatus(''), 10 * 1000);
@@ -187,63 +189,67 @@ export const EditQuestionnaires = () => {
                 setLanguage={setLanguage}
             />
             <section>
-                {chooseFile ? (
-                    <form>
-                        <label>WorkshopTitle</label>
-                        <input
-                            onChange={(e) => setWorkshopTitle(e.target.value)}
-                            required
-                            type="text"
-                        ></input>
-                        <br></br>
-                        <input
-                            disabled={!workshopTitle}
-                            required
-                            type="file"
-                            accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                            onChange={(e) =>
-                                uploadNewQuestionnaire(e.target.files?.[0])
-                            }
+                {chooseFile
+                    ? (
+                        <form>
+                            <label>WorkshopTitle</label>
+                            <input
+                                onChange={(e) => setWorkshopTitle(e.target.value)}
+                                required
+                                type="text"
+                            ></input>
+                            <br></br>
+                            <input
+                                disabled={workshopTitle == null || workshopTitle === ''}
+                                required
+                                type="file"
+                                accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                                onChange={(e) =>
+                                    uploadNewQuestionnaire(e.target.files?.[0])
+                                }
+                            />
+                        </form>
+                    )
+                    : (
+                        <Button
+                            label="Upload New Questionnaire"
+                            onClick={setToggleChooseFile}
                         />
-                    </form>
-                ) : (
-                    <Button
-                        label="Upload New Questionnaire"
-                        onClick={setToggleChooseFile}
-                    />
-                )}
+                    )}
             </section>
-            <section>{questionnaireStatus ? questionnaireStatus : ''}</section>
+            <section>{`${questionnaireStatus ?? ''}`}</section>
 
             <section>
-                {languageDropdown ? (
-                    <section>
-                        <button onClick={switchViews}>Back</button>
-                        <LanguageDropdown
-                            setLanguage={(lang) => changeLanguage(lang)}
-                            language={language}
-                        ></LanguageDropdown>
-                    </section>
-                ) : (
-                    <ul>
-                        {titleList.map((title) => {
-                            if (title == null) return null;
-                            return (
-                                <li key={title}>
-                                    {title}
-                                    <button onClick={() => selectLanguage(title)}>
+                {languageDropdown
+                    ? (
+                        <section>
+                            <button onClick={switchViews}>Back</button>
+                            <LanguageDropdown
+                                setLanguage={(lang) => changeLanguage(lang)}
+                                language={language}
+                            ></LanguageDropdown>
+                        </section>
+                    )
+                    : (
+                        <ul>
+                            {titleList.map((title) => {
+                                if (title == null) return null;
+                                return (
+                                    <li key={title}>
+                                        {title}
+                                        <button onClick={() => selectLanguage(title)}>
                                         View
-                                    </button>
-                                    <div
-                                        title="Delete this response"
-                                        className="delete"
-                                        onClick={(e) => softDeleteResponse(title)}
-                                    ></div>
-                                </li>
-                            );
-                        })}
-                    </ul>
-                )}
+                                        </button>
+                                        <div
+                                            title="Delete this response"
+                                            className="delete"
+                                            onClick={(e) => softDeleteResponse(title)}
+                                        ></div>
+                                    </li>
+                                );
+                            })}
+                        </ul>
+                    )}
                 <div>{questionnaireTitle}</div>
                 <ul>
                     {questions.map((q) => (

@@ -2,9 +2,6 @@ import React from 'react';
 import './PhoneNumber.css';
 import { BindFieldFunction, CollectAnswerFunction, QData, ReactSetter } from '../../types/common';
 
-
-
-
 type PhoneNumberProps = {
     attributes: {
         q: QData;
@@ -14,7 +11,7 @@ type PhoneNumberProps = {
         content: {
             errorMessagePhone: string;
         };
-    }
+    };
 };
 export function PhoneNumber(props: PhoneNumberProps) {
     const {
@@ -39,7 +36,8 @@ export function PhoneNumber(props: PhoneNumberProps) {
                 onChange={(e) => {
                     if (e.target.checkValidity()) {
                         setErrors((prev) => ({ ...prev, [q.slug]: true }));
-                    } else {
+                    } 
+                    else {
                         setErrors((prev) => ({ ...prev, [q.slug]: false }));
                     }
                     collectAnswer(q.slug, e.target.value);

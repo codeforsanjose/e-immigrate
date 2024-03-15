@@ -17,7 +17,7 @@ type QuestionnaireIntroProps = {
         step2ProceedButton1: string;
     };
     setIntroPage: (value: boolean) => void;
-}
+};
 export function QuestionnaireIntro(props: QuestionnaireIntroProps) {
     const {
         content,

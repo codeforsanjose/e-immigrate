@@ -12,7 +12,7 @@ type StepProps = {
     stepNumber: number | string;
     children?: React.ReactNode;
     completed: boolean;
-}
+};
 function Step(props: StepProps) { 
     const {
         completed,
@@ -40,13 +40,12 @@ type ProgressBarProps = {
         progressBarHeader?: React.ReactNode;
     } & Record<string, string>;
     step: number;
-}
+};
 export function ProgressBar(props: ProgressBarProps) {
     const {
         content, 
         step,
     } = props;
-    
 
     return (
         <div className="progressBar">
@@ -55,7 +54,7 @@ export function ProgressBar(props: ProgressBarProps) {
                 <Step
                     content={content}
                     stepNumber={'1'}
-                    completed={step >= 1 ? true : false}
+                    completed={step >= 1}
                 >
                     <Blob1 className="blob blob1" />
                     <VideoIcon className="stepSVG" height="32px" width="32px" />
@@ -63,7 +62,7 @@ export function ProgressBar(props: ProgressBarProps) {
                 <Step
                     content={content}
                     stepNumber={'2'}
-                    completed={step >= 2 ? true : false}
+                    completed={step >= 2}
                 >
                     <Blob2 className="blob blob2" />
                     <QuestionnaireIcon
@@ -74,7 +73,7 @@ export function ProgressBar(props: ProgressBarProps) {
                 <Step
                     content={content}
                     stepNumber={'3'}
-                    completed={step >= 3 ? true : false}
+                    completed={step >= 3}
                 >
                     <Blob3 className="blob blob3" />
                     <CheckMark className="stepSVG" height="32px" width="32px" />

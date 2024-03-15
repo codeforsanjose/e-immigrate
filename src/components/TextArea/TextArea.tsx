@@ -10,10 +10,9 @@ type TextAreaProps = {
         content: {
             errorMessage: string;
         };
-    }
+    };
 };
 export function TextArea(props: TextAreaProps) {
-    
     const {
         attributes: { 
             q, 
@@ -21,7 +20,7 @@ export function TextArea(props: TextAreaProps) {
             collectAnswer, 
             content,
         },
-     } = props;
+    } = props;
 
     return (
         <>

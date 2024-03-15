@@ -9,7 +9,7 @@ type TextInputProps = {
         content: {
             errorMessage: string;
         };
-    }
+    };
 };
 export function TextInput(props: TextInputProps) {
     const {

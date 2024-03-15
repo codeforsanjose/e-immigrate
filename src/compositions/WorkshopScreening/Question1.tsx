@@ -3,7 +3,6 @@ import { Button } from '../../components/Button/Button';
 import { QuestionProps } from './QuestionTypes';
 import { WithPreventDefault } from "../../types/WithPreventDefault";
 
-
 export function Question1(props: QuestionProps) {
     const {
         bindField,
@@ -24,37 +23,36 @@ export function Question1(props: QuestionProps) {
         <>
             <div className="RadioGroup">
                 <div className="QuestionText">{q.text}</div>
-                {answers &&
-                    answers.map((option, idx) => (
-                        <div key={`${q.slug}-${option}`}>
-                            <label className="Radio">
-                                <span className="RadioInput">
-                                    <input
-                                        type="radio"
-                                        id={`${q.slug}-${option}`}
-                                        name={q.slug}
-                                        required={q.required}
-                                        value={values[idx]}
-                                        className="RadioButton"
-                                        {...bindField(q.slug)}
-                                        onChange={(e) => {
-                                            collectAnswer(
-                                                q.slug,
-                                                e.target.value
-                                            );
-                                            setQuestion1Answer(
-                                                e.target.value
-                                            );
-                                        } } />
-                                    <span className="RadioControl"></span>
-                                </span>
-                                <span className="RadioLabel">{option}</span>
-                            </label>
-                            <span className="RequiredError">
-                                *{content.errorMessage}
+                {answers?.map((option, idx) => (
+                    <div key={`${q.slug}-${option}`}>
+                        <label className="Radio">
+                            <span className="RadioInput">
+                                <input
+                                    type="radio"
+                                    id={`${q.slug}-${option}`}
+                                    name={q.slug}
+                                    required={q.required}
+                                    value={values[idx]}
+                                    className="RadioButton"
+                                    {...bindField(q.slug)}
+                                    onChange={(e) => {
+                                        collectAnswer(
+                                            q.slug,
+                                            e.target.value,
+                                        );
+                                        setQuestion1Answer(
+                                            e.target.value,
+                                        );
+                                    } } />
+                                <span className="RadioControl"></span>
                             </span>
-                        </div>
-                    ))}
+                            <span className="RadioLabel">{option}</span>
+                        </label>
+                        <span className="RequiredError">
+                                *{content.errorMessage}
+                        </span>
+                    </div>
+                ))}
                 <Button
                     type="submit"
                     label={content.screeningProceedButton}
@@ -62,5 +60,4 @@ export function Question1(props: QuestionProps) {
             </div>
         </>
     );
-   
 }

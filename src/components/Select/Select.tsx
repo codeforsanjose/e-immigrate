@@ -12,7 +12,7 @@ type SelectProps = {
         content: {
             errorMessage: string;
         };
-    }
+    };
 };
 export function Select(props: SelectProps) {
     const {
@@ -27,11 +27,11 @@ export function Select(props: SelectProps) {
     } = props;
     useEffect(() => {
         if (selectAnswers == null) {
-            console.error(`'selectAnswers' was null`)
+            console.error(`'selectAnswers' was null`);
             return;
         }
         collectAnswer(q.slug, selectAnswers[0]);
-    }, []);
+    }, [collectAnswer, q.slug, selectAnswers]);
     return (
         <>
             <select
@@ -40,20 +40,18 @@ export function Select(props: SelectProps) {
                 {...bindField(q.slug)}
                 onChange={(e) => collectAnswer(q.slug, e.target.value)}
             >
-                {selectAnswers &&
-                    selectAnswers.map((option, idx) => {
-                        return (
-                            <option
-                                value={values[idx - 1]}
-                                key={`${q.slug}-${option}`}
-                            >
-                                {option}
-                            </option>
-                        );
-                    })}
+                {selectAnswers?.map((option, idx) => {
+                    return (
+                        <option
+                            value={values[idx - 1]}
+                            key={`${q.slug}-${option}`}
+                        >
+                            {option}
+                        </option>
+                    );
+                })}
             </select>
             <div className="RequiredError">*{content.errorMessage}</div>
         </>
     );
 }
-

@@ -9,7 +9,7 @@ type DateProps = {
         bindField: BindFieldFunction;
         content: ContentData;
     };
-}
+};
 export function Date(props: DateProps) {
     const {
         attributes: { q, bindField, content },

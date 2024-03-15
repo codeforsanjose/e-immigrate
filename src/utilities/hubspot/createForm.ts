@@ -1,5 +1,5 @@
 import { getHbspt } from "./hbsptWrapper";
-import { CreateHubspotFormInput } from "./types";
+import { type CreateHubspotFormInput } from "./types";
 
 const SCRIPT_SOURCE = 'https://js.hsforms.net/forms/shell.js';
 export function createHubspotForm(data: CreateHubspotFormInput) {
@@ -26,6 +26,7 @@ export function createHubspotForm(data: CreateHubspotFormInput) {
     }
     script.addEventListener('load', onScriptLoad);
 }
+// eslint-disable-next-line @typescript-eslint/promise-function-async
 export function createHubspotFormAsync(data: CreateHubspotFormInput): Promise<boolean> {
     const scriptTags = Array.from(document.querySelectorAll('script'));
     const hubspotScripts = scriptTags.filter(x => x.src === SCRIPT_SOURCE);
@@ -44,7 +45,7 @@ export function createHubspotFormAsync(data: CreateHubspotFormInput): Promise<bo
             const hbspt = getHbspt();
             if (hbspt == null) {
                 console.error(`Failed to find the 'hbspt' global`);
-                reject();
+                reject(new Error(`Failed to find the 'hbspt' global`));
                 return;
             }
             hbspt.forms.create(data);
@@ -52,5 +53,5 @@ export function createHubspotFormAsync(data: CreateHubspotFormInput): Promise<bo
             resolve(true);
         }
         script.addEventListener('load', onScriptLoad);
-    })
+    });
 }

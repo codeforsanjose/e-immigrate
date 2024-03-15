@@ -18,8 +18,8 @@ type WorkshopScreeningProps = {
     questions: Array<NonNullable<QuestionProps['q']>>;
     // questionnaireResponse, 
     // setQuestionnaireResponse, 
-     collectAnswer: CollectAnswerFunction;
-}
+    collectAnswer: CollectAnswerFunction;
+};
 export function WorkshopScreening(props: WorkshopScreeningProps) {
     const {
         collectAnswer,
@@ -41,7 +41,7 @@ export function WorkshopScreening(props: WorkshopScreeningProps) {
     const [date, setDate] = useState(dateToUse);
     const formattedDate = new Date(date);
     const filteredQuestions = questions.filter(
-        (q) => q.category === 'Workshop Eligibility'
+        (q) => q.category === 'Workshop Eligibility',
     );
 
     const {
@@ -74,4 +74,3 @@ export function WorkshopScreening(props: WorkshopScreeningProps) {
         </div>
     );
 }
-

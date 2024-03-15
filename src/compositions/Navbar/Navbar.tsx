@@ -8,8 +8,8 @@ type NavbarProps = {
     language: string;
     setLanguage: DirectReactSetter<string>;
     content: unknown;
-    dashboard?: unknown;
-}
+    dashboard?: boolean;
+};
 export function Navbar(props: NavbarProps) {
     const {
         content,
@@ -23,7 +23,7 @@ export function Navbar(props: NavbarProps) {
                 <img src={Logo} className="logo" alt="CIIT Logo" />
             </Link>
             <div className="NavLinks">
-                {!dashboard && (
+                {!(dashboard ?? false) && (
                     <LanguageDropdown
                         className="languageDropdown"
                         language={language}
@@ -33,4 +33,3 @@ export function Navbar(props: NavbarProps) {
         </div>
     );
 }
-

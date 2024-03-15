@@ -26,4 +26,3 @@ export function Footer(props: FooterProps) {
         </div>
     );
 }
-

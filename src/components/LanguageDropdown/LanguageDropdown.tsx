@@ -6,7 +6,7 @@ import classnames from "classnames";
 import './LanguageDropdown.css';
 import { getEffectiveLanguage } from '../../utilities/languages/getEffectiveLanguage';
 type LanguageSelectProps = {
-    language: string,
+    language: string;
     setLanguage: (value: string) => void;
 };
 
@@ -45,7 +45,7 @@ function LanguageSelect(props: LanguageSelectProps) {
 
 type LanguageDropdownProps = {
     className?: string;
-    language: string,
+    language: string;
     setLanguage: (value: string) => void;
 };
 export const LanguageDropdown = (props: LanguageDropdownProps) => {

@@ -13,7 +13,7 @@ type RadioWithFollowUpProps = {
         content: {
             errorMessage: string;
         };
-    }
+    };
 };
 export function RadioWithFollowUp(props: RadioWithFollowUpProps) {
     const {
@@ -29,41 +29,40 @@ export function RadioWithFollowUp(props: RadioWithFollowUpProps) {
     } = props;
     return (
         <div className="RadioGroup">
-            {answers &&
-                answers.map((option, idx) => (
-                    <div key={`${q.slug}-${option}`}>
-                        <label className="Radio">
-                            <span className="RadioInput">
-                                <input
-                                    type="radio"
-                                    id={`${q.slug}-${option}`}
-                                    name={q.slug}
-                                    required={q.required}
-                                    value={values[idx]}
-                                    onChange={(e) => {
-                                        collectAnswer(q.slug, e.target.value);
-                                        values[idx] === 'Yes'
-                                            ? setShowFollowUp((prev) => ({
-                                                  ...prev,
-                                                  [q.slug]: true,
-                                              }))
-                                            : setShowFollowUp((prev) => ({
-                                                  ...prev,
-                                                  [q.slug]: false,
-                                              }));
-                                    }}
-                                    className="RadioButton"
-                                    {...bindField(q.slug)}
-                                />
-                                <span className="RadioControl"></span>
-                            </span>
-                            <span className="RadioLabel">{option}</span>
-                        </label>
-                        <span className="RequiredError">
-                            *{content.errorMessage}
+            {answers?.map((option, idx) => (
+                <div key={`${q.slug}-${option}`}>
+                    <label className="Radio">
+                        <span className="RadioInput">
+                            <input
+                                type="radio"
+                                id={`${q.slug}-${option}`}
+                                name={q.slug}
+                                required={q.required}
+                                value={values[idx]}
+                                onChange={(e) => {
+                                    collectAnswer(q.slug, e.target.value);
+                                    values[idx] === 'Yes'
+                                        ? setShowFollowUp((prev) => ({
+                                            ...prev,
+                                            [q.slug]: true,
+                                        }))
+                                        : setShowFollowUp((prev) => ({
+                                            ...prev,
+                                            [q.slug]: false,
+                                        }));
+                                }}
+                                className="RadioButton"
+                                {...bindField(q.slug)}
+                            />
+                            <span className="RadioControl"></span>
                         </span>
-                    </div>
-                ))}
+                        <span className="RadioLabel">{option}</span>
+                    </label>
+                    <span className="RequiredError">
+                            *{content.errorMessage}
+                    </span>
+                </div>
+            ))}
         </div>
     );
 };

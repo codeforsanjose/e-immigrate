@@ -12,7 +12,7 @@ export function searchArrayObjects<T>(
     propertyPath: string,
     searchText: string | undefined,
     minLength = 3) {
-    if (!searchText) {
+    if (searchText == null) {
         return objects;
     }
     const fuse = new Fuse(objects, {

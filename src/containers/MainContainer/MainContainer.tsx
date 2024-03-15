@@ -16,13 +16,13 @@ import { Confirmation } from '../../compositions/Confirmation/Confirmation';
 import './MainContainer.css';
 import { ProgressBar } from '../../compositions/ProgressBar/ProgressBar';
 import { apis } from '../../sendRequest/apis';
+import { getFromStorage, saveToStorage } from '../../utilities/storage_utils';
+import { CollectAnswerFunction } from '../../types/common';
 const {
     addQuestionnaireResponse,
     getQuestions,
     getTranslatedContent,
 } = apis;
-import { getFromStorage, saveToStorage } from '../../utilities/storage_utils';
-import { CollectAnswerFunction } from '../../types/common';
 type GetQuestionsByLanguageElement = {
     id: string;
     text: string;
@@ -31,6 +31,8 @@ type GetQuestionForLanguageApiResponse = {
     questions: Array<GetQuestionsByLanguageElement>;
 };
 type GetTranslatedQuestionForLanguageApiResponse = {
+    title?: string;
+    language?: string;
     content: string;
 };
 function tryGetNavigatorUserLanguage() {
@@ -43,38 +45,100 @@ function getNavigatorLanguage(): string {
     if (userLanguage == null || userLanguage === '') return window.navigator.language;
     return userLanguage;
 }
+function setupPreferredLanguageStorageWrapper() {
+    const key = 'preferredLanguage';
+    return {
+        tryGet: (): string | undefined => {
+            const output = getFromStorage<string>(key);
+            if (output == null) return;
+            else if (!output.success) {
+                console.error('Failed to deserialize the value');
+                return;
+            }
+            return output.value;
+        },
+        set: (value: string) => {
+            saveToStorage(key, value);
+        },
+    };
+}
+function setupLocalstoreContentWrapper(language: string) {
+    const key = `${workshopTitle}-content-${language}`;
+    return {
+        tryGet: (): string | undefined => {
+            // getFromStorage(`${workshopTitle}-content-${LOCALSTORE_LANGUAGE}`) || {}
+            const output = getFromStorage<string>(key);
+            if (output == null) return;
+            else if (!output.success) {
+                console.error('Failed to deserialize the value');
+                return;
+            }
+            return output.value;
+        },
+        set: (value: string) => {
+            saveToStorage(key, value);
+        },
+    };
+}
+function setupLocalstoreQuestionsWrapper(language: string) {
+    const key = `${workshopTitle}-questions-${language}`;
+    return {
+        tryGet: (): Array<GetQuestionsByLanguageElement> | undefined => {
+            // getFromStorage(`${workshopTitle}-content-${LOCALSTORE_LANGUAGE}`) || {}
+            const output = getFromStorage<Array<GetQuestionsByLanguageElement>>(key);
+            if (output == null) return;
+            else if (!output.success) {
+                console.error('Failed to deserialize the value');
+                return;
+            }
+            return output.value;
+        },
+        set: (value: Array<GetQuestionsByLanguageElement>) => {
+            saveToStorage(key, value);
+        },
+    };
+}
+const preferredLanguageStorageWrapper = setupPreferredLanguageStorageWrapper();
+
 function MainContainer() {
-    const LOCALSTORE_LANGUAGE = getFromStorage('preferredLanguage') || 'en';
-    const LOCALSTORE_CONTENT = getFromStorage(`${workshopTitle}-content-${LOCALSTORE_LANGUAGE}`) || {};
-    const LOCALSTORE_QUESTIONS = getFromStorage(`${workshopTitle}-questions-${LOCALSTORE_LANGUAGE}`) ||
-        [];
+    const LOCALSTORE_LANGUAGE = preferredLanguageStorageWrapper.tryGet() ?? 'en';
+    const localStoreContentWrapper = React.useMemo(() => {
+        return setupLocalstoreContentWrapper(LOCALSTORE_LANGUAGE);
+    }, [LOCALSTORE_LANGUAGE]);
+    const localStoreQuestionsWrapper = React.useMemo(() => {
+        return setupLocalstoreQuestionsWrapper(LOCALSTORE_LANGUAGE);
+    }, [LOCALSTORE_LANGUAGE]);
+    const LOCALSTORE_CONTENT = localStoreContentWrapper.tryGet() ?? {};
+    const LOCALSTORE_QUESTIONS = localStoreQuestionsWrapper.tryGet() ?? [];
+
     const [language, setLanguage] = React.useState(LOCALSTORE_LANGUAGE);
     const [showModal, setShowModal] = React.useState(true);
     const [step, setStep] = React.useState(0);
     const [videoState, setVideoState] = React.useState({ hasWatchedVideo: false });
-    const { hasWatchedVideo } = videoState;
+    // const { hasWatchedVideo } = videoState;
     const [questions, setQuestions] = React.useState(LOCALSTORE_QUESTIONS);
     const [questionnaireResponse, setQuestionnaireResponse] = React.useState<QuestionnaireResponse>({
         languageCode: language,
     });
     const [content, setContent] = React.useState(LOCALSTORE_CONTENT);
 
-    let history = useHistory();
+    const history = useHistory();
     const browserLanguage = getNavigatorLanguage();
 
     React.useEffect(() => {
-        const locallyStoredLanguage = localStorage.getItem('preferredLanguage');
-        if (locallyStoredLanguage) {
+        const locallyStoredLanguage = preferredLanguageStorageWrapper.tryGet();
+        if (locallyStoredLanguage != null) {
             setLanguage(locallyStoredLanguage.slice(1, -1));
             setShowModal(false);
-        } else {
+        } 
+        else {
             setLanguage(browserLanguage.split('-')[0]);
         }
     }, [browserLanguage]);
 
     const changeLanguage = (language: string) => {
         setLanguage(language);
-        saveToStorage('preferredLanguage', language);
+        preferredLanguageStorageWrapper.set(language);
         questionnaireResponse.languageCode = language;
     };
 
@@ -93,7 +157,7 @@ function MainContainer() {
             setQuestions(response.questions);
             saveToStorage(
                 `${workshopTitle}-questions-${language}`,
-                response.questions
+                response.questions,
             );
         });
     }, [language]);
@@ -104,12 +168,13 @@ function MainContainer() {
         };
         sendRequest<GetTranslatedQuestionForLanguageApiResponse>(requestObj).then((response) => {
             setContent(response.content);
-            saveToStorage(
-                `${workshopTitle}-content-${language}`,
-                response.content
-            );
+            localStoreContentWrapper.set(response.content);
+            // saveToStorage(
+            //     `${workshopTitle}-content-${language}`,
+            //     response.content,
+            // );
         });
-    }, [language]);
+    }, [language, localStoreContentWrapper]);
 
     const submitQuestionnaireResponse = (userAnswers: QuestionnaireResponse) => {
         const requestObj = {
@@ -126,18 +191,22 @@ function MainContainer() {
             history.push('/confirmation');
         });
     };
-    const changeStep = (nextStep: number) => {
+    function changeStep(nextStep: number) {
         setStep(nextStep < 0 ? 0 : nextStep > 3 ? 3 : nextStep);
-    };
-    const nextStep = () => changeStep(step + 1);
-    const previousStep = () => changeStep(step - 1);
+    }
+    function nextStep() {
+        changeStep(step + 1);
+    }
+    function previousStep() {
+        changeStep(step - 1);
+    }
     const updatedContentForProcessOverview = { ...content, ...videoState };
     const collectAnswer: CollectAnswerFunction = (slug: string, answer: unknown) => {
         // const answeredQuestion = Object.assign({}, questionnaireResponse);
         const answeredQuestion = {
             ...questionnaireResponse,
             [slug]: answer,
-        }
+        };
         // answeredQuestion[slug] = answer;
         setQuestionnaireResponse(answeredQuestion);
     };

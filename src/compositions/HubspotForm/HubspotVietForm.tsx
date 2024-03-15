@@ -10,7 +10,7 @@ export function HubspotVietForm(props: HubspotVietFormProps) {
     const {
         hubspot: {
             step, line1, line2, hubspotFormId,
-        }
+        },
     } = props;
 
     React.useEffect(() => {

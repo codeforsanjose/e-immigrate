@@ -16,7 +16,7 @@ export const HubspotEnglishForm = (props: HubspotEnglishFormProps) => {
             portalId: '8034478',
             formId: hubspotFormId,
             target: `#hubspotForm-en`,
-        })
+        });
     }, [hubspotFormId]);
 
     return (
