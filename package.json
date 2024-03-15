@@ -57,8 +57,13 @@
         ]
     },
     "devDependencies": {
+        "@types/jest": "^29.5.12",
+        "@types/node": "^20.11.28",
+        "@types/react": "^18.2.66",
+        "@types/react-dom": "^18.2.22",
         "eslint-plugin-prettier": "^3.1.4",
-        "nodemon": "^2.0.12"
+        "nodemon": "^2.0.12",
+        "typescript": "^5.4.2"
     },
     "proxy": "http://localhost:5000"
 }
