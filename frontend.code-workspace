@@ -1,0 +1,20 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"files.exclude": {
+			"node_modules/": true,
+			"backend/": true,
+			"charts/": true,
+			"deployments/": true,
+			"dump/": true,
+		},
+		// "typescript.preferences.importModuleSpecifierEnding": "js",
+		"typescript.tsdk": "node_modules\\typescript\\lib",
+		"editor.tabSize": 2,
+		"editor.detectIndentation": false
+	}
+}
