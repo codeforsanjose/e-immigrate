@@ -28,7 +28,7 @@ export async function sendRequest<TResponse = unknown>(
     } = requestObj;
     const actualHeaders = getEffectiveHeaders(headers, browser_gen_content_type);
     const data = await fetch(url, {
-        ...requestObj,
+        ...rest,
         headers: actualHeaders,
     });
     return await data.json();

@@ -1,6 +1,6 @@
 import React from 'react';
 import './Email.css';
-import { BindFieldFunction, CollectAnswerFunction, ContentData, QData } from '../../types/common';
+import { BindFieldFunction, CollectAnswerFunction, QData } from '../../types/common';
 
 type EmailProps = {
     attributes: {

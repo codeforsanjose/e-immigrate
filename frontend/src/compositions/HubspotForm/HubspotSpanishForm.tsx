@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 
 import './HubspotForm.css';
 import { HubspotInfo } from './types';

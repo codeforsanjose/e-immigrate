@@ -35,7 +35,6 @@ function LanguageButtons(props: LanguageButtonsProps) {
 }
 export function LanguageSelectionModal(props: LanguageSelectionModalProps) {
     const {
-        language,
         setLanguage,
         setShowModal,
         showModal,

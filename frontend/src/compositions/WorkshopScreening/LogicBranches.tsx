@@ -2,7 +2,7 @@ import React from 'react';
 import { Question1 } from './Question1';
 import { Question2 } from './Question2';
 import { Question3 } from './Question3';
-import { BindFieldFunction, CollectAnswerFunction, QData } from '../../types/common';
+import { BindFieldFunction, CollectAnswerFunction } from '../../types/common';
 import { QuestionProps, QuestionProps_Q } from './QuestionTypes';
 
 type Branch1Props = {
@@ -105,7 +105,7 @@ export function LogicBranches(props: LogicBranchesProps) {
         setQuestion1,
         question2,
         setQuestion2,
-        question3,
+        // question3,
         setQuestion3,
         showModal,
         setShowModal,

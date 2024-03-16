@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import './Select.css';
 import { QData, BindFieldFunction, CollectAnswerFunction, ReactSetter } from '../../types/common';
 type SelectProps = {
@@ -25,7 +25,7 @@ export function Select(props: SelectProps) {
             values,
         },
     } = props;
-    useEffect(() => {
+    React.useEffect(() => {
         if (selectAnswers == null) {
             console.error(`'selectAnswers' was null`);
             return;

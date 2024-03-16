@@ -18,8 +18,6 @@ import { ProgressBar } from '../../compositions/ProgressBar/ProgressBar';
 import { apis } from '../../sendRequest/apis';
 import { getFromStorage, saveToStorage } from '../../utilities/storage_utils';
 import { CollectAnswerFunction } from '../../types/common';
-import { QuestionProps } from '../../compositions/WorkshopScreening/QuestionTypes';
-import { FormElementName } from '../../utilities/formElements';
 import { GetQuestionsByLanguageElement } from '../../types/ApiResults';
 const {
     addQuestionnaireResponse,
@@ -336,9 +334,7 @@ function MainContainer() {
     function nextStep() {
         changeStep(step + 1);
     }
-    function previousStep() {
-        changeStep(step - 1);
-    }
+    
     const updatedContentForProcessOverview = { ...content, ...videoState };
     const collectAnswer: CollectAnswerFunction = (slug: string, answer: unknown) => {
         // const answeredQuestion = Object.assign({}, questionnaireResponse);

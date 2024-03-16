@@ -1,7 +1,6 @@
 import React from 'react';
 import { BindFieldFunction } from '../../../types/common';
-import { WithPersist, WithPreventDefault } from '../../../types/WithPreventDefault';
-import { WithEventTarget } from '../../../types/WithEventTarget';
+import { WithPersist } from '../../../types/WithPreventDefault';
 type TouchedFields = {
     all: boolean;
 } & Record<string, boolean>;

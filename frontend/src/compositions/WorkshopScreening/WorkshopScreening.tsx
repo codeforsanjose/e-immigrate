@@ -4,9 +4,8 @@ import { LogicBranches } from './LogicBranches';
 import { Modal } from './Modal/Modal';
 
 import './WorkshopScreening.css';
-import { CollectAnswerFunction, QData } from '../../types/common';
+import { CollectAnswerFunction } from '../../types/common';
 import { ModalContent } from './Modal/types';
-import { QuestionProps } from './QuestionTypes';
 import { GetQuestionsByLanguageElement } from '../../types/ApiResults';
 
 type WorkshopScreeningProps = {

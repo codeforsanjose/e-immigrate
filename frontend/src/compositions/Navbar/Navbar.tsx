@@ -12,7 +12,6 @@ type NavbarProps = {
 };
 export function Navbar(props: NavbarProps) {
     const {
-        content,
         language,
         setLanguage,
         dashboard,

@@ -1,6 +1,6 @@
 import React from 'react';
 import './TextInput.css';
-import { QData, BindFieldFunction, CollectAnswerFunction, ReactSetter } from '../../types/common';
+import { QData, BindFieldFunction, CollectAnswerFunction } from '../../types/common';
 type TextInputProps = {
     attributes: {
         q: QData;

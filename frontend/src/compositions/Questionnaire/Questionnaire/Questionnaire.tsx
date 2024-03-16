@@ -5,17 +5,8 @@ import { QuestionnaireIntro } from '../QuestionnaireIntro/QuestionnaireIntro';
 import Arrow from '../../../data/images/Arrow-Down-Right.svg';
 import { Checkbox } from '../../../components/Checkbox/Checkbox';
 import { Date } from '../../../components/Date/Date';
-import { Email } from '../../../components/Email/Email';
-import { PhoneNumber } from '../../../components/PhoneNumber/PhoneNumber';
-import { Radio } from '../../../components/Radio/Radio';
-import { RadioWithFollowUp } from '../../../components/RadioWithFollowUp/RadioWithFollowUp';
-import { Select } from '../../../components/Select/Select';
-import { TextArea } from '../../../components/TextArea/TextArea';
-import { TextInput } from '../../../components/TextInput/TextInput';
-import { Zip } from '../../../components/Zip/Zip';
 
 import './Questionnaire.css';
-import { ComponentPropsWithAttributes } from '../../../types/ComponentWithAttributes';
 import { CollectAnswerFunction } from '../../../types/common';
 import { FormElementName } from '../../../utilities/formElements';
 
@@ -210,7 +201,6 @@ export function Questionnaire(props: QuestionnaireProps) {
         content,
         questionnaireResponse,
         questions,
-        setQuestionnaireResponse,
         submitQuestionnaireResponse,
     } = props;
     const categories = ['Basic Info', 'Waiver Flag', 'Red Flag'];
@@ -219,9 +209,9 @@ export function Questionnaire(props: QuestionnaireProps) {
         bindField,
         setAllFieldsTouched,
     } = useMarkFieldAsTouched();
-    const [errors, setErrors] = React.useState({});
+    // const [errors, setErrors] = React.useState({});
     const [introPage, setIntroPage] = React.useState(true);
-    const [showFollowUp, setShowFollowUp] = React.useState<Record<string, boolean>>({});
+    const [showFollowUp] = React.useState<Record<string, boolean>>({});
 
     const filteredQuestions = questions.filter(
         (q) => q.category === categories[categoryIndex],

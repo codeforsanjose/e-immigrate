@@ -117,7 +117,6 @@ export const EditQuestionnaires = () => {
             sendRequest<GetQuestionsApiResponse>(requestObj)
                 .then((response) => {
                     const objs = response.responses;
-                    const newArray = [];
                     setQuestionnaires(objs);
                     const titles = Array.from(new Set(objs.map((obj) => obj.title)));
                     setTitleList(titles);

@@ -11,7 +11,7 @@ function checkEligibility(
     navigate: NavigateFunction, 
     content: ModalContent,
 ) {
-    const cutoffDate = new Date();
+    // const cutoffDate = new Date();
     const marriedDate = new Date(content.screeningDateMarried);
     const nonMarriedDate = new Date(content.screeningDate);
 

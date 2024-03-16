@@ -618,13 +618,13 @@ export function AdminDashboard() {
 
     const downloadLatestResponsesExcel = () => {
         setLoading(true);
-        const includedResponses = questionnaireResponses
-            .sort((a, b) => {
-                if (a.agency < b.agency) return -1;
-                if (a.agency > b.agency) return 1;
-                return 0;
-            })
-            .filter((item) => !item.responseDownloadedToExcel);
+        // const includedResponses = questionnaireResponses
+        //     .sort((a, b) => {
+        //         if (a.agency < b.agency) return -1;
+        //         if (a.agency > b.agency) return 1;
+        //         return 0;
+        //     })
+        //     .filter((item) => !item.responseDownloadedToExcel);
         const requestObj = {
             url: generateResponsesExcel,
             method: 'POST',
@@ -653,11 +653,11 @@ export function AdminDashboard() {
             });
     };
     const downloadAllResponsesExcel = () => {
-        const includedResponses = questionnaireResponses.sort((a, b) => {
-            if (a.agency < b.agency) return -1;
-            if (a.agency > b.agency) return 1;
-            return 0;
-        });
+        // const includedResponses = questionnaireResponses.sort((a, b) => {
+        //     if (a.agency < b.agency) return -1;
+        //     if (a.agency > b.agency) return 1;
+        //     return 0;
+        // });
         const requestObj = {
             url: generateResponsesExcel,
             method: 'POST',

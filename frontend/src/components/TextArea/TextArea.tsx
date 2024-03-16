@@ -1,6 +1,6 @@
 import React from 'react';
 import './TextArea.css';
-import { QData, BindFieldFunction, CollectAnswerFunction, ReactSetter } from '../../types/common';
+import { QData, BindFieldFunction, CollectAnswerFunction } from '../../types/common';
 
 type TextAreaProps = {
     attributes: {
