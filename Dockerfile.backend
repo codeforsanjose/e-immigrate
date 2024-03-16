@@ -9,8 +9,8 @@ RUN --mount=type=cache,target=/root/.npm \
 
 FROM npm-cache as frontend-build
 
-COPY --link . .
-RUN npm run build
+COPY --link ./backend .
+# RUN npm run build
 
 FROM frontend-build as app
 
@@ -21,4 +21,4 @@ LABEL org.opensourcesanjosedistro="debian" \
   org.opencontainers.image.ref.name="emmigrate" \
   org.opencontainers.image.title="E-Immigrate" \
   org.opencontainers.image.description="Project New Citizen is a web application created for the Center for Employment Training Immigration and Citizenship Program (CET-ICP) in collaboration with Code for San Jose."
-CMD [ "node", "./backend/index.js" ]
+CMD [ "npm", "run", "start" ]
