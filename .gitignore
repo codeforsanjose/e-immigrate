@@ -33,3 +33,7 @@ deployments/*/charts
 deployments/*/Chart.lock
 
 /frontend/dist/*
+
+/backend/node_modules/*
+/.secrets/*
+/backend/.secrets/*
