@@ -1,9 +1,12 @@
 {
 	"folders": [
-		{
-			"path": "."
-		}
-	],
+        {
+            "path": "."
+        },
+        {
+            "path": "../../config"
+        }
+    ],
 	"settings": {
 		"files.exclude": {
 			"node_modules/": true,

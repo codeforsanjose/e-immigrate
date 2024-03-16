@@ -1,13 +1,20 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 
 import './index.css';
-import App from './containers/App/App';
+import { App } from './containers/App/App';
 
-// eslint-disable-next-line react/no-deprecated
-ReactDOM.render(
-    <React.StrictMode>
-        <App />
-    </React.StrictMode>,
-    document.getElementById('root'),
-);
+function bootstrap() {
+    const rootNode = document.getElementById('root');
+    if (rootNode == null) {
+        console.error("Failed to find the 'root' element");
+        return;
+    }
+    const root = createRoot(rootNode);
+    root.render(
+        <React.StrictMode>
+            <App />
+        </React.StrictMode>,
+    );
+}
+bootstrap();

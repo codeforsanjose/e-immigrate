@@ -1,6 +1,6 @@
 import React from 'react';
 import { sendRequest } from '../../sendRequest/sendRequest';
-import { Redirect } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import { apis } from '../../sendRequest/apis';
 import './LoginRegister.css';
 
@@ -51,10 +51,10 @@ export function Login() {
 
     if (loginState.loggedIn) {
         return (
-            <Redirect
+            <Navigate
+                state={{ name: loginState.name }}
                 to={{
                     pathname: '/dashboard',
-                    state: { name: loginState.name },
                 }} />
         );
     }

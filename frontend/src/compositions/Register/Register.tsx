@@ -1,7 +1,7 @@
 import React from 'react';
 import { sendRequest } from '../../sendRequest/sendRequest';
 import { apis } from '../../sendRequest/apis';
-import { Redirect } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 
 import '../Login/LoginRegister.css';
 const { registerApi } = apis;
@@ -56,11 +56,10 @@ export function Register() {
 
     if (registerBoxState.loggedIn) {
         return (
-            <Redirect
-                to={{
-                    pathname: '/dashboard',
-                    state: { name: registerBoxState.name },
-                }} />
+            <Navigate
+                state={{ name: registerBoxState.name }}
+                to={{ pathname: '/dashboard' }} 
+            />
         );
     }
 

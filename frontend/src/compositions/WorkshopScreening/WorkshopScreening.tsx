@@ -65,12 +65,12 @@ export function WorkshopScreening(props: WorkshopScreeningProps) {
                 showModal={showModal}
                 setShowModal={setShowModal}
                 date={formattedDate}
-                setDate={setDate}
+                setDate={value => setDate((new Date(value)).toDateString())}
                 collectAnswer={collectAnswer} />
             <Modal
                 showModal={showModal}
                 question2={question2}
-                date={date}
+                date={Date.parse(date)}
                 content={content} />
         </div>
     );
