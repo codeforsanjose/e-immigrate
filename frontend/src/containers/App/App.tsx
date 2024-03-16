@@ -11,19 +11,10 @@ export function App() {
         <Router>
             <div className="App">
                 <Routes>
-                    <Route path="/dashboard">
-                        <AdminDashboard 
-                        />
-                    </Route>
-                    <Route path="/login">
-                        <Admin />
-                    </Route>
-                    <Route path="/questionnaires">
-                        <EditQuestionnaires />
-                    </Route>
-                    <Route path="/">
-                        <MainContainer />
-                    </Route>
+                    <Route path="/dashboard" element={<AdminDashboard />}/>
+                    <Route path="/login" element={<Admin />}/>
+                    <Route path="/questionnaires" element={<EditQuestionnaires />}/>
+                    <Route path="/" element={<MainContainer />}/>
                 </Routes>
             </div>
         </Router>

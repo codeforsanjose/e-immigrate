@@ -367,24 +367,18 @@ function MainContainer() {
                     <div className="main">
                         <div className="section">
                             <Routes>
-                                <Route path="/">
-                                    <LandingPage content={content} />
-                                </Route>
-                                <Route path="/eligibility">
-                                    <WorkshopScreening
-                                        content={content}
-                                        questions={questions}
-                                        // questionnaireResponse={questionnaireResponse}
-                                        // setQuestionnaireResponse={setQuestionnaireResponse}
-                                        collectAnswer={collectAnswer} />
-                                </Route>
-                                <Route path="/overview">
-                                    <ProcessOverview
-                                        content={updatedContentForProcessOverview}
-                                        // nextStep={nextStep} 
-                                    />
-                                </Route>
-                                <Route path="/video">
+                                <Route path="/" element={<LandingPage content={content} />}/>
+                                <Route path="/eligibility" element={<WorkshopScreening
+                                    content={content}
+                                    questions={questions}
+                                    // questionnaireResponse={questionnaireResponse}
+                                    // setQuestionnaireResponse={setQuestionnaireResponse}
+                                    collectAnswer={collectAnswer} />}/>
+                                <Route path="/overview" element={<ProcessOverview
+                                    content={updatedContentForProcessOverview}
+                                    // nextStep={nextStep} 
+                                />}/>
+                                <Route path="/video" element={<>
                                     <ProgressBar
                                         content={content}
                                         step={1}
@@ -396,8 +390,9 @@ function MainContainer() {
                                         // video={content.step1VideoID}
                                         videoState={videoState}
                                         content={content} />
-                                </Route>
-                                <Route path="/questionnaire">
+                                </>}/>
+                                    
+                                <Route path="/questionnaire" element={<>
                                     <ProgressBar
                                         content={content}
                                         step={2}
@@ -411,8 +406,8 @@ function MainContainer() {
                                         setQuestionnaireResponse={setQuestionnaireResponse}
                                         content={content}
                                         collectAnswer={collectAnswer} />
-                                </Route>
-                                <Route path="/confirmation">
+                                </>}/>
+                                <Route path="/confirmation" element={<>
                                     <ProgressBar
                                         content={content}
                                         step={3}
@@ -420,7 +415,7 @@ function MainContainer() {
                                         // previousStep={previousStep} 
                                     />
                                     <Confirmation content={content} />
-                                </Route>
+                                </>}/>
                             </Routes>
                         </div>
                         <Footer content={content} />
