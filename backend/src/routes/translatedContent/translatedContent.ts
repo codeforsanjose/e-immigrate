@@ -2,6 +2,8 @@ import express from 'express';
 import { TranslatedContent } from '../../models/translatedContent.js';
 import { Types } from 'mongoose';
 import { z } from 'zod';
+import { RequestError } from '../../errors/RequestError.js';
+import { DEFAULT_LANGUAGE } from '../../features/languages/default.js';
 const router = express.Router();
 export { router as translatedContentRouter };
 
@@ -15,13 +17,22 @@ router.route('/').get((req, res) => {
         .catch((err) => console.log(err));
 });
 
-router.route('/:title.:language').get((req, res) => {
-    TranslatedContent.findOne({
+
+
+router.route('/:title.:language?').get(async (req, res) => {
+    const {
+        title: paramTitle,
+        language: paramLanguage = DEFAULT_LANGUAGE,
+    } = req.params;
+    console.log('/:title.:language?', {
+        paramTitle,
+        paramLanguage,
+    })
+    const translateContent = await TranslatedContent.findOne({
         title: req.params.title,
         language: req.params.language,
-    })
-        .then((translatedContent) => res.json(translatedContent))
-        .catch((err) => console.log(err));
+    });
+    res.json(translateContent);
 });
 const AddSchema = z.object({
     title: z.string(),
@@ -75,7 +86,11 @@ router.route('/add').post(async (req, res) => {
 });
 
 router.route('/:id').delete((req, res) => {
-    TranslatedContent.findByIdAndDelete(req.params.id)
+    const {
+        id: paramId,
+    } = req.params;
+    console.log('/:id', { paramId });
+    TranslatedContent.findByIdAndDelete(paramId)
         .then(() => res.json('translated content deleted'))
         .catch((err) => console.log(err));
 });

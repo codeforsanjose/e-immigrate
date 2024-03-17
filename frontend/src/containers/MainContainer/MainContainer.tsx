@@ -19,11 +19,7 @@ import { apis } from '../../sendRequest/apis';
 import { getFromStorage, saveToStorage } from '../../utilities/storage_utils';
 import { CollectAnswerFunction } from '../../types/common';
 import { GetQuestionsByLanguageElement } from '../../types/ApiResults';
-const {
-    addQuestionnaireResponse,
-    getQuestions,
-    getTranslatedContent,
-} = apis;
+import { apiUrlFormatters } from '../../sendRequest/apiUrlFormatters';
 
 type GetQuestionForLanguageApiResponse = {
     questions: Array<GetQuestionsByLanguageElement>;
@@ -288,7 +284,10 @@ export function MainContainer() {
 
     React.useEffect(() => {
         const requestObj = {
-            url: `${getQuestions}/${workshopTitle}.${language}`,
+            url: apiUrlFormatters.getQuestionsByLanguage({
+                title: workshopTitle,
+                language,
+            }),
         };
         sendRequest<GetQuestionForLanguageApiResponse>(requestObj).then((response) => {
             setQuestions(response.questions);
@@ -301,7 +300,10 @@ export function MainContainer() {
 
     React.useEffect(() => {
         const requestObj = {
-            url: `${getTranslatedContent}/${workshopTitle}.${language}`,
+            url: apiUrlFormatters.getTranslatedContentByLanguage({
+                title: workshopTitle,
+                language,
+            }),
         };
         sendRequest<GetTranslatedQuestionForLanguageApiResponse>(requestObj).then((response) => {
             setContent(response.content);
@@ -315,7 +317,7 @@ export function MainContainer() {
 
     const submitQuestionnaireResponse = (userAnswers: QuestionnaireResponse) => {
         const requestObj = {
-            url: addQuestionnaireResponse,
+            url: apis.addQuestionnaireResponse,
             method: 'POST',
             body: JSON.stringify({
                 title: workshopTitle,

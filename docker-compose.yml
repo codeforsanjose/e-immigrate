@@ -6,7 +6,8 @@ services:
     image: e-immigrate
     build:
       context: ./
-      dockerfile: Dockerfile.backend
+      dockerfile: docker/backend/Dockerfile
+    env_file: ./backend/.secrets/.env
     ports:
       - "5000:5000"
     environment:
@@ -16,6 +17,14 @@ services:
       - "org.opensourcesanjose.app=eimmigrate"
     depends_on:
       - mongo
+  frontend:
+    build:
+      context: ./
+      dockerfile: docker/frontend/Dockerfile
+    ports:
+      - "8080:8080"
+    labels:
+      - "org.opensourcesanjose.app=eimmigrate"
 
   mongo:
     image: mongo:latest
@@ -28,6 +37,16 @@ services:
       MONGO_INITDB_ROOT_USERNAME: eimmigrate
       MONGO_INITDB_ROOT_PASSWORD: eimmigrate
       MONGO_INITDB_DATABASE: eimmigrate
+  
+  reverse_proxy:
+    image: nginx:latest
+    volumes:
+      - ./docker/reverse-proxy/conf_d:/etc/nginx/conf.d
+      - ./docker/reverse-proxy/nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - 8096:80
+    restart: unless-stopped
+
 volumes:
   mongo-data:
     labels:

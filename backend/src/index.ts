@@ -9,6 +9,8 @@ import { questionnairesRouter } from './routes/questionnaires/questionnaires.js'
 import { translatedContentRouter } from './routes/translatedContent/translatedContent.js';
 import { generateResponsesExcelRouter } from './routes/generateResponsesExcel/generateResponsesExcel.js';
 import dotenv from 'dotenv';
+import { handleRequestErrorMiddleware } from './middleware/error-middleware/handleRequestErrorMiddleware.js';
+import { handleUncaughtErrorMiddleware } from './middleware/error-middleware/handleUncaughtErrorMiddleware.js';
 dotenv.config();
 
 const MAX_EXCEL_FILE_SIZE = 50 * 1024 * 1024; //max size excel file in bytes will allow to be uploaded
@@ -41,8 +43,15 @@ app.use('/api/questionnaire-responses', questionnaireResponsesRouter);
 app.use('/api/questionnaires', questionnairesRouter);
 app.use('/api/translatedContent', translatedContentRouter);
 app.use('/api/generateExcel', generateResponsesExcelRouter);
-app.use(express.static('build'))
 
+// Error middleware, the earlier ones are run first
+app.use(...[
+    handleRequestErrorMiddleware(),
+    handleUncaughtErrorMiddleware(),
+])
+app.use(express.static('build'))
 const port = process.env.PORT || 5000;
 
-app.listen(port, () => console.log(`listening on port ${port}`));
+app.listen(port, () => {
+    console.log(`listening on port ${port}`);
+});

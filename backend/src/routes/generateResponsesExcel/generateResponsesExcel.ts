@@ -140,11 +140,14 @@ router.route('/responses').post(async (req, res) => {
             }
         });
     });
+    // NOTE: we should replace this with a "write to some table" call
+
     //in build step be sure to write reports directory with path below
     wb.write('./routes/generateResponsesExcel/reports/ResponsesExcel.xlsx');
+    // // write to response stream
+    // wb.write('ResponsesExcel.xlsx', res);
     updateResponseDownloadStatus(responses);
     res.json({ msg: 'success' });
-    
 });
 
 router.route('/getLatest/:filename').get((req, res) => {

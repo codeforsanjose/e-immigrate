@@ -7,12 +7,9 @@ import { Navbar } from '../../compositions/Navbar/Navbar';
 import { Button } from '../../components/Button/Button';
 import { LanguageDropdown } from '../../components/LanguageDropdown/LanguageDropdown';
 import './EditQuestionnaires.css';
-const {
-    uploadQuestinnaires,
-    getQuestionsByLanguage,
-    getQuestions,
-    deleteQuestionnaireByTitle,
-} = apis;
+
+import { apiUrlFormatters } from '../../sendRequest/apiUrlFormatters';
+
 type QuestionnaireElement = {
     title: string | undefined;
 };
@@ -58,10 +55,9 @@ export const EditQuestionnaires = () => {
         }
 
         const requestObj = {
-            url: deleteQuestionnaireByTitle.replace(
-                ':title',
-                encodeURIComponent(title),
-            ),
+            url: apiUrlFormatters.deleteQuestionnaireByTitle({
+                title,
+            }),
             method: 'DELETE',
         };
         const jwt = getAuthToken();
@@ -88,9 +84,10 @@ export const EditQuestionnaires = () => {
         toggleLanguageDropDown(true);
         const encodedTitle = encodeURIComponent(questionnaireTitle);
         const requestObj = {
-            url: getQuestionsByLanguage
-                .replace(':title', encodedTitle)
-                .replace(':language', language),
+            url: apiUrlFormatters.getQuestionsByLanguage({
+                title: encodedTitle,
+                language,
+            }),
             method: 'GET',
         };
         sendRequest<GetQuestionsByLanguageApiResponse>(requestObj)
@@ -110,7 +107,7 @@ export const EditQuestionnaires = () => {
         }
         else {
             const requestObj = {
-                url: getQuestions,
+                url: apis.getQuestions,
                 method: 'GET',
             };
             setFetchQuestionnaire(true);
@@ -147,7 +144,7 @@ export const EditQuestionnaires = () => {
         };
 
         const requestObj = {
-            url: uploadQuestinnaires,
+            url: apis.uploadQuestinnaires,
             method: 'POST',
             body: formData,
         };

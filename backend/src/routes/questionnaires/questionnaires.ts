@@ -2,9 +2,11 @@ import express from 'express';
 import { Questionnaires } from '../../models/questionnaires.js';
 import { Types } from 'mongoose';
 import { z } from 'zod';
+import { DEFAULT_LANGUAGE } from '../../features/languages/default.js';
 const router = express.Router();
 export { router as questionnairesRouter };
 router.route('/').get(async (req, res) => {
+    
     try {
 
         const allQuestionnaires = await Questionnaires.find();
@@ -16,11 +18,15 @@ router.route('/').get(async (req, res) => {
     }
 });
 
-router.route('/:title.:language').get((req, res) => {
-    console.log(req.params.title, decodeURIComponent(req.params.language));
+router.route('/:title.:language?').get((req, res) => {
+    const {
+        title: paramTitle,
+        language: paramLanguage = DEFAULT_LANGUAGE,
+    } = req.params;
+    console.log(paramTitle, decodeURIComponent(paramLanguage));
     Questionnaires.findOne({
-        title: decodeURIComponent(req.params.title),
-        language: req.params.language,
+        title: decodeURIComponent(paramTitle),
+        language: paramLanguage,
     })
         .then((questionnaires) => {
             console.log('oh here', questionnaires);

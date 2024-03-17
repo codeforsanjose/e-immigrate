@@ -31,77 +31,88 @@ router.route('/').get((req, res) => {
         .catch((err) => res.status(500).json(err));
 });
 
+const RegisterSchema = z.object({
+    email: z.string(),
+    name: z.string(),
+    password: z.string(),
+});
 //route to sign up
-router.route('/').post((req, res) => {
-    let email = req.body.email;
-    let name = req.body.name;
-    let password = req.body.password;
+router.route('/').post(async (req, res) => {
+    const reqBody = RegisterSchema.parse(req.body);
+    const {
+        email,
+        name,
+        password,
+    } = reqBody;
 
-    Admin.find({ email: email })
-        .exec()
-        .then((admins) => {
-            if (admins.length >= 1) {
-                return res.status(409).json({
-                    message: 'admin email exists',
-                });
-            } else {
-                if (!name) {
-                    return res
-                        .status(400)
-                        .json({ error: { message: 'name not entered! ' } });
-                } else if (!EMAIL_REGEX.test(email)) {
-                    return res
-                        .status(400)
-                        .json({ error: { message: 'Invalid email.' } });
-                } else {
-                    bcrypt.hash(password, SALT_ROUNDS, (err, hash) => {
-                        if (err) {
-                            return res.status(500).json({
-                                error: err,
-                            });
-                        } else {
-                            const admin = new Admin({
-                                _id: new mongoose.Types.ObjectId(),
-                                email: email,
-                                name: name,
-                                password: hash,
-                            });
+    if (name == null || name === '') {
+        return res
+            .status(400)
+            .json({ error: { message: 'name not entered! ' } });
+    } 
+    else if (!EMAIL_REGEX.test(email)) {
+        return res
+            .status(400)
+            .json({ error: { message: 'Invalid email.' } });
+    }
 
-                            admin
-                                .save()
-                                .then((result) => {
-                                    console.log(
-                                        'newly created admin user: ',
-                                        result
-                                    );
-                                    let jwToken = jwt.sign(
-                                        { email: email },
-                                        getRequiredJwtKey()
-                                    );
-                                    return res.status(201).json({
-                                        name: name,
-                                        email: email,
-                                        jwt: jwToken,
-                                    });
-                                })
-                                .catch((err) => {
-                                    if (err) {
-                                        console.log(err);
-                                        return res.status(500).json({
-                                            error: {
-                                                message: 'Sign up failed',
-                                            },
-                                        });
-                                    }
-                                });
-                        }
-                    });
-                }
-            }
-        })
-        .catch((err) => {
-            return res.json(err);
+    try {
+
+        const admins = await Admin.find({ email: email }).exec();
+        if (admins.length >= 1) {
+            return res.status(409).json({
+                message: 'admin email exists',
+            });
+        }
+        let hash: string;
+        try {
+            hash = await bcrypt.hash(password, SALT_ROUNDS);
+        }
+        catch (err) {
+            return res.status(500).json({
+                error: err,
+            });
+        }
+
+        const admin = new Admin({
+            _id: new mongoose.Types.ObjectId(),
+            email: email,
+            name: name,
+            password: hash,
         });
+
+        try {
+
+            
+            const result = await admin.save();
+            console.log(
+                'newly created admin user: ',
+                result
+            );
+            let jwToken = jwt.sign(
+                { email: email },
+                getRequiredJwtKey()
+            );
+            return res.status(201).json({
+                name: name,
+                email: email,
+                jwt: jwToken,
+            });
+        }
+        catch (err) {
+            console.log(err);
+            return res.status(500).json({
+                error: {
+                    message: 'Sign up failed',
+                },
+            });
+        }
+    }
+    catch (err) {
+        console.error('error!', { err });
+        return res.json(err);
+    }
+
 });
 
 //route for logging in with email and password
@@ -110,7 +121,7 @@ router.route('/sessions').post(async (req, res) => {
     let password = req.body.password;
     if (!password || !email) {
         return res.status(404).json(ERRMSG);
-    } 
+    }
     const admin = await Admin.findOne({ email: email }).exec();
     if (admin == null) {
         console.error(`Failed to find admin`);
@@ -171,25 +182,25 @@ function verifyJwtAsync(userToken: string): Promise<string | jwt.JwtPayload | un
             resolve(data);
         });
 
-            // if (err) {
-            //     return res
-            //         .status(401)
-            //         .json({ error: { message: 'Invalid JWT Token' } });
-            // }
-            // Admin.findOne({ email: token.email }).exec((error, admin) => {
-            //     if (error || !admin) {
-            //         return res
-            //             .status(401)
-            //             .json({ error: { message: 'Invalid Admin User' } });
-            //     }
-            //     isAdminCallBack();
-            // });
+        // if (err) {
+        //     return res
+        //         .status(401)
+        //         .json({ error: { message: 'Invalid JWT Token' } });
+        // }
+        // Admin.findOne({ email: token.email }).exec((error, admin) => {
+        //     if (error || !admin) {
+        //         return res
+        //             .status(401)
+        //             .json({ error: { message: 'Invalid Admin User' } });
+        //     }
+        //     isAdminCallBack();
+        // });
         // });
     })
 }
-type IsAdminCallBack<T> = 
-| (() => Promise<T>)
-| (() => T)
+type IsAdminCallBack<T> =
+    | (() => Promise<T>)
+    | (() => T)
 /**
  * verify that the http request comes from a admin user
  * detect the user from the body containing the JWT token
@@ -206,12 +217,12 @@ async function enforceAdminOnly<TResult>(req: express.Request, res: express.Resp
     }
     try {
 
-    
+
         const token = await verifyJwtAsync(req.body.jwToken);
         if (token == null || typeof token === 'string') {
             return res
-            .status(401)
-            .json({ error: { message: 'Invalid JWT Token' } });
+                .status(401)
+                .json({ error: { message: 'Invalid JWT Token' } });
         }
         const admin = await Admin.findOne({ email: token.email }).exec();
         if (admin == null) {
@@ -301,7 +312,7 @@ router.route('/translateContent').post((req, res) => {
                 .status(400)
                 .json({ error: { message: 'Missing Translation File' } });
         }
-        const {translations: translationsFile } = req.files;
+        const { translations: translationsFile } = req.files;
         if (translationsFile == null || Array.isArray(translationsFile)) {
             return res
                 .status(400)
@@ -340,10 +351,10 @@ router.route('/super').post((req, res) => {
                 .status(200)
                 .json(
                     'Admins to super status - ' +
-                        result.matchedCount +
-                        ' selected, ' +
-                        result.modifiedCount +
-                        ' updated'
+                    result.matchedCount +
+                    ' selected, ' +
+                    result.modifiedCount +
+                    ' updated'
                 );
         })
         .catch((err) => {
@@ -397,9 +408,9 @@ async function updateLinks(email: string, titles: Array<string>, insert = true) 
         return;
     }
 
-    
-        
-     
+
+
+
 }
 
 const Schema1 = z.object({

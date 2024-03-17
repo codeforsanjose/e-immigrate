@@ -12,16 +12,18 @@ import SortArrow from '../../data/images/SortArrow.svg';
 import { WithEventTarget } from '../../types/WithEventTarget';
 import { defaultCompare } from '../../utilities/defaultCompare';
 import { useNavigate } from 'react-router-dom';
-const {
-    getQuestionnaireResponse,
-    emailQuestionnaireResponse,
-    generateResponsesExcel,
-    getQuestions,
-    agencyAssignURL,
-    assignResponseFlag,
-    assignEmail,
-    deleteQuestionnaireResponse,
-} = apis;
+
+import { apiUrlFormatters } from '../../sendRequest/apiUrlFormatters';
+// const {
+//     getQuestionnaireResponse,
+//     emailQuestionnaireResponse,
+//     generateResponsesExcel,
+//     getQuestions,
+//     agencyAssignURL,
+//     assignResponseFlag,
+//     assignEmail,
+//     deleteQuestionnaireResponse,
+// } = apis;
 const DESCRIPTIVE_TIMESTAMP = 'MM/dd/yyyy, h:mm:ss a';
 const AGENCIES = ['ALA', 'CAIR', 'CC', 'CET', 'IRC', 'PARS'];
 const questionKeysThatAreNotRedFlagsButInARedFlagQuestionnaire = [
@@ -73,7 +75,7 @@ export function AdminDashboard() {
         }
         else {
             const requestObj = {
-                url: getQuestionnaireResponse,
+                url: apis.getQuestionnaireResponse,
             };
             const headers = {
                 Authorization: `Bearer ${jwt}`,
@@ -136,7 +138,7 @@ export function AdminDashboard() {
             {},
         );
         const requestObj = {
-            url: assignResponseFlag,
+            url: apis.assignResponseFlag,
             method: 'POST',
             body: JSON.stringify({
                 responsesToUpdate: [responseToUpdate],
@@ -166,7 +168,7 @@ export function AdminDashboard() {
             {},
         );
         const requestObj = {
-            url: assignEmail,
+            url: apis.assignEmail,
             method: 'POST',
             body: JSON.stringify({
                 responsesToUpdate: [responseToUpdate],
@@ -274,7 +276,7 @@ export function AdminDashboard() {
             agency: e.target.value,
         };
         const requestObj = {
-            url: agencyAssignURL,
+            url: apis.agencyAssignURL,
             method: 'POST',
             body: JSON.stringify({
                 responsesToEmail: [selectedResponseForAgency],
@@ -373,7 +375,9 @@ export function AdminDashboard() {
         );
 
         const requestObj = {
-            url: deleteQuestionnaireResponse.replace(':id', response_id),
+            url: apiUrlFormatters.deleteQuestionnaireResponse({
+                id: response_id,
+            }),
             method: 'PUT',
         };
         const jwt = getAuthToken();
@@ -583,7 +587,7 @@ export function AdminDashboard() {
 
     const sendEmailsToUsers = () => {
         const requestObj = {
-            url: emailQuestionnaireResponse,
+            url: apis.emailQuestionnaireResponse,
             method: 'POST',
             body: JSON.stringify({
                 responsesToEmail: [],
@@ -626,7 +630,7 @@ export function AdminDashboard() {
         //     })
         //     .filter((item) => !item.responseDownloadedToExcel);
         const requestObj = {
-            url: generateResponsesExcel,
+            url: apis.generateResponsesExcel,
             method: 'POST',
             body: JSON.stringify({
                 questions,
@@ -659,7 +663,7 @@ export function AdminDashboard() {
         //     return 0;
         // });
         const requestObj = {
-            url: generateResponsesExcel,
+            url: apis.generateResponsesExcel,
             method: 'POST',
             body: JSON.stringify({
                 questions,
@@ -688,7 +692,10 @@ export function AdminDashboard() {
 
     React.useEffect(() => {
         const requestObj = {
-            url: `${getQuestions}/${workshopTitle}.en`,
+            url: apiUrlFormatters.getQuestionsByLanguage({
+                title: workshopTitle,
+                language: 'en',
+            }),
         };
         sendRequest<{ questions: Array<string>, }>(requestObj).then((response) => {
             setQuestions(response.questions);

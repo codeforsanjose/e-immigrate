@@ -4,7 +4,6 @@ import { apis } from '../../sendRequest/apis';
 import { Navigate } from 'react-router-dom';
 
 import '../Login/LoginRegister.css';
-const { registerApi } = apis;
 
 export function Register() {
     const [registerBoxState, setRegisterBoxState] = React.useState({
@@ -15,7 +14,7 @@ export function Register() {
     });
 
     const requestObj = {
-        url: registerApi,
+        url: apis.registerApi,
         method: 'POST',
         headers: {
             'content-type': 'application/json',

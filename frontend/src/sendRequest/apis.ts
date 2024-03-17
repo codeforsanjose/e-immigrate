@@ -20,6 +20,7 @@ export const apis = {
     deleteQuestionnaire: '/api/questionnaires/:id',
     getQuestions: '/api/questionnaires',
     getTranslatedContent: '/api/translatedContent',
+    getTranslatedContentByLanguage: '/api/translatedContent/:title.:language',
     generateResponsesExcel: '/api/generateExcel/responses',
     getResponsesExcel: '/api/generateExcel/getLatest',
     deleteResponsesExcel: '/api/generateExcel/delete',
@@ -27,4 +28,4 @@ export const apis = {
     getListOfQuestionnaires: '/api/admins/questionnaires',
     getQuestionsByLanguage: 'api/questionnaires/:title.:language',
     deleteQuestionnaireByTitle: '/api/admins/deletequestionnaire/:title',
-};
+} as const;

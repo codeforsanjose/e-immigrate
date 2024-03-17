@@ -4,10 +4,6 @@ import { Navigate } from 'react-router-dom';
 import { apis } from '../../sendRequest/apis';
 import './LoginRegister.css';
 
-const {
-    loginApi,
-} = apis;
-
 type LoginState = 
 | {
     email: string;
@@ -23,7 +19,7 @@ export function Login() {
     });
 
     const requestObj = {
-        url: loginApi,
+        url: apis.loginApi,
         method: 'POST',
         body: JSON.stringify({
             email: loginState.email,
