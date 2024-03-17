@@ -1,5 +1,5 @@
 import React from 'react';
-import MainContainer from '../MainContainer/MainContainer';
+import { MainContainer } from '../MainContainer/MainContainer';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { Admin } from '../../compositions/Admin/Admin';
 import { AdminDashboard } from '../AdminDashboard/AdminDashboard';

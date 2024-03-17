@@ -235,7 +235,7 @@ function setupLocalstoreQuestionsWrapper(language: string) {
 }
 const preferredLanguageStorageWrapper = setupPreferredLanguageStorageWrapper();
 
-function MainContainer() {
+export function MainContainer() {
     const LOCALSTORE_LANGUAGE = preferredLanguageStorageWrapper.tryGet() ?? 'en';
     const localStoreContentWrapper = React.useMemo(() => {
         return setupLocalstoreContentWrapper(LOCALSTORE_LANGUAGE);
@@ -421,5 +421,3 @@ function MainContainer() {
         </div>
     );
 }
-
-export default MainContainer;

@@ -27,9 +27,22 @@ export async function sendRequest<TResponse = unknown>(
         ...rest
     } = requestObj;
     const actualHeaders = getEffectiveHeaders(headers, browser_gen_content_type);
+    console.log('before fetch', {
+        url,
+    });
     const data = await fetch(url, {
         ...rest,
         headers: actualHeaders,
     });
-    return await data.json();
+    console.log('part b', {
+        url,
+        data,
+    });
+    const json = await data.json();
+    console.log('part c', {
+        url, 
+        data, 
+        json,
+    });
+    return json;
 }

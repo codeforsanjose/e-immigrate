@@ -27,6 +27,7 @@ const config: WebpackConfiguration = {
     },
     devServer: {
         open: false,
+        allowedHosts: "all",
         host,
         port,
         server: {
