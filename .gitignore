@@ -37,3 +37,4 @@ deployments/*/Chart.lock
 /backend/node_modules/*
 /.secrets/*
 /backend/.secrets/*
+/backend/dist/*
