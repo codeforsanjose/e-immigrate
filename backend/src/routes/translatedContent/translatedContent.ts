@@ -14,7 +14,6 @@ router.route('/').get((req, res) => {
             const responsesInfo = { responses: allTranslatedContent };
             res.json(responsesInfo);
         })
-        .catch((err) => console.log(err));
 });
 
 

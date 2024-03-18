@@ -7,15 +7,11 @@ const router = express.Router();
 export { router as questionnairesRouter };
 router.route('/').get(async (req, res) => {
     
-    try {
 
-        const allQuestionnaires = await Questionnaires.find();
-        const responsesInfo = { responses: allQuestionnaires };
-        res.json(responsesInfo);
-    }
-    catch (err) {
-        console.log(err);
-    }
+    const allQuestionnaires = await Questionnaires.find();
+    const responsesInfo = { responses: allQuestionnaires };
+    res.json(responsesInfo);
+    
 });
 
 router.route('/:title.:language?').get((req, res) => {

@@ -39,9 +39,6 @@
         "workbox-webpack-plugin": "^7.0.0"
     },
     "scripts": {
-        "start:old": "react-scripts start",
-        "start:dev:old": "nodemon server --ignore src/ & npm run start",
-        "test:old": "react-scripts test",
         "lint": "eslint \"./**/*.ts\" \"./**/*.tsx\"",
         "serve:dev": "webpack serve",
         "build": "webpack --mode=production --node-env=production"
