@@ -151,12 +151,14 @@ router.route('/responses').post(async (req, res) => {
 });
 
 router.route('/getLatest/:filename').get((req, res) => {
+    // TODO_SECURITY
     const filename = req.params.filename;
     res.download('routes/generateResponsesExcel/reports/' + filename);
 });
 
 // delete the file after downloaded
 router.route('/delete/:filename').get((req, res) => {
+    // TODO_SECURITY
     const filename = req.params.filename;
     fs.unlink('../../' + filename, function () {});
     res.status(202).json({ msg: 'deleted file' });

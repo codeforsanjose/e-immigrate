@@ -16,7 +16,7 @@ import { Row } from 'read-excel-file';
  *                    with proper sheets for each langauge
  * returns; a promise that resolves when operaiton is done
  * */
-export function loadQuestionnaireXlsxIntoDB(excelFileContent: Buffer, title = WorkshopTitle) {
+export async function loadQuestionnaireXlsxIntoDB(excelFileContent: Buffer, title = WorkshopTitle) {
     const questionnairePromises = LanguageOptions.map((language, idx) => {
         const stream = new Readable();
         stream.push(excelFileContent);
@@ -66,7 +66,7 @@ export function loadQuestionnaireXlsxIntoDB(excelFileContent: Buffer, title = Wo
                     }
                     return;
                 }
-                
+
                 data.push({
                     id: row[0],
                     slug: row[1],
@@ -83,38 +83,32 @@ export function loadQuestionnaireXlsxIntoDB(excelFileContent: Buffer, title = Wo
             return data;
         });
     });
-    return Promise.all(questionnairePromises).then((questionnaires) => {
-        const insertPromises = LanguageOptions.map((language, idx) => {
-            const questions = questionnaires[idx];
-            const insertNewQuestionnaire = () => {
-                return Questionnaires.insertMany({
-                    title,
-                    language: language.code,
-                    questions,
-                });
-            };
+    const questionnaires = await Promise.all(questionnairePromises);
+    const insertPromises = LanguageOptions.map(async (language, idx) => {
+        const questions = questionnaires[idx];
+        function insertNewQuestionnaire() {
+            return Questionnaires.insertMany({
+                title,
+                language: language.code,
+                questions,
+            });
+        }
 
-            const removeExistingQuestionnaires = (_id: Types.ObjectId) => {
-                return Questionnaires.findByIdAndDelete({ _id });
-            };
+        function removeExistingQuestionnaires(_id: Types.ObjectId) {
+            return Questionnaires.findByIdAndDelete({ _id });
+        }
 
-            return Questionnaires.find({ title, language: language.code }).then(
-                (result) => {
-                    if (result.length !== 0) {
-                        return removeExistingQuestionnaires(result[0]._id).then(
-                            () => {
-                                return insertNewQuestionnaire();
-                            }
-                        );
-                    } else {
-                        return insertNewQuestionnaire();
-                    }
-                }
-            );
-        });
-        return Promise.all(insertPromises);
+        const result = await Questionnaires.find({ title, language: language.code });
+        if (result.length !== 0) {
+            await removeExistingQuestionnaires(result[0]._id);
+            return await insertNewQuestionnaire();
+        } else {
+            return await insertNewQuestionnaire();
+        }
     });
+    return await Promise.all(insertPromises);
 }
+
 type Cell = (ArrayElementOf<Row>) & (string | number);
 function isValidRecordCell(value: unknown): value is (string | number) {
     return typeof value === 'string' || typeof value === 'number';
@@ -147,7 +141,7 @@ export async function loadTranslationXlsxIntoDB(excelFileContent: Buffer) {
         }
         return obj;
     }, {});
-    
+
     const title = WorkshopTitle;
     const insertPromises = LanguageOptions.map((language) => {
         const content = translations[language.code];

@@ -19,16 +19,19 @@ const EMAIL_REGEX =
     /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
 
 
-router.route('/').get((req, res) => {
-    Admin.find()
-        .then((admins) => {
-            let allAdmins: Array<{ password?: unknown }> = JSON.parse(JSON.stringify(admins));
-            allAdmins.forEach((admin) => {
-                delete admin['password'];
-            });
-            return res.json(allAdmins);
-        })
-        .catch((err) => res.status(500).json(err));
+router.route('/').get(async (req, res) => {
+    try {
+
+        const admins = await Admin.find();
+        let allAdmins: Array<{ password?: unknown }> = JSON.parse(JSON.stringify(admins));
+        allAdmins.forEach((admin) => {
+            delete admin['password'];
+        });
+        return res.json(allAdmins);
+    }
+    catch (err) {
+        res.status(500).json(err);
+    }
 });
 
 const RegisterSchema = z.object({
@@ -49,7 +52,7 @@ router.route('/').post(async (req, res) => {
         return res
             .status(400)
             .json({ error: { message: 'name not entered! ' } });
-    } 
+    }
     else if (!EMAIL_REGEX.test(email)) {
         return res
             .status(400)
@@ -83,7 +86,7 @@ router.route('/').post(async (req, res) => {
 
         try {
 
-            
+
             const result = await admin.save();
             console.log(
                 'newly created admin user: ',
@@ -181,21 +184,6 @@ function verifyJwtAsync(userToken: string): Promise<string | jwt.JwtPayload | un
             }
             resolve(data);
         });
-
-        // if (err) {
-        //     return res
-        //         .status(401)
-        //         .json({ error: { message: 'Invalid JWT Token' } });
-        // }
-        // Admin.findOne({ email: token.email }).exec((error, admin) => {
-        //     if (error || !admin) {
-        //         return res
-        //             .status(401)
-        //             .json({ error: { message: 'Invalid Admin User' } });
-        //     }
-        //     isAdminCallBack();
-        // });
-        // });
     })
 }
 type IsAdminCallBack<T> =
@@ -240,9 +228,9 @@ async function enforceAdminOnly<TResult>(req: express.Request, res: express.Resp
     }
 }
 //route for uploading the questionnaires spreadsheet in the database
-router.route('/questionnairefile').post((req, res) => {
-    enforceAdminOnly(req, res, processQuestionnaireAsAdmin);
-    function processQuestionnaireAsAdmin() {
+router.route('/questionnairefile').post(async (req, res) => {
+    await enforceAdminOnly(req, res, processQuestionnaireAsAdmin);
+    async function processQuestionnaireAsAdmin() {
         console.log(req.files, req.body);
         if (!req.files) {
             return res
@@ -262,51 +250,55 @@ router.route('/questionnairefile').post((req, res) => {
         }
         const excelFileContent = questionnairefile.data;
         const title = req.body.title;
-        return loadQuestionnaireXlsxIntoDB(excelFileContent, title)
-            .then(() => {
-                res.status(200).json({
-                    message: 'Questionnaire Documenent Recieved',
-                });
-            })
-            .catch((err) => {
-                console.log(err);
-                res.status(500).json({
-                    message: 'Error, Storing Questionnaire in database',
-                });
+        try {
+            await loadQuestionnaireXlsxIntoDB(excelFileContent, title);
+            res.status(200).json({
+                message: 'Questionnaire Documenent Recieved',
             });
+        }
+        catch (err) {
+            console.log(err);
+            res.status(500).json({
+                message: 'Error, Storing Questionnaire in database',
+            });
+        }
     }
 });
 //route for deleteing a questionnaire by title
-router.route('/deletequestionnaire/:title').delete((req, res) => {
-    enforceAdminOnly(req, res, deleteQuestionnaireByTitle);
-    function deleteQuestionnaireByTitle() {
-        return Questionnaires.deleteMany({
-            title: decodeURIComponent(req.params.title),
-        })
-            .then((results) => {
-                if (!results.acknowledged) {
-                    console.log('Delete Failed');
-                    res.status(500).json({ message: 'Delete Failed' });
-                    return;
-                }
-                if (results.deletedCount === 0) {
-                    res.status(404).json({ message: 'Title not found' });
-                    return;
-                }
+router.route('/deletequestionnaire/:title').delete(async (req, res) => {
+    await enforceAdminOnly(req, res, deleteQuestionnaireByTitle);
+    async function deleteQuestionnaireByTitle() {
+        try {
 
-                res.status(200).json({ message: 'Questionnaire Removed' });
-            })
-            .catch((err) => {
-                res.status(500).json({
-                    message: 'Error, Deleting Questionnaires from database',
-                });
+            const results = await Questionnaires.deleteMany({
+                title: decodeURIComponent(req.params.title),
             });
+
+
+            if (!results.acknowledged) {
+                console.log('Delete Failed');
+                res.status(500).json({ message: 'Delete Failed' });
+                return;
+            }
+            if (results.deletedCount === 0) {
+                res.status(404).json({ message: 'Title not found' });
+                return;
+            }
+
+            res.status(200).json({ message: 'Questionnaire Removed' });
+        }
+        catch (err) {
+            res.status(500).json({
+                message: 'Error, Deleting Questionnaires from database',
+            });
+            return;
+        }
     }
 });
 //route for uploading the translation spreadsheet in the database
-router.route('/translateContent').post((req, res) => {
-    enforceAdminOnly(req, res, processTranslatedContentAsAdmin);
-    function processTranslatedContentAsAdmin() {
+router.route('/translateContent').post(async (req, res) => {
+    await enforceAdminOnly(req, res, processTranslatedContentAsAdmin);
+    async function processTranslatedContentAsAdmin() {
         if (!req.files) {
             return res
                 .status(400)
@@ -324,13 +316,15 @@ router.route('/translateContent').post((req, res) => {
                 .json({ error: { message: 'Translation File is too large' } });
         }
         const excelFileContent = translationsFile.data;
-        return loadTranslationXlsxIntoDB(excelFileContent)
-            .then(() => {
-                res.status(200).send('Translation Document Recieved');
-            })
-            .catch((err) => {
-                res.status(500).send('Error, Storing Translation in database');
-            });
+        try {
+
+            await loadTranslationXlsxIntoDB(excelFileContent)
+            res.status(200).send('Translation Document Recieved');
+        }
+        catch (err) {
+            res.status(500).send('Error, Storing Translation in database');
+            return;
+        }
     }
 });
 
@@ -340,34 +334,33 @@ router.use(authMiddleware); //all apis AFTER this line will require authenticati
 //set one or more admins to be super admins:
 //request body looks like the following:
 //  {"admins":["abcde@gmail.com", "xyz@123.org"]}
-router.route('/super').post((req, res) => {
+router.route('/super').post(async (req, res) => {
     if (!req.body || !req.body.admins) {
         return res.status(400).json('Admin identifiers not found');
     }
-    Admin.updateMany({ email: { $in: req.body.admins } }, { issuper: true })
-        .exec()
-        .then((result) => {
-            return res
-                .status(200)
-                .json(
-                    'Admins to super status - ' +
-                    result.matchedCount +
-                    ' selected, ' +
-                    result.modifiedCount +
-                    ' updated'
-                );
-        })
-        .catch((err) => {
-            console.log(req.body, err);
-            return res.status(500).json('Error updating super admin status');
-        });
+    try {
+
+        const result = await Admin.updateMany({ email: { $in: req.body.admins } }, { issuper: true }).exec()
+        return res
+        .status(200)
+        .json(
+            'Admins to super status - ' +
+            result.matchedCount +
+            ' selected, ' +
+            result.modifiedCount +
+            ' updated'
+            );
+    }
+    catch (err) {
+        console.log(req.body, err);
+        return res.status(500).json('Error updating super admin status');
+    }
 });
 
 
 //link questionnaires to admin identified by email
 async function updateLinks(email: string, titles: Array<string>, insert = true) {
     try {
-
         const optAdmin = await Admin.findOne({ email: email }).exec();
         if (optAdmin == null) return;
         const existingAdmin = optAdmin;
@@ -420,7 +413,7 @@ const Schema1 = z.object({
         insert: z.boolean(),
     })),
 })
-function updateQuestionnairesLinks(req: express.Request, res: express.Response, insert = true) {
+async function updateQuestionnairesLinks(req: express.Request, res: express.Response, insert = true) {
     if (!req.body || !req.body.links) {
         return res
             .status(400)
@@ -430,23 +423,22 @@ function updateQuestionnairesLinks(req: express.Request, res: express.Response, 
     const linkPromises = reqBody.links.map((link, idx) => {
         return updateLinks(link.admin, link.questionnaires, insert);
     });
-    Promise.all(linkPromises).then((links) => {
-        return res
-            .status(200)
-            .json('Admin and questionnaires links are updated');
-    });
+    const links = await Promise.all(linkPromises);
+    return res
+        .status(200)
+        .json('Admin and questionnaires links are updated');
 }
 
 //link admin(s) with corresponding questionnaires (by 'title' since it's the unique id)
 //request body looks like the following:
 //  {"links": [{"admin":"abc@gmail.com", "questionnaires":["CIIT_Workshop_Spring_2021"]}]}"
-router.route('/questionnaires/link').post((req, res) => {
-    updateQuestionnairesLinks(req, res, true);
+router.route('/questionnaires/link').post(async (req, res) => {
+    await updateQuestionnairesLinks(req, res, true);
 });
 
 //unlink admin(s) with corresponding questionnaires
-router.route('/questionnaires/unlink').post((req, res) => {
-    updateQuestionnairesLinks(req, res, false);
+router.route('/questionnaires/unlink').post(async (req, res) => {
+    await updateQuestionnairesLinks(req, res, false);
 });
 
 router.route('');

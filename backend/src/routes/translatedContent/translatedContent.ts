@@ -7,13 +7,10 @@ import { DEFAULT_LANGUAGE } from '../../features/languages/default.js';
 const router = express.Router();
 export { router as translatedContentRouter };
 
-router.route('/').get((req, res) => {
-    TranslatedContent
-        .find()
-        .then((allTranslatedContent) => {
-            const responsesInfo = { responses: allTranslatedContent };
-            res.json(responsesInfo);
-        })
+router.route('/').get(async (req, res) => {
+    const allTranslatedContent = await TranslatedContent.find();
+    const responsesInfo = { responses: allTranslatedContent };
+    res.json(responsesInfo);
 });
 
 
@@ -50,23 +47,13 @@ router.route('/add').post(async (req, res) => {
     
     res.json('translated content added');
     async function insertNewTranslatedContent() {
-        try {
-            await TranslatedContent.insertMany({ title, language, content });
-            console.log('translated content inserted');
-        }
-        catch (err) {
-            console.error(err);
-        }
+        await TranslatedContent.insertMany({ title, language, content });
+        console.log('translated content inserted');
     };
 
     async function removeExistingTranslatedContent(_id: Types.ObjectId) {
-        try {
-            await TranslatedContent.findByIdAndDelete({ _id });
-            console.log('translated content deleted');
-        }
-        catch (err) {
-            console.error(err);
-        }
+        await TranslatedContent.findByIdAndDelete({ _id });
+        console.log('translated content deleted');
     }
 
     try {
@@ -84,17 +71,12 @@ router.route('/add').post(async (req, res) => {
     }
 });
 
-router.route('/:id').delete((req, res) => {
+router.route('/:id').delete(async (req, res) => {
     const {
         id: paramId,
     } = req.params;
     console.log('/:id', { paramId });
-    TranslatedContent.findByIdAndDelete(paramId)
-        .then(() => res.json('translated content deleted'))
-        .catch((err) => console.log(err));
+    await TranslatedContent.findByIdAndDelete(paramId);
+    res.json('translated content deleted');
 });
-
-const validateTranslatedContent = (translatedContentObject: unknown) => {
-    return translatedContentObject;
-};
 

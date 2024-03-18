@@ -13,7 +13,7 @@ const router = express.Router();
 export { router as questionnaireResponsesRouter };
 
 //TODO: revisit access control
-router.route('/add').post((req, res) => {
+router.route('/add').post(async (req, res) => {
     const title = req.body.title;
     const language = req.body.language;
     const questionnaireResponse = req.body.questionnaireResponse;
@@ -23,48 +23,40 @@ router.route('/add').post((req, res) => {
         questionnaireResponse,
     });
 
-    newQuestionnaireResponse
-        .save()
-        .then(() => {
-            res.json('QuestionnaireResponse response added');
-        })
-        .catch((err) => console.log(err));
+    await newQuestionnaireResponse.save()
+    res.json('QuestionnaireResponse response added');
 });
 
 router.use(authMiddleware); //all apis AFTER this line will require authentication as implemented in auth.js
 
-const getAllResponses = () => {
+function getAllResponses() {
     return QuestionnaireResponse.find({
         $or: [{ deleted: { $exists: false } }, { deleted: false }],
     });
-};
+}
 
 type AdminTemp = {
     questionnaires: Array<string>;
 }
-const getResponsesForAdmin = (admin: AdminTemp) => {
+function getResponsesForAdmin(admin: AdminTemp) {
     return QuestionnaireResponse.find({
         title: { $in: admin.questionnaires },
         $or: [{ deleted: { $exists: false } }, { deleted: false }],
     });
-};
+}
 
-router.route('/').get((req, res) => {
+router.route('/').get(async (req, res) => {
     // const getResponses = req.user.issuper
     //     ? getAllResponses()
     //     : getResponsesForAdmin(req.user);
 
-    const getResponses = getAllResponses();
-    getResponses
-        .then((qResponses) => {
-            const updatedResponses = qResponses.filter((item) => {
-                return !item.title?.toLowerCase().includes('spring_2021');
-            });
-            console.log('ohh boy', updatedResponses);
-            const responsesInfo = { responses: updatedResponses };
-            res.json(responsesInfo);
-        })
-        .catch((err) => console.log(err));
+    const qResponses = await getAllResponses();
+    const updatedResponses = qResponses.filter((item) => {
+        return !item.title?.toLowerCase().includes('spring_2021');
+    });
+    console.log('ohh boy', updatedResponses);
+    const responsesInfo = { responses: updatedResponses };
+    res.json(responsesInfo);
 });
 
 // source https://stackoverflow.com/questions/46155/how-to-validate-an-email-address-in-javascript
@@ -123,7 +115,7 @@ router.route('/email').post(async (req, res) => {
     try {
 
         const result = await sendMassEmails(messsagesToSend);
-        updateUserResponsesEmailFlag(responsesToEmail, res);
+        await updateUserResponsesEmailFlag(responsesToEmail, res);
     }
     catch (emailErrors) {
         console.log('emails ERRORED', emailErrors);
@@ -163,7 +155,7 @@ function getUpdatedFlag(userResponse: Record<RedFlagKey, string>) {
             : acc;
     }, false);
 }
-function updateUserResponsesEmailFlag(responsesToEmail: Array<QuestionnaireResponseElement>, res: express.Response) {
+async function updateUserResponsesEmailFlag(responsesToEmail: Array<QuestionnaireResponseElement>, res: express.Response) {
     const totalEmailsToSend = responsesToEmail.length;
     let emailsSentCurrent = 0;
     let errors = new Map<Types.ObjectId, unknown>();
@@ -194,7 +186,7 @@ function updateUserResponsesEmailFlag(responsesToEmail: Array<QuestionnaireRespo
             updatedAt,
         };
         try {
-            QuestionnaireResponse.updateOne(
+            await QuestionnaireResponse.updateOne(
                 { _id: response._id },
                 tempUpdatedSuccessEmail,
                 (err: unknown, raw: unknown) => {
@@ -221,10 +213,10 @@ function updateUserResponsesEmailFlag(responsesToEmail: Array<QuestionnaireRespo
         }
     }
 }
-router.route('/assign-agency').post((req, res) => {
+router.route('/assign-agency').post(async (req, res) => {
     const responseToAssignAgency = req.body.responsesToEmail;
     for (const response of responseToAssignAgency) {
-        QuestionnaireResponse.updateOne(
+        await QuestionnaireResponse.updateOne(
             { _id: response._id },
             response,
             (err: unknown, raw: unknown) => {
@@ -236,10 +228,10 @@ router.route('/assign-agency').post((req, res) => {
     }
     res.json({ msg: 'success' });
 });
-router.route('/assign-flag').post((req, res) => {
+router.route('/assign-flag').post(async (req, res) => {
     const responseToAssignFlag = req.body.responsesToUpdate;
     for (const response of responseToAssignFlag) {
-        QuestionnaireResponse.updateOne(
+        await QuestionnaireResponse.updateOne(
             { _id: response._id },
             response,
             (err: unknown, raw: unknown) => {
@@ -251,10 +243,10 @@ router.route('/assign-flag').post((req, res) => {
     }
     res.json({ msg: 'success' });
 });
-router.route('/assign-email').post((req, res) => {
+router.route('/assign-email').post(async (req, res) => {
     const responseToEmailReset = req.body.responsesToUpdate;
     for (const response of responseToEmailReset) {
-        QuestionnaireResponse.updateOne(
+        await QuestionnaireResponse.updateOne(
             { _id: response._id },
             { ...response, emailSent: false },
             (err: unknown, raw: unknown) => {
@@ -267,37 +259,33 @@ router.route('/assign-email').post((req, res) => {
     res.json({ msg: 'success' });
 });
 
-router.route('/:id').get((req, res) => {
-    QuestionnaireResponse.findById(req.params.id)
-        .then((questionnaireResponse) => res.json(questionnaireResponse))
-        .catch((err) => console.log(err));
+router.route('/:id').get(async (req, res) => {
+    const questionnaireResponse= await QuestionnaireResponse.findById(req.params.id)
+    res.json(questionnaireResponse);
 });
 
-router.route('/:id').delete((req, res) => {
-    QuestionnaireResponse.findByIdAndDelete(req.params.id)
-        .then((users) => res.json('questionnaire response Deleted'))
-        .catch((err) => console.log(err));
+router.route('/:id').delete(async (req, res) => {
+    const users = await QuestionnaireResponse.findByIdAndDelete(req.params.id)
+    res.json('questionnaire response Deleted');
 });
 
-router.route('/delete/:id').put((req, res) => {
-    QuestionnaireResponse.findByIdAndUpdate(
+router.route('/delete/:id').put(async (req, res) => {
+    const questionnaireResponse = await QuestionnaireResponse.findByIdAndUpdate(
+
         req.params.id,
-        { deleted: true },
-        function (err: unknown, questionnaireResponse: { _id: unknown }) {
-            if (err) {
-                console.log(err);
-            } else {
-                console.log(
-                    'questionnaire response ' +
-                        questionnaireResponse._id +
-                        ' soft-deleted'
-                );
-                res.status(202).json({
-                    msg: 'questionnaire response deleted softly',
-                });
-            }
-        }
+        { deleted: true });
+    if (questionnaireResponse == null) {
+        console.error('Failed to find');
+        return;
+    } 
+    console.log(
+        'questionnaire response ' +
+            questionnaireResponse._id +
+            ' soft-deleted'
     );
+    res.status(202).json({
+        msg: 'questionnaire response deleted softly',
+    });
 });
 
 router.route('');

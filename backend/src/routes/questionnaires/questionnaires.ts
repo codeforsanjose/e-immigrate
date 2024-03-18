@@ -14,21 +14,18 @@ router.route('/').get(async (req, res) => {
     
 });
 
-router.route('/:title.:language?').get((req, res) => {
+router.route('/:title.:language?').get(async (req, res) => {
     const {
         title: paramTitle,
         language: paramLanguage = DEFAULT_LANGUAGE,
     } = req.params;
     console.log(paramTitle, decodeURIComponent(paramLanguage));
-    Questionnaires.findOne({
+    const questionnaires = await Questionnaires.findOne({
         title: decodeURIComponent(paramTitle),
         language: paramLanguage,
-    })
-        .then((questionnaires) => {
-            console.log('oh here', questionnaires);
-            res.json(questionnaires);
-        })
-        .catch((err) => console.log(err));
+    });
+    console.log('oh here', questionnaires);
+    res.json(questionnaires);
 });
 
 const AddSchema = z.object({
@@ -48,25 +45,13 @@ router.route('/add').post(async (req, res) => {
     res.json('questionnaire added');
 
     async function insertNewQuestionnaire() {
-        try {
-
-            await Questionnaires.insertMany({ title, language, questions });
-            console.log('questionnaire inserted');
-        }
-        catch (err) {
-            console.log(err)
-        }
+        await Questionnaires.insertMany({ title, language, questions });
+        console.log('questionnaire inserted');
     }
 
     async function removeExistingQuestionnaires(_id: Types.ObjectId) {
-        try {
-
-            await Questionnaires.findByIdAndDelete({ _id });
-            console.log('questionnaire deleted');
-        }
-        catch (err) {
-            console.log(err)
-        }
+        await Questionnaires.findByIdAndDelete({ _id });
+        console.log('questionnaire deleted');
     }
 
     try {
@@ -82,8 +67,7 @@ router.route('/add').post(async (req, res) => {
     }
 });
 
-router.route('/:id').delete((req, res) => {
-    Questionnaires.findByIdAndDelete(req.params.id)
-        .then(() => res.json('questionnaire deleted'))
-        .catch((err) => console.log(err));
+router.route('/:id').delete(async (req, res) => {
+    await Questionnaires.findByIdAndDelete(req.params.id);
+    res.json('questionnaire deleted')
 });
