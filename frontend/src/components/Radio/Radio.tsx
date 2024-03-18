@@ -1,22 +1,18 @@
 import React from 'react';
 import './Radio.css';
-import { CommonComponentAttributes } from '../../types/CommonComponentAttributes';
-type RadioProps = {
-    attributes: CommonComponentAttributes & {
-        answers?: Array<string>;
-        values: Array<string>;
-    };
+import { CommonComponentProps } from '../../types/CommonComponentProps';
+type RadioProps = CommonComponentProps & {
+    answers?: Array<string>;
+    values: Array<string>;
 };
 export function Radio(props: RadioProps) {
     const {
-        attributes: { 
-            q, 
-            answers, 
-            values, 
-            bindField,
-            collectAnswer, 
-            content,
-        },
+        q, 
+        answers, 
+        values, 
+        bindField,
+        collectAnswer, 
+        content,
     } = props;
     return (
         <div className="RadioGroup">

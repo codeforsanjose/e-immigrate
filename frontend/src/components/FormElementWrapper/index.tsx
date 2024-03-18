@@ -73,17 +73,15 @@ export function FormElementWrapper<
     if (elementName === 'checkbox') {
         return (
             <Checkbox
-                attributes={{
-                    ...commonData,
-                    values: answers?.split(', ') ?? [],
-                }}
+                {...commonData}
+                values={answers?.split(', ') ?? []}
             />
         );
     }
     else if (elementName === 'date') {
         return (
             <Date
-                attributes={commonData}
+                {...commonData}
             />
         );
     }
@@ -93,76 +91,66 @@ export function FormElementWrapper<
             : null;
         return (
             <Select
-                attributes={{
-                    ...commonData,
-                    selectAnswers: selectAnswers ?? undefined,
-                    values: answers?.split(', ') ?? [],
-                    setShowFollowUp,
-                }}
+                {...commonData}
+                selectAnswers={selectAnswers ?? undefined}
+                values={answers?.split(', ') ?? []}
+                setShowFollowUp={setShowFollowUp}
             />
         );
     }
     else if (elementName === 'email') {
         return (
             <Email
-                attributes={commonData}
+                {...commonData}
             />
         );
     }
     else if (elementName === 'input') {
         return (
             <TextInput
-                attributes={commonData}
+                {...commonData}
             />
         );
     }
     else if (elementName === 'phoneNumber') {
         return (
             <PhoneNumber
-                attributes={{
-                    ...commonData,
-                    setErrors,
-                }}
+                {...commonData}
+                setErrors={setErrors}
             />
         );
     }
     else if (elementName === 'radio') {
         return (
             <Radio
-                attributes={{
-                    ...commonData,
-                    answers: answers?.split(', '),
-                    values: answers?.split(', ') ?? [],
-                }}
+                {...commonData}
+                answers={answers?.split(', ')}
+                values={answers?.split(', ') ?? []}
             />
         );
     }
     else if (elementName === 'radioWithFollowUp') {
         return (
             <RadioWithFollowUp
-                attributes={{
-                    ...commonData,
-                    answers: answers?.split(', '),
-                    values: answers?.split(', ') ?? [],
-                    setShowFollowUp,
-                }}
+                {...commonData}
+                answers={answers?.split(', ')}
+                values={answers?.split(', ') ?? []}
+                setShowFollowUp={setShowFollowUp}
             />
         );
     }
     else if (elementName === 'textArea') {
         return (
             <TextArea
-                attributes={commonData}
+                {...commonData}
             />
         );
     }
     else if (elementName === 'zip') {
         return (
             <Zip
-                attributes={{
-                    ...commonData,
-                    setErrors,
-                }}
+                {...commonData}
+                setErrors={setErrors}
             />
         );
     }

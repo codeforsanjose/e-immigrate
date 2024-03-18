@@ -1,26 +1,22 @@
 import React from 'react';
 import './RadioWithFollowUp.css';
 import { ReactSetter } from '../../types/common';
-import { CommonComponentAttributes } from '../../types/CommonComponentAttributes';
+import { CommonComponentProps } from '../../types/CommonComponentProps';
 
-type RadioWithFollowUpProps = {
-    attributes: CommonComponentAttributes & {
-        answers?: Array<string>;
-        values: Array<string>;
-        setShowFollowUp: ReactSetter<Record<string, boolean>>;
-    };
+type RadioWithFollowUpProps = CommonComponentProps & {
+    answers?: Array<string>;
+    values: Array<string>;
+    setShowFollowUp: ReactSetter<Record<string, boolean>>;
 };
 export function RadioWithFollowUp(props: RadioWithFollowUpProps) {
     const {
-        attributes: {
-            q,
-            answers,
-            values,
-            bindField,
-            setShowFollowUp,
-            collectAnswer,
-            content,
-        },
+        q,
+        answers,
+        values,
+        bindField,
+        setShowFollowUp,
+        collectAnswer,
+        content,
     } = props;
     return (
         <div className="RadioGroup">

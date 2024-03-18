@@ -1,14 +1,12 @@
 import React from 'react';
 import './Date.css';
 import { ErrorMessageOnlyContentText } from '../../types/ContentText';
-import { CommonComponentAttributes } from '../../types/CommonComponentAttributes';
+import { CommonComponentProps } from '../../types/CommonComponentProps';
 
-type DateProps = {
-    attributes: CommonComponentAttributes<ErrorMessageOnlyContentText>;
-};
+type DateProps = CommonComponentProps<ErrorMessageOnlyContentText>;
 export function Date(props: DateProps) {
     const {
-        attributes: { q, bindField, content },
+        q, bindField, content,
     } = props;
     return (
         <>

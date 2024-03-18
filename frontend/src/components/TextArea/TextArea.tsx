@@ -1,18 +1,14 @@
 import React from 'react';
 import './TextArea.css';
-import { CommonComponentAttributes } from '../../types/CommonComponentAttributes';
+import { CommonComponentProps } from '../../types/CommonComponentProps';
 
-type TextAreaProps = {
-    attributes: CommonComponentAttributes;
-};
+type TextAreaProps = CommonComponentProps;
 export function TextArea(props: TextAreaProps) {
     const {
-        attributes: { 
-            q, 
-            bindField, 
-            collectAnswer, 
-            content,
-        },
+        q, 
+        bindField, 
+        collectAnswer, 
+        content,
     } = props;
 
     return (

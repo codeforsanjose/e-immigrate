@@ -1,18 +1,14 @@
 import React from 'react';
 import './Email.css';
-import { CommonComponentAttributes } from '../../types/CommonComponentAttributes';
+import { CommonComponentProps } from '../../types/CommonComponentProps';
 
-type EmailProps = {
-    attributes: CommonComponentAttributes;
-};
+type EmailProps = CommonComponentProps;
 export function Email(props: EmailProps) {
     const {
-        attributes: { 
-            q, 
-            bindField, 
-            collectAnswer, 
-            content,
-        },
+        q, 
+        bindField, 
+        collectAnswer, 
+        content,
     } = props;
     return (
         <>

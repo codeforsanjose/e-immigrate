@@ -1,17 +1,13 @@
 import React from 'react';
 import './TextInput.css';
-import { CommonComponentAttributes } from '../../types/CommonComponentAttributes';
-type TextInputProps = {
-    attributes: CommonComponentAttributes;
-};
+import { CommonComponentProps } from '../../types/CommonComponentProps';
+type TextInputProps = CommonComponentProps;
 export function TextInput(props: TextInputProps) {
     const {
-        attributes: { 
-            q, 
-            bindField, 
-            collectAnswer, 
-            content,
-        },
+        q, 
+        bindField, 
+        collectAnswer, 
+        content,
     } = props;
     return (
         <>

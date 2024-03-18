@@ -1,23 +1,19 @@
 import React from 'react';
 import './Checkbox.css';
-import { CommonComponentAttributes } from '../../types/CommonComponentAttributes';
+import { CommonComponentProps } from '../../types/CommonComponentProps';
 type InputValue = string | Array<string> | number | undefined;
-type CheckboxProps = {
-    attributes: CommonComponentAttributes & {
-        answers?: Array<string> | undefined;
-        values: Array<InputValue>;
-    };
+type CheckboxProps = CommonComponentProps & {
+    answers?: Array<string> | undefined;
+    values: Array<InputValue>;
 };
 export function Checkbox(props: CheckboxProps) {
     const {
-        attributes: { 
-            q, 
-            answers, 
-            values, 
-            bindField, 
-            collectAnswer, 
-            content,
-        },
+        q, 
+        answers, 
+        values, 
+        bindField, 
+        collectAnswer, 
+        content,
     } = props;
     return (
         <div>

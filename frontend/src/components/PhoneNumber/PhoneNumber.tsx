@@ -1,22 +1,18 @@
 import React from 'react';
 import './PhoneNumber.css';
 import { ReactSetter } from '../../types/common';
-import { CommonComponentAttributes } from '../../types/CommonComponentAttributes';
+import { CommonComponentProps } from '../../types/CommonComponentProps';
 
-type PhoneNumberProps = {
-    attributes: CommonComponentAttributes & {
-        setErrors: ReactSetter<Record<string, unknown>>;
-    };
+type PhoneNumberProps = CommonComponentProps & {
+    setErrors: ReactSetter<Record<string, unknown>>;
 };
 export function PhoneNumber(props: PhoneNumberProps) {
     const {
-        attributes: { 
-            q, 
-            bindField, 
-            collectAnswer, 
-            setErrors, 
-            content,
-        },
+        q, 
+        bindField, 
+        collectAnswer, 
+        setErrors, 
+        content,
     } = props;
     return (
         <>
