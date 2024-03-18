@@ -1,16 +1,10 @@
 import React from 'react';
 import './Radio.css';
-import { QData, BindFieldFunction, CollectAnswerFunction } from '../../types/common';
+import { CommonComponentAttributes } from '../../types/CommonComponentAttributes';
 type RadioProps = {
-    attributes: {
-        q: QData;
+    attributes: CommonComponentAttributes & {
         answers?: Array<string>;
         values: Array<string>;
-        bindField: BindFieldFunction;
-        collectAnswer: CollectAnswerFunction;
-        content: {
-            errorMessage: string;
-        };
     };
 };
 export function Radio(props: RadioProps) {

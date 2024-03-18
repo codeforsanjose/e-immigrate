@@ -1,14 +1,10 @@
 import React from 'react';
 import './Date.css';
-import { BindFieldFunction, ContentData, QData } from '../../types/common';
+import { ErrorMessageOnlyContentText } from '../../types/ContentText';
+import { CommonComponentAttributes } from '../../types/CommonComponentAttributes';
 
 type DateProps = {
-    attributes: {
-
-        q: QData;
-        bindField: BindFieldFunction;
-        content: ContentData;
-    };
+    attributes: CommonComponentAttributes<ErrorMessageOnlyContentText>;
 };
 export function Date(props: DateProps) {
     const {

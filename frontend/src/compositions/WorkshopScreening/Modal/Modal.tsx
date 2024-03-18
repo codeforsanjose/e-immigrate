@@ -3,13 +3,13 @@ import { useNavigate, NavigateFunction } from 'react-router-dom';
 import { isAfter } from 'date-fns';
 
 import './Modal.css';
-import { ModalContent } from './types';
+import { ContentText } from '../../../types/ContentText';
 
 function checkEligibility(
     userDate: number | Date, 
     question2: string | null,
     navigate: NavigateFunction, 
-    content: ModalContent,
+    content: ContentText,
 ) {
     // const cutoffDate = new Date();
     const marriedDate = new Date(content.screeningDateMarried);
@@ -39,7 +39,7 @@ type ModalProps = {
     showModal: boolean;
     question2: string | null;
     date: number | Date;
-    content: ModalContent;
+    content: ContentText;
 };
 
 export function Modal(props: ModalProps) {

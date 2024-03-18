@@ -1,22 +1,10 @@
 import React from 'react';
 
 import './Confirmation.css';
+import { ContentText } from '../../types/ContentText';
 
 type ConfirmationProps = {
-    content: {
-        step3Header: string;
-        step3Title: string;
-        step3Header2: string;
-        step3Text2: string;
-        step3Header3: string;
-        step3Text3: string;
-        step3Tip1: string;
-        step3Tip2: string;
-        step3Tip3: string;
-        step3Text4: string;
-        step3Text5: string;
-        step3Text6: string;
-    };
+    content: ContentText;
 };
 export function Confirmation(props: ConfirmationProps) {
     const {

@@ -4,10 +4,11 @@ import { LanguageDropdown } from '../../components/LanguageDropdown/LanguageDrop
 import { Link } from 'react-router-dom';
 import './Navbar.css';
 import { DirectReactSetter } from '../../types/common';
+import { ContentText } from '../../types/ContentText';
 type NavbarProps = {
     language: string;
     setLanguage: DirectReactSetter<string>;
-    content: unknown;
+    content: ContentText;
     dashboard?: boolean;
 };
 export function Navbar(props: NavbarProps) {

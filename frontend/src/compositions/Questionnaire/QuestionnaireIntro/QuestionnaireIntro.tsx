@@ -2,20 +2,10 @@ import React from 'react';
 import { Button } from '../../../components/Button/Button';
 
 import './QuestionnaireIntro.css';
+import { ContentText } from '../../../types/ContentText';
 
 type QuestionnaireIntroProps = {
-    content: {
-        step2Header: string;
-        step2Title: string;
-        step2Instructions: string;
-        step2Tip1: string;
-        step2Tip2: string;
-        step2Tip4: string;
-        step2Tip5: string;
-        step2Tip6: string;
-        step2Header2: string;
-        step2ProceedButton1: string;
-    };
+    content: ContentText;
     setIntroPage: (value: boolean) => void;
 };
 export function QuestionnaireIntro(props: QuestionnaireIntroProps) {

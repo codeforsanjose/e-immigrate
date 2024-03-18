@@ -1,15 +1,10 @@
 import React from 'react';
 import './Zip.css';
-import { QData, BindFieldFunction, CollectAnswerFunction, ReactSetter } from '../../types/common';
+import { ReactSetter } from '../../types/common';
+import { CommonComponentAttributes } from '../../types/CommonComponentAttributes';
 type ZipProps = {
-    attributes: {
-        q: QData;
-        bindField: BindFieldFunction;
-        collectAnswer: CollectAnswerFunction;
+    attributes: CommonComponentAttributes & {
         setErrors: ReactSetter<Record<string, unknown>>;
-        content: {
-            errorMessageZip: string;
-        };
     };
 };
 export function Zip(props: ZipProps) {

@@ -3,198 +3,24 @@ import { Button } from '../../../components/Button/Button';
 import { useMarkFieldAsTouched } from '../hooks/useMarkFieldAsTouched';
 import { QuestionnaireIntro } from '../QuestionnaireIntro/QuestionnaireIntro';
 import Arrow from '../../../data/images/Arrow-Down-Right.svg';
-import { Checkbox } from '../../../components/Checkbox/Checkbox';
-import { Date } from '../../../components/Date/Date';
 
 import './Questionnaire.css';
 import { CollectAnswerFunction } from '../../../types/common';
-import { FormElementName } from '../../../utilities/formElements';
+import { ContentText } from '../../../types/ContentText';
+import { Question } from '../../../types/Question';
+import { FormElementWrapper } from '../../../components/FormElementWrapper';
 
-type Question = {
-    category: string;
-    required?: boolean;
-    parentQuestionSlug?: string;
-    answerSelections?: string;
-    slug: string;
-    text: string;
-    questionType: FormElementName;
-};
 export type QuestionnaireResponse = Record<string, unknown>;
-type Content = {
-    required: string;
-    optional: string;
-    step2ProceedButton2: string;
-    step2ProceedButton3: string;
-    errorMessage?: string;
-    step2Header: string;
-    step2Title: string;
-    step2Instructions: string;
-    step2Tip1: string;
-    step2Tip2: string;
-    step2Tip4: string;
-    step2Tip5: string;
-    step2Tip6: string;
-    step2Header2: string;
-    step2ProceedButton1: string;
-};
+
 type QuestionnaireProps = {
     questions: Array<Question>;
     submitQuestionnaireResponse: (value: QuestionnaireResponse) => void;
     questionnaireResponse: QuestionnaireResponse;
     setQuestionnaireResponse: (value: QuestionnaireResponse) => void;
-    content: Content;
+    content: ContentText;
     collectAnswer: CollectAnswerFunction;
 };
-// type FormElementComponent<TElementName extends FormElementName> = (typeof formElements)[TElementName];
-// type FormElementProps<TElementName extends FormElementName> = React.ComponentProps<FormElementComponent<TElementName>>['attributes'];
-// function getFormElementProps<
-//     TElementName extends FormElementName
-// >(
-//     name: TElementName,
-//     question: Question,
-//     content: Content,
-//     others: {
-//         bindField: ReturnType<typeof useMarkFieldAsTouched>['bindField'];
-//         collectAnswer: CollectAnswerFunction;
-//     },
-// ): FormElementProps<TElementName> {
-//     const {
-//         bindField,
-//         collectAnswer,
-//     } = others;
-//     const answers = question.answerSelections?.split(',\n ').join(', ');
-//     const componentName = name;
-//     const commonData = {
-//         bindField,
-//         collectAnswer,
-//         q: question,
-//     };
 
-//     if (name === 'checkbox') {
-//         return {
-//             ...commonData,
-//             values: answers?.split(', ') ?? undefined,
-//             content: {
-//                 errorMessage: content.errorMessage,
-//             },
-//         };
-//     }
-//     else if (name === 'date') {
-//         return {
-//             ...commonData,
-//             content: {
-//                 errorMessage: content.errorMessage,
-//             },
-//         };
-//     }
-//     else if (name === 'dropDown') {
-//         throw new Error(`Unsupported component '${componentName}'`)
-//     }
-//     else if (name === 'email') {
-//         throw new Error(`Unsupported component '${componentName}'`)
-//     }
-//     else if (name === 'input') {
-//         throw new Error(`Unsupported component '${componentName}'`)
-//     }
-//     else if (name === 'phoneNumber') {
-//         throw new Error(`Unsupported component '${componentName}'`)
-//     }
-//     else if (name === 'radio') {
-//         throw new Error(`Unsupported component '${componentName}'`)
-//     }
-//     else if (name === 'radioWithFollowUp') {
-//         throw new Error(`Unsupported component '${componentName}'`)
-//     }
-//     else if (name === 'textArea') {
-//         throw new Error(`Unsupported component '${componentName}'`)
-//     }
-//     else if (name === 'zip') {
-//         throw new Error(`Unsupported component '${componentName}'`)
-//     }
-//     name satisfies never;
-//     throw new Error(`Unsupported component '${componentName}'`)
-// }
-
-type FormElementWrapperProps<TElementName extends FormElementName> = {
-    elementName: TElementName;
-    question: Question;
-    content: Content;
-    others: {
-        bindField: ReturnType<typeof useMarkFieldAsTouched>['bindField'];
-        collectAnswer: CollectAnswerFunction;
-    };
-};
-function FormElementWrapper<
-    TElementName extends FormElementName,
->(props: FormElementWrapperProps<TElementName>) {
-    const {
-        content,
-        others: {
-            bindField,
-            collectAnswer,
-        },
-        question,
-        elementName,
-    } = props;
-    const answers = question.answerSelections?.split(',\n ').join(', ');
-    const componentName = elementName;
-    const commonData = {
-        bindField,
-        collectAnswer,
-        q: question,
-    };
-    if (elementName === 'checkbox') {
-        return (
-            <Checkbox
-                attributes={{
-                    ...commonData,
-                    values: answers?.split(', ') ?? [],
-                    content: {
-                        errorMessage: content.errorMessage,
-                    },
-                }}
-            />
-        );
-    }
-    else if (elementName === 'date') {
-        return (
-            <Date
-                attributes={{
-                    ...commonData,
-                    content: {
-                        errorMessage: content.errorMessage,
-                    },
-                }}
-            />
-        );
-    }
-    else if (elementName === 'dropDown') {
-        throw new Error(`Unsupported component '${componentName}'`);
-    }
-    else if (elementName === 'email') {
-        throw new Error(`Unsupported component '${componentName}'`);
-    }
-    else if (elementName === 'input') {
-        throw new Error(`Unsupported component '${componentName}'`);
-    }
-    else if (elementName === 'phoneNumber') {
-        throw new Error(`Unsupported component '${componentName}'`);
-    }
-    else if (elementName === 'radio') {
-        throw new Error(`Unsupported component '${componentName}'`);
-    }
-    else if (elementName === 'radioWithFollowUp') {
-        throw new Error(`Unsupported component '${componentName}'`);
-    }
-    else if (elementName === 'textArea') {
-        throw new Error(`Unsupported component '${componentName}'`);
-    }
-    else if (elementName === 'zip') {
-        throw new Error(`Unsupported component '${componentName}'`);
-    }
-    elementName satisfies never;
-    throw new Error(`Unsupported component '${componentName}'`);
-}
 export function Questionnaire(props: QuestionnaireProps) {
     const {
         collectAnswer,
@@ -209,36 +35,22 @@ export function Questionnaire(props: QuestionnaireProps) {
         bindField,
         setAllFieldsTouched,
     } = useMarkFieldAsTouched();
-    // const [errors, setErrors] = React.useState({});
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const [errors, setErrors] = React.useState<Record<string, unknown>>({});
     const [introPage, setIntroPage] = React.useState(true);
-    const [showFollowUp] = React.useState<Record<string, boolean>>({});
+    const [showFollowUp, setShowFollowUp] = React.useState<Record<string, boolean>>({});
 
     const filteredQuestions = questions.filter(
         (q) => q.category === categories[categoryIndex],
     );
-
-    // const attributes = (q: {
-    //     answerSelections?: string;
-    // }) => {
-    //     const answers = (q.answerSelections != null)
-    //         ? q.answerSelections.split(',\n ').join(', ')
-    //         : null;
-    //     return {
-    //         q,
-    //         bindField: bindField,
-    //         collectAnswer: collectAnswer,
-    //         content: content,
-    //         answers: answers != null ? answers.split(', ') : null,
-    //         selectAnswers: answers != null
-    //             ? ['--', ...answers.split(', ')]
-    //             : null,
-    //         values: answers != null ? answers.split(', ') : null,
-    //         showFollowUp: showFollowUp,
-    //         setShowFollowUp: setShowFollowUp,
-    //         setErrors: setErrors,
-    //     };
-    // };
-
+    const formElementWrapperOthers = React.useMemo(() => {
+        return {
+            bindField,
+            collectAnswer,
+            setShowFollowUp,
+            setErrors,
+        };
+    }, [bindField, collectAnswer]);
     const onSubmit = () => {
         submitQuestionnaireResponse(questionnaireResponse);
     };
@@ -306,10 +118,7 @@ export function Questionnaire(props: QuestionnaireProps) {
                                             <FormElementWrapper
                                                 elementName={question.questionType}
                                                 content={content}
-                                                others={{
-                                                    bindField,
-                                                    collectAnswer,
-                                                }}
+                                                others={formElementWrapperOthers}
                                                 question={question}
                                             />
                                         
@@ -335,10 +144,7 @@ export function Questionnaire(props: QuestionnaireProps) {
                                                             <FormElementWrapper
                                                                 elementName={followUpQuestion.questionType}
                                                                 content={content}
-                                                                others={{
-                                                                    bindField,
-                                                                    collectAnswer,
-                                                                }}
+                                                                others={formElementWrapperOthers}
                                                                 question={followUpQuestion}
                                                             />
                                                         </fieldset>

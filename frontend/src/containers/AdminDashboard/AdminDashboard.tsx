@@ -14,6 +14,7 @@ import { defaultCompare } from '../../utilities/defaultCompare';
 import { useNavigate } from 'react-router-dom';
 
 import { apiUrlFormatters } from '../../sendRequest/apiUrlFormatters';
+import { ContentText, missingContentText } from '../../types/ContentText';
 // const {
 //     getQuestionnaireResponse,
 //     emailQuestionnaireResponse,
@@ -56,7 +57,10 @@ export function AdminDashboard() {
     const navigate = useNavigate();
     const [questionnaireResponses, setQuestionnaireResponses] = React.useState<Array<QuestionnaireResponseElement>>([]);
     const [questions, setQuestions] = React.useState<Array<string>>([]);
-    const content = { buttonHome: 'Home' };
+    const content: ContentText = { 
+        ...(missingContentText),
+        buttonHome: 'Home',
+    };
     const [language, setLanguage] = React.useState<string>('');
     const [flagOrder, setFlagOrder] = React.useState(false);
     const [emailOrder, setEmailOrder] = React.useState(false);

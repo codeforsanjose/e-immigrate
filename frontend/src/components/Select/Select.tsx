@@ -1,17 +1,12 @@
 import React from 'react';
 import './Select.css';
-import { QData, BindFieldFunction, CollectAnswerFunction, ReactSetter } from '../../types/common';
+import { ReactSetter } from '../../types/common';
+import { CommonComponentAttributes } from '../../types/CommonComponentAttributes';
 type SelectProps = {
-    attributes: {
-        q: QData;
+    attributes: CommonComponentAttributes & {
         selectAnswers?: Array<string>;
         values: Array<string>;
-        bindField: BindFieldFunction;
-        collectAnswer: CollectAnswerFunction;
         setShowFollowUp: ReactSetter<Record<string, boolean>>;
-        content: {
-            errorMessage: string;
-        };
     };
 };
 export function Select(props: SelectProps) {

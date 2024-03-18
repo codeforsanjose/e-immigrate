@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import YouTube from 'react-youtube';
 import { Button } from '../../components/Button/Button';
 import './Video.css';
+import { ContentText } from '../../types/ContentText';
 
 const opts = {
     height: '315',
@@ -13,13 +14,7 @@ const opts = {
 };
 
 type VideoProps = {
-    content: {
-        step1Header: string;
-        step1Title: string;
-        step1Tip1: string;
-        step1VideoID: string;
-        step1ProceedButton: string;
-    };
+    content: ContentText;
     videoState: {
         hasWatchedVideo: boolean;
     };

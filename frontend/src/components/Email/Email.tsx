@@ -1,16 +1,9 @@
 import React from 'react';
 import './Email.css';
-import { BindFieldFunction, CollectAnswerFunction, QData } from '../../types/common';
+import { CommonComponentAttributes } from '../../types/CommonComponentAttributes';
 
 type EmailProps = {
-    attributes: {
-        q: QData;
-        bindField: BindFieldFunction; 
-        content: {
-            errorMessageEmail: string;
-        };
-        collectAnswer: CollectAnswerFunction;
-    };
+    attributes: CommonComponentAttributes;
 };
 export function Email(props: EmailProps) {
     const {

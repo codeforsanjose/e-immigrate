@@ -9,6 +9,7 @@ import { LanguageDropdown } from '../../components/LanguageDropdown/LanguageDrop
 import './EditQuestionnaires.css';
 
 import { apiUrlFormatters } from '../../sendRequest/apiUrlFormatters';
+import { ContentText, missingContentText } from '../../types/ContentText';
 
 type QuestionnaireElement = {
     title: string | undefined;
@@ -37,7 +38,10 @@ export const EditQuestionnaires = () => {
     const [reFetch, setRefetch] = React.useState(false);
     const [workshopTitle, setWorkshopTitle] = React.useState('');
 
-    const content = { buttonHome: 'Home' };
+    const content: ContentText = { 
+        ...(missingContentText),
+        buttonHome: 'Home',
+    };
     const setToggleChooseFile = () => {
         if (chooseFile) {
             toggleChooseFile(false);

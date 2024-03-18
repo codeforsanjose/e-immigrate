@@ -4,17 +4,10 @@ import { Button } from '../../components/Button/Button';
 import image from '../../data/images/CiiT Logo.png';
 
 import './LandingPage.css';
+import { ContentText } from '../../types/ContentText';
 
 type LandingPageProps = {
-    content: {
-        homeWelcomeMessage: string;
-        homeHeader1: string;
-        homeText1: string;
-        homeHeader2: string;
-        homeText2: string;
-        homeText3: string;
-        closedMessage: string;
-    };
+    content: ContentText;
 };
 export function LandingPage(props: LandingPageProps) {
     const {

@@ -4,6 +4,7 @@ import { Question2 } from './Question2';
 import { Question3 } from './Question3';
 import { BindFieldFunction, CollectAnswerFunction } from '../../types/common';
 import { QuestionProps, QuestionProps_Q } from './QuestionTypes';
+import { ContentText } from '../../types/ContentText';
 
 type Branch1Props = {
     filteredQuestions: Array<QuestionProps_Q>;
@@ -16,7 +17,7 @@ type Branch1Props = {
     date: number | Date;
     setDate: (value: number | Date) => void;
     collectAnswer: CollectAnswerFunction;
-    content: QuestionProps['content'];
+    content: ContentText;
 };
 function Branch1(props: Branch1Props) {
     const {
@@ -82,7 +83,7 @@ function Branch2(props: Branch1Props) {
 type LogicBranchesProps = {
     filteredQuestions: Array<QuestionProps_Q>;
     bindField: BindFieldFunction;
-    content: QuestionProps['content'];
+    content: ContentText;
     collectAnswer: CollectAnswerFunction;
     showModal: boolean;
     setShowModal: (value: boolean) => void;

@@ -7,9 +7,15 @@ import Blob2 from '../../data/images/Blob2.svg';
 import Blob3 from '../../data/images/Blob3.svg';
 
 import './ProgressBar.css';
+import { ContentText } from '../../types/ContentText';
+type ValidStepNumbers = 
+| 1 
+| 2 
+| 3
+;
 type StepProps = {
-    content: Record<string, string>;
-    stepNumber: number | string;
+    content: ContentText;
+    stepNumber: ValidStepNumbers;
     children?: React.ReactNode;
     completed: boolean;
 };
@@ -21,8 +27,8 @@ function Step(props: StepProps) {
         children,
     } = props;
     const isComplete = completed ? '' : 'incomplete';
-    const step = `step${stepNumber}Header`;
-    const title = `step${stepNumber}Title`;
+    const step = `step${stepNumber}Header` as const;
+    const title = `step${stepNumber}Title` as const;
     return (
         <div className={`stepContainer ${isComplete}`}>
             <div className={`stepNumber ${isComplete}`}>
@@ -36,9 +42,7 @@ function Step(props: StepProps) {
     );
 }
 type ProgressBarProps = {
-    content: {
-        progressBarHeader?: React.ReactNode;
-    } & Record<string, string>;
+    content: ContentText;
     step: number;
 };
 export function ProgressBar(props: ProgressBarProps) {
@@ -53,7 +57,7 @@ export function ProgressBar(props: ProgressBarProps) {
             <div className="stepsGrid">
                 <Step
                     content={content}
-                    stepNumber={'1'}
+                    stepNumber={1}
                     completed={step >= 1}
                 >
                     <Blob1 className="blob blob1" />
@@ -61,7 +65,7 @@ export function ProgressBar(props: ProgressBarProps) {
                 </Step>
                 <Step
                     content={content}
-                    stepNumber={'2'}
+                    stepNumber={2}
                     completed={step >= 2}
                 >
                     <Blob2 className="blob blob2" />
@@ -72,7 +76,7 @@ export function ProgressBar(props: ProgressBarProps) {
                 </Step>
                 <Step
                     content={content}
-                    stepNumber={'3'}
+                    stepNumber={3}
                     completed={step >= 3}
                 >
                     <Blob3 className="blob blob3" />

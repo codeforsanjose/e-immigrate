@@ -10,17 +10,22 @@ import { Button } from '../../components/Button/Button';
 import { useNavigate } from 'react-router-dom';
 
 import './ProcessOverview.css';
-
+import { ContentText } from '../../types/ContentText';
+type ValidStepNumbers = 
+| 1 
+| 2 
+| 3
+;
 type StepProps = {
-    content: Record<string, string>;
-    stepNumber: number | string;
+    content: ContentText;
+    stepNumber: ValidStepNumbers;
     children?: React.ReactNode;
 };
 function Step(props: StepProps) {
     const { content, stepNumber, children } = props;
-    const step = `step${stepNumber}Header`;
-    const title = `step${stepNumber}Title`;
-    const instructions = `step${stepNumber}Instructions`;
+    const step = `step${stepNumber}Header` as const;
+    const title = `step${stepNumber}Title` as const;
+    const instructions = `step${stepNumber}Instructions` as const;
     return (
         <div className="stepContainer">
             <div className="stepNumber">{content[step]}</div>
@@ -32,12 +37,7 @@ function Step(props: StepProps) {
 }
 
 type ProcessOverviewProps = {
-    content: {
-        stepsHeader: string;
-        stepsHeader2: string;
-        stepsHeader3: string;
-        stepsProceedButton: string;
-    };
+    content: ContentText;
 };
 export function ProcessOverview(props: ProcessOverviewProps) {
     const { content } = props;
@@ -54,17 +54,17 @@ export function ProcessOverview(props: ProcessOverviewProps) {
             </div>
             <div className="gridContainer">
                 <div className="stepsGrid">
-                    <Step content={content} stepNumber={'1'}>
+                    <Step content={content} stepNumber={1}>
                         <Blob1 className="blob blob1" />
                         <VideoIcon className="stepSVG" />
                     </Step>
                     <Arrow className="arrow" />
-                    <Step content={content} stepNumber={'2'}>
+                    <Step content={content} stepNumber={2}>
                         <Blob2 className="blob blob2" />
                         <QuestionnaireIcon className="stepSVG" />
                     </Step>
                     <Arrow className="arrow" />
-                    <Step content={content} stepNumber={'3'}>
+                    <Step content={content} stepNumber={3}>
                         <Blob3 className="blob blob3" />
                         <CheckMark className="stepSVG" />
                     </Step>

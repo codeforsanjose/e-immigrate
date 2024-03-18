@@ -1,18 +1,13 @@
 import React from 'react';
 import './RadioWithFollowUp.css';
-import { QData, BindFieldFunction, CollectAnswerFunction, ReactSetter } from '../../types/common';
+import { ReactSetter } from '../../types/common';
+import { CommonComponentAttributes } from '../../types/CommonComponentAttributes';
 
 type RadioWithFollowUpProps = {
-    attributes: {
-        q: QData;
+    attributes: CommonComponentAttributes & {
         answers?: Array<string>;
         values: Array<string>;
-        bindField: BindFieldFunction;
-        collectAnswer: CollectAnswerFunction;
         setShowFollowUp: ReactSetter<Record<string, boolean>>;
-        content: {
-            errorMessage: string;
-        };
     };
 };
 export function RadioWithFollowUp(props: RadioWithFollowUpProps) {

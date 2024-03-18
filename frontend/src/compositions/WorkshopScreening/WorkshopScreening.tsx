@@ -5,16 +5,11 @@ import { Modal } from './Modal/Modal';
 
 import './WorkshopScreening.css';
 import { CollectAnswerFunction } from '../../types/common';
-import { ModalContent } from './Modal/types';
 import { GetQuestionsByLanguageElement } from '../../types/ApiResults';
+import { ContentText } from '../../types/ContentText';
 
 type WorkshopScreeningProps = {
-    content: ModalContent & {
-        errorMessage: string;
-        screeningProceedButton: string;
-        screeningHeader: string;
-        screeningHeader2: string;
-    }; 
+    content: ContentText; 
     questions: Array<GetQuestionsByLanguageElement>;
     // questionnaireResponse, 
     // setQuestionnaireResponse, 
