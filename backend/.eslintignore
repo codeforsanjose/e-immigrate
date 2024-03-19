@@ -1,0 +1,14 @@
+node_modules/*
+web-build/*
+docs/*
+__generated__/*
+*.test.ts
+*.d.ts
+*.test.tsx
+babel.config.js
+jest.config.ts
+metro.config.js
+metro-config/*.js
+*.yml
+*.json
+*.code-workspace

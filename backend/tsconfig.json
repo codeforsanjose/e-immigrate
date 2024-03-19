@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "outDir": "./dist/",
+    "allowSyntheticDefaultImports": true,
+    "noImplicitAny": true,
+    "skipLibCheck": true,
+    "strictPropertyInitialization": false,
+    "moduleResolution": "node",
+    "strict": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "target": "ES2021",
+    "jsx": "react-jsx",
+    "typeRoots": [
+        "./src/custom-typings",
+    ],
+    "allowJs": true,
+    "isolatedModules": true,
+    "lib": []
+  },
+  "exclude": [
+    "./dist/**/*",
+    "./jest.config.ts",
+    "./src/**/*.test.ts"
+  ],
+  "include": [
+    "./src/**/*.ts"
+  ]
+}

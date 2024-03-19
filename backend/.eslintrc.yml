@@ -1,0 +1,77 @@
+env:
+  browser: true
+  es2021: true
+extends:
+  - plugin:react/recommended
+  - standard-with-typescript
+  - plugin:react-hooks/recommended
+parserOptions:
+  sourceType: module
+plugins: 
+  - react
+  - '@stylistic'
+  # - "prettier"
+rules: 
+  # "prettier/prettier": 1
+  "semi": "off"
+  "@typescript-eslint/semi": [2, "always"]
+  #
+  comma-dangle: "off"
+  "@typescript-eslint/comma-dangle": "off"
+  "@stylistic/comma-dangle":
+    - "error"
+    - arrays: "always-multiline"
+      objects: "always-multiline"
+      functions: "always-multiline"
+      imports: "always-multiline"
+      generics: "only-multiline"
+  #
+  "space-before-function-paren": "off"
+  "@typescript-eslint/space-before-function-paren": 
+    - "error"
+    - anonymous: "always"
+      named: "never"
+      asyncArrow: "always"
+  #
+  "indent": "off"
+  "@typescript-eslint/indent": "off"
+  "@stylistic/indent": ["error", 4]
+  #
+  "brace-style": "off"
+  "@typescript-eslint/brace-style":
+    - "error"
+    - "stroustrup"
+  "@typescript-eslint/explicit-function-return-type": "off"
+  #
+  "@typescript-eslint/quotes": "off"
+  "@typescript-eslint/naming-convention": "off"
+  "@typescript-eslint/consistent-type-imports": "off"
+  eol-last: "off"
+  #
+  "@typescript-eslint/array-type": 
+    - "error"
+    - "default": "generic"
+  #
+  "@typescript-eslint/consistent-type-definitions": 
+    - "error"
+    - "type"
+  #
+  "@typescript-eslint/member-delimiter-style":
+    - "error"
+    - multiline:
+        delimiter: semi
+        requireLast: true
+      singleline:
+        delimiter: comma
+        requireLast: true
+  #
+  "@typescript-eslint/no-confusing-void-expression":
+    - "error"
+    - "ignoreArrowShorthand": true
+  # others
+  no-useless-return: off
+  no-trailing-spaces: off
+  no-extra-boolean-cast: off
+  "@typescript-eslint/no-unused-vars": off
+  "@typescript-eslint/no-misused-promises": "off"
+  "@typescript-eslint/no-floating-promises": "off"

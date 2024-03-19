@@ -1,0 +1,18 @@
+{
+	"folders": [
+        {
+            "path": "."
+        },
+        {
+            "path": "../../config"
+        }
+    ],
+	"settings": {
+		"files.exclude": {
+			"node_modules/": true,
+		},
+		"typescript.tsdk": "node_modules\\typescript\\lib",
+		"editor.tabSize": 4,
+		"editor.detectIndentation": false
+	}
+}
