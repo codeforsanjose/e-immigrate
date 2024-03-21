@@ -7,7 +7,6 @@ const DEFAULT_ERROR_CODE = 400;
 /**
  *  Middleware which returns a 400 status code when a 
  * {@link RequestError} is thrown.
- * @see {disableAutoRequestErrorMiddleware} Allows disabling this middleware for a route
  * @export
  * @returns
  */

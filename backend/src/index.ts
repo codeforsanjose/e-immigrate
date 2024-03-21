@@ -12,6 +12,8 @@ import dotenv from 'dotenv';
 import { handleRequestErrorMiddleware } from './middleware/error-middleware/handleRequestErrorMiddleware.js';
 import { handleUncaughtErrorMiddleware } from './middleware/error-middleware/handleUncaughtErrorMiddleware.js';
 import { getRequiredEnvironmentVariable } from './features/environmentVariables/index.js';
+import { handleZodErrorMiddleware } from './middleware/error-middleware/handleZodErrorMiddleware.js';
+import { handleAuthorizationErrorMiddleware } from './middleware/error-middleware/handleAuthorizationErrorMiddleware.js';
 dotenv.config();
 
 const MAX_EXCEL_FILE_SIZE = 50 * 1024 * 1024; //max size excel file in bytes will allow to be uploaded
@@ -59,6 +61,8 @@ app.use('/api/generateExcel', generateResponsesExcelRouter);
 
 // Error middleware, the earlier ones are run first
 app.use(...[
+    handleZodErrorMiddleware(),
+    handleAuthorizationErrorMiddleware(),
     handleRequestErrorMiddleware(),
     handleUncaughtErrorMiddleware(),
 ])

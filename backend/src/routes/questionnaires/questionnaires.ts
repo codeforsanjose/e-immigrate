@@ -6,12 +6,9 @@ import { DEFAULT_LANGUAGE } from '../../features/languages/default.js';
 const router = express.Router();
 export { router as questionnairesRouter };
 router.route('/').get(async (req, res) => {
-    
-
     const allQuestionnaires = await Questionnaires.find();
     const responsesInfo = { responses: allQuestionnaires };
     res.json(responsesInfo);
-    
 });
 
 router.route('/:title.:language?').get(async (req, res) => {
