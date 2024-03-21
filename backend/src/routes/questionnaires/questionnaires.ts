@@ -15,16 +15,25 @@ router.route('/').get(async (req, res) => {
 });
 
 router.route('/:title.:language?').get(async (req, res) => {
+    const ROUTE_NAME = 'getQuestionsByLanguage';
     const {
         title: paramTitle,
         language: paramLanguage = DEFAULT_LANGUAGE,
     } = req.params;
-    console.log(paramTitle, decodeURIComponent(paramLanguage));
-    const questionnaires = await Questionnaires.findOne({
-        title: decodeURIComponent(paramTitle),
-        language: paramLanguage,
+
+    const cleanTitle = decodeURIComponent(paramTitle);
+    const cleanLanguage = decodeURIComponent(paramLanguage);
+    console.log(`[${ROUTE_NAME}] params`, {
+        title: cleanTitle,
+        language: cleanLanguage,
     });
-    console.log('oh here', questionnaires);
+    const questionnaires = await Questionnaires.findOne({
+        title: cleanTitle,
+        language: cleanLanguage,
+    });
+    console.log(`[${ROUTE_NAME}] results`, {
+        questionnaires,
+    });
     res.json(questionnaires);
 });
 
@@ -34,14 +43,18 @@ const AddSchema = z.object({
     questions: z.array(z.unknown()),
 })
 router.route('/add').post(async (req, res) => {
-    // to-do:
-    // validateQuestionnaire(req.body);
+    const ROUTE_NAME = 'addQuestionnaires';
+    // validate the body
     const reqBody = AddSchema.parse(req.body);
-
-    const title = reqBody.title;
-    const language = reqBody.language;
-    const questions = reqBody.questions;
-    console.log('THE TITLE OF ADD QUESTIONNAIRE', title, language);
+    const {
+        title,
+        language,
+        questions,
+    } = reqBody;
+    console.log(`[${ROUTE_NAME}] body`, {
+        title,
+        language,
+    });
     res.json('questionnaire added');
 
     async function insertNewQuestionnaire() {
