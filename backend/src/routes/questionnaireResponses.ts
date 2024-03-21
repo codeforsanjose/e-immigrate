@@ -4,19 +4,30 @@ import { QuestionnaireResponse } from '../models/questionnaireResponse.js';
 import { sendMassEmails } from './sendEmail/sendEmail.js';
 import { Types } from 'mongoose';
 import { emailContents, isEmailContentLanguage } from '../routes/sendEmail/emailContent.js';
-import { authMiddleware } from '../middleware/auth.js';
+import { authMiddleware } from '../middleware/authMiddleware.js';
 import { emailSender } from '../features/emails/emailSender.js';
 import { ArrayElementOf } from '../types/ArrayElementOf.js';
 import { isSendGridResponseError } from '../types/SendGridResponseError.js';
-
+import { z } from 'zod';
 const router = express.Router();
 export { router as questionnaireResponsesRouter };
-
+const AddSchema = z.object({
+    title: z.string(),
+    language: z.string(),
+    questionnaireResponse: z.record(z.string(), z.string().nullable()),
+})
 //TODO: revisit access control
 router.route('/add').post(async (req, res) => {
-    const title = req.body.title;
-    const language = req.body.language;
-    const questionnaireResponse = req.body.questionnaireResponse;
+    const reqBody = AddSchema.parse(req.body);
+    const {
+        language,
+        questionnaireResponse,
+        title,
+    } = reqBody;
+    console.log({
+        origBody: req.body,
+        questionnaireResponse,
+    })
     const newQuestionnaireResponse = new QuestionnaireResponse({
         title,
         language,
@@ -213,8 +224,23 @@ async function updateUserResponsesEmailFlag(responsesToEmail: Array<Questionnair
         }
     }
 }
+const AssignAgencySchema = z.object({
+    responsesToEmail: z.array(z.object({
+        _id: z.string(),
+        agency: z.string(),
+        responseDownloadedToExcel: z.boolean(),
+        questionnaireResponse: z.record(z.string(), z.string()),
+        flagOverride: z.boolean().nullish(),
+        flag: z.boolean().nullish(),
+        emailSent: z.boolean().nullish(),
+        createdAt: z.number(),
+        updatedAt: z.number(),
+    })),
+})
 router.route('/assign-agency').post(async (req, res) => {
-    const responseToAssignAgency = req.body.responsesToEmail;
+    const {
+        responsesToEmail: responseToAssignAgency,
+    } = AssignAgencySchema.parse(req.body);
     for (const response of responseToAssignAgency) {
         await QuestionnaireResponse.updateOne(
             { _id: response._id },
