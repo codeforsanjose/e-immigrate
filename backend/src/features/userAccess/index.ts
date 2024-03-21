@@ -3,7 +3,7 @@ import { setResponseLocalsValue, tryGetResponseLocalsValue } from "../locals/hel
 
 const userLocalKey = 'eimmigrate:user-data' as const;
 
-type AdminObj = {
+export type AdminObj = {
     _id: string;
     email: string;
     name: string;

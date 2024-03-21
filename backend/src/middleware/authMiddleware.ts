@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 import { Request } from "express";
 import { Admin } from '../models/admin.js';
 import { Middleware } from '../types/Middleware.js';
-import { userRequestAccessor } from '../features/userAccess/index.js';
+import { AdminObj, userRequestAccessor } from '../features/userAccess/index.js';
 import { getRequiredJwtKey } from '../features/jwtKey/access.js';
 import { verifyJwtAsync } from '../features/jwtVerify/index.js';
 const ERRMSG = { error: { message: '[auth middleware]: Not logged in or auth failed' } };
@@ -37,10 +37,13 @@ export const authMiddleware: Middleware = async (req, res, next) => {
     const email = decodedToken.email;
     const admin = await Admin.findOne({ email }).exec();
 
-    if (!admin) return res.status(404).json(ERRMSG);
+    if (!admin || admin._id == null) return res.status(404).json(ERRMSG);
     
-    const adminObj = JSON.parse(JSON.stringify(admin));
-    delete adminObj.password;
+    const adminObj: AdminObj = {
+        _id: admin._id.toString(),
+        email: admin.email,
+        name: admin.name,
+    };
     userRequestAccessor.set(res, adminObj);
     next();
 };
