@@ -1,6 +1,6 @@
 import express from 'express';
 import {User} from '../models/user.js';
-import { authMiddleware } from '../middleware/auth.js';
+import { authMiddleware } from '../middleware/authMiddleware.js';
 import { userRequestAccessor } from '../features/userAccess/index.js';
 import { z } from 'zod';
 const router = express.Router();
@@ -25,13 +25,14 @@ const AddSchema = z.object({
     name: z.string(),
     phoneNumber: z.string(),
     document: z.string(),
-
 })
 router.route('/add').post(async (req, res) => {
-    const name = req.body.name;
-    const phoneNumber = req.body.phoneNumber;
-    const document = req.body.document;
-
+    const reqBody = AddSchema.parse(req.body);
+    const {
+        name,
+        phoneNumber,
+        document,
+    } = reqBody;
     const newUser = new User({
         name,
         phoneNumber,
@@ -41,16 +42,19 @@ router.route('/add').post(async (req, res) => {
     await newUser.save();
     res.json('user added');
 });
-
+const UpdateUserSchema = z.object({
+    phoneNumber: z.string(),
+    document: z.string(),
+})
 router.route('/update/:id').post(async (req, res) => {
     const user = await User.findById(req.params.id);
     if (user == null) {
         console.error(`Failed to find user with id ${req.params.id}`);
         return;
     }
-
-    user.phoneNumber = req.body.phoneNumber;
-    user.document = req.body.document;
+    const reqBody = UpdateUserSchema.parse(req.body);
+    user.phoneNumber = reqBody.phoneNumber;
+    user.document = reqBody.document;
     await user.save();
     res.json('User Updated');
     
