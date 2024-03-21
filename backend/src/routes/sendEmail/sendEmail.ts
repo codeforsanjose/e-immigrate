@@ -2,15 +2,9 @@ import sgMail, { MailDataRequired } from '@sendgrid/mail';
 import dotenv from 'dotenv';
 import { emailContents } from './emailContent.js';
 import { emailSender } from '../../features/emails/emailSender.js';
+import { getRequiredEnvironmentVariable } from '../../features/environmentVariables/index.js';
 dotenv.config();
-function getRequiredSendGridApiKey() {
-    const output = process.env.SENDGRID_API_KEY;
-    if (output == null || output === '')  {
-        throw new Error(`Missing env variable 'SENDGRID_API_KEY'`);
-    }
-    return output;
-}
-sgMail.setApiKey(getRequiredSendGridApiKey());
+sgMail.setApiKey(getRequiredEnvironmentVariable('SENDGRID_API_KEY'));
 //todo: set senderEmail that has access to to e-immigrate SENDGRID_API_KEY key
 export function sendEmail(email: string, name: string, flag: boolean, language: keyof typeof emailContents) {
     const colorFlag = flag ? 'red' : 'green';
