@@ -12,6 +12,7 @@ import { loadQuestionnaireXlsxIntoDB, loadTranslationXlsxIntoDB } from './excelT
 import { authMiddleware } from '../middleware/authMiddleware.js';
 import { getRequiredJwtKey } from '../features/jwtKey/access.js';
 import { verifyJwtAsync } from '../features/jwtVerify/index.js';
+import { routeLogger, scopedLogger } from '../features/logging/logger.js';
 
 const router = express.Router();
 export { router as adminsRouter };
@@ -41,6 +42,7 @@ const RegisterSchema = z.object({
 });
 // route to sign up
 router.route('/').post(async (req, res) => {
+    const logger = routeLogger('registerApi');
     const reqBody = RegisterSchema.parse(req.body);
     const {
         email,
@@ -85,10 +87,7 @@ router.route('/').post(async (req, res) => {
 
         try {
             const result = await admin.save();
-            console.log(
-                'newly created admin user: ',
-                result
-            );
+            logger.debug(result, 'created admin user');
             const jwToken = jwt.sign(
                 { email },
                 getRequiredJwtKey()
@@ -100,7 +99,7 @@ router.route('/').post(async (req, res) => {
             });
         }
         catch (err) {
-            console.log(err);
+            logger.error(err, 'register failed');
             return res.status(500).json({
                 error: {
                     message: 'Sign up failed',
@@ -109,7 +108,7 @@ router.route('/').post(async (req, res) => {
         }
     }
     catch (err) {
-        console.error('error!', { err });
+        logger.error(err, 'error!');
         return res.json(err);
     }
 });
@@ -119,6 +118,7 @@ const SessionSchema = z.object({
 });
 // route for logging in with email and password
 router.route('/sessions').post(async (req, res) => {
+    const logger = routeLogger('loginApi');
     const reqBody = SessionSchema.parse(req.body);
     const {
         email,
@@ -129,7 +129,7 @@ router.route('/sessions').post(async (req, res) => {
     }
     const admin = await Admin.findOne({ email }).exec();
     if (admin == null) {
-        console.error(`Failed to find admin`);
+        logger.error(`Failed to find admin`);
         return;
     };
 
@@ -137,7 +137,7 @@ router.route('/sessions').post(async (req, res) => {
     bcrypt.compare(password, hashPw, (err, result) => {
         // if passwords matches, result will be truthy
         if (err) {
-            console.log(err);
+            logger.error(err, 'bcrypt error');
             return res.status(500).json(ERRMSG);
         }
 
@@ -159,18 +159,24 @@ router.route('/sessions').post(async (req, res) => {
 });
 
 router.route('/:id').delete(async (req, res) => {
+    const logger = routeLogger('deleteApi');
     try {
         const result = await Admin.deleteOne({ _id: req.params.id }).exec();
         if (result == null) {
-            console.error(`Failed to find the admin with id '${req.params.id}'`);
+            logger.error({
+                id: req.params.id,
+            }, `Failed to find the admin`);
             return;
         }
+        logger.info({
+            id: req.params.id,
+        }, 'Removed admin');
         return res.status(200).json({
             message: 'admin deleted',
         });
     }
     catch (err) {
-        console.log(err);
+        logger.error(err);
         return res.status(500).json({
             error: err,
         });
@@ -229,10 +235,14 @@ const QuestionnaireFileSchema = z.object({
 });
 // route for uploading the questionnaires spreadsheet in the database
 router.route('/questionnairefile').post(async (req, res) => {
+    const logger = routeLogger('uploadQuestinnaires');
     const reqBody = QuestionnaireFileSchema.parse(req.body);
     await enforceAdminOnly(req, res, processQuestionnaireAsAdmin);
     async function processQuestionnaireAsAdmin() {
-        console.log(req.files, req.body);
+        logger.info({
+            files: req.files, 
+            body: req.body,
+        }, 'processQuestionnaireAsAdmin');
         const {
             title,
         } = reqBody;
@@ -260,7 +270,7 @@ router.route('/questionnairefile').post(async (req, res) => {
             });
         }
         catch (err) {
-            console.log(err);
+            logger.error(err);
             res.status(500).json({
                 message: 'Error, Storing Questionnaire in database',
             });
@@ -269,6 +279,7 @@ router.route('/questionnairefile').post(async (req, res) => {
 });
 // route for deleteing a questionnaire by title
 router.route('/deletequestionnaire/:title').delete(async (req, res) => {
+    const logger = routeLogger('deleteQuestionnaireByTitle');
     await enforceAdminOnly(req, res, deleteQuestionnaireByTitle);
     async function deleteQuestionnaireByTitle() {
         try {
@@ -277,7 +288,7 @@ router.route('/deletequestionnaire/:title').delete(async (req, res) => {
             });
 
             if (!results.acknowledged) {
-                console.log('Delete Failed');
+                logger.warn('Delete Failed');
                 res.status(500).json({ message: 'Delete Failed' });
                 return;
             }
@@ -289,6 +300,7 @@ router.route('/deletequestionnaire/:title').delete(async (req, res) => {
             res.status(200).json({ message: 'Questionnaire Removed' });
         }
         catch (err) {
+            logger.error(err, 'Error, Deleting Questionnaires from database');
             res.status(500).json({
                 message: 'Error, Deleting Questionnaires from database',
             });
@@ -336,6 +348,7 @@ const SuperSchema = z.object({
 // request body looks like the following:
 //  {"admins":["abcde@gmail.com", "xyz@123.org"]}
 router.route('/super').post(async (req, res) => {
+    const logger = routeLogger('makeAdmin');
     const reqBody = SuperSchema.parse(req.body);
     const {
         admins,
@@ -356,7 +369,10 @@ router.route('/super').post(async (req, res) => {
             );
     }
     catch (err) {
-        console.log(req.body, err);
+        logger.error({
+            body: req.body, 
+            err, 
+        });
         return res.status(500).json('Error updating super admin status');
     }
 });
@@ -370,6 +386,7 @@ router.route('/super').post(async (req, res) => {
  * @return {*} 
  */
 async function updateLinks(email: string, titles: Array<string>, insert = true) {
+    const logger = scopedLogger('updateLinks');
     try {
         const optAdmin = await Admin.findOne({ email }).exec();
         if (optAdmin == null) return;
@@ -394,20 +411,16 @@ async function updateLinks(email: string, titles: Array<string>, insert = true) 
         }
         try {
             const admin = await existingAdmin.save();
-            console.log(
-                'Success updating admin and questionnaires links - ',
-                admin.email
-            );
+            logger.info({
+                email: admin.email,
+            }, 'Success updating admin and questionnaires links');
         }
         catch (err) {
-            console.log(
-                'Error updating admin and questionnaires links',
-                err
-            );
+            logger.error(err, 'Error updating admin and questionnaires links');
         }
     }
     catch (err) {
-        console.log(err);
+        logger.error(err);
         return;
     }
 }

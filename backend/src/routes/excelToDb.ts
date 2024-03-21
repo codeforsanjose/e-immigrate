@@ -117,11 +117,12 @@ function isValidRecordCell(value: unknown): value is (string | number) {
     return typeof value === 'string' || typeof value === 'number';
 }
 /**
- * load translation excel file into objects in the TranslatedContent collection
- * excelFileContent - Node Buffer containing the excel file, this assumes must be formmated
- *                    with proper translation sheet format
- * returns; a promise that resolves when operaiton is done
- * */
+ *  load translation excel file into objects in the TranslatedContent collection
+ *
+ * @export
+ * @param {Buffer} excelFileContent Node Buffer containing the excel file, this 
+ * assumes must be formmated with proper translation sheet format
+ */
 export async function loadTranslationXlsxIntoDB(excelFileContent: Buffer) {
     const stream = new Readable();
     stream.push(excelFileContent);

@@ -1,3 +1,5 @@
+import { scopedLogger } from "../../features/logging/logger.js";
+
 type SendRequestObj = {
     url: string;
     method: string;
@@ -7,7 +9,7 @@ type SendRequestObj = {
 const DEFAULT_HEADERS = {
     'Content-Type': 'application/json',
 };
-
+const logger = scopedLogger('sendRequest');
 export async function sendRequest(requestObj: SendRequestObj, headers = DEFAULT_HEADERS) {
     const {
         url,
@@ -16,9 +18,15 @@ export async function sendRequest(requestObj: SendRequestObj, headers = DEFAULT_
 
     try {
         const data = await fetch(url, { ...rest, headers });
-        return await data.json();
+        if (!data.ok) {
+            logger.error({
+                data,
+                raw: await data.text(),
+            }, 'Return code was not successful!');
+            return;
+        }
     }
     catch (error) {
-        console.error('uploading failed due to error', error);
+        logger.error(error, 'request failed');
     }
 }

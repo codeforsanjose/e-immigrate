@@ -5,6 +5,7 @@ import { z } from 'zod';
 import { TranslatedContent } from '../models/translatedContent.js';
 import { RequestError } from '../errors/RequestError.js';
 import { DEFAULT_LANGUAGE } from '../features/languages/default.js';
+import { routeLogger } from '../features/logging/logger.js';
 const router = express.Router();
 export { router as translatedContentRouter };
 
@@ -15,14 +16,15 @@ router.route('/').get(async (req, res) => {
 });
 
 router.route('/:title.:language?').get(async (req, res) => {
+    const logger = routeLogger('getTranslatedContentByLanguage');
     const {
         title: paramTitle,
         language: paramLanguage = DEFAULT_LANGUAGE,
     } = req.params;
-    console.log('/:title.:language?', {
-        paramTitle,
-        paramLanguage,
-    });
+    logger.info({
+        title: paramTitle,
+        language: paramLanguage,
+    }, '/:title.:language?');
     const translateContent = await TranslatedContent.findOne({
         title: req.params.title,
         language: req.params.language,
@@ -35,8 +37,7 @@ const AddSchema = z.object({
     content: z.unknown(),
 });
 router.route('/add').post(async (req, res) => {
-    // to-do:
-    // validate(req.body);
+    const logger = routeLogger('addTranslatedContent');
     const reqBody = AddSchema.parse(req.body);
     const {
         title,
@@ -45,25 +46,17 @@ router.route('/add').post(async (req, res) => {
     } = reqBody;
     
     res.json('translated content added');
-    async function insertNewTranslatedContent() {
-        await TranslatedContent.insertMany({ title, language, content });
-        console.log('translated content inserted');
-    };
-
-    async function removeExistingTranslatedContent(_id: Types.ObjectId) {
-        await TranslatedContent.findByIdAndDelete({ _id });
-        console.log('translated content deleted');
-    }
 
     try {
         const result = await TranslatedContent.find({ title, language });
         if (result.length !== 0) {
-            await removeExistingTranslatedContent(result[0]._id);
-            await insertNewTranslatedContent();
+            await TranslatedContent.findByIdAndDelete({ 
+                _id: result[0]._id,
+            });
+            logger.debug('translated content deleted');
         }
-        else {
-            await insertNewTranslatedContent();
-        }
+        await TranslatedContent.insertMany({ title, language, content });
+        logger.debug('translated content inserted');
     }
     catch (err) {
         res.send(err);
@@ -72,10 +65,13 @@ router.route('/add').post(async (req, res) => {
 });
 
 router.route('/:id').delete(async (req, res) => {
+    const logger = routeLogger('getTranslatedContentById');
     const {
         id: paramId,
     } = req.params;
-    console.log('/:id', { paramId });
+    logger.info({ 
+        id: paramId,
+    }, '/:id');
     await TranslatedContent.findByIdAndDelete(paramId);
     res.json('translated content deleted');
 });

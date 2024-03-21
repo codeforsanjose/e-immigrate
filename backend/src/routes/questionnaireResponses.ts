@@ -10,6 +10,7 @@ import { authMiddleware } from '../middleware/authMiddleware.js';
 import { emailSender } from '../features/emails/emailSender.js';
 import { ArrayElementOf } from '../types/ArrayElementOf.js';
 import { isSendGridResponseError } from '../types/SendGridResponseError.js';
+import { routeLogger, scopedLogger } from '../features/logging/logger.js';
 const router = express.Router();
 export { router as questionnaireResponsesRouter };
 const AddSchema = z.object({
@@ -19,16 +20,18 @@ const AddSchema = z.object({
 });
 // TODO: revisit access control
 router.route('/add').post(async (req, res) => {
+    const logger = routeLogger('addQuestionnaireResponse');
+
     const reqBody = AddSchema.parse(req.body);
     const {
         language,
         questionnaireResponse,
         title,
     } = reqBody;
-    console.log({
+    logger.info({
         origBody: req.body,
         questionnaireResponse,
-    });
+    }, 'body');
     const newQuestionnaireResponse = new QuestionnaireResponse({
         title,
         language,
@@ -58,6 +61,8 @@ function getResponsesForAdmin(admin: AdminTemp) {
 }
 
 router.route('/').get(async (req, res) => {
+    const logger = routeLogger('getAllQuestionnaireResponse');
+    logger.trace('CALLED');
     // const getResponses = req.user.issuper
     //     ? getAllResponses()
     //     : getResponsesForAdmin(req.user);
@@ -66,7 +71,6 @@ router.route('/').get(async (req, res) => {
     const updatedResponses = qResponses.filter((item) => {
         return !item.title?.toLowerCase().includes('spring_2021');
     });
-    console.log('ohh boy', updatedResponses);
     const responsesInfo = { responses: updatedResponses };
     res.json(responsesInfo);
 });
@@ -80,6 +84,7 @@ function validateEmail(email: string) {
 type QuestionnaireResponseElement = ArrayElementOf<Awaited<ReturnType<typeof getAllResponses>>>;
 
 router.route('/email').post(async (req, res) => {
+    const logger = routeLogger('emailQuestionnaireResponse');
     // const getResponses = req.user.issuper
     //     ? getAllResponses()
     //     : getResponsesForAdmin(req.user);
@@ -88,7 +93,7 @@ router.route('/email').post(async (req, res) => {
     const totalEmailsToSend = responsesToEmail.length;
     const messsagesToSend = responsesToEmail
         .filter((response) => {
-            const { 
+            const {
                 questionnaireResponse,
                 language: responseLanguage = 'en',
             } = response;
@@ -111,8 +116,8 @@ router.route('/email').post(async (req, res) => {
                 : emailContents.en[colorFlag];
             const translatedContents =
                 emailContentForResponse ||
-                emailContentForResponse === '' ||
-                emailContentForResponse.length === 0
+                    emailContentForResponse === '' ||
+                    emailContentForResponse.length === 0
                     ? emailContents.en[colorFlag]
                     : emailContentForResponse;
             const msg = {
@@ -123,17 +128,17 @@ router.route('/email').post(async (req, res) => {
             };
             return msg;
         });
-    
+
     try {
         const result = await sendMassEmails(messsagesToSend);
         await updateUserResponsesEmailFlag(responsesToEmail, res);
     }
     catch (emailErrors) {
-        console.log('emails ERRORED', emailErrors);
+        logger.error(emailErrors, 'emails ERRORED');
         if (!isSendGridResponseError(emailErrors)) {
             throw emailErrors;
         }
-        console.log('em', emailErrors.response.body);
+        logger.error(emailErrors.response.body, 'em');
         res.json({
             msg:
                 'Emails errored attempted to send ' +
@@ -166,22 +171,24 @@ function getUpdatedFlag(userResponse: Record<RedFlagKey, string>) {
     }, false);
 }
 async function updateUserResponsesEmailFlag(responsesToEmail: Array<QuestionnaireResponseElement>, res: express.Response) {
+    const logger = scopedLogger('updateUserResponsesEmailFlag');
     const totalEmailsToSend = responsesToEmail.length;
     let emailsSentCurrent = 0;
-    const errors = new Map<Types.ObjectId, unknown>();
-    function addError(key: Types.ObjectId, value: unknown) {
-        // errors = {
-        //     ...errors,
-        //     [key]: value,
-        // }
-        errors.set(key, value);
-    }
     for (const response of responsesToEmail) {
         // pull out only what we need since coming from backend not frontne response contains lots more than what we need
         const {
-            _id, title, language, flag, flagOverride = false, createdAt, updatedAt, questionnaireResponse, agency = '', responseDownloadedToExcel,
+            _id, 
+            title, 
+            language, 
+            flag, 
+            flagOverride = false, 
+            createdAt, 
+            updatedAt,
+            questionnaireResponse, 
+            agency = '', 
+            responseDownloadedToExcel,
         } = response;
-        const updatedFlag = flag === null ? getUpdatedFlag(questionnaireResponse) : flag;
+        const updatedFlag = flag ?? getUpdatedFlag(questionnaireResponse);
         const tempUpdatedSuccessEmail = {
             _id,
             title,
@@ -196,92 +203,96 @@ async function updateUserResponsesEmailFlag(responsesToEmail: Array<Questionnair
             updatedAt,
         };
         try {
-            await QuestionnaireResponse.updateOne(
+            const raw = await QuestionnaireResponse.updateOne(
                 { _id: response._id },
-                tempUpdatedSuccessEmail,
-                (err: unknown, raw: unknown) => {
-                    emailsSentCurrent = emailsSentCurrent + 1;
-                    if (err) {
-                        addError(response._id, err);
-                        console.log('updated something err is', err);
-                    }
-                    if (emailsSentCurrent === totalEmailsToSend) {
-                        res.json({
-                            msg: 'Success attempted to send ' +
-                                emailsSentCurrent,
-                            errors,
-                        });
-                    }
-                }
-            );
+                tempUpdatedSuccessEmail);
+            emailsSentCurrent += 1;
+            if (emailsSentCurrent === totalEmailsToSend) {
+                res.json({
+                    msg: `Success attempted to send ${emailsSentCurrent}`,
+                });
+            }
         }
         catch (mongoError) {
-            console.log('mongo error here', mongoError);
+            logger.error(mongoError, 'mongo error here');
             res.json({
-                msg: 'MongoError attempted to send ' + emailsSentCurrent,
+                msg: `MongoError attempted to send ${emailsSentCurrent}`,
                 errors: mongoError,
             });
         }
     }
 }
+
+const ResponseSchema = z.object({
+    _id: z.string(),
+    agency: z.string(),
+    responseDownloadedToExcel: z.boolean(),
+    questionnaireResponse: z.record(z.string(), z.string().nullable()),
+    flagOverride: z.boolean().nullish(),
+    flag: z.boolean().nullish(),
+    emailSent: z.boolean().nullish(),
+    createdAt: z.union([z.number(), z.string()]),
+    updatedAt: z.union([z.number(), z.string()]),
+});
 const AssignAgencySchema = z.object({
-    responsesToEmail: z.array(z.object({
-        _id: z.string(),
-        agency: z.string(),
-        responseDownloadedToExcel: z.boolean(),
-        questionnaireResponse: z.record(z.string(), z.string()),
-        flagOverride: z.boolean().nullish(),
-        flag: z.boolean().nullish(),
-        emailSent: z.boolean().nullish(),
-        createdAt: z.number(),
-        updatedAt: z.number(),
-    })),
+    responsesToEmail: z.array(ResponseSchema),
+});
+const AssignFlagSchema = z.object({
+    responsesToUpdate: z.array(ResponseSchema),
 });
 router.route('/assign-agency').post(async (req, res) => {
+    const logger = routeLogger('agencyAssignURL');
+    const reqBody = AssignAgencySchema.parse(req.body);
     const {
         responsesToEmail: responseToAssignAgency,
-    } = AssignAgencySchema.parse(req.body);
+    } = reqBody;
     for (const response of responseToAssignAgency) {
-        await QuestionnaireResponse.updateOne(
-            { _id: response._id },
-            response,
-            (err: unknown, raw: unknown) => {
-                if (err) {
-                    console.log('updated agency err is', err);
-                }
-            }
-        );
+        try {
+            await QuestionnaireResponse.updateOne({ _id: response._id }, response);
+        }
+        catch (err) {
+            logger.error(err, 'updated agency err is');
+        }
     }
+    logger.info(reqBody, 'Successfully assigned agency');
     res.json({ msg: 'success' });
 });
+
 router.route('/assign-flag').post(async (req, res) => {
-    const responseToAssignFlag = req.body.responsesToUpdate;
-    for (const response of responseToAssignFlag) {
-        await QuestionnaireResponse.updateOne(
-            { _id: response._id },
-            response,
-            (err: unknown, raw: unknown) => {
-                if (err) {
-                    console.log('updated flag err is', err);
-                }
-            }
-        );
+    const logger = routeLogger('assignResponseFlag');
+    const reqBody = AssignFlagSchema.parse(req.body);
+    const {
+        responsesToUpdate,
+    } = reqBody;
+    for (const response of responsesToUpdate) {
+        try {
+            await QuestionnaireResponse.updateOne({ _id: response._id }, response);
+        }
+        catch (err) {
+            logger.error(err, 'updated flag err is');
+        }
     }
+    logger.info(reqBody, 'Successfully assigned flag');
     res.json({ msg: 'success' });
 });
+
 router.route('/assign-email').post(async (req, res) => {
-    const responseToEmailReset = req.body.responsesToUpdate;
-    for (const response of responseToEmailReset) {
-        await QuestionnaireResponse.updateOne(
-            { _id: response._id },
-            { ...response, emailSent: false },
-            (err: unknown, raw: unknown) => {
-                if (err) {
-                    console.log('updated email to false err is', err);
-                }
-            }
-        );
+    const logger = routeLogger('assignEmail');
+    const reqBody = AssignFlagSchema.parse(req.body);
+    const {
+        responsesToUpdate,
+    } = reqBody;
+    for (const response of responsesToUpdate) {
+        try {
+            await QuestionnaireResponse.updateOne(
+                { _id: response._id },
+                { ...response, emailSent: false });
+        }
+        catch (err) {
+            logger.error(err, 'updated email to false err is');
+        }
     }
+    logger.info(reqBody, 'Successfully assigned email');
     res.json({ msg: 'success' });
 });
 
@@ -291,20 +302,31 @@ router.route('/:id').get(async (req, res) => {
 });
 
 router.route('/:id').delete(async (req, res) => {
+    const logger = routeLogger('hardDeleteQuestionnaireResponse');
     const users = await QuestionnaireResponse.findByIdAndDelete(req.params.id);
+    logger.info({
+        id: req.params.id,
+    }, 'questionnaire response Deleted');
     res.json('questionnaire response Deleted');
 });
 
+// SOFT DELETE
 router.route('/delete/:id').put(async (req, res) => {
+    const logger = routeLogger('softDeleteQuestionnaireResponse');
     const questionnaireResponse = await QuestionnaireResponse.findByIdAndUpdate(
 
         req.params.id,
         { deleted: true });
     if (questionnaireResponse == null) {
-        console.error('Failed to find');
+        logger.error({
+            id: req.params.id,
+        }, 'Failed to find');
         return;
-    } 
-    console.log(`questionnaire response ${questionnaireResponse._id.toString()} soft-deleted`);
+    }
+    logger.info({
+        paramId: req.params.id,
+        dbId: questionnaireResponse._id.toString(),
+    }, `questionnaire response soft-deleted`);
     res.status(202).json({
         msg: 'questionnaire response deleted softly',
     });

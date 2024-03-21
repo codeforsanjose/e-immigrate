@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { ErrorMiddleware } from "../../types/Middleware.js";
 import { AuthorizationError } from "../../errors/AuthorizationError.js";
+import { logger } from "../../features/logging/logger.js";
 
 /**
  *  Middleware which returns a 403 status code when a 
@@ -11,7 +12,7 @@ import { AuthorizationError } from "../../errors/AuthorizationError.js";
 export function handleAuthorizationErrorMiddleware(): ErrorMiddleware {
     return (err: Error, req: Request, res: Response, next: NextFunction) => {
         if (err instanceof AuthorizationError) {
-            console.error(err, err.message);
+            logger.error(err, err.message);
             if (err.responsePayload == null) {
                 res.status(403).send();
             }

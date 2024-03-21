@@ -15,6 +15,7 @@ import { handleUncaughtErrorMiddleware } from './middleware/error-middleware/han
 import { getRequiredEnvironmentVariable } from './features/environmentVariables/index.js';
 import { handleZodErrorMiddleware } from './middleware/error-middleware/handleZodErrorMiddleware.js';
 import { handleAuthorizationErrorMiddleware } from './middleware/error-middleware/handleAuthorizationErrorMiddleware.js';
+import { logger } from './features/logging/logger.js';
 dotenv.config();
 
 const MAX_EXCEL_FILE_SIZE = 50 * 1024 * 1024; // max size excel file in bytes will allow to be uploaded
@@ -37,16 +38,18 @@ function getPort(defaultPort = 5000) {
 const appPort = getPort();
 const mongoUri = getRequiredEnvironmentVariable('MONGO_URI');
 
-console.log('connecting to', mongoUri);
+logger.info(`connecting to mongo url: '${mongoUri}'`);
 mongoose.connect(mongoUri, {
     // useNewUrlParser: true,
     // useCreateIndex: true,
     // useUnifiedTopology: true,
 } satisfies ConnectOptions);
 const connection = mongoose.connection;
-connection.on('error', console.error.bind(console, 'connection error:'));
+connection.on('error', () => {
+    logger.error('connection error:');
+});
 connection.once('open', () => {
-    console.log('MongoDB database connection established successfully');
+    logger.info('MongoDB database connection established successfully');
 });
 app.get('/api/status', (req, res) => {
     res.sendStatus(200);
@@ -68,5 +71,5 @@ app.use(...[
 app.use(express.static('build'));
 
 app.listen(appPort, () => {
-    console.log(`listening on port ${appPort}`);
+    logger.info(`listening on port ${appPort}`);
 });

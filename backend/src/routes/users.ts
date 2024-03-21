@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { User } from '../models/user.js';
 import { authMiddleware } from '../middleware/authMiddleware.js';
 import { userRequestAccessor } from '../features/userAccess/index.js';
+import { routeLogger } from '../features/logging/logger.js';
 const router = express.Router();
 export { router as usersRouter };
 
@@ -48,9 +49,12 @@ const UpdateUserSchema = z.object({
     document: z.string(),
 });
 router.route('/update/:id').post(async (req, res) => {
+    const logger = routeLogger('updateUser');
     const user = await User.findById(req.params.id);
     if (user == null) {
-        console.error(`Failed to find user with id ${req.params.id}`);
+        logger.error({
+            paramId: req.params.id,
+        }, `Failed to find user`);
         return;
     }
     const reqBody = UpdateUserSchema.parse(req.body);

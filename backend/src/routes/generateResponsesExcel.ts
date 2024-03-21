@@ -13,6 +13,7 @@ import { authMiddleware } from '../middleware/authMiddleware.js';
 import { userRequestAccessor } from '../features/userAccess/index.js';
 import { RequestError } from '../errors/RequestError.js';
 import { PassThrough } from 'stream';
+import { routeLogger } from '../features/logging/logger.js';
 
 const router = express.Router();
 export { router as generateResponsesExcelRouter };
@@ -20,14 +21,19 @@ const Schema1 = z.object({
     questions: z.array(z.object({
         slug: z.string(),
     })),
-    downloadAll: z.unknown(),
+    downloadAll: z.boolean(),
 });
 
 router.route('/get-report/:id').get(async (req, res) => {
+    const logger = routeLogger('getReportById');
+    const paramId = req.params.id;
+    logger.info({
+        id: paramId,
+    });
     // const admin = userRequestAccessor.get(res);
     // if (admin == null) throw new RequestError('Missing the user data', undefined, 401);
     const report = await ExcelReports.findOne({
-        _id: req.params.id,
+        _id: paramId,
     });
     if (report == null) {
         throw new RequestError('Missing report', undefined, 404);
@@ -40,14 +46,17 @@ router.route('/get-report/:id').get(async (req, res) => {
     readStream.pipe(res);
 });
 router.use(authMiddleware); // all apis AFTER this line will require authentication as implemented in auth.js
+
 router.route('/responses').post(async (req, res) => {
+    const logger = routeLogger('generateResponsesExcel');
+    logger.debug('begin');
     const bodyData = Schema1.parse(req.body);
     const admin = userRequestAccessor.get(res);
     if (admin == null) throw new RequestError('Missing the user data', undefined, 401);
-    const allResponses = await QuestionnaireResponse.find();
+    const allDboResponses = await QuestionnaireResponse.find();
 
-    type ResponseItem = ArrayElementOf<typeof responses>;
-    const responses = allResponses.map((item) => {
+    type ResponseItem = ArrayElementOf<typeof allRemappedDboResponses>;
+    const allRemappedDboResponses = allDboResponses.map((item) => {
         const {
             _id,
             title,
@@ -90,18 +99,15 @@ router.route('/responses').post(async (req, res) => {
                 );
             }   
             catch (err) {
-                console.log(
-                    'updated download status something err is',
-                    err
-                );
+                logger.error(err, 'updated download status something err is');
             }
         }
     }
     const questions = bodyData.questions;
     const downloadAll = bodyData.downloadAll;
-    const updatedResponses = downloadAll
-        ? allResponses
-        : allResponses.filter((item) => !item.responseDownloadedToExcel);
+    const updatedDboResponses = downloadAll
+        ? allDboResponses
+        : allDboResponses.filter((item) => !item.responseDownloadedToExcel);
     const questionsColumns = questions.reduce<Record<string, number>>((acc, question, idx) => {
         acc[question.slug] = idx + 6;
         return acc;
@@ -128,39 +134,37 @@ router.route('/responses').post(async (req, res) => {
             .style(style);
     });
 
-    updatedResponses.forEach((response, idx) => {
+    updatedDboResponses.forEach((dboResponse, idx) => {
         const langObject = LanguageOptions.find(
-            (item) => item.code === response.language
+            (item) => item.code === dboResponse.language
         );
         const langDisplay = langObject?.englishName ?? `Unknown `;
         const row = idx + 2;
-        ws.cell(row, 1).string(response.title).style(style);
+        ws.cell(row, 1).string(dboResponse.title).style(style);
         ws.cell(row, 2)
-            .string(response.flag ? 'true' : 'false')
+            .string(dboResponse.flag ? 'true' : 'false')
             .style(style)
             .style({
                 fill: {
                     type: 'pattern',
                     patternType: 'solid',
-                    bgColor: response.flag ? '#EA2616' : '#ADFF3D',
-                    fgColor: response.flag ? '#EA2616' : '#ADFF3D',
+                    bgColor: dboResponse.flag ? '#EA2616' : '#ADFF3D',
+                    fgColor: dboResponse.flag ? '#EA2616' : '#ADFF3D',
                 },
             });
         ws.cell(row, 3)
-            .string(response.agency ? response.agency : '')
+            .string(dboResponse.agency ? dboResponse.agency : '')
             .style(style);
         ws.cell(row, 4)
-            .string(response.emailSent ? 'true' : 'false')
+            .string(dboResponse.emailSent ? 'true' : 'false')
             .style(style);
         ws.cell(row, 5).string(langDisplay).style(style);
-        const qResponses = Object.keys(response.questionnaireResponse);
-
+        const qResponses = Object.keys(dboResponse.questionnaireResponse);
         qResponses.forEach((qResponse) => {
-            if (qResponse !== 'languageCode') {
-                ws.cell(row, questionsColumns[qResponse])
-                    .string(response.questionnaireResponse[qResponse])
-                    .style(style);
-            }
+            if (qResponse === 'languageCode') return;
+            ws.cell(row, questionsColumns[qResponse])
+                .string(dboResponse.questionnaireResponse[qResponse])
+                .style(style);
         });
     });
     // NOTE: we should replace this with a "write to some table" call
@@ -179,7 +183,7 @@ router.route('/responses').post(async (req, res) => {
     // wb.write('./routes/generateResponsesExcel/reports/ResponsesExcel.xlsx');
     // // write to response stream
     // wb.write('ResponsesExcel.xlsx', res);
-    await updateResponseDownloadStatus(responses);
+    await updateResponseDownloadStatus(allRemappedDboResponses);
     res.json({ 
         id: saveResult._id,
     });

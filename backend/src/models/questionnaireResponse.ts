@@ -13,6 +13,11 @@ export type QuestionnaireSchemaItem = {
     responseDownloadedToExcel?: boolean;
     deleted?: boolean;
 };
+const responseSchema = new Schema({
+    blah: { type: String },
+}, {
+
+});
 const questionnaireSchema = new Schema(
     {
         title: { type: String, required: false, unique: false },

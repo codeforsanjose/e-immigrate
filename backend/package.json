@@ -16,6 +16,8 @@
         "mongodb": "^6.5.0",
         "mongoose": "^8.2.2",
         "node-fetch": "^3.3.2",
+        "pino": "^8.19.0",
+        "pino-pretty": "^11.0.0",
         "read-excel-file": "^5.7.1",
         "uninstall": "^0.0.0",
         "zod": "^3.22.4"

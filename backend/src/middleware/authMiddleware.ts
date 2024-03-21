@@ -5,6 +5,7 @@ import { Middleware } from '../types/Middleware.js';
 import { AdminObj, userRequestAccessor } from '../features/userAccess/index.js';
 import { getRequiredJwtKey } from '../features/jwtKey/access.js';
 import { verifyJwtAsync } from '../features/jwtVerify/index.js';
+import { logger } from '../features/logging/logger.js';
 const ERRMSG = { error: { message: '[auth middleware]: Not logged in or auth failed' } };
 
 function getAuthToken(req: Request) {
@@ -31,7 +32,7 @@ export const authMiddleware: Middleware = async (req, res, next) => {
             .json({ error: { message: 'Invalid JWT Token' } });
     }
     else if (typeof decodedToken === 'string') {
-        console.error('The decoded token was a string somehow');
+        logger.error('The decoded token was a string somehow');
         return res.status(401).json(ERRMSG);
     }
     const email = decodedToken.email;
