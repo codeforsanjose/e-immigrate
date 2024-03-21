@@ -7,7 +7,7 @@ import { adminsRouter }  from './routes/admins.js';
 import { questionnaireResponsesRouter } from './routes/questionnaireResponses.js';
 import { questionnairesRouter } from './routes/questionnaires/questionnaires.js';
 import { translatedContentRouter } from './routes/translatedContent/translatedContent.js';
-import { generateResponsesExcelRouter } from './routes/generateResponsesExcel/generateResponsesExcel.js';
+import { generateResponsesExcelRouter } from './routes/generateResponsesExcel.js';
 import dotenv from 'dotenv';
 import { handleRequestErrorMiddleware } from './middleware/error-middleware/handleRequestErrorMiddleware.js';
 import { handleUncaughtErrorMiddleware } from './middleware/error-middleware/handleUncaughtErrorMiddleware.js';
