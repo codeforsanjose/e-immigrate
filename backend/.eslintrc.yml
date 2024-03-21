@@ -8,9 +8,7 @@ parserOptions:
   sourceType: module
 plugins: 
   - '@stylistic'
-  # - "prettier"
 rules: 
-  # "prettier/prettier": 1
   "semi": "off"
   "@typescript-eslint/semi": [2, "always"]
   #
@@ -20,7 +18,7 @@ rules:
     - "error"
     - arrays: "always-multiline"
       objects: "always-multiline"
-      functions: "always-multiline"
+      functions: "only-multiline"
       imports: "always-multiline"
       generics: "only-multiline"
   #
