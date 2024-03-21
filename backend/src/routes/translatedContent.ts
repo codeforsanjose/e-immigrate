@@ -1,7 +1,8 @@
 import express from 'express';
-import { TranslatedContent } from '../models/translatedContent.js';
 import { Types } from 'mongoose';
 import { z } from 'zod';
+
+import { TranslatedContent } from '../models/translatedContent.js';
 import { RequestError } from '../errors/RequestError.js';
 import { DEFAULT_LANGUAGE } from '../features/languages/default.js';
 const router = express.Router();

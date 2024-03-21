@@ -1,8 +1,9 @@
 import express from 'express';
+import { z } from 'zod';
+
 import {User} from '../models/user.js';
 import { authMiddleware } from '../middleware/authMiddleware.js';
 import { userRequestAccessor } from '../features/userAccess/index.js';
-import { z } from 'zod';
 const router = express.Router();
 export { router as usersRouter };
 

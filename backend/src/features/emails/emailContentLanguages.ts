@@ -1,4 +1,4 @@
-import { emailContents } from "./emailContents";
+import { emailContents } from "./emailContents.js";
 
 export type EmailContentLanguages = keyof typeof emailContents;
 export function isEmailContentLanguage(value?: string | null | undefined): value is EmailContentLanguages {
