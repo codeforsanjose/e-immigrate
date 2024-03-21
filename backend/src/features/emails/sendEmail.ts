@@ -1,8 +1,8 @@
 import sgMail, { MailDataRequired } from '@sendgrid/mail';
 import dotenv from 'dotenv';
-import { emailContents } from './emailContent.js';
-import { emailSender } from '../../features/emails/emailSender.js';
-import { getRequiredEnvironmentVariable } from '../../features/environmentVariables/index.js';
+import { emailContents } from "./emailContents.js";
+import { emailSender } from './emailSender.js';
+import { getRequiredEnvironmentVariable } from '../environmentVariables/index.js';
 dotenv.config();
 sgMail.setApiKey(getRequiredEnvironmentVariable('SENDGRID_API_KEY'));
 //todo: set senderEmail that has access to to e-immigrate SENDGRID_API_KEY key

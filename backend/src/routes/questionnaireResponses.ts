@@ -1,9 +1,10 @@
 import { response } from 'express';
 import express from 'express';
 import { QuestionnaireResponse } from '../models/questionnaireResponse.js';
-import { sendMassEmails } from './sendEmail/sendEmail.js';
+import { sendMassEmails } from '../features/emails/sendEmail.js';
 import { Types } from 'mongoose';
-import { emailContents, isEmailContentLanguage } from '../routes/sendEmail/emailContent.js';
+import { isEmailContentLanguage } from '../features/emails/emailContentLanguages.js';
+import { emailContents } from "../features/emails/emailContents.js";
 import { authMiddleware } from '../middleware/authMiddleware.js';
 import { emailSender } from '../features/emails/emailSender.js';
 import { ArrayElementOf } from '../types/ArrayElementOf.js';

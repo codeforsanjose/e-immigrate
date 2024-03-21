@@ -1,4 +1,4 @@
-import { EmailContentLanguages } from "./routes/sendEmail/emailContent.js";
+import { EmailContentLanguages } from "./features/emails/emailContentLanguages.js";
 
 export const WorkshopTitle = 'CIIT_Workshop_Spring_2022';
 

@@ -1,14 +1,17 @@
 import express from 'express';
-import { Questionnaires } from '../../models/questionnaires.js';
+import { Questionnaires } from '../models/questionnaires.js';
 import { Types } from 'mongoose';
 import { z } from 'zod';
-import { DEFAULT_LANGUAGE } from '../../features/languages/default.js';
+import { DEFAULT_LANGUAGE } from '../features/languages/default.js';
 const router = express.Router();
 export { router as questionnairesRouter };
+
+
 router.route('/').get(async (req, res) => {
     const allQuestionnaires = await Questionnaires.find();
-    const responsesInfo = { responses: allQuestionnaires };
-    res.json(responsesInfo);
+    res.json({
+        responses: allQuestionnaires,
+    });
 });
 
 router.route('/:title.:language?').get(async (req, res) => {
@@ -34,7 +37,7 @@ router.route('/:title.:language?').get(async (req, res) => {
     res.json(questionnaires);
 });
 
-const AddSchema = z.object({
+const AddQuestionnaireSchema = z.object({
     title: z.string(),
     language: z.string(),
     questions: z.array(z.unknown()),
@@ -42,7 +45,7 @@ const AddSchema = z.object({
 router.route('/add').post(async (req, res) => {
     const ROUTE_NAME = 'addQuestionnaires';
     // validate the body
-    const reqBody = AddSchema.parse(req.body);
+    const reqBody = AddQuestionnaireSchema.parse(req.body);
     const {
         title,
         language,
@@ -52,24 +55,20 @@ router.route('/add').post(async (req, res) => {
         title,
         language,
     });
-    res.json('questionnaire added');
-
-    async function insertNewQuestionnaire() {
-        await Questionnaires.insertMany({ title, language, questions });
-        console.log('questionnaire inserted');
-    }
-
-    async function removeExistingQuestionnaires(_id: Types.ObjectId) {
-        await Questionnaires.findByIdAndDelete({ _id });
-        console.log('questionnaire deleted');
-    }
-
     try {
         const result = await Questionnaires.find({ title, language });
         if (result.length !== 0) {
-            await removeExistingQuestionnaires(result[0]._id);
+            await Questionnaires.findByIdAndDelete({ 
+                _id: result[0]._id,
+            });
+            console.log('questionnaire deleted');
         }
-        await insertNewQuestionnaire();
+        await Questionnaires.insertMany({ 
+            title, 
+            language, 
+            questions,
+        });
+        console.log('questionnaire inserted');
     }
     catch (err) {
         res.send(err);
