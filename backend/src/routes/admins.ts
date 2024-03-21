@@ -8,13 +8,14 @@ import mongoose from 'mongoose';
 
 import { loadQuestionnaireXlsxIntoDB, loadTranslationXlsxIntoDB } from './excelToDb.js';
 
-import { authMiddleware } from '../middleware/auth.js';
+import { authMiddleware } from '../middleware/authMiddleware.js';
 import { getRequiredJwtKey } from '../features/jwtKey/access.js';
 import { z } from 'zod';
+import { verifyJwtAsync } from '../features/jwtVerify/index.js';
 const router = express.Router();
 export { router as adminsRouter }
 const SALT_ROUNDS = 10;
-const ERRMSG = { error: { message: 'Not logged in or auth failed' } };
+const ERRMSG = { error: { message: '[admins] Not logged in or auth failed' } };
 const EMAIL_REGEX =
     /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
 
@@ -117,11 +118,17 @@ router.route('/').post(async (req, res) => {
     }
 
 });
-
+const SessionSchema = z.object({
+    email: z.string(),
+    password: z.string(),
+})
 //route for logging in with email and password
 router.route('/sessions').post(async (req, res) => {
-    let email = req.body.email;
-    let password = req.body.password;
+    const reqBody = SessionSchema.parse(req.body);
+    const {
+        email,
+        password,
+    } = reqBody;
     if (!password || !email) {
         return res.status(404).json(ERRMSG);
     }
@@ -174,18 +181,10 @@ router.route('/:id').delete(async (req, res) => {
     }
 });
 
+const JwtBodySchema = z.object({
+    jwToken: z.string(),
+})
 
-function verifyJwtAsync(userToken: string): Promise<string | jwt.JwtPayload | undefined> {
-    return new Promise((resolve, reject) => {
-        jwt.verify(userToken, getRequiredJwtKey(), (err, data) => {
-            if (err != null) {
-                reject(err);
-                return;
-            }
-            resolve(data);
-        });
-    })
-}
 type IsAdminCallBack<T> =
     | (() => Promise<T>)
     | (() => T)
@@ -197,8 +196,12 @@ type IsAdminCallBack<T> =
  * call the isAdminCallBack function if the user is an admin
  **/
 async function enforceAdminOnly<TResult>(req: express.Request, res: express.Response, isAdminCallBack: IsAdminCallBack<TResult>) {
+    const reqBody = JwtBodySchema.parse(req.body);
+    const {
+        jwToken,
+    } = reqBody;
     //verify the request has a jwtToken beloning to an Admin User
-    if (!req.body || !req.body.jwToken) {
+    if (!jwToken) {
         return res
             .status(401)
             .json({ error: { message: 'Missing JWT Token' } });
@@ -206,7 +209,7 @@ async function enforceAdminOnly<TResult>(req: express.Request, res: express.Resp
     try {
 
 
-        const token = await verifyJwtAsync(req.body.jwToken);
+        const token = await verifyJwtAsync(jwToken);
         if (token == null || typeof token === 'string') {
             return res
                 .status(401)
@@ -227,11 +230,18 @@ async function enforceAdminOnly<TResult>(req: express.Request, res: express.Resp
             .json({ error: { message: 'Invalid JWT Token' } });
     }
 }
+const QuestionnaireFileSchema = z.object({
+    title: z.string(),
+})
 //route for uploading the questionnaires spreadsheet in the database
 router.route('/questionnairefile').post(async (req, res) => {
+    const reqBody = QuestionnaireFileSchema.parse(req.body);
     await enforceAdminOnly(req, res, processQuestionnaireAsAdmin);
     async function processQuestionnaireAsAdmin() {
         console.log(req.files, req.body);
+        const {
+            title,
+        } = reqBody;
         if (!req.files) {
             return res
                 .status(400)
@@ -249,7 +259,6 @@ router.route('/questionnairefile').post(async (req, res) => {
             });
         }
         const excelFileContent = questionnairefile.data;
-        const title = req.body.title;
         try {
             await loadQuestionnaireXlsxIntoDB(excelFileContent, title);
             res.status(200).json({
@@ -330,17 +339,23 @@ router.route('/translateContent').post(async (req, res) => {
 
 
 router.use(authMiddleware); //all apis AFTER this line will require authentication as implemented in auth.js
-
+const SuperSchema = z.object({
+    admins: z.array(z.string()),
+})
 //set one or more admins to be super admins:
 //request body looks like the following:
 //  {"admins":["abcde@gmail.com", "xyz@123.org"]}
 router.route('/super').post(async (req, res) => {
-    if (!req.body || !req.body.admins) {
+    const reqBody = SuperSchema.parse(req.body);
+    const {
+        admins,
+    } = reqBody;
+    if (reqBody == null) {
         return res.status(400).json('Admin identifiers not found');
     }
     try {
 
-        const result = await Admin.updateMany({ email: { $in: req.body.admins } }, { issuper: true }).exec()
+        const result = await Admin.updateMany({ email: { $in: admins } }, { issuper: true }).exec()
         return res
         .status(200)
         .json(
@@ -413,14 +428,17 @@ const Schema1 = z.object({
         insert: z.boolean(),
     })),
 })
+
 async function updateQuestionnairesLinks(req: express.Request, res: express.Response, insert = true) {
-    if (!req.body || !req.body.links) {
+    
+    const reqBody = Schema1.parse(req.body);
+    const { links: reqLinks } = reqBody;
+    if (!reqLinks) {
         return res
             .status(400)
             .json('Admins and questionnaires links not found in the request');
     }
-    const reqBody = Schema1.parse(req.body);
-    const linkPromises = reqBody.links.map((link, idx) => {
+    const linkPromises = reqLinks.map((link, idx) => {
         return updateLinks(link.admin, link.questionnaires, insert);
     });
     const links = await Promise.all(linkPromises);
