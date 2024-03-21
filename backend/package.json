@@ -39,7 +39,8 @@
     },
     "scripts": {
         "compile": "tsc",
-        "lint": "eslint \"./**/*.ts\"",
+        "lint": "eslint \"./src/**/*.ts\"",
+        "lint:fix": "eslint \"./src/**/*.ts\" --fix",
         "start": "node ./dist/index.js",
         "start:watch": "nodemon --delay 500ms -L --exec npm run start",
         "build": "npm run compile",

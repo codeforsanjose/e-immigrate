@@ -27,10 +27,10 @@ async function generateLanguageContent() {
     type LanguageMap = Partial<Record<LanguageOptionCodes, Record<Cell, unknown>>>;
     const data = rows.reduce<LanguageMap>((obj, row) => {
         for (let i = 1; i < row.length; i++) {
-            let languageObject = obj[LanguageOptions[i - 1].code];
+            const languageObject = obj[LanguageOptions[i - 1].code];
             const row0 = row[0];
             if (!isValidRecordCell(row0)) continue;
-            if (languageObject) {
+            if (languageObject != null) {
                 languageObject[row0] = row[i];
             } else {
                 obj[LanguageOptions[i - 1].code] = {
