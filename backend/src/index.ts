@@ -11,6 +11,7 @@ import { generateResponsesExcelRouter } from './routes/generateResponsesExcel/ge
 import dotenv from 'dotenv';
 import { handleRequestErrorMiddleware } from './middleware/error-middleware/handleRequestErrorMiddleware.js';
 import { handleUncaughtErrorMiddleware } from './middleware/error-middleware/handleUncaughtErrorMiddleware.js';
+import { getRequiredEnvironmentVariable } from './features/environmentVariables/index.js';
 dotenv.config();
 
 const MAX_EXCEL_FILE_SIZE = 50 * 1024 * 1024; //max size excel file in bytes will allow to be uploaded
@@ -21,10 +22,22 @@ app.use(cors());
 app.use(express.json());
 app.use(fileUpload({ limits: { fileSize: MAX_EXCEL_FILE_SIZE } }));
 
-const uri = process.env.MONGO_URI;
-if (uri == null || uri === '') throw new Error(`Missing the 'MONGO_URI' environment variable`);
-console.log('connecting to', uri);
-mongoose.connect(uri, {
+
+function getPort(defaultPort = 5000) {
+    const port = process.env.PORT;
+    if (port == null) return defaultPort;
+    else if (typeof port === 'number') return port;
+    const numericPort = parseInt(port);
+    if (isNaN(numericPort)) return defaultPort;
+    return port;
+}
+
+
+const appPort = getPort();
+const mongoUri = getRequiredEnvironmentVariable('MONGO_URI')
+
+console.log('connecting to', mongoUri);
+mongoose.connect(mongoUri, {
     // useNewUrlParser: true,
     // useCreateIndex: true,
     // useUnifiedTopology: true,
@@ -50,8 +63,7 @@ app.use(...[
     handleUncaughtErrorMiddleware(),
 ])
 app.use(express.static('build'))
-const port = process.env.PORT || 5000;
 
-app.listen(port, () => {
-    console.log(`listening on port ${port}`);
+app.listen(appPort, () => {
+    console.log(`listening on port ${appPort}`);
 });
