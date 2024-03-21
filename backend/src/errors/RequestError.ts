@@ -7,12 +7,12 @@
  */
 export class RequestError extends Error {
     constructor(
-      readonly message: string, 
-      readonly responsePayload?: string, 
-      readonly statusCode?: number,
+        readonly message: string, 
+        readonly responsePayload?: string, 
+        readonly statusCode?: number,
     ) {
-      super(message);
-      Object.setPrototypeOf(this, new.target.prototype); // restore prototype chain
-      this.name = RequestError.name; // stack traces display correctly now 
+        super(message);
+        Object.setPrototypeOf(this, new.target.prototype); // restore prototype chain
+        this.name = RequestError.name; // stack traces display correctly now 
     }
-  }
+}

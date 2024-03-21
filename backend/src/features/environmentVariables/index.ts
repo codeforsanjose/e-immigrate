@@ -1,6 +1,6 @@
 type EnvironmentVariableConfig = {
     allowEmpty?: boolean;
-}
+};
 
 export function getRequiredEnvironmentVariable(name: string, config: EnvironmentVariableConfig = {}) {
     const {

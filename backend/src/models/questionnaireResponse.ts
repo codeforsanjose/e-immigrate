@@ -43,4 +43,3 @@ export const QuestionnaireResponse = mongoose.model(
     'QuestionnaireResponse',
     questionnaireSchema
 );
-

@@ -1,7 +1,7 @@
 import express from 'express';
 import { z } from 'zod';
 
-import {User} from '../models/user.js';
+import { User } from '../models/user.js';
 import { authMiddleware } from '../middleware/authMiddleware.js';
 import { userRequestAccessor } from '../features/userAccess/index.js';
 const router = express.Router();
@@ -13,12 +13,12 @@ router.route('/').get(async (req, res) => {
     const admin = userRequestAccessor.get(res);
 
     const allUsers = await User.find();
-    const usersInfo = { users: allUsers, admin: admin };
+    const usersInfo = { users: allUsers, admin };
     res.json(usersInfo);
 });
 
 router.route('/:id').get(async (req, res) => {
-    const users = await User.findById(req.params.id)
+    const users = await User.findById(req.params.id);
     res.json(users);
 });
 
@@ -26,7 +26,7 @@ const AddSchema = z.object({
     name: z.string(),
     phoneNumber: z.string(),
     document: z.string(),
-})
+});
 router.route('/add').post(async (req, res) => {
     const reqBody = AddSchema.parse(req.body);
     const {
@@ -46,7 +46,7 @@ router.route('/add').post(async (req, res) => {
 const UpdateUserSchema = z.object({
     phoneNumber: z.string(),
     document: z.string(),
-})
+});
 router.route('/update/:id').post(async (req, res) => {
     const user = await User.findById(req.params.id);
     if (user == null) {
@@ -58,13 +58,11 @@ router.route('/update/:id').post(async (req, res) => {
     user.document = reqBody.document;
     await user.save();
     res.json('User Updated');
-    
 });
 
 router.route('/:id').delete(async (req, res) => {
-    const users = await User.findByIdAndDelete(req.params.id)
+    const users = await User.findByIdAndDelete(req.params.id);
     res.json('User Deleted');
 });
 
 router.route('');
-

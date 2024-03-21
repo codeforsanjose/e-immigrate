@@ -23,7 +23,7 @@ const adminSchema = new Schema({
         required: false,
     },
     questionnaires: {
-        //list of questionnaires.title
+        // list of questionnaires.title
         type: [String],
         required: false,
     },

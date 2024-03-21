@@ -7,7 +7,6 @@ import { DEFAULT_LANGUAGE } from '../features/languages/default.js';
 const router = express.Router();
 export { router as questionnairesRouter };
 
-
 router.route('/').get(async (req, res) => {
     const allQuestionnaires = await Questionnaires.find();
     res.json({
@@ -42,7 +41,7 @@ const AddQuestionnaireSchema = z.object({
     title: z.string(),
     language: z.string(),
     questions: z.array(z.unknown()),
-})
+});
 router.route('/add').post(async (req, res) => {
     const ROUTE_NAME = 'addQuestionnaires';
     // validate the body
@@ -79,5 +78,5 @@ router.route('/add').post(async (req, res) => {
 
 router.route('/:id').delete(async (req, res) => {
     await Questionnaires.findByIdAndDelete(req.params.id);
-    res.json('questionnaire deleted')
+    res.json('questionnaire deleted');
 });

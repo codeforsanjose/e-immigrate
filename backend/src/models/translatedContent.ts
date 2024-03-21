@@ -17,4 +17,3 @@ export const TranslatedContent = mongoose.model(
     'TranslatedContent',
     translatedContentSchema
 );
-

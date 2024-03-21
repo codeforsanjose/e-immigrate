@@ -9,12 +9,11 @@ type AdminObj = {
     name: string;
 };
 function storeUserForRequest(res: Response, user: AdminObj) {
-  setResponseLocalsValue(res, userLocalKey, user);
+    setResponseLocalsValue(res, userLocalKey, user);
 }
 function getUserForRequest(res: Response): AdminObj | undefined {
     return tryGetResponseLocalsValue(res, userLocalKey);
 }
-
 
 export const userRequestAccessor = {
     get: getUserForRequest,

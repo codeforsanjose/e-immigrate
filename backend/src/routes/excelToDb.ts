@@ -11,6 +11,7 @@ import { Questionnaires } from '../models/questionnaires.js';
 import { TranslatedContent } from '../models/translatedContent.js';
 import { LanguageOptionCodes, LanguageOptions, WorkshopTitle } from '../LanguageOptions.js';
 
+type XlsxFile = Array<Row>;
 /**
  * load questionnaire excel file into objects in the Questionnaires collection
  * excelFileContent - Node Buffer containing the excel file, this assumes must be formmated
@@ -18,96 +19,97 @@ import { LanguageOptionCodes, LanguageOptions, WorkshopTitle } from '../Language
  * returns; a promise that resolves when operaiton is done
  * */
 export async function loadQuestionnaireXlsxIntoDB(excelFileContent: Buffer, title = WorkshopTitle) {
-    const questionnairePromises = LanguageOptions.map((language, idx) => {
+    const questionnairePromises = LanguageOptions.map(async (language, idx) => {
         const stream = new Readable();
         stream.push(excelFileContent);
         stream.push(null);
-        return xlsxFile(stream, {
+        const rows = await xlsxFile(stream, {
             sheet: idx + 1,
-        }).then((rows) => {
-            type Row = {
-                id: unknown;
-                slug: unknown;
-                category: unknown;
-                text: unknown;
-                questionType: unknown;
-                answerSelections: unknown;
-                answerValues: unknown;
-                required: boolean;
-                followUpQuestionSlug: unknown | null;
-                parentQuestionSlug: unknown | null;
-            };
-            const data: Array<Row> = [];
-            rows.forEach((row, id) => {
-                if (id === 0) {
-                    let errorMessage = '';
-                    const validHeaders = [
-                        '#(id)',
-                        'Slug',
-                        'Category',
-                        'Text',
-                        'QuestionType',
-                        'AnswerSelections',
-                        'AnswerSelectionsValues',
-                        'Required?',
-                        'FollowUpQuestionSlug',
-                        'ParentQuestionSlug',
-                    ];
-                    if (row.length !== validHeaders.length) {
-                        errorMessage = 'invalid column name row';
-                    } else {
-                        for (let i = 0; i < validHeaders.length; i++) {
-                            if (row[i] !== validHeaders[i]) {
-                                errorMessage = 'invalid column name: ' + row[i];
-                            }
+        });
+        type OurRow = {
+            id: unknown;
+            slug: unknown;
+            category: unknown;
+            text: unknown;
+            questionType: unknown;
+            answerSelections: unknown;
+            answerValues: unknown;
+            required: boolean;
+            followUpQuestionSlug: unknown | null;
+            parentQuestionSlug: unknown | null;
+        };
+        const data: Array<OurRow> = [];
+        rows.forEach((row, id) => {
+            if (id === 0) {
+                let errorMessage = '';
+                const validHeaders = [
+                    '#(id)',
+                    'Slug',
+                    'Category',
+                    'Text',
+                    'QuestionType',
+                    'AnswerSelections',
+                    'AnswerSelectionsValues',
+                    'Required?',
+                    'FollowUpQuestionSlug',
+                    'ParentQuestionSlug',
+                ];
+                if (row.length !== validHeaders.length) {
+                    errorMessage = 'invalid column name row';
+                }
+                else {
+                    for (let i = 0; i < validHeaders.length; i++) {
+                        if (row[i] !== validHeaders[i]) {
+                            errorMessage = 'invalid column name: ' + row[i];
                         }
                     }
-                    if (errorMessage) {
-                        throw new Error(errorMessage);
-                    }
-                    return;
                 }
+                if (errorMessage) {
+                    throw new Error(errorMessage);
+                }
+                return;
+            }
 
-                data.push({
-                    id: row[0],
-                    slug: row[1],
-                    category: row[2],
-                    text: row[3],
-                    questionType: row[4],
-                    answerSelections: row[5],
-                    answerValues: row[6],
-                    required: row[7] === 'Yes' ? true : false,
-                    followUpQuestionSlug: row[8] ? row[8] : null,
-                    parentQuestionSlug: row[9] ? row[9] : null,
-                });
+            data.push({
+                id: row[0],
+                slug: row[1],
+                category: row[2],
+                text: row[3],
+                questionType: row[4],
+                answerSelections: row[5],
+                answerValues: row[6],
+                required: row[7] === 'Yes',
+                followUpQuestionSlug: row[8] ? row[8] : null,
+                parentQuestionSlug: row[9] ? row[9] : null,
             });
-            return data;
         });
+        return data;
     });
     const questionnaires = await Promise.all(questionnairePromises);
     const insertPromises = LanguageOptions.map(async (language, idx) => {
         const questions = questionnaires[idx];
-        function insertNewQuestionnaire() {
-            return Questionnaires.insertMany({
+        async function insertNewQuestionnaire() {
+            await Questionnaires.insertMany({
                 title,
                 language: language.code,
                 questions,
             });
         }
 
-        function removeExistingQuestionnaires(_id: Types.ObjectId) {
-            return Questionnaires.findByIdAndDelete({ _id });
+        async function removeExistingQuestionnaires(_id: Types.ObjectId) {
+            await Questionnaires.findByIdAndDelete({ _id });
         }
 
         const result = await Questionnaires.find({ title, language: language.code });
         if (result.length !== 0) {
             await removeExistingQuestionnaires(result[0]._id);
-            return await insertNewQuestionnaire();
-        } else {
-            return await insertNewQuestionnaire();
+            await insertNewQuestionnaire();
+        }
+        else {
+            await insertNewQuestionnaire();
         }
     });
-    return await Promise.all(insertPromises);
+    await Promise.all(insertPromises);
 }
 
 type Cell = (ArrayElementOf<Row>) & (string | number);
@@ -134,7 +136,8 @@ export async function loadTranslationXlsxIntoDB(excelFileContent: Buffer) {
 
             if (languageObject) {
                 languageObject[row0] = row[i];
-            } else {
+            }
+            else {
                 obj[LanguageOptions[i - 1].code] = {
                     [row0]: row[i],
                 };
@@ -144,34 +147,31 @@ export async function loadTranslationXlsxIntoDB(excelFileContent: Buffer) {
     }, {});
 
     const title = WorkshopTitle;
-    const insertPromises = LanguageOptions.map((language) => {
+    const insertPromises = LanguageOptions.map(async (language) => {
         const content = translations[language.code];
-        const insertNewTranslatedContent = () => {
-            return TranslatedContent.insertMany({
+        async function insertNewTranslatedContent() {
+            await TranslatedContent.insertMany({
                 title,
                 language: language.code,
                 content,
             });
-        };
+        }
 
-        const removeExistingTranslatedContent = (_id: Types.ObjectId) => {
-            return TranslatedContent.findByIdAndDelete({ _id });
-        };
+        async function removeExistingTranslatedContent(_id: Types.ObjectId) {
+            await TranslatedContent.findByIdAndDelete({ _id });
+        }
 
-        return TranslatedContent.find({
+        const result = await TranslatedContent.find({
             title,
             language: language.code,
-        }).then((result) => {
-            if (result.length !== 0) {
-                return removeExistingTranslatedContent(
-                    result[0]._id
-                ).then(() => {
-                    return insertNewTranslatedContent();
-                });
-            } else {
-                return insertNewTranslatedContent();
-            }
         });
+        if (result.length !== 0) {
+            await removeExistingTranslatedContent(result[0]._id);
+            await insertNewTranslatedContent();
+        }
+        else {
+            await insertNewTranslatedContent();
+        }
     });
     await Promise.all(insertPromises);
 }

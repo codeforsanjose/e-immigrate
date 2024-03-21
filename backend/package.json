@@ -46,8 +46,8 @@
         "build": "npm run compile",
         "build-and-serve": "npm run build && npm run start",
         "build-and-serve:watch": "npm run build && npm run start:watch",
-        "upload-from-excel:questions": "node ./dist/uploadQuestionnaireFromExcel.js",
-        "upload-from-excel:translated": "node ./dist/uploadTranslatedContentFromExcel.js",
+        "upload-from-excel:questions": "node ./dist/scripts/uploadQuestionnaireFromExcel.js",
+        "upload-from-excel:translated": "node ./dist/scripts/uploadTranslatedContentFromExcel.js",
         "prepare-from-excel": "npm run upload-from-excel:questions && npm run upload-from-excel:translated"
     }
 }

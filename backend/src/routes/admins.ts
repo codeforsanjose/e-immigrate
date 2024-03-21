@@ -13,22 +13,19 @@ import { authMiddleware } from '../middleware/authMiddleware.js';
 import { getRequiredJwtKey } from '../features/jwtKey/access.js';
 import { verifyJwtAsync } from '../features/jwtVerify/index.js';
 
-
 const router = express.Router();
-export { router as adminsRouter }
+export { router as adminsRouter };
 const SALT_ROUNDS = 10;
 const ERRMSG = { error: { message: '[admins] Not logged in or auth failed' } };
 const EMAIL_REGEX =
     /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
 
-
 router.route('/').get(async (req, res) => {
     try {
-
         const admins = await Admin.find();
-        let allAdmins: Array<{ password?: unknown }> = JSON.parse(JSON.stringify(admins));
+        const allAdmins: Array<{ password?: unknown, }> = JSON.parse(JSON.stringify(admins));
         allAdmins.forEach((admin) => {
-            delete admin['password'];
+            delete admin.password;
         });
         return res.json(allAdmins);
     }
@@ -42,7 +39,7 @@ const RegisterSchema = z.object({
     name: z.string(),
     password: z.string(),
 });
-//route to sign up
+// route to sign up
 router.route('/').post(async (req, res) => {
     const reqBody = RegisterSchema.parse(req.body);
     const {
@@ -63,8 +60,7 @@ router.route('/').post(async (req, res) => {
     }
 
     try {
-
-        const admins = await Admin.find({ email: email }).exec();
+        const admins = await Admin.find({ email }).exec();
         if (admins.length >= 1) {
             return res.status(409).json({
                 message: 'admin email exists',
@@ -82,26 +78,24 @@ router.route('/').post(async (req, res) => {
 
         const admin = new Admin({
             _id: new mongoose.Types.ObjectId(),
-            email: email,
-            name: name,
+            email,
+            name,
             password: hash,
         });
 
         try {
-
-
             const result = await admin.save();
             console.log(
                 'newly created admin user: ',
                 result
             );
-            let jwToken = jwt.sign(
-                { email: email },
+            const jwToken = jwt.sign(
+                { email },
                 getRequiredJwtKey()
             );
             return res.status(201).json({
-                name: name,
-                email: email,
+                name,
+                email,
                 jwt: jwToken,
             });
         }
@@ -118,13 +112,12 @@ router.route('/').post(async (req, res) => {
         console.error('error!', { err });
         return res.json(err);
     }
-
 });
 const SessionSchema = z.object({
     email: z.string(),
     password: z.string(),
-})
-//route for logging in with email and password
+});
+// route for logging in with email and password
 router.route('/sessions').post(async (req, res) => {
     const reqBody = SessionSchema.parse(req.body);
     const {
@@ -134,13 +127,13 @@ router.route('/sessions').post(async (req, res) => {
     if (!password || !email) {
         return res.status(404).json(ERRMSG);
     }
-    const admin = await Admin.findOne({ email: email }).exec();
+    const admin = await Admin.findOne({ email }).exec();
     if (admin == null) {
         console.error(`Failed to find admin`);
         return;
     };
 
-    let hashPw = admin.password;
+    const hashPw = admin.password;
     bcrypt.compare(password, hashPw, (err, result) => {
         // if passwords matches, result will be truthy
         if (err) {
@@ -149,16 +142,17 @@ router.route('/sessions').post(async (req, res) => {
         }
 
         if (result) {
-            let jwToken = jwt.sign(
-                { email: email },
+            const jwToken = jwt.sign(
+                { email },
                 getRequiredJwtKey()
             );
             return res.status(200).json({
                 name: admin.name,
-                email: email,
+                email,
                 jwt: jwToken,
             });
-        } else {
+        }
+        else {
             return res.status(500).json(ERRMSG);
         }
     });
@@ -185,11 +179,11 @@ router.route('/:id').delete(async (req, res) => {
 
 const JwtBodySchema = z.object({
     jwToken: z.string(),
-})
+});
 
 type IsAdminCallBack<T> =
     | (() => Promise<T>)
-    | (() => T)
+    | (() => T);
 /**
  * verify that the http request comes from a admin user
  * detect the user from the body containing the JWT token
@@ -202,15 +196,13 @@ async function enforceAdminOnly<TResult>(req: express.Request, res: express.Resp
     const {
         jwToken,
     } = reqBody;
-    //verify the request has a jwtToken beloning to an Admin User
+    // verify the request has a jwtToken beloning to an Admin User
     if (!jwToken) {
         return res
             .status(401)
             .json({ error: { message: 'Missing JWT Token' } });
     }
     try {
-
-
         const token = await verifyJwtAsync(jwToken);
         if (token == null || typeof token === 'string') {
             return res
@@ -234,8 +226,8 @@ async function enforceAdminOnly<TResult>(req: express.Request, res: express.Resp
 }
 const QuestionnaireFileSchema = z.object({
     title: z.string(),
-})
-//route for uploading the questionnaires spreadsheet in the database
+});
+// route for uploading the questionnaires spreadsheet in the database
 router.route('/questionnairefile').post(async (req, res) => {
     const reqBody = QuestionnaireFileSchema.parse(req.body);
     await enforceAdminOnly(req, res, processQuestionnaireAsAdmin);
@@ -275,16 +267,14 @@ router.route('/questionnairefile').post(async (req, res) => {
         }
     }
 });
-//route for deleteing a questionnaire by title
+// route for deleteing a questionnaire by title
 router.route('/deletequestionnaire/:title').delete(async (req, res) => {
     await enforceAdminOnly(req, res, deleteQuestionnaireByTitle);
     async function deleteQuestionnaireByTitle() {
         try {
-
             const results = await Questionnaires.deleteMany({
                 title: decodeURIComponent(req.params.title),
             });
-
 
             if (!results.acknowledged) {
                 console.log('Delete Failed');
@@ -306,7 +296,7 @@ router.route('/deletequestionnaire/:title').delete(async (req, res) => {
         }
     }
 });
-//route for uploading the translation spreadsheet in the database
+// route for uploading the translation spreadsheet in the database
 router.route('/translateContent').post(async (req, res) => {
     await enforceAdminOnly(req, res, processTranslatedContentAsAdmin);
     async function processTranslatedContentAsAdmin() {
@@ -328,8 +318,7 @@ router.route('/translateContent').post(async (req, res) => {
         }
         const excelFileContent = translationsFile.data;
         try {
-
-            await loadTranslationXlsxIntoDB(excelFileContent)
+            await loadTranslationXlsxIntoDB(excelFileContent);
             res.status(200).send('Translation Document Recieved');
         }
         catch (err) {
@@ -339,13 +328,12 @@ router.route('/translateContent').post(async (req, res) => {
     }
 });
 
-
-router.use(authMiddleware); //all apis AFTER this line will require authentication as implemented in auth.js
+router.use(authMiddleware); // all apis AFTER this line will require authentication as implemented in auth.js
 const SuperSchema = z.object({
     admins: z.array(z.string()),
-})
-//set one or more admins to be super admins:
-//request body looks like the following:
+});
+// set one or more admins to be super admins:
+// request body looks like the following:
 //  {"admins":["abcde@gmail.com", "xyz@123.org"]}
 router.route('/super').post(async (req, res) => {
     const reqBody = SuperSchema.parse(req.body);
@@ -356,12 +344,11 @@ router.route('/super').post(async (req, res) => {
         return res.status(400).json('Admin identifiers not found');
     }
     try {
-
-        const result = await Admin.updateMany({ email: { $in: admins } }, { issuper: true }).exec()
+        const result = await Admin.updateMany({ email: { $in: admins } }, { issuper: true }).exec();
         return res
-        .status(200)
-        .json(
-            'Admins to super status - ' +
+            .status(200)
+            .json(
+                'Admins to super status - ' +
             result.matchedCount +
             ' selected, ' +
             result.modifiedCount +
@@ -374,11 +361,17 @@ router.route('/super').post(async (req, res) => {
     }
 });
 
-
-//link questionnaires to admin identified by email
+/**
+ *  link questionnaires to admin identified by email
+ *
+ * @param {string} email
+ * @param {Array<string>} titles
+ * @param {boolean} [insert=true]
+ * @return {*} 
+ */
 async function updateLinks(email: string, titles: Array<string>, insert = true) {
     try {
-        const optAdmin = await Admin.findOne({ email: email }).exec();
+        const optAdmin = await Admin.findOne({ email }).exec();
         if (optAdmin == null) return;
         const existingAdmin = optAdmin;
         if (insert) {
@@ -388,18 +381,18 @@ async function updateLinks(email: string, titles: Array<string>, insert = true) 
                         existingAdmin.questionnaires = [title];
                     }
                     else {
-                        //don't add duplicates
+                        // don't add duplicates
                         existingAdmin.questionnaires.push(title);
                     }
                 }
             });
-        } else {
+        }
+        else {
             existingAdmin.questionnaires = existingAdmin.questionnaires?.filter(
                 (title) => !titles.includes(title)
             );
         }
         try {
-
             const admin = await existingAdmin.save();
             console.log(
                 'Success updating admin and questionnaires links - ',
@@ -417,10 +410,6 @@ async function updateLinks(email: string, titles: Array<string>, insert = true) 
         console.log(err);
         return;
     }
-
-
-
-
 }
 
 const Schema1 = z.object({
@@ -429,10 +418,9 @@ const Schema1 = z.object({
         questionnaires: z.array(z.string()),
         insert: z.boolean(),
     })),
-})
+});
 
 async function updateQuestionnairesLinks(req: express.Request, res: express.Response, insert = true) {
-    
     const reqBody = Schema1.parse(req.body);
     const { links: reqLinks } = reqBody;
     if (!reqLinks) {
@@ -440,26 +428,25 @@ async function updateQuestionnairesLinks(req: express.Request, res: express.Resp
             .status(400)
             .json('Admins and questionnaires links not found in the request');
     }
-    const linkPromises = reqLinks.map((link, idx) => {
-        return updateLinks(link.admin, link.questionnaires, insert);
+    const linkPromises = reqLinks.map(async (link, idx) => {
+        await updateLinks(link.admin, link.questionnaires, insert);
     });
-    const links = await Promise.all(linkPromises);
+    await Promise.all(linkPromises);
     return res
         .status(200)
         .json('Admin and questionnaires links are updated');
 }
 
-//link admin(s) with corresponding questionnaires (by 'title' since it's the unique id)
-//request body looks like the following:
+// link admin(s) with corresponding questionnaires (by 'title' since it's the unique id)
+// request body looks like the following:
 //  {"links": [{"admin":"abc@gmail.com", "questionnaires":["CIIT_Workshop_Spring_2021"]}]}"
 router.route('/questionnaires/link').post(async (req, res) => {
     await updateQuestionnairesLinks(req, res, true);
 });
 
-//unlink admin(s) with corresponding questionnaires
+// unlink admin(s) with corresponding questionnaires
 router.route('/questionnaires/unlink').post(async (req, res) => {
     await updateQuestionnairesLinks(req, res, false);
 });
 
 router.route('');
-

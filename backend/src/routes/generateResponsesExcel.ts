@@ -6,9 +6,13 @@ import { ObjectId } from "mongodb";
 import { z } from 'zod';
 import mongoose, { Model, QueryWithHelpers, Schema } from 'mongoose';
 
-import {LanguageOptions} from '../LanguageOptions.js';
+import { LanguageOptions } from '../LanguageOptions.js';
 import { ArrayElementOf } from '../types/ArrayElementOf.js';
 import { ExcelReports } from '../models/excelReports.js';
+import { authMiddleware } from '../middleware/authMiddleware.js'; 
+import { userRequestAccessor } from '../features/userAccess/index.js';
+import { RequestError } from '../errors/RequestError.js';
+import { PassThrough } from 'stream';
 
 const router = express.Router();
 export { router as generateResponsesExcelRouter };
@@ -17,13 +21,7 @@ const Schema1 = z.object({
         slug: z.string(),
     })),
     downloadAll: z.unknown(),
-})
-
-import { authMiddleware } from '../middleware/authMiddleware.js'; 
-import { userRequestAccessor } from '../features/userAccess/index.js';
-import { RequestError } from '../errors/RequestError.js';
-import { PassThrough } from 'stream';
-
+});
 
 router.route('/get-report/:id').get(async (req, res) => {
     // const admin = userRequestAccessor.get(res);
@@ -36,12 +34,12 @@ router.route('/get-report/:id').get(async (req, res) => {
     }
 
     const readStream = new PassThrough();
-    readStream.end(report.data)
+    readStream.end(report.data);
     res.set('Content-disposition', 'attachment; filename=' + report.filename);
     res.set('Content-Type', 'text/plain');
     readStream.pipe(res);
 });
-router.use(authMiddleware); //all apis AFTER this line will require authentication as implemented in auth.js
+router.use(authMiddleware); // all apis AFTER this line will require authentication as implemented in auth.js
 router.route('/responses').post(async (req, res) => {
     const bodyData = Schema1.parse(req.body);
     const admin = userRequestAccessor.get(res);
@@ -49,7 +47,7 @@ router.route('/responses').post(async (req, res) => {
     const allResponses = await QuestionnaireResponse.find();
 
     type ResponseItem = ArrayElementOf<typeof responses>;
-    const responses = allResponses.map((item)=> {
+    const responses = allResponses.map((item) => {
         const {
             _id,
             title,
@@ -78,7 +76,7 @@ router.route('/responses').post(async (req, res) => {
     type RequestBody = {
         questions: unknown;
         downloadAll: unknown;
-    }
+    };
     async function updateResponseDownloadStatus(questionnaireResponses: Array<ResponseItem> = []) {
         for (const response of questionnaireResponses) {
             const tempUpdatedResponse = {
@@ -86,12 +84,10 @@ router.route('/responses').post(async (req, res) => {
                 responseDownloadedToExcel: true,
             };
             try {
-
                 const raw = await QuestionnaireResponse.updateOne(
                     { _id: response._id },
                     tempUpdatedResponse
                 );
-                    
             }   
             catch (err) {
                 console.log(
@@ -110,9 +106,9 @@ router.route('/responses').post(async (req, res) => {
         acc[question.slug] = idx + 6;
         return acc;
     }, {});
-    var wb = new xl.Workbook();
-    var ws = wb.addWorksheet('Questionnaire Responses');
-    var style = wb.createStyle({
+    const wb = new xl.Workbook();
+    const ws = wb.addWorksheet('Questionnaire Responses');
+    const style = wb.createStyle({
         font: {
             color: '#000000',
             size: 12,
@@ -126,18 +122,17 @@ router.route('/responses').post(async (req, res) => {
     ws.cell(1, 4).string('Email Sent');
     ws.cell(1, 5).string('Language');
 
-    Object.keys(questionsColumns).map((question) => {
+    Object.keys(questionsColumns).forEach((question) => {
         ws.cell(1, questionsColumns[question])
             .string(question)
             .style(style);
     });
 
-    updatedResponses.map((response, idx) => {
+    updatedResponses.forEach((response, idx) => {
         const langObject = LanguageOptions.find(
             (item) => item.code === response.language
         );
-        const langDisplay =
-            (langObject && langObject.englishName) || `Unknown `;
+        const langDisplay = langObject?.englishName ?? `Unknown `;
         const row = idx + 2;
         ws.cell(row, 1).string(response.title).style(style);
         ws.cell(row, 2)
@@ -160,7 +155,7 @@ router.route('/responses').post(async (req, res) => {
         ws.cell(row, 5).string(langDisplay).style(style);
         const qResponses = Object.keys(response.questionnaireResponse);
 
-        qResponses.map((qResponse) => {
+        qResponses.forEach((qResponse) => {
             if (qResponse !== 'languageCode') {
                 ws.cell(row, questionsColumns[qResponse])
                     .string(response.questionnaireResponse[qResponse])
@@ -178,7 +173,7 @@ router.route('/responses').post(async (req, res) => {
         filename: `ResponsesExcel.xlsx`,
         dateGenerated: now,
         user: admin._id,
-    })
+    });
     const saveResult = await report.save();
     // //in build step be sure to write reports directory with path below
     // wb.write('./routes/generateResponsesExcel/reports/ResponsesExcel.xlsx');
@@ -203,4 +198,3 @@ router.route('/delete/:filename').get((req, res) => {
     fs.unlink('../../' + filename, function () {});
     res.status(202).json({ msg: 'deleted file' });
 });
-

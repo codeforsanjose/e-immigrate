@@ -1,5 +1,4 @@
-import { response } from 'express';
-import express from 'express';
+import express, { response } from 'express';
 import { Types } from 'mongoose';
 import { z } from 'zod';
 
@@ -17,8 +16,8 @@ const AddSchema = z.object({
     title: z.string(),
     language: z.string(),
     questionnaireResponse: z.record(z.string(), z.string().nullable()),
-})
-//TODO: revisit access control
+});
+// TODO: revisit access control
 router.route('/add').post(async (req, res) => {
     const reqBody = AddSchema.parse(req.body);
     const {
@@ -29,18 +28,18 @@ router.route('/add').post(async (req, res) => {
     console.log({
         origBody: req.body,
         questionnaireResponse,
-    })
+    });
     const newQuestionnaireResponse = new QuestionnaireResponse({
         title,
         language,
         questionnaireResponse,
     });
 
-    await newQuestionnaireResponse.save()
+    await newQuestionnaireResponse.save();
     res.json('QuestionnaireResponse response added');
 });
 
-router.use(authMiddleware); //all apis AFTER this line will require authentication as implemented in auth.js
+router.use(authMiddleware); // all apis AFTER this line will require authentication as implemented in auth.js
 
 function getAllResponses() {
     return QuestionnaireResponse.find({
@@ -50,7 +49,7 @@ function getAllResponses() {
 
 type AdminTemp = {
     questionnaires: Array<string>;
-}
+};
 function getResponsesForAdmin(admin: AdminTemp) {
     return QuestionnaireResponse.find({
         title: { $in: admin.questionnaires },
@@ -109,12 +108,12 @@ router.route('/email').post(async (req, res) => {
             const colorFlag = flag ? 'red' : 'green';
             const emailContentForResponse = emailContents[language]
                 ? emailContents[language][colorFlag]
-                : emailContents['en'][colorFlag];
+                : emailContents.en[colorFlag];
             const translatedContents =
                 emailContentForResponse ||
                 emailContentForResponse === '' ||
                 emailContentForResponse.length === 0
-                    ? emailContents['en'][colorFlag]
+                    ? emailContents.en[colorFlag]
                     : emailContentForResponse;
             const msg = {
                 to: email.toLowerCase(),
@@ -126,7 +125,6 @@ router.route('/email').post(async (req, res) => {
         });
     
     try {
-
         const result = await sendMassEmails(messsagesToSend);
         await updateUserResponsesEmailFlag(responsesToEmail, res);
     }
@@ -159,7 +157,6 @@ function isRedFlagKey(value: unknown): value is RedFlagKey {
     return questionKeysThatAreNotRedFlagsButInARedFlagQuestionnaire.includes(value as RedFlagKey);
 }
 function getUpdatedFlag(userResponse: Record<RedFlagKey, string>) {
-    
     return Object.entries(userResponse).reduce((acc, [key, value]) => {
         return !isRedFlagKey(key)
             ? value.toUpperCase() === 'YES'
@@ -171,7 +168,7 @@ function getUpdatedFlag(userResponse: Record<RedFlagKey, string>) {
 async function updateUserResponsesEmailFlag(responsesToEmail: Array<QuestionnaireResponseElement>, res: express.Response) {
     const totalEmailsToSend = responsesToEmail.length;
     let emailsSentCurrent = 0;
-    let errors = new Map<Types.ObjectId, unknown>();
+    const errors = new Map<Types.ObjectId, unknown>();
     function addError(key: Types.ObjectId, value: unknown) {
         // errors = {
         //     ...errors,
@@ -186,15 +183,15 @@ async function updateUserResponsesEmailFlag(responsesToEmail: Array<Questionnair
         } = response;
         const updatedFlag = flag === null ? getUpdatedFlag(questionnaireResponse) : flag;
         const tempUpdatedSuccessEmail = {
-            _id: _id,
-            title: title,
+            _id,
+            title,
             emailSent: true,
-            language: language,
+            language,
             flag: updatedFlag,
-            flagOverride: flagOverride,
-            agency: agency,
-            questionnaireResponse: questionnaireResponse,
-            responseDownloadedToExcel: responseDownloadedToExcel,
+            flagOverride,
+            agency,
+            questionnaireResponse,
+            responseDownloadedToExcel,
             createdAt,
             updatedAt,
         };
@@ -212,12 +209,13 @@ async function updateUserResponsesEmailFlag(responsesToEmail: Array<Questionnair
                         res.json({
                             msg: 'Success attempted to send ' +
                                 emailsSentCurrent,
-                            errors: errors,
+                            errors,
                         });
                     }
                 }
             );
-        } catch (mongoError) {
+        }
+        catch (mongoError) {
             console.log('mongo error here', mongoError);
             res.json({
                 msg: 'MongoError attempted to send ' + emailsSentCurrent,
@@ -238,7 +236,7 @@ const AssignAgencySchema = z.object({
         createdAt: z.number(),
         updatedAt: z.number(),
     })),
-})
+});
 router.route('/assign-agency').post(async (req, res) => {
     const {
         responsesToEmail: responseToAssignAgency,
@@ -288,12 +286,12 @@ router.route('/assign-email').post(async (req, res) => {
 });
 
 router.route('/:id').get(async (req, res) => {
-    const questionnaireResponse= await QuestionnaireResponse.findById(req.params.id)
+    const questionnaireResponse = await QuestionnaireResponse.findById(req.params.id);
     res.json(questionnaireResponse);
 });
 
 router.route('/:id').delete(async (req, res) => {
-    const users = await QuestionnaireResponse.findByIdAndDelete(req.params.id)
+    const users = await QuestionnaireResponse.findByIdAndDelete(req.params.id);
     res.json('questionnaire response Deleted');
 });
 
@@ -306,15 +304,10 @@ router.route('/delete/:id').put(async (req, res) => {
         console.error('Failed to find');
         return;
     } 
-    console.log(
-        'questionnaire response ' +
-            questionnaireResponse._id +
-            ' soft-deleted'
-    );
+    console.log(`questionnaire response ${questionnaireResponse._id.toString()} soft-deleted`);
     res.status(202).json({
         msg: 'questionnaire response deleted softly',
     });
 });
 
 router.route('');
-

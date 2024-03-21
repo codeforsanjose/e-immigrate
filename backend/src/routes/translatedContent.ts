@@ -14,8 +14,6 @@ router.route('/').get(async (req, res) => {
     res.json(responsesInfo);
 });
 
-
-
 router.route('/:title.:language?').get(async (req, res) => {
     const {
         title: paramTitle,
@@ -24,7 +22,7 @@ router.route('/:title.:language?').get(async (req, res) => {
     console.log('/:title.:language?', {
         paramTitle,
         paramLanguage,
-    })
+    });
     const translateContent = await TranslatedContent.findOne({
         title: req.params.title,
         language: req.params.language,
@@ -35,7 +33,7 @@ const AddSchema = z.object({
     title: z.string(),
     language: z.string(),
     content: z.unknown(),
-})
+});
 router.route('/add').post(async (req, res) => {
     // to-do:
     // validate(req.body);
@@ -62,7 +60,8 @@ router.route('/add').post(async (req, res) => {
         if (result.length !== 0) {
             await removeExistingTranslatedContent(result[0]._id);
             await insertNewTranslatedContent();
-        } else {
+        }
+        else {
             await insertNewTranslatedContent();
         }
     }
@@ -80,4 +79,3 @@ router.route('/:id').delete(async (req, res) => {
     await TranslatedContent.findByIdAndDelete(paramId);
     res.json('translated content deleted');
 });
-

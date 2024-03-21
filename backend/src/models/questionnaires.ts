@@ -16,5 +16,3 @@ const questionnairesSchema = new Schema(
 );
 
 export const Questionnaires = mongoose.model('Questionnaires', questionnairesSchema);
-
-

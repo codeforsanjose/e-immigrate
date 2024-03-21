@@ -5,7 +5,7 @@ import mongoose, { ConnectOptions } from 'mongoose';
 import dotenv from 'dotenv';
 
 import { usersRouter } from './routes/users.js';
-import { adminsRouter }  from './routes/admins.js';
+import { adminsRouter } from './routes/admins.js';
 import { questionnaireResponsesRouter } from './routes/questionnaireResponses.js';
 import { questionnairesRouter } from './routes/questionnaires.js';
 import { translatedContentRouter } from './routes/translatedContent.js';
@@ -17,14 +17,13 @@ import { handleZodErrorMiddleware } from './middleware/error-middleware/handleZo
 import { handleAuthorizationErrorMiddleware } from './middleware/error-middleware/handleAuthorizationErrorMiddleware.js';
 dotenv.config();
 
-const MAX_EXCEL_FILE_SIZE = 50 * 1024 * 1024; //max size excel file in bytes will allow to be uploaded
+const MAX_EXCEL_FILE_SIZE = 50 * 1024 * 1024; // max size excel file in bytes will allow to be uploaded
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 app.use(fileUpload({ limits: { fileSize: MAX_EXCEL_FILE_SIZE } }));
-
 
 function getPort(defaultPort = 5000) {
     const port = process.env.PORT;
@@ -35,9 +34,8 @@ function getPort(defaultPort = 5000) {
     return port;
 }
 
-
 const appPort = getPort();
-const mongoUri = getRequiredEnvironmentVariable('MONGO_URI')
+const mongoUri = getRequiredEnvironmentVariable('MONGO_URI');
 
 console.log('connecting to', mongoUri);
 mongoose.connect(mongoUri, {
@@ -66,8 +64,8 @@ app.use(...[
     handleAuthorizationErrorMiddleware(),
     handleRequestErrorMiddleware(),
     handleUncaughtErrorMiddleware(),
-])
-app.use(express.static('build'))
+]);
+app.use(express.static('build'));
 
 app.listen(appPort, () => {
     console.log(`listening on port ${appPort}`);

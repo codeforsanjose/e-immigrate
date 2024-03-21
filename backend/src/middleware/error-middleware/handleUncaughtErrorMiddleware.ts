@@ -3,7 +3,6 @@ import { ErrorMiddleware } from "../../types/Middleware.js";
 import { RequestError } from "../../errors/RequestError.js";
 const DEFAULT_ERROR_CODE = 400;
 
-
 /**
  *  Middleware which returns a 400 status code when an uncaught
  * {@link Error} is thrown.
