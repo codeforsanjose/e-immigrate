@@ -1,12 +1,13 @@
 import express from 'express';
-import { QuestionnaireResponse } from '../../models/questionnaireResponse.js';
+import { QuestionnaireResponse } from '../models/questionnaireResponse.js';
 import xl from 'excel4node';
 import fs from 'fs';
 import { ObjectId } from "mongodb";
-import {LanguageOptions} from '../../LanguageOptions.js';
+import {LanguageOptions} from '../LanguageOptions.js';
 import { z } from 'zod';
-import { ArrayElementOf } from '../../types/ArrayElementOf.js';
-import { Model, QueryWithHelpers, Schema } from 'mongoose';
+import { ArrayElementOf } from '../types/ArrayElementOf.js';
+import mongoose, { Model, QueryWithHelpers, Schema } from 'mongoose';
+import { ExcelReports } from '../models/excelReports.js';
 const router = express.Router();
 export { router as generateResponsesExcelRouter };
 const Schema1 = z.object({
@@ -16,10 +17,33 @@ const Schema1 = z.object({
     downloadAll: z.unknown(),
 })
 
+import { authMiddleware } from '../middleware/authMiddleware.js'; 
+import { userRequestAccessor } from '../features/userAccess/index.js';
+import { RequestError } from '../errors/RequestError.js';
+import { PassThrough } from 'stream';
 
 
+router.route('/get-report/:id').get(async (req, res) => {
+    // const admin = userRequestAccessor.get(res);
+    // if (admin == null) throw new RequestError('Missing the user data', undefined, 401);
+    const report = await ExcelReports.findOne({
+        _id: req.params.id,
+    });
+    if (report == null) {
+        throw new RequestError('Missing report', undefined, 404);
+    }
+
+    const readStream = new PassThrough();
+    readStream.end(report.data)
+    res.set('Content-disposition', 'attachment; filename=' + report.filename);
+    res.set('Content-Type', 'text/plain');
+    readStream.pipe(res);
+});
+router.use(authMiddleware); //all apis AFTER this line will require authentication as implemented in auth.js
 router.route('/responses').post(async (req, res) => {
     const bodyData = Schema1.parse(req.body);
+    const admin = userRequestAccessor.get(res);
+    if (admin == null) throw new RequestError('Missing the user data', undefined, 401);
     const allResponses = await QuestionnaireResponse.find();
 
     type ResponseItem = ArrayElementOf<typeof responses>;
@@ -53,24 +77,26 @@ router.route('/responses').post(async (req, res) => {
         questions: unknown;
         downloadAll: unknown;
     }
-    function updateResponseDownloadStatus(questionnaireResponses: Array<ResponseItem> = []) {
+    async function updateResponseDownloadStatus(questionnaireResponses: Array<ResponseItem> = []) {
         for (const response of questionnaireResponses) {
             const tempUpdatedResponse = {
                 ...response,
                 responseDownloadedToExcel: true,
             };
-            QuestionnaireResponse.updateOne(
-                { _id: response._id },
-                tempUpdatedResponse,
-                (err: unknown, raw: unknown) => {
-                    if (err) {
-                        console.log(
-                            'updated download status something err is',
-                            err
-                        );
-                    }
-                }
-            );
+            try {
+
+                const raw = await QuestionnaireResponse.updateOne(
+                    { _id: response._id },
+                    tempUpdatedResponse
+                );
+                    
+            }   
+            catch (err) {
+                console.log(
+                    'updated download status something err is',
+                    err
+                );
+            }
         }
     }
     const questions = bodyData.questions;
@@ -142,12 +168,24 @@ router.route('/responses').post(async (req, res) => {
     });
     // NOTE: we should replace this with a "write to some table" call
 
-    //in build step be sure to write reports directory with path below
-    wb.write('./routes/generateResponsesExcel/reports/ResponsesExcel.xlsx');
+    const buffer = await wb.writeToBuffer();
+    const now = new Date();
+    const report = new ExcelReports({
+        _id: new mongoose.Types.ObjectId(),
+        data: buffer,
+        filename: `ResponsesExcel.xlsx`,
+        dateGenerated: now,
+        user: admin._id,
+    })
+    const saveResult = await report.save();
+    // //in build step be sure to write reports directory with path below
+    // wb.write('./routes/generateResponsesExcel/reports/ResponsesExcel.xlsx');
     // // write to response stream
     // wb.write('ResponsesExcel.xlsx', res);
-    updateResponseDownloadStatus(responses);
-    res.json({ msg: 'success' });
+    await updateResponseDownloadStatus(responses);
+    res.json({ 
+        id: saveResult._id,
+    });
 });
 
 router.route('/getLatest/:filename').get((req, res) => {
