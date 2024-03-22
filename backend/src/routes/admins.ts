@@ -1,6 +1,6 @@
 import express from 'express';
 import bcrypt from 'bcrypt';
-import jwt, { JwtPayload } from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
 import { z } from 'zod';
 
@@ -124,7 +124,7 @@ router.route('/sessions').post(async (req, res) => {
         email,
         password,
     } = reqBody;
-    if (!password || !email) {
+    if (password == null || password === '' || email == null || email === '') {
         return res.status(404).json(ERRMSG);
     }
     const admin = await Admin.findOne({ email }).exec();
@@ -136,7 +136,7 @@ router.route('/sessions').post(async (req, res) => {
     const hashPw = admin.password;
     bcrypt.compare(password, hashPw, (err, result) => {
         // if passwords matches, result will be truthy
-        if (err) {
+        if (err != null) {
             logger.error(err, 'bcrypt error');
             return res.status(500).json(ERRMSG);
         }
@@ -203,7 +203,7 @@ async function enforceAdminOnly<TResult>(req: express.Request, res: express.Resp
         jwToken,
     } = reqBody;
     // verify the request has a jwtToken beloning to an Admin User
-    if (!jwToken) {
+    if (jwToken == null || jwToken === '') {
         return res
             .status(401)
             .json({ error: { message: 'Missing JWT Token' } });
@@ -246,7 +246,7 @@ router.route('/questionnairefile').post(async (req, res) => {
         const {
             title,
         } = reqBody;
-        if (!req.files) {
+        if (req.files == null) {
             return res
                 .status(400)
                 .json({ error: { message: 'Missing Questionnaire File' } });
@@ -312,7 +312,7 @@ router.route('/deletequestionnaire/:title').delete(async (req, res) => {
 router.route('/translateContent').post(async (req, res) => {
     await enforceAdminOnly(req, res, processTranslatedContentAsAdmin);
     async function processTranslatedContentAsAdmin() {
-        if (!req.files) {
+        if (req.files == null) {
             return res
                 .status(400)
                 .json({ error: { message: 'Missing Translation File' } });
@@ -393,7 +393,7 @@ async function updateLinks(email: string, titles: Array<string>, insert = true) 
         const existingAdmin = optAdmin;
         if (insert) {
             titles.forEach((title) => {
-                if (!existingAdmin.questionnaires?.includes(title)) {
+                if (!(existingAdmin.questionnaires?.includes(title) ?? false)) {
                     if (existingAdmin.questionnaires == null) {
                         existingAdmin.questionnaires = [title];
                     }
@@ -436,7 +436,7 @@ const Schema1 = z.object({
 async function updateQuestionnairesLinks(req: express.Request, res: express.Response, insert = true) {
     const reqBody = Schema1.parse(req.body);
     const { links: reqLinks } = reqBody;
-    if (!reqLinks) {
+    if (reqLinks == null) {
         return res
             .status(400)
             .json('Admins and questionnaires links not found in the request');

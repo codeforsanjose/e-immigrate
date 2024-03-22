@@ -65,7 +65,11 @@ router.route('/update/:id').post(async (req, res) => {
 });
 
 router.route('/:id').delete(async (req, res) => {
-    const users = await User.findByIdAndDelete(req.params.id);
+    const logger = routeLogger('updateUser');
+    await User.findByIdAndDelete(req.params.id);
+    logger.info({
+        paramId: req.params.id,
+    }, 'Deleted user');
     res.json('User Deleted');
 });
 

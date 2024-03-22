@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from "express";
 import { ErrorMiddleware } from "../../types/Middleware.js";
-import { RequestError } from "../../errors/RequestError.js";
 import { scopedLogger } from "../../features/logging/logger.js";
 const DEFAULT_ERROR_CODE = 400;
 

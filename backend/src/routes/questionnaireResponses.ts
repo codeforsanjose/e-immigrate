@@ -1,5 +1,4 @@
-import express, { response } from 'express';
-import { Types } from 'mongoose';
+import express from 'express';
 import { z } from 'zod';
 
 import { QuestionnaireResponse } from '../models/questionnaireResponse.js';
@@ -50,16 +49,6 @@ function getAllResponses() {
     });
 }
 
-type AdminTemp = {
-    questionnaires: Array<string>;
-};
-function getResponsesForAdmin(admin: AdminTemp) {
-    return QuestionnaireResponse.find({
-        title: { $in: admin.questionnaires },
-        $or: [{ deleted: { $exists: false } }, { deleted: false }],
-    });
-}
-
 router.route('/').get(async (req, res) => {
     const logger = routeLogger('getAllQuestionnaireResponse');
     logger.trace('CALLED');
@@ -69,7 +58,7 @@ router.route('/').get(async (req, res) => {
 
     const qResponses = await getAllResponses();
     const updatedResponses = qResponses.filter((item) => {
-        return !item.title?.toLowerCase().includes('spring_2021');
+        return !(item.title?.toLowerCase().includes('spring_2021') ?? false);
     });
     const responsesInfo = { responses: updatedResponses };
     res.json(responsesInfo);
@@ -89,7 +78,7 @@ router.route('/email').post(async (req, res) => {
     //     ? getAllResponses()
     //     : getResponsesForAdmin(req.user);
     const qResponses = await getAllResponses();
-    const responsesToEmail = qResponses.filter((item) => !item.emailSent);
+    const responsesToEmail = qResponses.filter((item) => item.emailSent !== true);
     const totalEmailsToSend = responsesToEmail.length;
     const messsagesToSend = responsesToEmail
         .filter((response) => {
@@ -103,21 +92,19 @@ router.route('/email').post(async (req, res) => {
         })
         .map((response) => {
             const {
-                questionnaireResponse = {},
+                questionnaireResponse,
                 flag,
                 language = 'en',
             } = response;
             if (!isEmailContentLanguage(language)) throw new Error('should not happen');
 
-            const { email = '' } = questionnaireResponse;
-            const colorFlag = flag ? 'red' : 'green';
-            const emailContentForResponse = emailContents[language]
+            const { email } = questionnaireResponse;
+            const colorFlag = flag === true ? 'red' : 'green';
+            const emailContentForResponse = emailContents[language] != null
                 ? emailContents[language][colorFlag]
                 : emailContents.en[colorFlag];
             const translatedContents =
-                emailContentForResponse ||
-                    emailContentForResponse === '' ||
-                    emailContentForResponse.length === 0
+                (emailContentForResponse == null || emailContentForResponse.length === 0)
                     ? emailContents.en[colorFlag]
                     : emailContentForResponse;
             const msg = {
@@ -130,7 +117,7 @@ router.route('/email').post(async (req, res) => {
         });
 
     try {
-        const result = await sendMassEmails(messsagesToSend);
+        await sendMassEmails(messsagesToSend);
         await updateUserResponsesEmailFlag(responsesToEmail, res);
     }
     catch (emailErrors) {
@@ -148,8 +135,46 @@ router.route('/email').post(async (req, res) => {
     }
 });
 
+/*
+ questionnaireResponse: {
+    "languageCode": "en",
+    "green_card_through_marriage": "No",
+    "legal_resident_date": null,
+    "gender": "Male",
+    "preferred_language": "English",
+    "full_name": "dasd",
+    "birth_country": "adsasd",
+    "US_zipcode": "12345",
+    "mobile_phone": "3234243555",
+    "age": "68",
+    "ethnicity": "adasd",
+    "email": "asdasd",
+    "how_did_you_hear_about_event": "Word of mouth (friends/family/etc.) ",
+    "receive_public_benefits": "No",
+    "contact_with_police": "No",
+    "habitual_alcoholic_drugs": "No",
+    "money_from_illegal_gambling": "No",
+    "contact_with_immigration_officer": "No",
+    "helped_enter_or_entered_US_illegally": "No",
+    "married_to_multiple_people_same_time": "No",
+    "failed_support_kids_pay_alimony": "No",
+    "asylum_travel_back_home_country": "No",
+    "deported_removed_excluded_from_US": "No",
+    "lied_to_obtain_immigrant_benefit": "No",
+    "lied_to_obtain_welfare_benefit": "No",
+    "left_US_>6mo_while_LPR": "No",
+    "owed_taxes_since_LPR": "No",
+    "taxes_payment_plan": "No",
+    "genocide_torture_killing_hurting": "No",
+    "court-martialed_disciplinced_in_military": "No",
+    "US_citizen_registered_voted": "No",
+    "associated_terrorist_orgs_gangs": "No",
+    "live_US_18-26_and_are_26-31": "No",
+    "selective_service": "No"
+}
+*/
 const questionKeysThatAreNotRedFlagsButInARedFlagQuestionnaire = [
-    'male',
+    // 'male',
     'still_married_to_that_citizen',
     'receive_public_benefits',
     'live_US_18-26_and_are_26-31',
@@ -161,10 +186,10 @@ function isRedFlagKey(value: unknown): value is RedFlagKey {
     if (value == null || typeof value !== 'string') return false;
     return questionKeysThatAreNotRedFlagsButInARedFlagQuestionnaire.includes(value as RedFlagKey);
 }
-function getUpdatedFlag(userResponse: Record<RedFlagKey, string>) {
+function getUpdatedFlag(userResponse: Partial<Record<RedFlagKey, string | null | undefined>>) {
     return Object.entries(userResponse).reduce((acc, [key, value]) => {
         return !isRedFlagKey(key)
-            ? value.toUpperCase() === 'YES'
+            ? value?.toUpperCase() === 'YES'
                 ? true
                 : acc
             : acc;
@@ -203,7 +228,7 @@ async function updateUserResponsesEmailFlag(responsesToEmail: Array<Questionnair
             updatedAt,
         };
         try {
-            const raw = await QuestionnaireResponse.updateOne(
+            await QuestionnaireResponse.updateOne(
                 { _id: response._id },
                 tempUpdatedSuccessEmail);
             emailsSentCurrent += 1;
@@ -303,7 +328,7 @@ router.route('/:id').get(async (req, res) => {
 
 router.route('/:id').delete(async (req, res) => {
     const logger = routeLogger('hardDeleteQuestionnaireResponse');
-    const users = await QuestionnaireResponse.findByIdAndDelete(req.params.id);
+    await QuestionnaireResponse.findByIdAndDelete(req.params.id);
     logger.info({
         id: req.params.id,
     }, 'questionnaire response Deleted');

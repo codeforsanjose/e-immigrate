@@ -9,7 +9,7 @@ sgMail.setApiKey(getRequiredEnvironmentVariable('SENDGRID_API_KEY'));
 export async function sendEmail(email: string, name: string, flag: boolean, language: keyof typeof emailContents) {
     const colorFlag = flag ? 'red' : 'green';
     const emailContentForResponse = emailContents[language][colorFlag];
-    const translatedContents = emailContentForResponse && emailContentForResponse === ''
+    const translatedContents = emailContentForResponse != null && emailContentForResponse === ''
         ? emailContents.en[colorFlag]
         : emailContentForResponse;
     const msg = {

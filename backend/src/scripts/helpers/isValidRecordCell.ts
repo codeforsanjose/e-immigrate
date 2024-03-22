@@ -1,5 +1,3 @@
-import { Row } from "read-excel-file";
-import { ArrayElementOf } from "../../types/ArrayElementOf.js";
 import { Cell } from "read-excel-file/types.js";
 
 // type Cell = (ArrayElementOf<Row>) & (string | number);

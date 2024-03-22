@@ -11,7 +11,6 @@ import { Questionnaires } from '../models/questionnaires.js';
 import { TranslatedContent } from '../models/translatedContent.js';
 import { LanguageOptionCodes, LanguageOptions, WorkshopTitle } from '../LanguageOptions.js';
 
-type XlsxFile = Array<Row>;
 /**
  * load questionnaire excel file into objects in the Questionnaires collection
  * excelFileContent - Node Buffer containing the excel file, this assumes must be formmated
@@ -60,11 +59,11 @@ export async function loadQuestionnaireXlsxIntoDB(excelFileContent: Buffer, titl
                 else {
                     for (let i = 0; i < validHeaders.length; i++) {
                         if (row[i] !== validHeaders[i]) {
-                            errorMessage = 'invalid column name: ' + row[i];
+                            errorMessage = 'invalid column name: ' + row[i].toString();
                         }
                     }
                 }
-                if (errorMessage) {
+                if (errorMessage != null && errorMessage !== '') {
                     throw new Error(errorMessage);
                 }
                 return;
@@ -79,8 +78,8 @@ export async function loadQuestionnaireXlsxIntoDB(excelFileContent: Buffer, titl
                 answerSelections: row[5],
                 answerValues: row[6],
                 required: row[7] === 'Yes',
-                followUpQuestionSlug: row[8] ? row[8] : null,
-                parentQuestionSlug: row[9] ? row[9] : null,
+                followUpQuestionSlug: row[8] ?? null,
+                parentQuestionSlug: row[9] ?? null,
             });
         });
         return data;
@@ -135,7 +134,7 @@ export async function loadTranslationXlsxIntoDB(excelFileContent: Buffer) {
             const row0 = row[0];
             if (!isValidRecordCell(row0)) continue;
 
-            if (languageObject) {
+            if (languageObject != null) {
                 languageObject[row0] = row[i];
             }
             else {

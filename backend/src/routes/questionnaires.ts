@@ -1,14 +1,15 @@
 import express from 'express';
-import mongoose, { Types } from 'mongoose';
+import mongoose from 'mongoose';
 import { z } from 'zod';
 
-import { Questionnaires, questionnairesSchema } from '../models/questionnaires.js';
+import { Questionnaires } from '../models/questionnaires.js';
 import { DEFAULT_LANGUAGE } from '../features/languages/default.js';
 import { routeLogger } from '../features/logging/logger.js';
 const router = express.Router();
 export { router as questionnairesRouter };
 
 type GetEntityModel<TModel> = 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     TModel extends mongoose.Model<infer TRawDocType, infer TQueryHelpers, infer _, infer _, infer THydratedDocumentType> 
         ? NonNullable<Awaited<mongoose.QueryWithHelpers<THydratedDocumentType | null, THydratedDocumentType, TQueryHelpers, TRawDocType, 'findOne'>>>
         : never

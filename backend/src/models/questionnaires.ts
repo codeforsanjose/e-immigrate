@@ -2,18 +2,6 @@ import mongoose from 'mongoose';
 
 const Schema = mongoose.Schema;
 
-type QuestionElement = {
-    id: number;
-    slug: string;
-    category: string;
-    text: string;
-    questionType: string;
-    answerSelections: string;
-    answerValues: string;
-    required: boolean;
-    followUpQuestionSlug: string | null;
-    parentQuestionSlug: string | null;
-};
 export const questionSchema = new Schema({
     id: { type: String, unique: false, required: true },
     slug: { type: String, unique: false, required: true },

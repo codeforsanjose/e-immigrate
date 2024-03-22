@@ -1,4 +1,4 @@
-import xlsxFile, { Row } from 'read-excel-file/node';
+import xlsxFile from 'read-excel-file/node';
 import { LanguageOptions, WorkshopTitle } from '../LanguageOptions.js';
 import { getFullDataPath } from '../features/data/locator.js';
 import { sendRequest } from './helpers/sendRequest.js';
@@ -34,8 +34,8 @@ async function generateQuestionnaires() {
                 answerSelections: row[5],
                 answerValues: row[6],
                 required: row[7] === 'Yes',
-                followUpQuestionSlug: row[8] ? row[8] : null,
-                parentQuestionSlug: row[9] ? row[9] : null,
+                followUpQuestionSlug: row[8] ?? null,
+                parentQuestionSlug: row[9] ?? null,
             });
             if (!parseResult.success) {
                 logger.error(parseResult.error, 'Failed to extract row data');

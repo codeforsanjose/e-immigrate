@@ -2,9 +2,8 @@ import express from 'express';
 import { QuestionnaireResponse } from '../models/questionnaireResponse.js';
 import xl from 'excel4node';
 import fs from 'fs';
-import { ObjectId } from "mongodb";
 import { z } from 'zod';
-import mongoose, { Model, QueryWithHelpers, Schema } from 'mongoose';
+import mongoose from 'mongoose';
 
 import { LanguageOptions } from '../LanguageOptions.js';
 import { ArrayElementOf } from '../types/ArrayElementOf.js';
@@ -47,6 +46,10 @@ router.route('/get-report/:id').get(async (req, res) => {
 });
 router.use(authMiddleware); // all apis AFTER this line will require authentication as implemented in auth.js
 
+function isKeyOf<TValue extends Record<string, unknown>>(key: string, value: TValue): key is (keyof TValue & string) {
+    return key in value;
+}
+
 router.route('/responses').post(async (req, res) => {
     const logger = routeLogger('generateResponsesExcel');
     logger.debug('begin');
@@ -82,10 +85,7 @@ router.route('/responses').post(async (req, res) => {
             responseDownloadedToExcel,
         };
     });
-    type RequestBody = {
-        questions: unknown;
-        downloadAll: unknown;
-    };
+   
     async function updateResponseDownloadStatus(questionnaireResponses: Array<ResponseItem> = []) {
         for (const response of questionnaireResponses) {
             const tempUpdatedResponse = {
@@ -93,7 +93,7 @@ router.route('/responses').post(async (req, res) => {
                 responseDownloadedToExcel: true,
             };
             try {
-                const raw = await QuestionnaireResponse.updateOne(
+                await QuestionnaireResponse.updateOne(
                     { _id: response._id },
                     tempUpdatedResponse
                 );
@@ -107,7 +107,7 @@ router.route('/responses').post(async (req, res) => {
     const downloadAll = bodyData.downloadAll;
     const updatedDboResponses = downloadAll
         ? allDboResponses
-        : allDboResponses.filter((item) => !item.responseDownloadedToExcel);
+        : allDboResponses.filter((item) => item.responseDownloadedToExcel !== true);
     const questionsColumns = questions.reduce<Record<string, number>>((acc, question, idx) => {
         acc[question.slug] = idx + 6;
         return acc;
@@ -142,29 +142,37 @@ router.route('/responses').post(async (req, res) => {
         const row = idx + 2;
         ws.cell(row, 1).string(dboResponse.title).style(style);
         ws.cell(row, 2)
-            .string(dboResponse.flag ? 'true' : 'false')
+            .string((dboResponse.flag ?? false) ? 'true' : 'false')
             .style(style)
             .style({
                 fill: {
                     type: 'pattern',
                     patternType: 'solid',
-                    bgColor: dboResponse.flag ? '#EA2616' : '#ADFF3D',
-                    fgColor: dboResponse.flag ? '#EA2616' : '#ADFF3D',
+                    bgColor: (dboResponse.flag ?? false) ? '#EA2616' : '#ADFF3D',
+                    fgColor: (dboResponse.flag ?? false) ? '#EA2616' : '#ADFF3D',
                 },
             });
         ws.cell(row, 3)
-            .string(dboResponse.agency ? dboResponse.agency : '')
+            .string(dboResponse.agency ?? '')
             .style(style);
         ws.cell(row, 4)
-            .string(dboResponse.emailSent ? 'true' : 'false')
+            .string((dboResponse.emailSent ?? false) ? 'true' : 'false')
             .style(style);
         ws.cell(row, 5).string(langDisplay).style(style);
         const qResponses = Object.keys(dboResponse.questionnaireResponse);
+       
         qResponses.forEach((qResponse) => {
             if (qResponse === 'languageCode') return;
-            ws.cell(row, questionsColumns[qResponse])
-                .string(dboResponse.questionnaireResponse[qResponse])
-                .style(style);
+            if (isKeyOf(qResponse, dboResponse.questionnaireResponse)) {
+                ws.cell(row, questionsColumns[qResponse])
+                    .string(dboResponse.questionnaireResponse[qResponse] ?? '')
+                    .style(style);
+            }
+            else {
+                ws.cell(row, questionsColumns[qResponse])
+                    .string('')
+                    .style(style);
+            }
         });
     });
     // NOTE: we should replace this with a "write to some table" call

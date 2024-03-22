@@ -1,11 +1,9 @@
-import xlsxFile, { Row } from 'read-excel-file/node';
+import xlsxFile from 'read-excel-file/node';
 import { LanguageOptionCodes, LanguageOptions, WorkshopTitle } from '../LanguageOptions.js';
-import { ArrayElementOf } from '../types/ArrayElementOf.js';
 import { getFullDataPath } from '../features/data/locator.js';
 import { sendRequest } from './helpers/sendRequest.js';
 import { forEachAsync } from '../features/iterators/forEachAsync.js';
-import { isValidRecordCell } from './helpers/isVa.js';
-import { Cell } from 'read-excel-file/types.js';
+import { isValidRecordCell } from './helpers/isValidRecordCell.js';
 
 
 async function generateLanguageContent() {

@@ -3,7 +3,6 @@ import { Request } from "express";
 import { Admin } from '../models/admin.js';
 import { Middleware } from '../types/Middleware.js';
 import { AdminObj, userRequestAccessor } from '../features/userAccess/index.js';
-import { getRequiredJwtKey } from '../features/jwtKey/access.js';
 import { verifyJwtAsync } from '../features/jwtVerify/index.js';
 import { logger } from '../features/logging/logger.js';
 const ERRMSG = { error: { message: '[auth middleware]: Not logged in or auth failed' } };
@@ -38,7 +37,7 @@ export const authMiddleware: Middleware = async (req, res, next) => {
     const email = decodedToken.email;
     const admin = await Admin.findOne({ email }).exec();
 
-    if (!admin || admin._id == null) return res.status(404).json(ERRMSG);
+    if (admin?._id == null) return res.status(404).json(ERRMSG);
     
     const adminObj: AdminObj = {
         _id: admin._id.toString(),
