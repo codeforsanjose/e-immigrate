@@ -12,14 +12,14 @@ async function generateLanguageContent() {
     const data = rows.reduce<LanguageMap>((obj, row) => {
         for (let i = 1; i < row.length; i++) {
             const languageObject = obj[LanguageOptions[i - 1].code];
-            const cell0 = row[0];
-            if (!isValidRecordCell(cell0)) continue;
+            const firstCell = row[0];
+            if (!isValidRecordCell(firstCell)) continue;
             if (languageObject != null) {
-                languageObject[cell0] = row[i];
+                languageObject[firstCell] = row[i];
             }
             else {
                 obj[LanguageOptions[i - 1].code] = {
-                    [cell0]: row[i],
+                    [firstCell]: row[i],
                 };
             }
         }

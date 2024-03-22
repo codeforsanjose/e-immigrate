@@ -2,12 +2,15 @@
 version: "3.9"
 
 services:
-  app:
+  backend:
     image: e-immigrate
     build:
       context: ./
       dockerfile: docker/backend/Dockerfile
     env_file: ./backend/.secrets/.env
+    volumes:
+      - "./backend:/srv"
+      - eimmigrate_backend-node_modules:/srv/node_modules
     ports:
       - "5000:5000"
     environment:
@@ -21,6 +24,9 @@ services:
     build:
       context: ./
       dockerfile: docker/frontend/Dockerfile
+    volumes:
+      - "./frontend:/srv"
+      - eimmigrate_frontend-node_modules:/srv/node_modules
     ports:
       - "8080:8080"
     labels:
@@ -49,5 +55,11 @@ services:
 
 volumes:
   mongo-data:
+    labels:
+      org.opensourcesanjose.app: eimmigrate
+  eimmigrate_backend-node_modules:
+    labels:
+      org.opensourcesanjose.app: eimmigrate
+  eimmigrate_frontend-node_modules:
     labels:
       org.opensourcesanjose.app: eimmigrate
