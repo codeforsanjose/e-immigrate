@@ -57,7 +57,7 @@ router.route('/responses').post(async (req, res) => {
     const admin = userRequestAccessor.get(res);
     if (admin == null) throw new RequestError('Missing the user data', undefined, 401);
     const allDboResponses = await QuestionnaireResponse.find();
-
+    
     type ResponseItem = ArrayElementOf<typeof allRemappedDboResponses>;
     const allRemappedDboResponses = allDboResponses.map((item) => {
         const {
@@ -160,12 +160,12 @@ router.route('/responses').post(async (req, res) => {
             .style(style);
         ws.cell(row, 5).string(langDisplay).style(style);
         const qResponses = Object.keys(dboResponse.questionnaireResponse);
-       
         qResponses.forEach((qResponse) => {
             if (qResponse === 'languageCode') return;
             if (isKeyOf(qResponse, dboResponse.questionnaireResponse)) {
+                const value = dboResponse.questionnaireResponse[qResponse] ?? '';
                 ws.cell(row, questionsColumns[qResponse])
-                    .string(dboResponse.questionnaireResponse[qResponse] ?? '')
+                    .string(`${value}`)
                     .style(style);
             }
             else {

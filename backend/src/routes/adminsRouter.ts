@@ -7,7 +7,7 @@ import { z } from 'zod';
 import { Admin } from '../models/admin.js';
 import { Questionnaires } from '../models/questionnaires.js';
 
-import { loadQuestionnaireXlsxIntoDB, loadTranslationXlsxIntoDB } from './excelToDb.js';
+import { loadQuestionnaireXlsxIntoDB, loadTranslationXlsxIntoDB } from '../features/excelToDb.js';
 
 import { authMiddleware } from '../middleware/authMiddleware.js';
 import { getRequiredJwtKey } from '../features/jwtKey/access.js';
@@ -19,20 +19,17 @@ export { router as adminsRouter };
 const SALT_ROUNDS = 10;
 const ERRMSG = { error: { message: '[admins] Not logged in or auth failed' } };
 const EMAIL_REGEX =
-    /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
+    /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/
+;
 
 router.route('/').get(async (req, res) => {
-    try {
-        const admins = await Admin.find();
-        const allAdmins: Array<{ password?: unknown, }> = JSON.parse(JSON.stringify(admins));
-        allAdmins.forEach((admin) => {
-            delete admin.password;
-        });
-        return res.json(allAdmins);
-    }
-    catch (err) {
-        res.status(500).json(err);
-    }
+    const admins = await Admin.find();
+    
+    const allAdmins: Array<{ password?: unknown, }> = JSON.parse(JSON.stringify(admins));
+    allAdmins.forEach((admin) => {
+        delete admin.password;
+    });
+    return res.json(allAdmins);
 });
 
 const RegisterSchema = z.object({

@@ -1,19 +1,59 @@
 import mongoose from 'mongoose';
+import { WithDefaultMongooseId, WithMongooseTimestamps } from './core/types.js';
 
-const Schema = mongoose.Schema;
 
-export type QuestionnaireSchemaItem = {
+
+export type ResponseEntity = {
+    languageCode: string;
+    green_card_through_marriage: string;
+    legal_resident_date?: string;
+    gender: string;
+    preferred_language: string;
+    full_name: string;
+    birth_country: string;
+    US_zipcode: string;
+    mobile_phone: string;
+    age: string;
+    ethnicity: string;
+    still_married_to_that_citizen?: string;
+    email: string;
+    how_did_you_hear_about_event: string;
+    receive_public_benefits: string;
+    contact_with_police: string;
+    habitual_alcoholic_drugs: string;
+    money_from_illegal_gambling: string;
+    contact_with_immigration_officer: string;
+    helped_enter_or_entered_US_illegally: string;
+    married_to_multiple_people_same_time: string;
+    failed_support_kids_pay_alimony: string;
+    asylum_travel_back_home_country: string;
+    deported_removed_excluded_from_US: string;
+    lied_to_obtain_immigrant_benefit: string;
+    lied_to_obtain_welfare_benefit: string;
+    'left_US_>6mo_while_LPR': string;
+    owed_taxes_since_LPR: string;
+    taxes_payment_plan: string;
+    genocide_torture_killing_hurting: string;
+    "court-martialed_disciplinced_in_military": string;
+    US_citizen_registered_voted: string;
+    associated_terrorist_orgs_gangs: string;
+    "live_US_18-26_and_are_26-31": string;
+    selective_service: string;
+};
+export type QuestionnaireResponseEntity = WithMongooseTimestamps<{
     title?: string;
     language?: string;
     flag?: boolean;
     flagOverride?: boolean;
     emailSent?: boolean;
     agency?: string;
-    questionnaireResponse: unknown;
+    questionnaireResponse: ResponseEntity;
     responseDownloadedToExcel?: boolean;
     deleted?: boolean;
-};
-const responseSchema = new Schema({
+}>;
+export type QuestionnaireResponseEntityWithId = WithDefaultMongooseId<QuestionnaireResponseEntity>;
+
+const responseSchema = new mongoose.Schema<ResponseEntity>({
     languageCode: { type: String, required: true },
     green_card_through_marriage: { type: String, required: true },
     legal_resident_date: { type: String, required: false },
@@ -52,33 +92,32 @@ const responseSchema = new Schema({
 });
 
 
-const questionnaireSchema = new Schema(
-    {
-        title: { type: String, required: false, unique: false },
-        language: { type: String, required: false, unique: false },
-        flag: { type: Boolean, required: false, unique: false },
-        flagOverride: { type: Boolean, required: false, unique: false },
-        emailSent: { type: Boolean, required: false, unique: false },
-        agency: { type: String, required: false, unique: false },
-        questionnaireResponse: { type: responseSchema, required: true },
-        responseDownloadedToExcel: {
-            type: Boolean,
-            required: false,
-            unique: false,
-        },
-        deleted: {
-            type: Boolean,
-            required: false,
-            unique: false,
-            default: false,
-        },
-    },
-    {
-        timestamps: true,
-    }
-);
 
-export const QuestionnaireResponse = mongoose.model(
+const questionnaireSchema = new mongoose.Schema<QuestionnaireResponseEntity>({
+    title: { type: String, required: false, unique: false },
+    language: { type: String, required: false, unique: false },
+    flag: { type: Boolean, required: false, unique: false },
+    flagOverride: { type: Boolean, required: false, unique: false },
+    emailSent: { type: Boolean, required: false, unique: false },
+    agency: { type: String, required: false, unique: false },
+    questionnaireResponse: { type: responseSchema, required: true },
+    responseDownloadedToExcel: {
+        type: Boolean,
+        required: false,
+        unique: false,
+    },
+    deleted: {
+        type: Boolean,
+        required: false,
+        unique: false,
+        default: false,
+    },
+},
+{
+    timestamps: true,
+});
+
+export const QuestionnaireResponse = mongoose.model<QuestionnaireResponseEntity>(
     'QuestionnaireResponse',
     questionnaireSchema
 );

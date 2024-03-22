@@ -1,4 +1,4 @@
-import xlsxFile from 'read-excel-file/node';
+import xlsxFile, { Row } from 'read-excel-file/node';
 import { LanguageOptions, WorkshopTitle } from '../LanguageOptions.js';
 import { getFullDataPath } from '../features/data/locator.js';
 import { sendRequest } from './helpers/sendRequest.js';
@@ -17,26 +17,29 @@ const RowSchema = z.object({
     followUpQuestionSlug: z.string().nullable(),
     parentQuestionSlug: z.string().nullable(),
 });
+function loadRow(row: Row) {
+    return RowSchema.safeParse({
+        id: row[0],
+        slug: row[1],
+        category: row[2],
+        text: row[3],
+        questionType: row[4],
+        answerSelections: row[5],
+        answerValues: row[6],
+        required: row[7] === 'Yes',
+        followUpQuestionSlug: row[8] ?? null,
+        parentQuestionSlug: row[9] ?? null,
+    });
+}
 async function generateQuestionnaires() {
     await forEachAsync(LanguageOptions, async (language, idx) => {
-        const rows = await xlsxFile(getFullDataPath('./Questionnaire for Upload.xlsx'), {
+        const rows = await xlsxFile(getFullDataPath('./Questionnaire.xlsx'), {
             sheet: idx + 1,
         });
       
         const data: Array<z.infer<typeof RowSchema>> = [];
         rows.forEach((row) => {
-            const parseResult = RowSchema.safeParse({
-                id: row[0],
-                slug: row[1],
-                category: row[2],
-                text: row[3],
-                questionType: row[4],
-                answerSelections: row[5],
-                answerValues: row[6],
-                required: row[7] === 'Yes',
-                followUpQuestionSlug: row[8] ?? null,
-                parentQuestionSlug: row[9] ?? null,
-            });
+            const parseResult = loadRow(row);
             if (!parseResult.success) {
                 logger.error(parseResult.error, 'Failed to extract row data');
                 return;

@@ -9,8 +9,11 @@ import { Row } from 'read-excel-file';
 import { ArrayElementOf } from '../types/ArrayElementOf.js';
 import { Questionnaires } from '../models/questionnaires.js';
 import { TranslatedContent } from '../models/translatedContent.js';
-import { LanguageOptionCodes, LanguageOptions, WorkshopTitle } from '../LanguageOptions.js';
+import { ExcelLanguageSheetMap, LanguageOptionCodes, LanguageOptions, WorkshopTitle } from '../LanguageOptions.js';
+import { scopedLogger } from './logging/logger.js';
 
+
+const logger = scopedLogger('loadQuestionnaireXlsxIntoDB');
 /**
  * load questionnaire excel file into objects in the Questionnaires collection
  * excelFileContent - Node Buffer containing the excel file, this assumes must be formmated
@@ -19,12 +22,25 @@ import { LanguageOptionCodes, LanguageOptions, WorkshopTitle } from '../Language
  * */
 export async function loadQuestionnaireXlsxIntoDB(excelFileContent: Buffer, title = WorkshopTitle) {
     const questionnairePromises = LanguageOptions.map(async (language, idx) => {
+        // find the name of the sheet in the excel file
+        const excelSheetName = ExcelLanguageSheetMap[language.code];
+
+        // fail if the mapping couldnt be found
+        if (excelSheetName == null) {
+            logger.error({
+                code: language.code,
+            }, `Failed to find a mapping from 'code' to 'sheet name'`);
+            return;
+        }
+
         const stream = new Readable();
         stream.push(excelFileContent);
         stream.push(null);
         const rows = await xlsxFile(stream, {
-            sheet: idx + 1,
+            // sheet: idx + 1,
+            sheet: excelSheetName,
         });
+
         type OurRow = {
             id: unknown;
             slug: unknown;

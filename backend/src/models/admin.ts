@@ -1,9 +1,21 @@
 import mongoose from 'mongoose';
+import { WithDefaultMongooseId } from './core/types.js';
 
-const Schema = mongoose.Schema;
+export type AdminEntity = {
+    email: string;
+    name: string;
+    password: string;
+    issuper?: boolean;
+    /**
+     *  list of questionnaires.title
+     *
+     * @type {Array<string>}
+     */
+    questionnaires?: Array<string>;
+};
+export type AdminEntityWithId = WithDefaultMongooseId<AdminEntity>;
 
-const adminSchema = new Schema({
-    _id: mongoose.Schema.Types.ObjectId,
+const adminSchema = new mongoose.Schema<AdminEntity>({
     email: {
         type: String,
         required: true,
@@ -29,4 +41,4 @@ const adminSchema = new Schema({
     },
 });
 
-export const Admin = mongoose.model('Admin', adminSchema);
+export const Admin = mongoose.model<AdminEntity>('Admin', adminSchema);

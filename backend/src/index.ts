@@ -5,11 +5,11 @@ import mongoose, { ConnectOptions } from 'mongoose';
 import dotenv from 'dotenv';
 
 import { usersRouter } from './routes/users.js';
-import { adminsRouter } from './routes/admins.js';
-import { questionnaireResponsesRouter } from './routes/questionnaireResponses.js';
-import { questionnairesRouter } from './routes/questionnaires.js';
-import { translatedContentRouter } from './routes/translatedContent.js';
-import { generateResponsesExcelRouter } from './routes/generateResponsesExcel.js';
+import { adminsRouter } from './routes/adminsRouter.js';
+import { questionnaireResponsesRouter } from './routes/questionnaireResponsesRouter.js';
+import { questionnairesRouter } from './routes/questionnairesRouter.js';
+import { translatedContentRouter } from './routes/translatedContentRouter.js';
+import { generateResponsesExcelRouter } from './routes/generateResponsesExcelRouter.js';
 import { handleRequestErrorMiddleware } from './middleware/error-middleware/handleRequestErrorMiddleware.js';
 import { handleUncaughtErrorMiddleware } from './middleware/error-middleware/handleUncaughtErrorMiddleware.js';
 import { getRequiredEnvironmentVariable } from './features/environmentVariables/index.js';

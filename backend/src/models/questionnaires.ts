@@ -1,8 +1,23 @@
 import mongoose from 'mongoose';
 
-const Schema = mongoose.Schema;
-
-export const questionSchema = new Schema({
+export type QuestionEntity = {
+    id: string;
+    slug: string;
+    category: string;
+    text: string;
+    questionType: string;
+    answerSelections?: string;
+    answerValues?: string;
+    required: false;
+    followUpQuestionSlug?: string;
+    parentQuestionSlug?: string;
+};
+export type QuestionnaireEntity = {
+    title?: string;
+    language?: string;
+    questions: Array<QuestionEntity>;
+};
+export const questionSchema = new mongoose.Schema<QuestionEntity>({
     id: { type: String, unique: false, required: true },
     slug: { type: String, unique: false, required: true },
     category: { type: String, unique: false, required: true },
@@ -14,7 +29,7 @@ export const questionSchema = new Schema({
     followUpQuestionSlug: { type: String, unique: false, required: false },
     parentQuestionSlug: { type: String, unique: false, required: false },
 });
-export const questionnairesSchema = new Schema(
+export const questionnairesSchema = new mongoose.Schema<QuestionnaireEntity>(
     {
         // _id: mongoose.Schema.Types.ObjectId,
         // line above results in the following error "document must have an _id before saving"
@@ -27,4 +42,4 @@ export const questionnairesSchema = new Schema(
     },
 );
 
-export const Questionnaires = mongoose.model('Questionnaires', questionnairesSchema);
+export const Questionnaires = mongoose.model<QuestionnaireEntity>('Questionnaires', questionnairesSchema);
