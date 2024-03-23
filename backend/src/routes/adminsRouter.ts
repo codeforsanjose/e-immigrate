@@ -357,13 +357,7 @@ router.route('/super').post(async (req, res) => {
         const result = await Admin.updateMany({ email: { $in: admins } }, { issuper: true }).exec();
         return res
             .status(200)
-            .json(
-                'Admins to super status - ' +
-            result.matchedCount +
-            ' selected, ' +
-            result.modifiedCount +
-            ' updated'
-            );
+            .json(`Admins to super status - ${result.matchedCount} selected, ${result.modifiedCount} updated`);
     }
     catch (err) {
         logger.error({
@@ -380,9 +374,8 @@ router.route('/super').post(async (req, res) => {
  * @param {string} email
  * @param {Array<string>} titles
  * @param {boolean} [insert=true]
- * @return {*} 
  */
-async function updateLinks(email: string, titles: Array<string>, insert = true) {
+async function updateLinks(email: string, titles: Array<string>, insert: boolean = true) {
     const logger = scopedLogger('updateLinks');
     try {
         const optAdmin = await Admin.findOne({ email }).exec();
@@ -422,7 +415,7 @@ async function updateLinks(email: string, titles: Array<string>, insert = true) 
     }
 }
 
-const Schema1 = z.object({
+const QuestionnaireLinksSchema = z.object({
     links: z.array(z.object({
         admin: z.string(),
         questionnaires: z.array(z.string()),
@@ -431,7 +424,7 @@ const Schema1 = z.object({
 });
 
 async function updateQuestionnairesLinks(req: express.Request, res: express.Response, insert = true) {
-    const reqBody = Schema1.parse(req.body);
+    const reqBody = QuestionnaireLinksSchema.parse(req.body);
     const { links: reqLinks } = reqBody;
     if (reqLinks == null) {
         return res
@@ -447,14 +440,18 @@ async function updateQuestionnairesLinks(req: express.Request, res: express.Resp
         .json('Admin and questionnaires links are updated');
 }
 
-// link admin(s) with corresponding questionnaires (by 'title' since it's the unique id)
-// request body looks like the following:
-//  {"links": [{"admin":"abc@gmail.com", "questionnaires":["CIIT_Workshop_Spring_2021"]}]}"
+/**
+ *   link admin(s) with corresponding questionnaires (by 'title' since it's the unique id)
+ * request body looks like the following:
+ * {"links": [{"admin":"abc@gmail.com", "questionnaires":["CIIT_Workshop_Spring_2021"]}]}"
+ */
 router.route('/questionnaires/link').post(async (req, res) => {
     await updateQuestionnairesLinks(req, res, true);
 });
 
-// unlink admin(s) with corresponding questionnaires
+/**
+ * unlink admin(s) with corresponding questionnaires
+ */
 router.route('/questionnaires/unlink').post(async (req, res) => {
     await updateQuestionnairesLinks(req, res, false);
 });

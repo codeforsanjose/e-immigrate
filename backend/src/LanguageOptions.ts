@@ -125,6 +125,6 @@ export const TranslatedContentLanguageSheetMap: Partial<Record<LanguageOptionCod
     hi: 'Hindi',
     ko: 'Korean',
     ps: 'Pashto',
-    pa: 'Punjabi ',
+    pa: 'Punjabi',
     pt: 'Portuguese',
 };

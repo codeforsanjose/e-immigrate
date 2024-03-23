@@ -48,7 +48,18 @@ function getAllResponses() {
         $or: [{ deleted: { $exists: false } }, { deleted: false }],
     });
 }
-
+function getAllResponsesForIds(ids: Array<string>) {
+    return QuestionnaireResponse.find({
+        $and: [
+            {
+                $or: [{ deleted: { $exists: false } }, { deleted: false }],
+            },
+            {
+                _id: { $in: ids },
+            },
+        ],
+    });
+}
 router.route('/').get(async (req, res) => {
     const logger = routeLogger('getAllQuestionnaireResponse');
     logger.trace('CALLED');
@@ -127,52 +138,12 @@ router.route('/email').post(async (req, res) => {
         }
         logger.error(emailErrors.response.body, 'em');
         res.json({
-            msg:
-                'Emails errored attempted to send ' +
-                totalEmailsToSend,
+            msg: `Emails errored attempted to send ${totalEmailsToSend}`,
             errors: emailErrors.response.body,
         });
     }
 });
 
-/*
- questionnaireResponse: {
-    "languageCode": "en",
-    "green_card_through_marriage": "No",
-    "legal_resident_date": null,
-    "gender": "Male",
-    "preferred_language": "English",
-    "full_name": "dasd",
-    "birth_country": "adsasd",
-    "US_zipcode": "12345",
-    "mobile_phone": "3234243555",
-    "age": "68",
-    "ethnicity": "adasd",
-    "email": "asdasd",
-    "how_did_you_hear_about_event": "Word of mouth (friends/family/etc.) ",
-    "receive_public_benefits": "No",
-    "contact_with_police": "No",
-    "habitual_alcoholic_drugs": "No",
-    "money_from_illegal_gambling": "No",
-    "contact_with_immigration_officer": "No",
-    "helped_enter_or_entered_US_illegally": "No",
-    "married_to_multiple_people_same_time": "No",
-    "failed_support_kids_pay_alimony": "No",
-    "asylum_travel_back_home_country": "No",
-    "deported_removed_excluded_from_US": "No",
-    "lied_to_obtain_immigrant_benefit": "No",
-    "lied_to_obtain_welfare_benefit": "No",
-    "left_US_>6mo_while_LPR": "No",
-    "owed_taxes_since_LPR": "No",
-    "taxes_payment_plan": "No",
-    "genocide_torture_killing_hurting": "No",
-    "court-martialed_disciplinced_in_military": "No",
-    "US_citizen_registered_voted": "No",
-    "associated_terrorist_orgs_gangs": "No",
-    "live_US_18-26_and_are_26-31": "No",
-    "selective_service": "No"
-}
-*/
 const questionKeysThatAreNotRedFlagsButInARedFlagQuestionnaire = [
     // 'male',
     'still_married_to_that_citizen',
@@ -248,77 +219,79 @@ async function updateUserResponsesEmailFlag(responsesToEmail: Array<Questionnair
     }
 }
 
-const ResponseSchema = z.object({
-    _id: z.string(),
-    agency: z.string(),
-    responseDownloadedToExcel: z.boolean(),
-    questionnaireResponse: z.record(z.string(), z.string().nullable()),
-    flagOverride: z.boolean().nullish(),
-    flag: z.boolean().nullish(),
-    emailSent: z.boolean().nullish(),
-    createdAt: z.union([z.number(), z.string()]),
-    updatedAt: z.union([z.number(), z.string()]),
-});
-const AssignAgencySchema = z.object({
-    responsesToEmail: z.array(ResponseSchema),
-});
-const AssignFlagSchema = z.object({
-    responsesToUpdate: z.array(ResponseSchema),
-});
+const AssignAgencySchema = z.array(z.object({
+    id: z.string(),
+    agency: z.string().nullish(),
+}));
+
 router.route('/assign-agency').post(async (req, res) => {
     const logger = routeLogger('agencyAssignURL');
-    const reqBody = AssignAgencySchema.parse(req.body);
-    const {
-        responsesToEmail: responseToAssignAgency,
-    } = reqBody;
-    for (const response of responseToAssignAgency) {
+    const requestBody = AssignAgencySchema.parse(req.body);
+    for (const change of requestBody) {
         try {
-            await QuestionnaireResponse.updateOne({ _id: response._id }, response);
+            await QuestionnaireResponse.updateOne({ _id: change.id }, {
+                agency: change.agency ?? null,
+            });
         }
         catch (err) {
-            logger.error(err, 'updated agency err is');
+            logger.error({
+                request: change,
+                error: err,
+            }, 'Failed to update an agency');
         }
     }
-    logger.info(reqBody, 'Successfully assigned agency');
-    res.json({ msg: 'success' });
+    logger.info(requestBody, 'Successfully assigned agency');
+    res.json(await getAllResponsesForIds(requestBody.map(x => x.id)));
 });
+
+const AssignFlagSchema = z.array(z.object({
+    id: z.string(),
+    flag: z.boolean().nullish(),
+}));
 
 router.route('/assign-flag').post(async (req, res) => {
     const logger = routeLogger('assignResponseFlag');
-    const reqBody = AssignFlagSchema.parse(req.body);
-    const {
-        responsesToUpdate,
-    } = reqBody;
-    for (const response of responsesToUpdate) {
+    const requestBody = AssignFlagSchema.parse(req.body);
+    for (const change of requestBody) {
         try {
-            await QuestionnaireResponse.updateOne({ _id: response._id }, response);
+            await QuestionnaireResponse.updateOne({ _id: change.id }, {
+                flag: change.flag ?? null,
+            });
         }
         catch (err) {
-            logger.error(err, 'updated flag err is');
+            logger.error({
+                request: change,
+                error: err,
+            }, 'Failed to update a flag');
         }
     }
-    logger.info(reqBody, 'Successfully assigned flag');
-    res.json({ msg: 'success' });
+    logger.info(requestBody, 'Successfully assigned flag');
+    res.json(await getAllResponsesForIds(requestBody.map(x => x.id)));
 });
 
+const AssignEmailSchema = z.array(z.object({
+    id: z.string(),
+    emailSent: z.boolean().nullish(),
+}));
 router.route('/assign-email').post(async (req, res) => {
     const logger = routeLogger('assignEmail');
-    const reqBody = AssignFlagSchema.parse(req.body);
-    const {
-        responsesToUpdate,
-    } = reqBody;
-    for (const response of responsesToUpdate) {
+    const requestBody = AssignEmailSchema.parse(req.body);
+    
+    for (const change of requestBody) {
         try {
-            await QuestionnaireResponse.updateOne(
-                { _id: response._id },
-                { ...response, emailSent: false });
+            await QuestionnaireResponse.updateOne({ _id: change.id }, {
+                emailSent: change.emailSent ?? false,
+            });
         }
         catch (err) {
-            logger.error(err, 'updated email to false err is');
+            logger.error({
+                request: change,
+                error: err,
+            }, `Failed to update the 'email sent' field`);
         }
     }
-    logger.info(reqBody, 'Successfully assigned email');
-    res.json({ msg: 'success' });
+    logger.info(requestBody, 'Successfully assigned emailSent');
+    res.json(await getAllResponsesForIds(requestBody.map(x => x.id)));
 });
 
 router.route('/:id').get(async (req, res) => {

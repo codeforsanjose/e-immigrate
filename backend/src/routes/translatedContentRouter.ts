@@ -113,24 +113,26 @@ router.route('/add').post(async (req, res) => {
         language,
         content,
     } = reqBody;
-    
-    res.json('translated content added');
 
-    try {
-        const result = await TranslatedContent.find({ title, language });
-        if (result.length !== 0) {
-            await TranslatedContent.findByIdAndDelete({ 
-                _id: result[0]._id,
-            });
-            logger.debug('translated content deleted');
-        }
-        await TranslatedContent.insertMany({ title, language, content });
-        logger.debug('translated content inserted');
+    const result = await TranslatedContent.find({ title, language });
+    if (result.length !== 0) {
+        const id = result[0]._id;
+        await TranslatedContent.findByIdAndDelete({ 
+            _id: id,
+        });
+        logger.debug({
+            id,
+            language,
+            title,
+        }, 'translated content deleted');
     }
-    catch (err) {
-        res.send(err);
-        return;
-    }
+    await TranslatedContent.insertMany({ title, language, content });
+    logger.debug({
+        language,
+        title,
+    }, 'translated content inserted');
+
+    res.json('translated content added');
 });
 
 router.route('/:id').delete(async (req, res) => {

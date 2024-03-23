@@ -114,17 +114,25 @@ router.route('/add').post(async (req, res) => {
     try {
         const result = await Questionnaires.find({ title, language });
         if (result.length !== 0) {
+            const id = result[0]._id;
             await Questionnaires.findByIdAndDelete({
-                _id: result[0]._id,
+                _id: id,
             });
-            logger.debug('questionnaire deleted');
+            logger.debug({
+                id,
+                title,
+                language,
+            }, 'questionnaire deleted');
         }
         await Questionnaires.insertMany({
             title,
             language,
             questions,
         });
-        logger.debug('questionnaire inserted');
+        logger.debug({
+            title,
+            language, 
+        }, 'questionnaire inserted');
         res.status(200).send();
         return;
     }

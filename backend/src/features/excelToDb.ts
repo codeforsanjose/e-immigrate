@@ -75,7 +75,7 @@ export async function loadQuestionnaireXlsxIntoDB(excelFileContent: Buffer, titl
                 else {
                     for (let i = 0; i < validHeaders.length; i++) {
                         if (row[i] !== validHeaders[i]) {
-                            errorMessage = 'invalid column name: ' + row[i].toString();
+                            errorMessage = `invalid column name: ${row[i].toString()}`;
                         }
                     }
                 }

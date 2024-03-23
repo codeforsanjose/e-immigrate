@@ -18,14 +18,14 @@ function getLanguageColumnMap(row: Row): Partial<Record<LanguageOptionCodes, num
     // build a mapping from 'label in excel' -> 'language code'
     const labelCodeMap = new Map<string, LanguageOptionCodes>();
     LanguageOptions.forEach(language => {
-        const label = TranslatedContentLanguageSheetMap[language.code];
+        const label = TranslatedContentLanguageSheetMap[language.code]?.trim();
         if (label == null || label === '') return;
         labelCodeMap.set(label, language.code);
     });
     return row.reduce<LanguageColumnMap>((prev, cell, cellIndex) => {
         if (cellIndex === 0) return prev;
         else if (cell == null || typeof cell !== 'string') return prev;
-        const code = labelCodeMap.get(cell);
+        const code = labelCodeMap.get(cell.trim());
         if (code == null) return prev;
         return {
             ...prev,
@@ -38,7 +38,6 @@ function getLanguageColumnMap(row: Row): Partial<Record<LanguageOptionCodes, num
  *  Extract the translated content fields for each language.
  *
  * @param {Array<Row>} rows
- * @return {*} 
  */
 function loadTranslationsFromExcel(rows: Array<Row>) {
     type LanguageMap = Partial<Record<LanguageOptionCodes, ContentText>>;
@@ -53,10 +52,14 @@ function loadTranslationsFromExcel(rows: Array<Row>) {
         
         // assign the value for all languages
         return LanguageOptions.reduce((prev, language) => {
+            // get the existing mappings for the language, or create an empty set
+            const languageMapping = prev[language.code] ?? {};
             const columnForLanguage = languageColumnMap[language.code];
             if (columnForLanguage == null) return prev;
-            const cellValue = row[columnForLanguage];
-            const languageMapping = prev[language.code] ?? {};
+            
+            // dont use the language code from the excel file
+            const cellValue = contentTextField === 'languageCode' ? language.code : row[columnForLanguage];
+
             return {
                 ...prev,
                 [language.code]: {
@@ -85,7 +88,9 @@ async function generateLanguageContent() {
             }, 'Failed to find the translations for a language');
             return;
         }
-
+        // logger.info({
+        //     contentForLanguage,
+        // });
         // submit them locally
         await sendRequest({
             url: 'http://localhost:5000/api/translatedContent/add',
