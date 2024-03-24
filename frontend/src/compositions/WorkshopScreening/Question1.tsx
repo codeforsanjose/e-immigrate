@@ -4,7 +4,7 @@ import { QuestionProps } from './QuestionTypes';
 import { WithPreventDefault } from "../../types/WithPreventDefault";
 import { useContentContext } from '../../contexts/ContentContext';
 import { AutoRequiredErrorSpan } from '../../components/RequiredErrorPresenter';
-import { useQuestionnaireResponseContent } from '../../contexts/QuestionnaireResponseContext';
+import { useQuestionnaireResponseContext } from '../../contexts/QuestionnaireResponseContext';
 
 export function Question1(props: QuestionProps) {
     const {
@@ -15,7 +15,7 @@ export function Question1(props: QuestionProps) {
     const {
         collectAnswer,
         bindField,
-    } = useQuestionnaireResponseContent();
+    } = useQuestionnaireResponseContext();
     const [question1Answer, setQuestion1Answer] = React.useState<string | null>(null);
     if (q == null) return null;
     const answers = q.answerSelections.split(', ');

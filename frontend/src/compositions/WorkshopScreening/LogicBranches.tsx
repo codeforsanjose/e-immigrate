@@ -2,12 +2,13 @@ import React from 'react';
 import { Question1 } from './Question1';
 import { Question2 } from './Question2';
 import { Question3 } from './Question3';
-import { QuestionProps, QuestionProps_Q } from './QuestionTypes';
+import { SetQuestionDelegate } from './QuestionTypes';
+import { QuestionInfo } from '../../types/ApiResults';
 
 type Branch1Props = {
-    filteredQuestions: Array<QuestionProps_Q>;
-    setQuestion2: QuestionProps['setQuestion'];
-    setQuestion3: QuestionProps['setQuestion'];
+    filteredQuestions: Array<QuestionInfo>;
+    setQuestion2: SetQuestionDelegate;
+    setQuestion3: SetQuestionDelegate;
     hasQuestion2: boolean;
     showModal: boolean;
     setShowModal: (value: boolean) => void;
@@ -66,18 +67,18 @@ function Branch2(props: Branch1Props) {
 }
 
 type LogicBranchesProps = {
-    filteredQuestions: Array<QuestionProps_Q>;
+    filteredQuestions: Array<QuestionInfo>;
     showModal: boolean;
     setShowModal: (value: boolean) => void;
     date: number | Date;
     setDate: (value: number | Date) => void;
 
     question1: string | null;
-    setQuestion1: QuestionProps['setQuestion'];
+    setQuestion1: SetQuestionDelegate;
     question2: string | null;
-    setQuestion2: QuestionProps['setQuestion'];
+    setQuestion2: SetQuestionDelegate;
     question3: string | null;
-    setQuestion3: QuestionProps['setQuestion'];
+    setQuestion3: SetQuestionDelegate;
 };
 export function LogicBranches(props: LogicBranchesProps) {
     const {

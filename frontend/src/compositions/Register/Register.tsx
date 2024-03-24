@@ -1,6 +1,6 @@
 import React from 'react';
 import { sendRequest } from '../../sendRequest/sendRequest';
-import { apis } from '../../sendRequest/apis';
+import { apiUrls } from '../../sendRequest/apiUrls';
 import { Navigate } from 'react-router-dom';
 
 import '../Login/LoginRegister.css';
@@ -15,7 +15,7 @@ export function Register() {
 
     const requestObj = React.useMemo(() => {
         return {
-            url: apis.registerApi,
+            url: apiUrls.registerApi,
             method: 'POST',
             headers: {
                 'content-type': 'application/json',

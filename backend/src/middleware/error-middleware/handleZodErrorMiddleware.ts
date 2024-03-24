@@ -21,7 +21,10 @@ export function handleZodErrorMiddleware(config: ZodErrorMiddlewareConfig = {}):
     } = config;
     return (err: Error, req: Request, res: Response, next: NextFunction) => {
         if (err instanceof ZodError) {
-            logger.error(err, 'ZodErrorMiddleware encountered an error');
+            logger.error({
+                err,
+                url: req.url,
+            }, 'ZodErrorMiddleware encountered an error');
             if (respondWithIssues) {
                 res.status(409).send(err.issues);
             }

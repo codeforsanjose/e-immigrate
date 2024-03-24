@@ -1,11 +1,12 @@
 import React from 'react';
-import { Question } from '../../../types/Question';
+
 import { OtherComponentProps } from './types';
 import { FormElementWrapper } from '../../../components/FormElementWrapper';
 import { useContentContext } from '../../../contexts/ContentContext';
+import { QuestionInfo } from '../../../types/ApiResults';
 
 type QuestionFieldsetProps = {
-    question: Question;
+    question: QuestionInfo;
     others: OtherComponentProps;
 };
 export function QuestionFieldset(props: QuestionFieldsetProps) {

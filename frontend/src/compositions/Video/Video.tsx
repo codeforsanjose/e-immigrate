@@ -4,6 +4,8 @@ import YouTube from 'react-youtube';
 import { Button } from '../../components/Button/Button';
 import './Video.css';
 import { useContentContext } from '../../contexts/ContentContext';
+import { NavigateToEligibilityIfMissing } from '../NavigateToMissingStage';
+import classNames from 'classnames';
 
 const opts = {
     height: '315',
@@ -44,6 +46,7 @@ export function Video(props: VideoProps) {
 
     return (
         <div className="video">
+            <NavigateToEligibilityIfMissing />
             <div className="titleText">
                 <div className="step">
                     {content.step1Header}: {content.step1Title}
@@ -54,7 +57,10 @@ export function Video(props: VideoProps) {
                 </div>
             </div>
             <div
-                className={`videoContainer ${watchingVideo ? 'largeVideo' : 'smallVideo'}`}
+                className={classNames('videoContainer', {
+                    largeVideo: watchingVideo,
+                    smallVideo: !watchingVideo,
+                })}
             >
                 <div className="videoWrapper">
                     <YouTube

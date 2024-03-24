@@ -2,7 +2,7 @@ import React from 'react';
 import './TextArea.css';
 import { CommonComponentProps } from '../../types/CommonComponentProps';
 import { AutoRequiredErrorDiv } from '../RequiredErrorPresenter';
-import { useQuestionnaireResponseContent } from '../../contexts/QuestionnaireResponseContext';
+import { useQuestionnaireResponseContext } from '../../contexts/QuestionnaireResponseContext';
 
 type TextAreaProps = CommonComponentProps;
 export function TextArea(props: TextAreaProps) {
@@ -12,7 +12,7 @@ export function TextArea(props: TextAreaProps) {
     const { 
         collectAnswer,
         bindField, 
-    } = useQuestionnaireResponseContent();
+    } = useQuestionnaireResponseContext();
     return (
         <>
             <textarea

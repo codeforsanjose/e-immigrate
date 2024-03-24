@@ -4,7 +4,7 @@ import { ReactSetter } from '../../types/common';
 import { CommonComponentProps } from '../../types/CommonComponentProps';
 import { useContentContext } from '../../contexts/ContentContext';
 import { RequiredErrorDiv } from '../RequiredErrorPresenter';
-import { useQuestionnaireResponseContent } from '../../contexts/QuestionnaireResponseContext';
+import { useQuestionnaireResponseContext } from '../../contexts/QuestionnaireResponseContext';
 type ZipProps = CommonComponentProps & {
     setErrors: ReactSetter<Record<string, unknown>>;
 };
@@ -17,7 +17,7 @@ export function Zip(props: ZipProps) {
     const { 
         collectAnswer,
         bindField, 
-    } = useQuestionnaireResponseContent();
+    } = useQuestionnaireResponseContext();
     return (
         <>
             <input
@@ -29,13 +29,15 @@ export function Zip(props: ZipProps) {
                 className="TextInput"
                 {...bindField(q.slug)}
                 onChange={(e) => {
+                    const state = e.target.checkValidity();
                     // TODO : NEED TO FIX error setting, check validity is working properly but error flag is not propergating
-                    if (e.target.checkValidity()) {
-                        setErrors((prev) => ({ ...prev, [q.slug]: true }));
-                    }
-                    else {
-                        setErrors((prev) => ({ ...prev, [q.slug]: false }));
-                    }
+                    setErrors(prev => {
+                        if (prev[q.slug] === state) return prev;
+                        return {
+                            ...prev,
+                            [q.slug]: state,
+                        };
+                    });
                     collectAnswer(q.slug, e.target.value);
                 } } />
             <RequiredErrorDiv message={content.errorMessageZip} />

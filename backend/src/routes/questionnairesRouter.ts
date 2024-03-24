@@ -1,23 +1,25 @@
 import express from 'express';
-import mongoose from 'mongoose';
 import { z } from 'zod';
 
-import { Questionnaires } from '../models/questionnaires.js';
+import { QuestionEntity, QuestionnaireEntityWithId, Questionnaires } from '../models/questionnaires.js';
 import { DEFAULT_LANGUAGE } from '../features/languages/default.js';
 import { routeLogger } from '../features/logging/logger.js';
+import { importExcelQuestionSheet } from '../features/excelFiles/questionnaireExcel.js';
 const router = express.Router();
 export { router as questionnairesRouter };
 
-type GetEntityModel<TModel> = 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    TModel extends mongoose.Model<infer TRawDocType, infer TQueryHelpers, infer _, infer _, infer THydratedDocumentType> 
-        ? NonNullable<Awaited<mongoose.QueryWithHelpers<THydratedDocumentType | null, THydratedDocumentType, TQueryHelpers, TRawDocType, 'findOne'>>>
-        : never
-;
 
+const loggers = {
+    getQuestionsByLanguage: routeLogger('getQuestionsByLanguage'),
+};
 
-type DboQuestionnaire = GetEntityModel<typeof Questionnaires>;
-function remapQuestionnaire(questionnaire: DboQuestionnaire) {
+export type RemappedQuestionnaireDto = {
+    _id: string;
+    title: string | undefined;
+    language: string | undefined;
+    questions: Array<QuestionEntity>;
+};
+function remapQuestionnaire(questionnaire: QuestionnaireEntityWithId): RemappedQuestionnaireDto {
     const {
         _id,
         title,
@@ -25,80 +27,86 @@ function remapQuestionnaire(questionnaire: DboQuestionnaire) {
         questions,
     } = questionnaire;
     return {
-        _id,
+        _id: _id.toString(),
         title,
         language,
         questions,
     };
 }
-
-
-router.route('/').get(async (req, res) => {
+export type GetQuestionsResultDto = {
+    responses: Array<RemappedQuestionnaireDto>;
+};
+async function getQuestionsDriver(): Promise<GetQuestionsResultDto> {
     const allQuestionnaires = await Questionnaires.find();
-    res.json({
+    return {
         responses: allQuestionnaires.map(remapQuestionnaire),
-    });
+    };
+}
+
+router.route('/').get(async function getQuestions(req, res) {
+    res.json(await getQuestionsDriver());
 });
 
 
-router.route('/:title.:language?').get(async (req, res) => {
-    const logger = routeLogger('getQuestionsByLanguage');
+async function getQuestionsByLanguageDriver(config: {
+    title: string;
+    language: string;
+}): Promise<RemappedQuestionnaireDto | undefined> {
     const {
-        title: paramTitle,
-        language: paramLanguage = DEFAULT_LANGUAGE,
-    } = req.params;
-
-    const cleanTitle = decodeURIComponent(paramTitle);
-    const cleanLanguage = decodeURIComponent(paramLanguage);
+        language,
+        title,
+    } = config;
+    const cleanTitle = decodeURIComponent(title);
+    const cleanLanguage = decodeURIComponent(language);
+    const logger = loggers.getQuestionsByLanguage;
     logger.debug({
         title: cleanTitle,
         language: cleanLanguage,
     }, 'params');
-    const questionnaires = await Questionnaires.findOne({
+    const dbo = await Questionnaires.findOne({
         title: cleanTitle,
         language: cleanLanguage,
     });
-
-    // 404 if not found.
-    if (questionnaires == null) {
+    if (dbo == null) {
         logger.warn({
             title: cleanTitle,
             language: cleanLanguage,
         }, `Failed to find the requested questionnaire`);
-        res.sendStatus(404);
         return;
     }
-    // type DboQuestionnaire = typeof questionnaires;
-    // function remapQuestionnaire(questionnaire: DboQuestionnaire) {
-    //     const {
-    //         _id,
-    //         title,
-    //         language,
-    //         questions,
-    //     } = questionnaire;
-    //     return {
-    //         _id,
-    //         title,
-    //         language,
-    //         questions: questions.map(question => {
-    //             return {
-    //                 ...question,
-    //             };
-    //         }),
-    //     };
-    // }
+    return remapQuestionnaire(dbo);
+}
+router.route('/:title.:language?').get(async function getQuestionsByLanguage(req, res) {
+    const {
+        title: paramTitle,
+        language: paramLanguage = DEFAULT_LANGUAGE,
+    } = req.params;
+    const result = await getQuestionsByLanguageDriver({
+        title: paramTitle,
+        language: paramLanguage,
+    });
     
-    const result = remapQuestionnaire(questionnaires);
     res.json(result);
     return;
 });
-
+const QuestionSchema = z.object({
+    id: z.union([z.string(), z.number()]),
+    slug: z.string(),
+    category: z.string(),
+    text: z.string(),
+    questionType: z.string(),
+    answerSelections: z.string().nullable(),
+    answerValues: z.string().nullable(),
+    required: z.boolean(),
+    followUpQuestionSlug: z.string().nullable(),
+    parentQuestionSlug: z.string().nullable(),
+});
 const AddQuestionnaireSchema = z.object({
     title: z.string(),
     language: z.string(),
-    questions: z.array(z.unknown()),
+    questions: z.array(QuestionSchema),
 });
-router.route('/add').post(async (req, res) => {
+router.route('/add').post(async function addQuestionnaires(req, res) {
     const logger = routeLogger('addQuestionnaires');
     // validate the body
     const reqBody = AddQuestionnaireSchema.parse(req.body);
@@ -112,27 +120,11 @@ router.route('/add').post(async (req, res) => {
         language,
     }, 'request body');
     try {
-        const result = await Questionnaires.find({ title, language });
-        if (result.length !== 0) {
-            const id = result[0]._id;
-            await Questionnaires.findByIdAndDelete({
-                _id: id,
-            });
-            logger.debug({
-                id,
-                title,
-                language,
-            }, 'questionnaire deleted');
-        }
-        await Questionnaires.insertMany({
-            title,
+        await importExcelQuestionSheet({
             language,
+            title,
             questions,
         });
-        logger.debug({
-            title,
-            language, 
-        }, 'questionnaire inserted');
         res.status(200).send();
         return;
     }
@@ -143,7 +135,7 @@ router.route('/add').post(async (req, res) => {
     }
 });
 
-router.route('/:id').delete(async (req, res) => {
+router.route('/:id').delete(async function deleteQuestionnaire(req, res) {
     await Questionnaires.findByIdAndDelete(req.params.id);
     res.json('questionnaire deleted');
 });

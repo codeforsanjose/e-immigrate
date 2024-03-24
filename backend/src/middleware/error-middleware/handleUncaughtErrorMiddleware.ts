@@ -12,6 +12,7 @@ const logger = scopedLogger('UncaughtErrorMiddleware');
  */
 export function handleUncaughtErrorMiddleware(): ErrorMiddleware {
     return (err: Error, req: Request, res: Response, next: NextFunction) => {
+        logger.info('UncaughtErrorMiddleware');
         logger.error({ 
             err, 
             request: req.url,

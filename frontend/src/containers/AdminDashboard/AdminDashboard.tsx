@@ -4,12 +4,11 @@ import { useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 
 import { sendRequest } from '../../sendRequest/sendRequest';
-import { apis } from '../../sendRequest/apis';
+import { apiUrls } from '../../sendRequest/apiUrls';
 import { getAuthToken } from '../../utilities/auth_utils';
 import { workshopTitle } from '../../data/LanguageOptions';
 import { Navbar } from '../../compositions/Navbar/Navbar';
 import { Button } from '../../components/Button/Button';
-import { apiUrlFormatters } from '../../sendRequest/apiUrlFormatters';
 import { replaceSlug, slugPair } from '../../utilities/slugs/replaceSlug';
 import { downloadUri } from '../../utilities/downloader/downloadUri';
 import { ResponsesTable } from './ResponsesTable';
@@ -21,6 +20,8 @@ import { AgencyOverview } from './AgencyOverview';
 import { FlagOverview } from './FlagOverview';
 
 import './AdminDashboard.css';
+import { DEFAULT_LANGUAGE } from '../../utilities/languages/constants';
+import { useLanguageQuestionHook } from '../../hooks/useLanguageQuestionHook';
 
 
 
@@ -33,11 +34,16 @@ const GenerateExcelResponseSchema = z.object({
 export function AdminDashboard() {
     const navigate = useNavigate();
     const [questionnaireResponses, setQuestionnaireResponses] = React.useState<Array<QuestionnaireResponseElement>>([]);
-    const [questions, setQuestions] = React.useState<Array<string>>([]);
-    // const [language, setLanguage] = React.useState<string>('');
     const [loading, setLoading] = React.useState(true);
     const [filterBy, setFilterBy] = React.useState('full_name');
     const [searchTerm, setSearchTerm] = React.useState('');
+
+    const {
+        questions,
+    } = useLanguageQuestionHook({
+        title: workshopTitle,
+        language: DEFAULT_LANGUAGE,
+    });
 
     React.useEffect(() => {
         async function inner() {
@@ -48,15 +54,13 @@ export function AdminDashboard() {
                 return;
             }
             else {
-                const requestObj = {
-                    url: apis.getAllQuestionnaireResponse,
-                };
-                const headers = {
-                    Authorization: `Bearer ${jwt}`,
-                };
                 const response = await sendRequest<{
                     responses: Array<QuestionnaireResponseElement>;
-                }>(requestObj, headers);
+                }>({
+                    url: apiUrls.getAllQuestionnaireResponse,
+                }, {
+                    includeAuth: true,
+                });
                 const { responses = [] } = response;
                 const updatedResponses = responses
                     .map((item) => {
@@ -97,21 +101,18 @@ export function AdminDashboard() {
 
 
     const sendEmailsToUsers = React.useCallback(async () => {
-        const requestObj = {
-            url: apis.emailQuestionnaireResponse,
-            method: 'POST',
-            body: JSON.stringify({
-                responsesToEmail: [],
-            }),
-        };
-        const jwt = getAuthToken();
-        const headers = {
-            Authorization: `Bearer ${jwt}`,
-        };
         setLoading(true);
         try {
 
-            const response = await sendRequest(requestObj, headers);
+            const response = await sendRequest({
+                url: apiUrls.emailQuestionnaireResponse,
+                method: 'POST',
+                body: JSON.stringify({
+                    responsesToEmail: [],
+                }),
+            }, {
+                includeAuth: true,
+            });
             console.log('emails sent?', response);
             setLoading(false);
             window.location.reload();
@@ -131,7 +132,7 @@ export function AdminDashboard() {
     
     const getReportById = React.useCallback(async (id: string) => {
         setLoading(false);
-        const uri = replaceSlug(apis.getReportById, [
+        const uri = replaceSlug(apiUrls.getReportById, [
             slugPair(':id', id),
         ]);
         await downloadUri({
@@ -143,28 +144,18 @@ export function AdminDashboard() {
 
     const downloadLatestResponsesExcel = React.useCallback(async () => {
         setLoading(true);
-        // const includedResponses = questionnaireResponses
-        //     .sort((a, b) => {
-        //         if (a.agency < b.agency) return -1;
-        //         if (a.agency > b.agency) return 1;
-        //         return 0;
-        //     })
-        //     .filter((item) => !item.responseDownloadedToExcel);
-        const requestObj = {
-            url: apis.generateResponsesExcel,
-            method: 'POST',
-            body: JSON.stringify({
-                questions,
-                responses: [],
-                downloadAll: false,
-            }),
-        };
-        const jwt = getAuthToken();
-        const headers = {
-            Authorization: `Bearer ${jwt}`,
-        };
         try {
-            const response = await sendRequest(requestObj, headers);
+            const response = await sendRequest({
+                url: apiUrls.generateResponsesExcel,
+                method: 'POST',
+                body: JSON.stringify({
+                    questions,
+                    responses: [],
+                    downloadAll: false,
+                }),
+            }, {
+                includeAuth: true,
+            });
             const excelResponse = GenerateExcelResponseSchema.parse(response);
             await getReportById(excelResponse.id);
         }
@@ -179,30 +170,20 @@ export function AdminDashboard() {
         }
     }, [getReportById, questions]);
     const downloadAllResponsesExcel = React.useCallback(async () => {
-        // const includedResponses = questionnaireResponses.sort((a, b) => {
-        //     if (a.agency < b.agency) return -1;
-        //     if (a.agency > b.agency) return 1;
-        //     return 0;
-        // });
+       
         const bodyRaw = {
             questions,
             responses: [],
             downloadAll: true,
         };
-        console.log({
-            bodyRaw,
-        });
-        const requestObj = {
-            url: apis.generateResponsesExcel,
-            method: 'POST',
-            body: JSON.stringify(bodyRaw),
-        };
-        const jwt = getAuthToken();
-        const headers = {
-            Authorization: `Bearer ${jwt}`,
-        };
         try {
-            const response = await sendRequest(requestObj, headers);
+            const response = await sendRequest({
+                url: apiUrls.generateResponsesExcel,
+                method: 'POST',
+                body: JSON.stringify(bodyRaw),
+            }, {
+                includeAuth: true,
+            });
             const excelResponse = GenerateExcelResponseSchema.parse(response);
             await getReportById(excelResponse.id);
         }
@@ -217,28 +198,7 @@ export function AdminDashboard() {
         }
     }, [getReportById, questions]);
 
-    React.useEffect(() => {
-        async function inner() {
-            const requestObj = {
-                url: apiUrlFormatters.getQuestionsByLanguage({
-                    title: workshopTitle,
-                    language: 'en',
-                }),
-            };
-            const response = await sendRequest<{ questions: Array<string>, }>(requestObj);
-            if (response == null) {
-                console.log('response was null', {
-                    requestObj,
-                });
-                return;
-            }
-            console.log({
-                response: response.questions,
-            });
-            setQuestions(response.questions);
-        }
-        void inner();
-    }, []);
+    
 
     return (
         <section>

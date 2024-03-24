@@ -1,6 +1,6 @@
 // const hostName = process.env.HOSTNAME || 'http://localhost:5000';
 
-export const apis = {
+export const apiUrls = {
     // adminsRouter
     ...{
         loginApi: '/api/admins/sessions',
@@ -37,9 +37,9 @@ export const apis = {
     } as const,
     // questionnairesRouter
     ...{
+        getQuestions: '/api/questionnaires',
         addQuestionnaires: '/api/questionnaires/add',
         deleteQuestionnaire: '/api/questionnaires/:id',
-        getQuestions: '/api/questionnaires',
         getQuestionsByLanguage: '/api/questionnaires/:title.:language',
     } as const,
     // translatedContentRouter

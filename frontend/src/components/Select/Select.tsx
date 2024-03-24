@@ -3,7 +3,7 @@ import './Select.css';
 import { ReactSetter } from '../../types/common';
 import { CommonComponentProps } from '../../types/CommonComponentProps';
 import { AutoRequiredErrorDiv } from '../RequiredErrorPresenter';
-import { useQuestionnaireResponseContent } from '../../contexts/QuestionnaireResponseContext';
+import { useQuestionnaireResponseContext } from '../../contexts/QuestionnaireResponseContext';
 type SelectProps = CommonComponentProps & {
     selectAnswers?: Array<string>;
     values: Array<string>;
@@ -18,7 +18,7 @@ export function Select(props: SelectProps) {
     const { 
         collectAnswer,
         bindField,
-    } = useQuestionnaireResponseContent();
+    } = useQuestionnaireResponseContext();
     React.useEffect(() => {
         if (selectAnswers == null) {
             console.error(`'selectAnswers' was null`);
@@ -26,13 +26,16 @@ export function Select(props: SelectProps) {
         }
         collectAnswer(q.slug, selectAnswers[0]);
     }, [collectAnswer, q.slug, selectAnswers]);
+    const onChange = React.useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
+        collectAnswer(q.slug, e.target.value);
+    }, [collectAnswer, q.slug]);
     return (
         <>
             <select
                 name={q.slug}
                 required={q.required}
                 {...bindField(q.slug)}
-                onChange={(e) => collectAnswer(q.slug, e.target.value)}
+                onChange={onChange}
             >
                 {selectAnswers?.map((option, idx) => {
                     return (

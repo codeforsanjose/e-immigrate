@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React from 'react';
 import VideoIcon from '../../data/images/VideoIcon.svg';
 import QuestionnaireIcon from '../../data/images/QuestionnaireIcon.svg';
@@ -7,15 +8,16 @@ import Blob2 from '../../data/images/Blob2.svg';
 import Blob3 from '../../data/images/Blob3.svg';
 import Arrow from '../../data/images/Arrow.svg';
 import { Button } from '../../components/Button/Button';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 import './ProcessOverview.css';
 import { useContentContext } from '../../contexts/ContentContext';
-type ValidStepNumbers = 
-| 1 
-| 2 
-| 3
-;
+import { useQuestionsContext } from '../../contexts/QuestionsContext';
+import { useQuestionnaireResponseContext } from '../../contexts/QuestionnaireResponseContext';
+import { useHasEligibilityResponses } from '../../hooks/stageTesters';
+import { NavigateToEligibilityIfMissing } from '../NavigateToMissingStage';
+import { ValidStepNumbers } from '../../types/ValidStepNumbers';
+
 type StepProps = {
     stepNumber: ValidStepNumbers;
     children?: React.ReactNode;
@@ -38,12 +40,19 @@ function Step(props: StepProps) {
 
 export function ProcessOverview() {
     const { content } = useContentContext();
+    const { questions } = useQuestionsContext();
+    const {
+        questionnaireResponse,
+    } = useQuestionnaireResponseContext();
     const navigate = useNavigate();
-    const goToStep1 = () => {
+    const goToStep1 = React.useCallback(() => {
         navigate('/video');
-    };
+    }, [navigate]);
+
+
     return (
         <div className="ProcessOverview">
+            <NavigateToEligibilityIfMissing />
             <div className="welcome-message">
                 <h1>{content.stepsHeader}</h1>
                 <div className="line2">{content.stepsHeader2}</div>
@@ -76,4 +85,3 @@ export function ProcessOverview() {
     );
 }
 
-export default ProcessOverview;

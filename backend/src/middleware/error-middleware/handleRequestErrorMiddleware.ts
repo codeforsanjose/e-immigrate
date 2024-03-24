@@ -20,6 +20,9 @@ export function handleRequestErrorMiddleware(): ErrorMiddleware {
                 res.status(errorStatus).send();
             }
             else {
+                if (err.isJson === true) {
+                    res.setHeader('Content-Type', 'application/json');
+                }
                 res.status(errorStatus).send(err.responsePayload);
             }
             return;

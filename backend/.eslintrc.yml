@@ -72,3 +72,4 @@ rules:
   "@typescript-eslint/no-misused-promises": "off"
   "@typescript-eslint/no-floating-promises": "off"
   no-multiple-empty-lines: off
+  prefer-template: 'error'

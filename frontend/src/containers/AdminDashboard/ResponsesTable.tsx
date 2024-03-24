@@ -1,7 +1,7 @@
 import React from 'react';
 import { sendRequest } from '../../sendRequest/sendRequest';
 import { format } from 'date-fns';
-import { apis } from '../../sendRequest/apis';
+import { apiUrls } from '../../sendRequest/apiUrls';
 import { getAuthToken } from '../../utilities/auth_utils';
 import { searchArrayObjects } from '../../utilities/search_array';
 import './AdminDashboard.css';
@@ -290,15 +290,13 @@ type UpdateAgencyElement = {
 };
 async function updateAgencyAsync(values: Array<UpdateAgencyElement>) {
     const requestObj = {
-        url: apis.agencyAssignURL,
+        url: apiUrls.agencyAssignURL,
         method: 'POST',
         body: JSON.stringify([...values]),
     };
-    const jwt = getAuthToken();
-    const headers = {
-        Authorization: `Bearer ${jwt}`,
-    };
-    return await sendRequest<Array<QuestionnaireResponseElement>>(requestObj, headers);
+    return await sendRequest<Array<QuestionnaireResponseElement>>(requestObj, {
+        includeAuth: true,
+    });
 }
 
 type UpdateFlagElement = {
@@ -307,15 +305,13 @@ type UpdateFlagElement = {
 };
 async function updateFlagAsync(values: Array<UpdateFlagElement>) {
     const requestObj = {
-        url: apis.assignResponseFlag,
+        url: apiUrls.assignResponseFlag,
         method: 'POST',
         body: JSON.stringify([...values]),
     };
-    const jwt = getAuthToken();
-    const headers = {
-        Authorization: `Bearer ${jwt}`,
-    };
-    return await sendRequest<Array<QuestionnaireResponseElement>>(requestObj, headers);
+    return await sendRequest<Array<QuestionnaireResponseElement>>(requestObj, {
+        includeAuth: true,
+    });
 }
 
 type UpdateEmailSentElement = {
@@ -324,15 +320,14 @@ type UpdateEmailSentElement = {
 };
 async function updateEmailSentAsync(values: Array<UpdateEmailSentElement>) {
     const requestObj = {
-        url: apis.assignEmail,
+        url: apiUrls.assignEmail,
         method: 'POST',
         body: JSON.stringify([...values]),
     };
-    const jwt = getAuthToken();
-    const headers = {
-        Authorization: `Bearer ${jwt}`,
-    };
-    return await sendRequest<Array<QuestionnaireResponseElement>>(requestObj, headers);
+   
+    return await sendRequest<Array<QuestionnaireResponseElement>>(requestObj, {
+        includeAuth: true,
+    });
 }
 function updateQuestionnaireResponses(current: Array<QuestionnaireResponseElement>, response: Array<QuestionnaireResponseElement>): Array<QuestionnaireResponseElement> {
     const updatedResponseMap = response.reduce<Record<string, QuestionnaireResponseElement>>((prev, cur) => {
@@ -348,7 +343,23 @@ function updateQuestionnaireResponses(current: Array<QuestionnaireResponseElemen
         return x;
     });
 }
+type RecordValues<T extends Record<string, unknown>> = T extends Record<string, infer Values> ? Values : never;
+type QuestionValue = RecordValues<QuestionnaireResponseElement>;
 
+function compareUndefined(aValue?: QuestionValue, bValue?: QuestionValue): number {
+    const A_SMALLER = -1;
+    const B_SMALLER = 1;
+    const SAME_VALUE = 0;
+    if (aValue === bValue) return SAME_VALUE;
+    else if (aValue == null && bValue == null) return SAME_VALUE;
+    else if (bValue == null) return A_SMALLER;
+    else if (aValue == null) return B_SMALLER;
+    else if (typeof aValue !== typeof bValue) return SAME_VALUE;
+    // else if (typeof aValue === 'number' && typeof bValue === number)
+    // if (((aValue)) && !((bValue))) return A_SMALLER;
+    // if (!((aValue)) && ((bValue))) return B_SMALLER;
+    return SAME_VALUE;
+}
 export function ResponsesTable(props: ResponsesTableProps) {
     const {
         filterBy,
@@ -371,14 +382,13 @@ export function ResponsesTable(props: ResponsesTableProps) {
                 return;
             }
             else {
-                const headers = {
-                    Authorization: `Bearer ${jwt}`,
-                };
                 const response = await sendRequest<{
                     responses: Array<QuestionnaireResponseElement>;
                 }>({
-                    url: apis.getAllQuestionnaireResponse,
-                }, headers);
+                    url: apiUrls.getAllQuestionnaireResponse,
+                }, {
+                    includeAuth: true,
+                });
                 const { responses } = response;
                 console.log({
                     responses,
@@ -443,33 +453,6 @@ export function ResponsesTable(props: ResponsesTableProps) {
             emailSent: false,
         }]);
         setQuestionnaireResponses(current => updateQuestionnaireResponses(current, result));
-        // const updatedResponses = questionnaireResponses.map(
-        //     (item, responseIndex) => {
-        //         return {
-        //             ...item,
-        //             emailSent: responseIndex === index ? false : item.emailSent,
-        //         };
-        //     },
-        // );
-        // const responseToUpdate = updatedResponses.reduce(
-        //     (accumulator, item, responseIndex) => {
-        //         return responseIndex === index ? item : accumulator;
-        //     },
-        //     {},
-        // );
-        // const requestObj = {
-        //     url: apis.assignEmail,
-        //     method: 'POST',
-        //     body: JSON.stringify({
-        //         responsesToUpdate: [responseToUpdate],
-        //     }),
-        // };
-        // const jwt = getAuthToken();
-        // const headers = {
-        //     Authorization: `Bearer ${jwt}`,
-        // };
-        // await sendRequest(requestObj, headers);
-        // setQuestionnaireResponses(updatedResponses);
     }, []);
 
 
@@ -509,9 +492,7 @@ export function ResponsesTable(props: ResponsesTableProps) {
     const sortAscendingUndefined: SortFunction = React.useCallback((property, headerState, setHeaderState) => {
         setQuestionnaireResponses(current => {
             return current.sort((a, b) => {
-                if ((Boolean(a[property])) && !(Boolean(b[property]))) return -1;
-                if (!(Boolean(a[property])) && (Boolean(b[property]))) return 1;
-                return 0;
+                return compareUndefined(a[property], b[property]);
             });
         });
         setHeaderState(!headerState);
@@ -519,9 +500,7 @@ export function ResponsesTable(props: ResponsesTableProps) {
     const sortDescendingUndefined: SortFunction = React.useCallback((property, headerState, setHeaderState) => {
         setQuestionnaireResponses(current => {
             return current.sort((a, b) => {
-                if ((Boolean(a[property])) && !(Boolean(b[property]))) return 1;
-                if (!(Boolean(a[property])) && (Boolean(b[property]))) return -1;
-                return 0;
+                return -compareUndefined(a[property], b[property]);
             });
         });
         setHeaderState(!headerState);
@@ -574,12 +553,11 @@ export function ResponsesTable(props: ResponsesTableProps) {
             }),
             method: 'PUT',
         };
-        const jwt = getAuthToken();
-        const headers = {
-            Authorization: `Bearer ${jwt}`,
-        };
+        
         try {
-            await sendRequest(requestObj, headers);
+            await sendRequest(requestObj, {
+                includeAuth: true,
+            });
             setQuestionnaireResponses(updatedResponses);
         }
         catch (err) {

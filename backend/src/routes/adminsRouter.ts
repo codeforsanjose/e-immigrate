@@ -7,12 +7,12 @@ import { z } from 'zod';
 import { Admin } from '../models/admin.js';
 import { Questionnaires } from '../models/questionnaires.js';
 
-import { loadQuestionnaireXlsxIntoDB, loadTranslationXlsxIntoDB } from '../features/excelToDb.js';
+import { loadTranslationXlsxIntoDB } from '../features/excelFiles/translationExcel.js';
 
-import { authMiddleware } from '../middleware/authMiddleware.js';
+import { authMiddleware, getVerifiedJwt } from '../middleware/authMiddleware.js';
 import { getRequiredJwtKey } from '../features/jwtKey/access.js';
-import { verifyJwtAsync } from '../features/jwtVerify/index.js';
 import { routeLogger, scopedLogger } from '../features/logging/logger.js';
+import { loadQuestionnaireXlsxIntoDB } from '../features/excelFiles/questionnaireExcel.js';
 
 const router = express.Router();
 export { router as adminsRouter };
@@ -180,13 +180,7 @@ router.route('/:id').delete(async (req, res) => {
     }
 });
 
-const JwtBodySchema = z.object({
-    jwToken: z.string(),
-});
 
-type IsAdminCallBack<T> =
-    | (() => Promise<T>)
-    | (() => T);
 /**
  * verify that the http request comes from a admin user
  * detect the user from the body containing the JWT token
@@ -194,38 +188,54 @@ type IsAdminCallBack<T> =
  * in token is not an admin user
  * call the isAdminCallBack function if the user is an admin
  **/
-async function enforceAdminOnly<TResult>(req: express.Request, res: express.Response, isAdminCallBack: IsAdminCallBack<TResult>) {
-    const reqBody = JwtBodySchema.parse(req.body);
+async function enforceAdminOnly(req: express.Request, res: express.Response): Promise<boolean> {
+    const jwtInfo = await getVerifiedJwt(req);
+    if (!jwtInfo.success) {
+        if (jwtInfo.reason === 'no_auth_token') {
+            res
+                .status(401)
+                .json({ error: { message: 'Missing JWT Token' } })
+            ;
+            return false;
+        }
+        else if (jwtInfo.reason === 'failed-to-find') {
+            res
+                .status(401)
+                .json({ error: { message: 'Missing JWT Token' } })
+            ;
+            return false;
+        }
+        else if (jwtInfo.reason === 'decoded-was-null') {
+            res
+                .status(401)
+                .json({ error: { message: 'Invalid JWT Token' } })
+            ;
+            return false;
+        }
+        else if (jwtInfo.reason === 'decoded-was-string') {
+            res
+                .status(401)
+                .json({ error: { message: 'Invalid JWT Token' } })
+            ;
+            return false;
+        }
+        jwtInfo satisfies never;
+        throw new Error(`Unexpected error`);
+    }
+    
     const {
-        jwToken,
-    } = reqBody;
-    // verify the request has a jwtToken beloning to an Admin User
-    if (jwToken == null || jwToken === '') {
-        return res
-            .status(401)
-            .json({ error: { message: 'Missing JWT Token' } });
-    }
-    try {
-        const token = await verifyJwtAsync(jwToken);
-        if (token == null || typeof token === 'string') {
-            return res
-                .status(401)
-                .json({ error: { message: 'Invalid JWT Token' } });
-        }
-        const admin = await Admin.findOne({ email: token.email }).exec();
-        if (admin == null) {
-            return res
-                .status(401)
-                .json({ error: { message: 'Invalid Admin User' } });
-        }
+        value: token,
+    } = jwtInfo;
 
-        isAdminCallBack();
-    }
-    catch (err) {
-        return res
+    const admin = await Admin.findOne({ email: token.email }).exec();
+    if (admin == null) {
+        res
             .status(401)
-            .json({ error: { message: 'Invalid JWT Token' } });
+            .json({ error: { message: 'Invalid Admin User' } })
+        ;
+        return false;
     }
+    return true;
 }
 const QuestionnaireFileSchema = z.object({
     title: z.string(),
@@ -234,106 +244,97 @@ const QuestionnaireFileSchema = z.object({
 router.route('/questionnairefile').post(async (req, res) => {
     const logger = routeLogger('uploadQuestinnaires');
     const reqBody = QuestionnaireFileSchema.parse(req.body);
-    await enforceAdminOnly(req, res, processQuestionnaireAsAdmin);
-    async function processQuestionnaireAsAdmin() {
-        logger.info({
-            files: req.files, 
-            body: req.body,
-        }, 'processQuestionnaireAsAdmin');
-        const {
-            title,
-        } = reqBody;
-        if (req.files == null) {
-            return res
-                .status(400)
-                .json({ error: { message: 'Missing Questionnaire File' } });
-        }
-        const { questionnaire: questionnairefile } = req.files;
-        if (questionnairefile == null || Array.isArray(questionnairefile)) {
-            return res
-                .status(400)
-                .json({ error: { message: 'Missing Questionnaire File' } });
-        }
-        if (questionnairefile.truncated) {
-            return res.status(400).json({
-                error: { message: 'Questionnaire File is too large' },
-            });
-        }
-        const excelFileContent = questionnairefile.data;
-        try {
-            await loadQuestionnaireXlsxIntoDB(excelFileContent, title);
-            res.status(200).json({
-                message: 'Questionnaire Documenent Recieved',
-            });
-        }
-        catch (err) {
-            logger.error(err);
-            res.status(500).json({
-                message: 'Error, Storing Questionnaire in database',
-            });
-        }
+    if (!await enforceAdminOnly(req, res)) return;
+   
+    const {
+        title,
+    } = reqBody;
+    if (req.files == null) {
+        return res
+            .status(400)
+            .json({ error: { message: 'Missing Questionnaire File' } });
+    }
+    const { questionnaire: questionnairefile } = req.files;
+    if (questionnairefile == null || Array.isArray(questionnairefile)) {
+        return res
+            .status(400)
+            .json({ error: { message: 'Missing Questionnaire File' } });
+    }
+    if (questionnairefile.truncated) {
+        return res.status(400).json({
+            error: { message: 'Questionnaire File is too large' },
+        });
+    }
+    const excelFileContent = questionnairefile.data;
+    try {
+        await loadQuestionnaireXlsxIntoDB(excelFileContent, title);
+        res.status(200).json({
+            message: 'Questionnaire Documenent Recieved',
+        });
+    }
+    catch (err) {
+        logger.error(err);
+        res.status(500).json({
+            message: 'Error, Storing Questionnaire in database',
+        });
     }
 });
 // route for deleteing a questionnaire by title
 router.route('/deletequestionnaire/:title').delete(async (req, res) => {
     const logger = routeLogger('deleteQuestionnaireByTitle');
-    await enforceAdminOnly(req, res, deleteQuestionnaireByTitle);
-    async function deleteQuestionnaireByTitle() {
-        try {
-            const results = await Questionnaires.deleteMany({
-                title: decodeURIComponent(req.params.title),
-            });
+    if (!await enforceAdminOnly(req, res)) return;
+    try {
+        const results = await Questionnaires.deleteMany({
+            title: decodeURIComponent(req.params.title),
+        });
 
-            if (!results.acknowledged) {
-                logger.warn('Delete Failed');
-                res.status(500).json({ message: 'Delete Failed' });
-                return;
-            }
-            if (results.deletedCount === 0) {
-                res.status(404).json({ message: 'Title not found' });
-                return;
-            }
-
-            res.status(200).json({ message: 'Questionnaire Removed' });
-        }
-        catch (err) {
-            logger.error(err, 'Error, Deleting Questionnaires from database');
-            res.status(500).json({
-                message: 'Error, Deleting Questionnaires from database',
-            });
+        if (!results.acknowledged) {
+            logger.warn('Delete Failed');
+            res.status(500).json({ message: 'Delete Failed' });
             return;
         }
+        if (results.deletedCount === 0) {
+            res.status(404).json({ message: 'Title not found' });
+            return;
+        }
+
+        res.status(200).json({ message: 'Questionnaire Removed' });
+    }
+    catch (err) {
+        logger.error(err, 'Error, Deleting Questionnaires from database');
+        res.status(500).json({
+            message: 'Error, Deleting Questionnaires from database',
+        });
+        return;
     }
 });
 // route for uploading the translation spreadsheet in the database
 router.route('/translateContent').post(async (req, res) => {
-    await enforceAdminOnly(req, res, processTranslatedContentAsAdmin);
-    async function processTranslatedContentAsAdmin() {
-        if (req.files == null) {
-            return res
-                .status(400)
-                .json({ error: { message: 'Missing Translation File' } });
-        }
-        const { translations: translationsFile } = req.files;
-        if (translationsFile == null || Array.isArray(translationsFile)) {
-            return res
-                .status(400)
-                .json({ error: { message: 'Missing Translation File' } });
-        }
-        if (translationsFile.truncated) {
-            return res
-                .status(400)
-                .json({ error: { message: 'Translation File is too large' } });
-        }
-        const excelFileContent = translationsFile.data;
-        try {
-            await loadTranslationXlsxIntoDB(excelFileContent);
-            res.status(200).send('Translation Document Recieved');
-        }
-        catch (err) {
-            res.status(500).send('Error, Storing Translation in database');
-            return;
-        }
+    if (!await enforceAdminOnly(req, res)) return;
+    if (req.files == null) {
+        return res
+            .status(400)
+            .json({ error: { message: 'Missing Translation File' } });
+    }
+    const { translations: translationsFile } = req.files;
+    if (translationsFile == null || Array.isArray(translationsFile)) {
+        return res
+            .status(400)
+            .json({ error: { message: 'Missing Translation File' } });
+    }
+    if (translationsFile.truncated) {
+        return res
+            .status(400)
+            .json({ error: { message: 'Translation File is too large' } });
+    }
+    const excelFileContent = translationsFile.data;
+    try {
+        await loadTranslationXlsxIntoDB(excelFileContent);
+        res.status(200).send('Translation Document Recieved');
+    }
+    catch (err) {
+        res.status(500).send('Error, Storing Translation in database');
+        return;
     }
 });
 

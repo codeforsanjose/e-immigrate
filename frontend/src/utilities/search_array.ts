@@ -11,7 +11,8 @@ export function searchArrayObjects<T>(
     objects: ReadonlyArray<T>,
     propertyPath: string,
     searchText: string | undefined,
-    minLength = 3) {
+    minLength = 3,
+) {
     if (searchText == null) {
         return objects;
     }

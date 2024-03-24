@@ -1,5 +1,6 @@
 import React from "react";
-import { useContentContext } from "../../contexts/ContentContext";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { useContentContext, ContentContext } from "../../contexts/ContentContext";
 
 type RequiredErrorProps = {
     message: string;
@@ -12,6 +13,10 @@ export function RequiredErrorDiv(props: RequiredErrorProps) {
         <div className="RequiredError">*{message}</div>
     );
 }
+/**
+ * Depends on {@link ContentContext}
+ * @export
+ */
 export function AutoRequiredErrorDiv() {
     const { content } = useContentContext();
     return (
@@ -28,6 +33,10 @@ export function RequiredErrorSpan(props: RequiredErrorProps) {
         <span className="RequiredError">*{message}</span>
     );
 }
+/**
+ * Depends on {@link ContentContext}
+ * @export
+ */
 export function AutoRequiredErrorSpan() {
     const { content } = useContentContext();
     return (

@@ -2,7 +2,7 @@ import React from 'react';
 import './TextInput.css';
 import { CommonComponentProps } from '../../types/CommonComponentProps';
 import { AutoRequiredErrorDiv } from '../RequiredErrorPresenter';
-import { useQuestionnaireResponseContent } from '../../contexts/QuestionnaireResponseContext';
+import { useQuestionnaireResponseContext } from '../../contexts/QuestionnaireResponseContext';
 type TextInputProps = CommonComponentProps;
 export function TextInput(props: TextInputProps) {
     const {
@@ -11,7 +11,7 @@ export function TextInput(props: TextInputProps) {
     const { 
         collectAnswer,
         bindField, 
-    } = useQuestionnaireResponseContent();
+    } = useQuestionnaireResponseContext();
     return (
         <>
             <input

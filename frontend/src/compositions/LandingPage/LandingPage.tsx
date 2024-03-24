@@ -11,9 +11,9 @@ import { useContentContext } from '../../contexts/ContentContext';
 export function LandingPage() {
     const { content } = useContentContext();
     const navigate = useNavigate();
-    const goToStep1 = () => {
+    const goToStep1 = React.useCallback(() => {
         navigate('/eligibility');
-    };
+    }, [navigate]);
     return (
         <div className="LandingPage">
             <h1>{content.homeWelcomeMessage}</h1>

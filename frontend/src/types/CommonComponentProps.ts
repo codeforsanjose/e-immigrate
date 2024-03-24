@@ -1,5 +1,5 @@
-import { Question } from "./Question";
+import { QuestionInfo } from "./ApiResults";
 
 export type CommonComponentProps = {
-    q: Question;
+    q: QuestionInfo;
 };

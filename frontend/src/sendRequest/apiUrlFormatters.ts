@@ -1,9 +1,19 @@
-import { getLanguageOrDefault } from "../utilities/languages/DEFAULT_LANGUAGE";
+import { getLanguageOrDefault } from "../utilities/languages/getLanguageOrDefault";
 import { replaceSlug, slugPair } from "../utilities/slugs/replaceSlug";
-import { apis } from "./apis";
+import { apiUrls } from "./apiUrls";
 
 type TitleLanguagePair = {
+    /**
+     *  Unencoded.
+     *
+     * @type {string}
+     */
     title: string;
+    /**
+     *  Unencoded.
+     *
+     * @type {string}
+     */
     language: string;
 };
 
@@ -14,44 +24,58 @@ type TitleOnlyQuery = {
     title: string;
 };
 export const apiUrlFormatters = {
-    deleteQuestionnaireResponse: (query: IdOnlyQuery) => {
-        return replaceSlug(apis.deleteQuestionnaireResponse, [
-            slugPair(':id', query.id),
-        ]);
+    // adminsRouter
+    ...{
+        deleteQuestionnaireByTitle: (query: TitleOnlyQuery) => {
+            return replaceSlug(apiUrls.deleteQuestionnaireByTitle, [
+                slugPair(':title', query.title),
+            ]);
+        },
     },
-    deleteQuestionnaireByTitle: (query: TitleOnlyQuery) => {
-        return replaceSlug(apis.deleteQuestionnaireByTitle, [
-            slugPair(':title', query.title),
-        ]);
+    // usersRouter
+    // generateResponsesExcelRouter
+    // questionnaireResponsesRouter
+    ...{
+        deleteQuestionnaireResponse: (query: IdOnlyQuery) => {
+            return replaceSlug(apiUrls.deleteQuestionnaireResponse, [
+                slugPair(':id', query.id),
+            ]);
+        },
     },
-    getQuestionsByLanguage: (query: TitleLanguagePair) => {
-        const {
-            language,
-            title,
-        } = query;
-        const effectiveLanguage = getLanguageOrDefault(language);
-        console.log('getQuestionsByLanguage', { 
-            query,
-            effectiveLanguage,
-        });
-        return replaceSlug(apis.getQuestionsByLanguage, [
-            slugPair(':title', title),
-            slugPair(':language', effectiveLanguage),
-        ]);
+    // questionnairesRouter
+    ...{
+        getQuestionsByLanguage: (query: TitleLanguagePair) => {
+            const {
+                language,
+                title,
+            } = query;
+            const effectiveLanguage = getLanguageOrDefault(language);
+            // console.log('getQuestionsByLanguage', { 
+            //     query,
+            //     effectiveLanguage,
+            // });
+            return replaceSlug(apiUrls.getQuestionsByLanguage, [
+                slugPair(':title', title),
+                slugPair(':language', effectiveLanguage),
+            ]);
+        },
     },
-    getTranslatedContentByLanguage: (query: TitleLanguagePair) => {
-        const {
-            language,
-            title,
-        } = query;
-        const effectiveLanguage = getLanguageOrDefault(language);
-        console.log('getTranslatedContentByLanguage', { 
-            query,
-            effectiveLanguage,
-        });
-        return replaceSlug(apis.getTranslatedContentByLanguage, [
-            slugPair(':title', title),
-            slugPair(':language', effectiveLanguage),
-        ]);
+    // translatedContentRouter
+    ...{
+        getTranslatedContentByLanguage: (query: TitleLanguagePair) => {
+            const {
+                language,
+                title,
+            } = query;
+            const effectiveLanguage = getLanguageOrDefault(language);
+            console.log('getTranslatedContentByLanguage', { 
+                query,
+                effectiveLanguage,
+            });
+            return replaceSlug(apiUrls.getTranslatedContentByLanguage, [
+                slugPair(':title', title),
+                slugPair(':language', effectiveLanguage),
+            ]);
+        },
     },
 };

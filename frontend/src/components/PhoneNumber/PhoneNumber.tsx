@@ -4,7 +4,7 @@ import { ReactSetter } from '../../types/common';
 import { CommonComponentProps } from '../../types/CommonComponentProps';
 import { useContentContext } from '../../contexts/ContentContext';
 import { RequiredErrorDiv } from '../RequiredErrorPresenter';
-import { useQuestionnaireResponseContent } from '../../contexts/QuestionnaireResponseContext';
+import { useQuestionnaireResponseContext } from '../../contexts/QuestionnaireResponseContext';
 
 type PhoneNumberProps = CommonComponentProps & {
     setErrors: ReactSetter<Record<string, unknown>>;
@@ -18,7 +18,18 @@ export function PhoneNumber(props: PhoneNumberProps) {
     const { 
         collectAnswer,
         bindField, 
-    } = useQuestionnaireResponseContent();
+    } = useQuestionnaireResponseContext();
+    const onChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+        const isValid = e.target.checkValidity();
+        setErrors(prev => {
+            if (prev[q.slug] === isValid) return prev;
+            return { 
+                ...prev, 
+                [q.slug]: isValid,
+            };
+        });
+        collectAnswer(q.slug, e.target.value);
+    }, [collectAnswer, q.slug, setErrors]);
     return (
         <>
             <input
@@ -29,15 +40,7 @@ export function PhoneNumber(props: PhoneNumberProps) {
                 required={q.required}
                 className="TextInput"
                 {...bindField(q.slug)}
-                onChange={(e) => {
-                    if (e.target.checkValidity()) {
-                        setErrors((prev) => ({ ...prev, [q.slug]: true }));
-                    } 
-                    else {
-                        setErrors((prev) => ({ ...prev, [q.slug]: false }));
-                    }
-                    collectAnswer(q.slug, e.target.value);
-                } } />
+                onChange={onChange} />
             <RequiredErrorDiv message={content.errorMessagePhone} />
         </>
     );

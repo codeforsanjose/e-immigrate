@@ -1,6 +1,6 @@
 import React from 'react';
 import { FormElementName } from '../../utilities/formElements';
-import { Question } from '../../types/Question';
+
 import { ReactSetter } from '../../types/common';
 import { Checkbox } from '../Checkbox/Checkbox';
 import { Date } from '../Date/Date';
@@ -13,37 +13,17 @@ import { RadioWithFollowUp } from '../RadioWithFollowUp/RadioWithFollowUp';
 import { TextArea } from '../TextArea/TextArea';
 import { Zip } from '../Zip/Zip';
 import { useContentContext } from '../../contexts/ContentContext';
+import { QuestionInfo } from '../../types/ApiResults';
 
 type FormElementWrapperProps<TElementName extends FormElementName> = {
     elementName: TElementName;
-    question: Question;
+    question: QuestionInfo;
     others: {
         setShowFollowUp: ReactSetter<Record<string, boolean>>;
         setErrors: ReactSetter<Record<string, unknown>>;
     };
 };
 
-// const attributes = (q: {
-//     answerSelections?: string;
-// }) => {
-//     const answers = (q.answerSelections != null)
-//         ? q.answerSelections.split(',\n ').join(', ')
-//         : null;
-//     return {
-//         q,
-//         bindField: bindField,
-//         collectAnswer: collectAnswer,
-//         content: content,
-//         answers: answers != null ? answers.split(', ') : null,
-//         selectAnswers: answers != null
-//             ? ['--', ...answers.split(', ')]
-//             : null,
-//         values: answers != null ? answers.split(', ') : null,
-//         showFollowUp: showFollowUp,
-//         setShowFollowUp: setShowFollowUp,
-//         setErrors: setErrors,
-//     };
-// };
 
 export function FormElementWrapper<
     TElementName extends FormElementName,

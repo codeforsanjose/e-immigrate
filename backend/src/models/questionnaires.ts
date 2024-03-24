@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { WithDefaultMongooseId, WithMongooseTimestamps } from './core/types.js';
 
 export type QuestionEntity = {
     id: string;
@@ -12,11 +13,12 @@ export type QuestionEntity = {
     followUpQuestionSlug?: string;
     parentQuestionSlug?: string;
 };
-export type QuestionnaireEntity = {
+export type QuestionnaireEntity = WithMongooseTimestamps<{
     title?: string;
     language?: string;
     questions: Array<QuestionEntity>;
-};
+}>;
+export type QuestionnaireEntityWithId = WithDefaultMongooseId<QuestionnaireEntity>;
 export const questionSchema = new mongoose.Schema<QuestionEntity>({
     id: { type: String, unique: false, required: true },
     slug: { type: String, unique: false, required: true },
@@ -29,17 +31,15 @@ export const questionSchema = new mongoose.Schema<QuestionEntity>({
     followUpQuestionSlug: { type: String, unique: false, required: false },
     parentQuestionSlug: { type: String, unique: false, required: false },
 });
-export const questionnairesSchema = new mongoose.Schema<QuestionnaireEntity>(
-    {
-        // _id: mongoose.Schema.Types.ObjectId,
-        // line above results in the following error "document must have an _id before saving"
-        title: { type: String, required: false, unique: false },
-        language: { type: String, required: false, unique: false },
-        questions: { type: [questionSchema], required: true },
-    },
-    {
-        timestamps: true,
-    },
-);
+export const questionnairesSchema = new mongoose.Schema<QuestionnaireEntity>({
+    // _id: mongoose.Schema.Types.ObjectId,
+    // line above results in the following error "document must have an _id before saving"
+    title: { type: String, required: false, unique: false },
+    language: { type: String, required: false, unique: false },
+    questions: { type: [questionSchema], required: true },
+},
+{
+    timestamps: true,
+});
 
 export const Questionnaires = mongoose.model<QuestionnaireEntity>('Questionnaires', questionnairesSchema);

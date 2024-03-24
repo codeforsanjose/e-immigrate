@@ -6,10 +6,7 @@ import './LanguageSelectionModal.css';
 import { ReactSetter } from '../../types/common';
 import { useLanguageContext } from '../../contexts/LanguageContext';
 
-type LanguageSelectionModalProps = {
-    showModal: boolean;
-    setShowModal: ReactSetter<boolean>;
-};
+
 type LanguageButtonsProps = {
     onClick: (value: string) => void;
 };
@@ -32,6 +29,11 @@ function LanguageButtons(props: LanguageButtonsProps) {
         </div>
     );
 }
+
+type LanguageSelectionModalProps = {
+    showModal: boolean;
+    setShowModal: ReactSetter<boolean>;
+};
 export function LanguageSelectionModal(props: LanguageSelectionModalProps) {
     const {
         setShowModal,
@@ -45,9 +47,7 @@ export function LanguageSelectionModal(props: LanguageSelectionModalProps) {
         setLanguage(value);
     }, [setLanguage, setShowModal]);
 
-    if (!showModal) {
-        return null;
-    }
+    if (!showModal) return null;
     return (
         <div className="LanguageSelection">
             <div className="gridContainer">

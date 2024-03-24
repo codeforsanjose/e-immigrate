@@ -49,7 +49,15 @@ function isKeyOf<TValue extends Record<string, unknown>>(key: string, value: TVa
     return key in value;
 }
 
-router.route('/responses').post(async (req, res) => {
+const standardHeaders = [
+    'Workshop Title',
+    'Red Dot?',
+    'Agency',
+    'Email Sent',
+    'Language',
+];
+const standardHeaderOffset = standardHeaders.length + 1;
+router.route('/responses').post(async function generateResponsesExcel(req, res) {
     const logger = routeLogger('generateResponsesExcel');
     logger.debug('begin');
     const bodyData = Schema1.parse(req.body);
@@ -57,7 +65,7 @@ router.route('/responses').post(async (req, res) => {
     if (admin == null) throw new RequestError('Missing the user data', undefined, 401);
     const allDboResponses = await QuestionnaireResponse.find();
     
-    type ResponseItem = ArrayElementOf<typeof allRemappedDboResponses>;
+    type DboItem = ArrayElementOf<typeof allRemappedDboResponses>;
     const allRemappedDboResponses = allDboResponses.map((item) => {
         const {
             _id,
@@ -85,7 +93,7 @@ router.route('/responses').post(async (req, res) => {
         };
     });
    
-    async function updateResponseDownloadStatus(questionnaireResponses: Array<ResponseItem> = []) {
+    async function updateResponseDownloadStatus(questionnaireResponses: Array<DboItem> = []) {
         for (const response of questionnaireResponses) {
             const tempUpdatedResponse = {
                 ...response,
@@ -104,11 +112,12 @@ router.route('/responses').post(async (req, res) => {
     }
     const questions = bodyData.questions;
     const downloadAll = bodyData.downloadAll;
-    const updatedDboResponses = downloadAll
-        ? allDboResponses
-        : allDboResponses.filter((item) => item.responseDownloadedToExcel !== true);
+    
+    const updatedDboResponses = allDboResponses.filter(item => {
+        return (item.responseDownloadedToExcel ?? false) !== downloadAll;
+    });
     const questionsColumns = questions.reduce<Record<string, number>>((acc, question, idx) => {
-        acc[question.slug] = idx + 6;
+        acc[question.slug] = idx + standardHeaderOffset;
         return acc;
     }, {});
     const wb = new xl.Workbook();
@@ -121,12 +130,12 @@ router.route('/responses').post(async (req, res) => {
         numberFormat: '$#,##0.00; ($#,##0.00); -',
     });
 
-    ws.cell(1, 1).string('Workshop Title');
-    ws.cell(1, 2).string('Red Dot?');
-    ws.cell(1, 3).string('Agency');
-    ws.cell(1, 4).string('Email Sent');
-    ws.cell(1, 5).string('Language');
-
+    
+    // generate the header row
+    standardHeaders.forEach((value, index) => {
+        ws.cell(1, 1 + index).string(value);
+    });
+    
     Object.keys(questionsColumns).forEach((question) => {
         ws.cell(1, questionsColumns[question])
             .string(question)
@@ -134,9 +143,10 @@ router.route('/responses').post(async (req, res) => {
     });
 
     updatedDboResponses.forEach((dboResponse, idx) => {
-        const langObject = LanguageOptions.find(
-            (item) => item.code === dboResponse.language
-        );
+        const {
+            language,
+        } = dboResponse;
+        const langObject = LanguageOptions.find(item => item.code === language);
         const langDisplay = langObject?.englishName ?? `Unknown `;
         const row = idx + 2;
         ws.cell(row, 1).string(dboResponse.title).style(style);

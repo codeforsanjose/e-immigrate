@@ -1,7 +1,7 @@
 import React from 'react';
 import { CommonComponentProps } from '../../types/CommonComponentProps';
 import { AutoRequiredErrorSpan } from '../RequiredErrorPresenter';
-import { useQuestionnaireResponseContent } from '../../contexts/QuestionnaireResponseContext';
+import { useQuestionnaireResponseContext } from '../../contexts/QuestionnaireResponseContext';
 type RadioOptionProps = CommonComponentProps & {
     option: string;
     value: string;
@@ -21,7 +21,7 @@ export function RadioOption(props: RadioOptionProps) {
     const { 
         collectAnswer,
         bindField,
-    } = useQuestionnaireResponseContent();
+    } = useQuestionnaireResponseContext();
     const onChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         collectAnswer(q.slug, e.target.value);
         userOnChange?.();

@@ -8,11 +8,9 @@ import Blob3 from '../../data/images/Blob3.svg';
 
 import './ProgressBar.css';
 import { useContentContext } from '../../contexts/ContentContext';
-type ValidStepNumbers = 
-| 1 
-| 2 
-| 3
-;
+import classNames from 'classnames';
+import { ValidStepNumbers } from '../../types/ValidStepNumbers';
+
 type StepProps = {
     stepNumber: ValidStepNumbers;
     children?: React.ReactNode;
@@ -25,18 +23,33 @@ function Step(props: StepProps) {
         children,
     } = props;
     const { content } = useContentContext();
-    const isComplete = completed ? '' : 'incomplete';
-    const step = `step${stepNumber}Header` as const;
-    const title = `step${stepNumber}Title` as const;
     return (
-        <div className={`stepContainer ${isComplete}`}>
-            <div className={`stepNumber ${isComplete}`}>
-                {content[step]}
+        <div 
+            className={classNames('stepContainer', {
+                incomplete: !completed,
+            })}
+        >
+            <div 
+                className={classNames('stepNumber', {
+                    incomplete: !completed,
+                })}
+            >
+                {content[`step${stepNumber}Header`]}
             </div>
-            <div className={`stepTitle ${isComplete}`}>
-                {content[title]}
+            <div 
+                className={classNames('stepTitle', {
+                    incomplete: !completed,
+                })}
+            >
+                {content[`step${stepNumber}Title`]}
             </div>
-            <div className={`stepIcon ${isComplete}`}>{children}</div>
+            <div 
+                className={classNames('stepIcon', {
+                    incomplete: !completed,
+                })}
+            >
+                {children}
+            </div>
         </div>
     );
 }
@@ -80,10 +93,14 @@ export function ProgressBar(props: ProgressBarProps) {
             <div className="linesGridContainer">
                 <div className="linesGrid">
                     <div
-                        className={`progressLine1 ${step >= 2 ? '' : 'incomplete'}`}
+                        className={classNames('progressLine1', {
+                            incomplete: !(step >= 2),
+                        })}
                     ></div>
                     <div
-                        className={`progressLine2 ${step >= 3 ? '' : 'incomplete'}`}
+                        className={classNames('progressLine2', {
+                            incomplete: !(step >= 3),
+                        })}
                     ></div>
                 </div>
             </div>

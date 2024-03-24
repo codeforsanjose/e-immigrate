@@ -5,34 +5,38 @@ import { Admin } from '../../compositions/Admin/Admin';
 import { AdminDashboard } from '../AdminDashboard/AdminDashboard';
 import { EditQuestionnaires } from '../EditQuestionnaires/EditQuestionnaires';
 import './App.css';
-import { LanguageContext, useInitialLanguageContextStateFactory } from '../../contexts/LanguageContext';
-import { ContentContext, useInitialContentContextStateFactory } from '../../contexts/ContentContext';
+import { ContentContextProvider } from '../../contexts/ContentContext';
+import { LanguageContextProvider } from '../../contexts/LanguageContext';
+import { QuestionContextProvider } from '../../contexts/QuestionsContext';
+import { QuestionnaireResponseContextProvider } from '../../contexts/QuestionnaireResponseContext';
 
 export function App() {
-    const languageContextState = useInitialLanguageContextStateFactory();
-    const contentContextState = useInitialContentContextStateFactory(languageContextState);
     return (
-        <LanguageContext.Provider value={languageContextState}>
-            <ContentContext.Provider value={contentContextState}>
-                <Router>
-                    <div className="App">
-                        <Routes>
-                            <Route path="/dashboard" element={
-                                <AdminDashboard />}
-                            />
-                            <Route path="/login" element={
-                                <Admin />
-                            }/>
-                            <Route path="/questionnaires" element={
-                                <EditQuestionnaires />
-                            }/>
-                            <Route path="/*" element={
-                                <MainContainer />}
-                            />
-                        </Routes>
-                    </div>
-                </Router>
-            </ContentContext.Provider>
-        </LanguageContext.Provider>
+        <LanguageContextProvider>
+            <ContentContextProvider>
+                <QuestionContextProvider>
+                    <Router>
+                        <div className="App">
+                            <Routes>
+                                <Route path="/dashboard" element={
+                                    <AdminDashboard />}
+                                />
+                                <Route path="/login" element={
+                                    <Admin />
+                                }/>
+                                <Route path="/questionnaires" element={
+                                    <EditQuestionnaires />
+                                }/>
+                                <Route path="/*" element={
+                                    <QuestionnaireResponseContextProvider>
+                                        <MainContainer />
+                                    </QuestionnaireResponseContextProvider>
+                                }/>
+                            </Routes>
+                        </div>
+                    </Router>
+                </QuestionContextProvider>
+            </ContentContextProvider>
+        </LanguageContextProvider>
     );
 }

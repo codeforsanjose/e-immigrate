@@ -1,8 +1,8 @@
 import React from "react";
 import { ContentText, missingContentText } from "../types/ContentText";
-import { LanguageContextState } from "./LanguageContext";
+import { LanguageContextState, useLanguageContext } from "./LanguageContext";
 import { workshopTitle } from "../data/LanguageOptions";
-import { getFromStorage, saveToStorage } from "../utilities/storage_utils";
+import { createLocalStorageWrapper } from "../utilities/storage/createLocalStorageWrapper";
 
 
 type ContentContextState = {
@@ -11,28 +11,11 @@ type ContentContextState = {
 };
 export const ContentContext = React.createContext<ContentContextState | undefined>(undefined);
 
-function setupLocalstoreContentWrapper(language: string) {
-    const key = `${workshopTitle}-content-${language}`;
-    
-    return {
-        tryGet: (): ContentText | undefined => {
-            const output = getFromStorage<ContentText>(key);
-            if (output == null) return;
-            else if (!output.success) {
-                console.error('Failed to deserialize the value');
-                return;
-            }
-            return output.value;
-        },
-        set: (value: ContentText) => {
-            saveToStorage(key, value);
-        },
-    };
-}
-export function useInitialContentContextStateFactory(languageContext: LanguageContextState) {
+
+function useInitialContentContextStateFactory(languageContext: LanguageContextState) {
     const { language } = languageContext;
     const localStoreContentWrapper = React.useMemo(() => {
-        return setupLocalstoreContentWrapper(language);
+        return createLocalStorageWrapper<ContentText>(`${workshopTitle}-content-${language}`);
     }, [language]);
     const LOCALSTORE_CONTENT = localStoreContentWrapper.tryGet() ?? {
         ...(missingContentText),
@@ -51,4 +34,20 @@ export function useContentContext() {
     const context = React.useContext(ContentContext);
     if (context == null) throw new Error(`Must be used within a 'ContentContext' context.`);
     return context;
+}
+
+type ContentContextProviderProps = {
+    children: React.ReactNode;
+};
+export function ContentContextProvider(props: ContentContextProviderProps) {
+    const {
+        children,
+    } = props;
+    const languageContext = useLanguageContext();
+    const context = useInitialContentContextStateFactory(languageContext);
+    return (
+        <ContentContext.Provider value={context}>
+            {children}
+        </ContentContext.Provider>
+    );
 }

@@ -26,15 +26,14 @@ export function RadioWithFollowUp(props: RadioWithFollowUpProps) {
                     value={values[idx]}
                     option={option}
                     onChange={() => {
-                        values[idx] === 'Yes'
-                            ? setShowFollowUp((prev) => ({
+                        const state = values[idx] === 'Yes';
+                        setShowFollowUp(prev => {
+                            if (prev[q.slug] === state) return prev;
+                            return {
                                 ...prev,
-                                [q.slug]: true,
-                            }))
-                            : setShowFollowUp((prev) => ({
-                                ...prev,
-                                [q.slug]: false,
-                            }));
+                                [q.slug]: state,
+                            };
+                        });
                     }}
                 />
             ))}

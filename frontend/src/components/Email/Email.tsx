@@ -1,11 +1,19 @@
 import React from 'react';
 import './Email.css';
 import { CommonComponentProps } from '../../types/CommonComponentProps';
-import { useContentContext } from '../../contexts/ContentContext';
 import { RequiredErrorDiv } from '../RequiredErrorPresenter';
-import { useQuestionnaireResponseContent } from '../../contexts/QuestionnaireResponseContext';
-
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { useQuestionnaireResponseContext, QuestionnaireResponseContext } from '../../contexts/QuestionnaireResponseContext';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { ContentContext, useContentContext } from '../../contexts/ContentContext';
 type EmailProps = CommonComponentProps;
+/**
+ *
+ *  Depends on {@link QuestionnaireResponseContext}, and
+ * {@link ContentContext}.
+ *
+ * @export
+ */
 export function Email(props: EmailProps) {
     const {
         q, 
@@ -14,7 +22,7 @@ export function Email(props: EmailProps) {
     const { 
         collectAnswer,
         bindField,
-    } = useQuestionnaireResponseContent();
+    } = useQuestionnaireResponseContext();
     return (
         <>
             <input

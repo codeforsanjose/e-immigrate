@@ -1,10 +1,13 @@
+import { getAuthToken } from "../utilities/auth_utils";
+
 const DEFAULT_HEADERS = {
     Accept: 'application/json, text/plain, */*',
     'Content-Type': 'application/json',
 };
 
-function getEffectiveHeaders(headers: HeadersInit, browser_gen_content_type: boolean) {
-    const actualHeaders = { ...DEFAULT_HEADERS, ...headers };
+function getEffectiveHeaders(headers: HeadersInit | undefined | null, browser_gen_content_type: boolean) {
+    const userHeaders = getHeadersOrDefault(headers);
+    const actualHeaders = { ...DEFAULT_HEADERS, ...userHeaders };
     if (browser_gen_content_type) {
         const {
             "Content-Type": contentTypeHeaders,
@@ -17,9 +20,13 @@ function getEffectiveHeaders(headers: HeadersInit, browser_gen_content_type: boo
 type RequestObject = RequestInit & {
     url: URL | RequestInfo;
 };
+function getHeadersOrDefault(headers: HeadersInit | undefined | null): HeadersInit {
+    if (headers === null) return {};
+    return headers ?? DEFAULT_HEADERS;
+}
 export async function fetchWrapper(
     requestObj: RequestObject,
-    headers: HeadersInit = DEFAULT_HEADERS,
+    headers?: HeadersInit | undefined | null,
     browser_gen_content_type = false,
 ) {
     const {
@@ -33,21 +40,45 @@ export async function fetchWrapper(
     });
     return data;
 }
+
+type SendRequestConfig = {
+    includeAuth?: boolean;
+    headers?: HeadersInit | undefined | null;
+    browser_gen_content_type?: boolean;
+};
+
+;
+function optionallyAttachAuthHeader(headers: HeadersInit, addAuth: boolean) {
+    if (!addAuth) return headers;
+    return {
+        ...headers,
+        Authorization: `Bearer ${getAuthToken()}`,
+    };
+}
+
+
 export async function sendRequest<TResponse = unknown>(
     requestObj: RequestObject,
-    headers: HeadersInit = DEFAULT_HEADERS,
-    browser_gen_content_type = false,
+    config: SendRequestConfig = {},
 ): Promise<TResponse> {
     const {
-        url,
-    } = requestObj;
-    const data = await fetchWrapper(requestObj, headers, browser_gen_content_type);
-    // const actualHeaders = getEffectiveHeaders(headers, browser_gen_content_type);
-    // const data = await fetch(url, {
-    //     ...rest,
-    //     headers: actualHeaders,
-    // });
-    const raw = await data.text();
+        browser_gen_content_type = false,
+        headers,
+        includeAuth = false,
+    } = config;
+    
+    const { url } = requestObj;
+    const effectiveHeaders = optionallyAttachAuthHeader(getHeadersOrDefault(headers), includeAuth);
+    const response = await fetchWrapper(requestObj, effectiveHeaders, browser_gen_content_type);
+    // if (responseType === 'text') {
+    //     return await response.text() as TResponse;
+    // }
+    // else if (responseType === 'blob') {
+    //     return await response.blob() as TResponse;
+    // }
+
+    const raw = await response.text();
+
     try {
         return JSON.parse(raw);
     }
@@ -56,7 +87,7 @@ export async function sendRequest<TResponse = unknown>(
             err,
             url,
             raw,
-            data,
+            data: response,
         });
         throw err;
     }

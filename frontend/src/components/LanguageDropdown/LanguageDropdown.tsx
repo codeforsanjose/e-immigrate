@@ -48,18 +48,15 @@ type LanguageDropdownProps = {
     language: string;
     setLanguage: (value: string) => void;
 };
-export const LanguageDropdown = (props: LanguageDropdownProps) => {
-    const { 
-        language, 
-        setLanguage,
-        className,
+export function LanguageDropdown(props: LanguageDropdownProps) {
+    const {
+        language, setLanguage, className,
     } = props;
-    const effectiveClassName = classnames('languageDropdown', className);
     return (
-        <div className={effectiveClassName}>
+        <div className={classnames('languageDropdown', className)}>
             <div className="languageSelect">
                 <LanguageSelect setLanguage={setLanguage} language={language} />
             </div>
         </div>
     );
-};
+}

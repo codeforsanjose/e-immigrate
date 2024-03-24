@@ -3,7 +3,7 @@ import fileUpload from 'express-fileupload';
 import cors from 'cors';
 import mongoose, { ConnectOptions } from 'mongoose';
 import dotenv from 'dotenv';
-
+import 'express-async-errors';
 import { usersRouter } from './routes/users.js';
 import { adminsRouter } from './routes/adminsRouter.js';
 import { questionnaireResponsesRouter } from './routes/questionnaireResponsesRouter.js';
@@ -61,6 +61,8 @@ app.use('/api/questionnaires', questionnairesRouter);
 app.use('/api/translatedContent', translatedContentRouter);
 app.use('/api/generateExcel', generateResponsesExcelRouter);
 
+
+app.use(express.static('build'));
 // Error middleware, the earlier ones are run first
 app.use(...[
     handleZodErrorMiddleware(),
@@ -68,8 +70,6 @@ app.use(...[
     handleRequestErrorMiddleware(),
     handleUncaughtErrorMiddleware(),
 ]);
-app.use(express.static('build'));
-
 app.listen(appPort, () => {
     logger.info(`listening on port ${appPort}`);
 });

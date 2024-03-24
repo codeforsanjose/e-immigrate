@@ -55,7 +55,7 @@ export type QuestionnaireResponseEntityWithId = WithDefaultMongooseId<Questionna
 
 const responseSchema = new mongoose.Schema<ResponseEntity>({
     languageCode: { type: String, required: true },
-    green_card_through_marriage: { type: String, required: true },
+    green_card_through_marriage: { type: String, required: false },
     legal_resident_date: { type: String, required: false },
     gender: { type: String, required: true },
     preferred_language: { type: String, required: true },

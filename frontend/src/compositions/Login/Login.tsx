@@ -1,7 +1,7 @@
 import React from 'react';
 import { sendRequest } from '../../sendRequest/sendRequest';
 import { Navigate } from 'react-router-dom';
-import { apis } from '../../sendRequest/apis';
+import { apiUrls } from '../../sendRequest/apiUrls';
 import './LoginRegister.css';
 
 type LoginState = 
@@ -20,7 +20,7 @@ export function Login() {
 
     const requestObj = React.useMemo(() => {
         return {
-            url: apis.loginApi,
+            url: apiUrls.loginApi,
             method: 'POST',
             body: JSON.stringify({
                 email: loginState.email,
