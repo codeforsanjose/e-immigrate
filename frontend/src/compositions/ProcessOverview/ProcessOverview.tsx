@@ -10,19 +10,19 @@ import { Button } from '../../components/Button/Button';
 import { useNavigate } from 'react-router-dom';
 
 import './ProcessOverview.css';
-import { ContentText } from '../../types/ContentText';
+import { useContentContext } from '../../contexts/ContentContext';
 type ValidStepNumbers = 
 | 1 
 | 2 
 | 3
 ;
 type StepProps = {
-    content: ContentText;
     stepNumber: ValidStepNumbers;
     children?: React.ReactNode;
 };
 function Step(props: StepProps) {
-    const { content, stepNumber, children } = props;
+    const { content } = useContentContext();
+    const { stepNumber, children } = props;
     const step = `step${stepNumber}Header` as const;
     const title = `step${stepNumber}Title` as const;
     const instructions = `step${stepNumber}Instructions` as const;
@@ -36,11 +36,8 @@ function Step(props: StepProps) {
     );
 }
 
-type ProcessOverviewProps = {
-    content: ContentText;
-};
-export function ProcessOverview(props: ProcessOverviewProps) {
-    const { content } = props;
+export function ProcessOverview() {
+    const { content } = useContentContext();
     const navigate = useNavigate();
     const goToStep1 = () => {
         navigate('/video');
@@ -54,17 +51,17 @@ export function ProcessOverview(props: ProcessOverviewProps) {
             </div>
             <div className="gridContainer">
                 <div className="stepsGrid">
-                    <Step content={content} stepNumber={1}>
+                    <Step stepNumber={1}>
                         <Blob1 className="blob blob1" />
                         <VideoIcon className="stepSVG" />
                     </Step>
                     <Arrow className="arrow" />
-                    <Step content={content} stepNumber={2}>
+                    <Step stepNumber={2}>
                         <Blob2 className="blob blob2" />
                         <QuestionnaireIcon className="stepSVG" />
                     </Step>
                     <Arrow className="arrow" />
-                    <Step content={content} stepNumber={3}>
+                    <Step stepNumber={3}>
                         <Blob3 className="blob blob3" />
                         <CheckMark className="stepSVG" />
                     </Step>

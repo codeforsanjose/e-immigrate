@@ -7,14 +7,13 @@ import Blob2 from '../../data/images/Blob2.svg';
 import Blob3 from '../../data/images/Blob3.svg';
 
 import './ProgressBar.css';
-import { ContentText } from '../../types/ContentText';
+import { useContentContext } from '../../contexts/ContentContext';
 type ValidStepNumbers = 
 | 1 
 | 2 
 | 3
 ;
 type StepProps = {
-    content: ContentText;
     stepNumber: ValidStepNumbers;
     children?: React.ReactNode;
     completed: boolean;
@@ -22,10 +21,10 @@ type StepProps = {
 function Step(props: StepProps) { 
     const {
         completed,
-        content,
         stepNumber,
         children,
     } = props;
+    const { content } = useContentContext();
     const isComplete = completed ? '' : 'incomplete';
     const step = `step${stepNumber}Header` as const;
     const title = `step${stepNumber}Title` as const;
@@ -42,21 +41,18 @@ function Step(props: StepProps) {
     );
 }
 type ProgressBarProps = {
-    content: ContentText;
     step: number;
 };
 export function ProgressBar(props: ProgressBarProps) {
     const {
-        content, 
         step,
     } = props;
-
+    const { content } = useContentContext();
     return (
         <div className="progressBar">
             <div className="title">{content.progressBarHeader}</div>
             <div className="stepsGrid">
                 <Step
-                    content={content}
                     stepNumber={1}
                     completed={step >= 1}
                 >
@@ -64,7 +60,6 @@ export function ProgressBar(props: ProgressBarProps) {
                     <VideoIcon className="stepSVG" height="32px" width="32px" />
                 </Step>
                 <Step
-                    content={content}
                     stepNumber={2}
                     completed={step >= 2}
                 >
@@ -75,7 +70,6 @@ export function ProgressBar(props: ProgressBarProps) {
                         width="32px" />
                 </Step>
                 <Step
-                    content={content}
                     stepNumber={3}
                     completed={step >= 3}
                 >

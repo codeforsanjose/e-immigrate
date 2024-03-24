@@ -2,6 +2,8 @@ import React from 'react';
 import './Select.css';
 import { ReactSetter } from '../../types/common';
 import { CommonComponentProps } from '../../types/CommonComponentProps';
+import { AutoRequiredErrorDiv } from '../RequiredErrorPresenter';
+import { useQuestionnaireResponseContent } from '../../contexts/QuestionnaireResponseContext';
 type SelectProps = CommonComponentProps & {
     selectAnswers?: Array<string>;
     values: Array<string>;
@@ -11,11 +13,12 @@ export function Select(props: SelectProps) {
     const {
         q, 
         selectAnswers, 
-        bindField, 
-        collectAnswer, 
-        content, 
         values,
     } = props;
+    const { 
+        collectAnswer,
+        bindField,
+    } = useQuestionnaireResponseContent();
     React.useEffect(() => {
         if (selectAnswers == null) {
             console.error(`'selectAnswers' was null`);
@@ -42,7 +45,7 @@ export function Select(props: SelectProps) {
                     );
                 })}
             </select>
-            <div className="RequiredError">*{content.errorMessage}</div>
+            <AutoRequiredErrorDiv />
         </>
     );
 }

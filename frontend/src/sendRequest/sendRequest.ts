@@ -17,11 +17,11 @@ function getEffectiveHeaders(headers: HeadersInit, browser_gen_content_type: boo
 type RequestObject = RequestInit & {
     url: URL | RequestInfo;
 };
-export async function sendRequest<TResponse = unknown>(
+export async function fetchWrapper(
     requestObj: RequestObject,
     headers: HeadersInit = DEFAULT_HEADERS,
     browser_gen_content_type = false,
-): Promise<TResponse> {
+) {
     const {
         url,
         ...rest
@@ -31,14 +31,30 @@ export async function sendRequest<TResponse = unknown>(
         ...rest,
         headers: actualHeaders,
     });
-    
+    return data;
+}
+export async function sendRequest<TResponse = unknown>(
+    requestObj: RequestObject,
+    headers: HeadersInit = DEFAULT_HEADERS,
+    browser_gen_content_type = false,
+): Promise<TResponse> {
+    const {
+        url,
+    } = requestObj;
+    const data = await fetchWrapper(requestObj, headers, browser_gen_content_type);
+    // const actualHeaders = getEffectiveHeaders(headers, browser_gen_content_type);
+    // const data = await fetch(url, {
+    //     ...rest,
+    //     headers: actualHeaders,
+    // });
+    const raw = await data.text();
     try {
-        return await data.json();
+        return JSON.parse(raw);
     }
     catch (err) {
-        const raw = await data.text();
         console.error('ERROR!', {
             err,
+            url,
             raw,
             data,
         });

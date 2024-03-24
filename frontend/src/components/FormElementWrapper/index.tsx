@@ -1,8 +1,7 @@
 import React from 'react';
 import { FormElementName } from '../../utilities/formElements';
 import { Question } from '../../types/Question';
-import { ContentText } from '../../types/ContentText';
-import { BindFieldFunction, CollectAnswerFunction, ReactSetter } from '../../types/common';
+import { ReactSetter } from '../../types/common';
 import { Checkbox } from '../Checkbox/Checkbox';
 import { Date } from '../Date/Date';
 import { Select } from '../Select/Select';
@@ -13,15 +12,13 @@ import { Radio } from '../Radio/Radio';
 import { RadioWithFollowUp } from '../RadioWithFollowUp/RadioWithFollowUp';
 import { TextArea } from '../TextArea/TextArea';
 import { Zip } from '../Zip/Zip';
+import { useContentContext } from '../../contexts/ContentContext';
 
 type FormElementWrapperProps<TElementName extends FormElementName> = {
     elementName: TElementName;
     question: Question;
-    content: ContentText;
     others: {
         setShowFollowUp: ReactSetter<Record<string, boolean>>;
-        bindField: BindFieldFunction;
-        collectAnswer: CollectAnswerFunction;
         setErrors: ReactSetter<Record<string, unknown>>;
     };
 };
@@ -52,24 +49,24 @@ export function FormElementWrapper<
     TElementName extends FormElementName,
 >(props: FormElementWrapperProps<TElementName>) {
     const {
-        content,
         others: {
-            bindField,
-            collectAnswer,
             setShowFollowUp,
             setErrors,
         },
         question,
         elementName,
     } = props;
+    const content = useContentContext();
     const answers = question.answerSelections?.split(',\n ').join(', ');
     const componentName = elementName;
     const commonData = {
-        bindField,
-        collectAnswer,
         q: question,
         content,
     };
+    const selectAnswers = React.useMemo(() => {
+        if (answers == null) return null;
+        return ['--', ...answers.split(', ')]; 
+    }, [answers]);
     if (elementName === 'checkbox') {
         return (
             <Checkbox
@@ -86,9 +83,6 @@ export function FormElementWrapper<
         );
     }
     else if (elementName === 'dropDown') {
-        const selectAnswers = answers != null
-            ? ['--', ...answers.split(', ')]
-            : null;
         return (
             <Select
                 {...commonData}

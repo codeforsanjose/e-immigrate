@@ -2,17 +2,22 @@ import React from 'react';
 import './Zip.css';
 import { ReactSetter } from '../../types/common';
 import { CommonComponentProps } from '../../types/CommonComponentProps';
+import { useContentContext } from '../../contexts/ContentContext';
+import { RequiredErrorDiv } from '../RequiredErrorPresenter';
+import { useQuestionnaireResponseContent } from '../../contexts/QuestionnaireResponseContext';
 type ZipProps = CommonComponentProps & {
     setErrors: ReactSetter<Record<string, unknown>>;
 };
 export function Zip(props: ZipProps) {
     const {
         q, 
-        bindField, 
-        collectAnswer, 
         setErrors, 
-        content,
     } = props;
+    const { content } = useContentContext();
+    const { 
+        collectAnswer,
+        bindField, 
+    } = useQuestionnaireResponseContent();
     return (
         <>
             <input
@@ -33,7 +38,7 @@ export function Zip(props: ZipProps) {
                     }
                     collectAnswer(q.slug, e.target.value);
                 } } />
-            <div className="RequiredError">*{content.errorMessageZip}</div>
+            <RequiredErrorDiv message={content.errorMessageZip} />
         </>
     );
 }

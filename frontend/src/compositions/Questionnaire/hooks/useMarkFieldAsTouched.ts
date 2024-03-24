@@ -7,22 +7,24 @@ type TouchedFields = {
 
 export function useMarkFieldAsTouched() {
     const [touchedFields, setTouchedFields] = React.useState<TouchedFields>({ all: false });
-    const setFieldAsTouched = (event: WithPersist & { target: { name: string, }, }) => {
+    const setFieldAsTouched = React.useCallback((event: WithPersist & { target: { name: string, }, }) => {
         event.persist();
         setTouchedFields((prevState) => ({
             ...prevState,
             [event.target.name]: true,
         }));
-    };
+    }, []);
 
-    const setAllFieldsTouched = () => {
+    const setAllFieldsTouched = React.useCallback(() => {
         setTouchedFields({ all: true });
-    };
+    }, []);
 
-    const bindField: BindFieldFunction = (name: string) => ({
-        'data-touched': touchedFields.all || touchedFields[name],
-        onBlur: setFieldAsTouched,
-    });
+    const bindField: BindFieldFunction = React.useCallback((name: string) => {
+        return {
+            'data-touched': touchedFields.all || touchedFields[name],
+            onBlur: setFieldAsTouched,
+        };
+    }, [setFieldAsTouched, touchedFields]);
 
     return {
         bindField,

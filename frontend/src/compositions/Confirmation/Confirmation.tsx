@@ -1,15 +1,11 @@
 import React from 'react';
 
 import './Confirmation.css';
-import { ContentText } from '../../types/ContentText';
+import { useContentContext } from '../../contexts/ContentContext';
 
-type ConfirmationProps = {
-    content: ContentText;
-};
-export function Confirmation(props: ConfirmationProps) {
-    const {
-        content,
-    } = props;
+
+export function Confirmation() {
+    const { content } = useContentContext();
     return (
         <div className="Confirmation">
             <div>

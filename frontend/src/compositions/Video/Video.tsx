@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import YouTube from 'react-youtube';
 import { Button } from '../../components/Button/Button';
 import './Video.css';
-import { ContentText } from '../../types/ContentText';
+import { useContentContext } from '../../contexts/ContentContext';
 
 const opts = {
     height: '315',
@@ -14,7 +14,6 @@ const opts = {
 };
 
 type VideoProps = {
-    content: ContentText;
     videoState: {
         hasWatchedVideo: boolean;
     };
@@ -24,11 +23,11 @@ type VideoProps = {
 
 export function Video(props: VideoProps) {
     const {
-        content,
         videoState,
         onEnd = () => { },
         onStateChange = (event) => { },
     } = props;
+    const { content } = useContentContext();
     const hasWatchedVideo = videoState.hasWatchedVideo;
     const navigate = useNavigate();
     const goToStep2 = () => {

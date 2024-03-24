@@ -4,19 +4,16 @@ import { Button } from '../../components/Button/Button';
 import image from '../../data/images/CiiT Logo.png';
 
 import './LandingPage.css';
-import { ContentText } from '../../types/ContentText';
+import { useNavigate } from 'react-router-dom';
+import { useContentContext } from '../../contexts/ContentContext';
 
-type LandingPageProps = {
-    content: ContentText;
-};
-export function LandingPage(props: LandingPageProps) {
-    const {
-        content,
-    } = props;
-    // const navigate = useNavigate();
-    // const goToStep1 = () => {
-    //     navigate('/eligibility');
-    // };
+
+export function LandingPage() {
+    const { content } = useContentContext();
+    const navigate = useNavigate();
+    const goToStep1 = () => {
+        navigate('/eligibility');
+    };
     return (
         <div className="LandingPage">
             <h1>{content.homeWelcomeMessage}</h1>
@@ -40,7 +37,7 @@ export function LandingPage(props: LandingPageProps) {
                         </h2>
                     </div>
                     <h3>{content.closedMessage}</h3>
-                    <Button label={'Registration is Closed'} />
+                    <Button label={'Registration is Closed'} onClick={goToStep1}/>
                 </div>
                 <img src={image} alt="CIIT Logo" width="100%" height="auto" />
             </div>

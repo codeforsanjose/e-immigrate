@@ -3,13 +3,12 @@ import { languageOptions } from '../../data/LanguageOptions';
 import { Button } from '../../components/Button/Button';
 
 import './LanguageSelectionModal.css';
-import { DirectReactSetter, ReactSetter } from '../../types/common';
+import { ReactSetter } from '../../types/common';
+import { useLanguageContext } from '../../contexts/LanguageContext';
 
 type LanguageSelectionModalProps = {
     showModal: boolean;
     setShowModal: ReactSetter<boolean>;
-    language: string;
-    setLanguage: DirectReactSetter<string>;
 };
 type LanguageButtonsProps = {
     onClick: (value: string) => void;
@@ -35,10 +34,12 @@ function LanguageButtons(props: LanguageButtonsProps) {
 }
 export function LanguageSelectionModal(props: LanguageSelectionModalProps) {
     const {
-        setLanguage,
         setShowModal,
         showModal,
     } = props;
+    const {
+        setLanguage,
+    } = useLanguageContext();
     const onClick = React.useCallback((value: string) => {
         setShowModal(false);
         setLanguage(value);

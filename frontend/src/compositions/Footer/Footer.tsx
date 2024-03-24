@@ -2,14 +2,11 @@ import React from 'react';
 import ciitLogo from '../../data/images/CiiT Logo.png';
 import ceticpLogo from '../../data/images/CET-ICP Logo.png';
 import './Footer.css';
-import { ContentText } from '../../types/ContentText';
+import { useContentContext } from '../../contexts/ContentContext';
 
-type FooterContent = Pick<ContentText, 'footerText1' | 'footerText2'>;
-type FooterProps = {
-    content: FooterContent;
-};
-export function Footer(props: FooterProps) {
-    const { content = { footerText1: '', footerText2: '' } } = props;
+
+export function Footer() {
+    const { content } = useContentContext();
     const { footerText1, footerText2 } = content;
     return (
         <div className="footer">

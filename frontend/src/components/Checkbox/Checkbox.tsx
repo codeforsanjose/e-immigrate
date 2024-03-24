@@ -1,6 +1,8 @@
 import React from 'react';
 import './Checkbox.css';
 import { CommonComponentProps } from '../../types/CommonComponentProps';
+import { AutoRequiredErrorSpan } from '../RequiredErrorPresenter';
+import { useQuestionnaireResponseContent } from '../../contexts/QuestionnaireResponseContext';
 type InputValue = string | Array<string> | number | undefined;
 type CheckboxProps = CommonComponentProps & {
     answers?: Array<string> | undefined;
@@ -11,10 +13,11 @@ export function Checkbox(props: CheckboxProps) {
         q, 
         answers, 
         values, 
-        bindField, 
-        collectAnswer, 
-        content,
     } = props;
+    const { 
+        collectAnswer,
+        bindField, 
+    } = useQuestionnaireResponseContent();
     return (
         <div>
             {answers?.map((option, idx) => (
@@ -28,9 +31,7 @@ export function Checkbox(props: CheckboxProps) {
                         {...bindField(q.slug)}
                         onChange={(e) => collectAnswer(q.slug, e.target.value)} />
                     <label htmlFor={q.slug}>{option}</label>
-                    <span className="RequiredError">
-                            *{content.errorMessage}
-                    </span>
+                    <AutoRequiredErrorSpan />
                 </div>
             ))}
         </div>

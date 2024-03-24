@@ -1,15 +1,20 @@
 import React from 'react';
 import './Email.css';
 import { CommonComponentProps } from '../../types/CommonComponentProps';
+import { useContentContext } from '../../contexts/ContentContext';
+import { RequiredErrorDiv } from '../RequiredErrorPresenter';
+import { useQuestionnaireResponseContent } from '../../contexts/QuestionnaireResponseContext';
 
 type EmailProps = CommonComponentProps;
 export function Email(props: EmailProps) {
     const {
         q, 
-        bindField, 
-        collectAnswer, 
-        content,
     } = props;
+    const { content } = useContentContext();
+    const { 
+        collectAnswer,
+        bindField,
+    } = useQuestionnaireResponseContent();
     return (
         <>
             <input
@@ -20,7 +25,7 @@ export function Email(props: EmailProps) {
                 className="TextInput"
                 {...bindField(q.slug)}
                 onChange={(e) => collectAnswer(q.slug, e.target.value)} />
-            <div className="RequiredError">*{content.errorMessageEmail}</div>
+            <RequiredErrorDiv message={content.errorMessageEmail} />
         </>
     );
 }

@@ -1,14 +1,17 @@
 import React from 'react';
 import './TextInput.css';
 import { CommonComponentProps } from '../../types/CommonComponentProps';
+import { AutoRequiredErrorDiv } from '../RequiredErrorPresenter';
+import { useQuestionnaireResponseContent } from '../../contexts/QuestionnaireResponseContext';
 type TextInputProps = CommonComponentProps;
 export function TextInput(props: TextInputProps) {
     const {
         q, 
-        bindField, 
-        collectAnswer, 
-        content,
     } = props;
+    const { 
+        collectAnswer,
+        bindField, 
+    } = useQuestionnaireResponseContent();
     return (
         <>
             <input
@@ -18,7 +21,7 @@ export function TextInput(props: TextInputProps) {
                 className="TextInput"
                 {...bindField(q.slug)}
                 onChange={(e) => collectAnswer(q.slug, e.target.value)} />
-            <div className="RequiredError">*{content.errorMessage}</div>
+            <AutoRequiredErrorDiv />
         </>
     );
 }

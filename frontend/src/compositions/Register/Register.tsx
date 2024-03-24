@@ -13,37 +13,39 @@ export function Register() {
         loggedIn: false,
     });
 
-    const requestObj = {
-        url: apis.registerApi,
-        method: 'POST',
-        headers: {
-            'content-type': 'application/json',
-        },
-        body: JSON.stringify({
-            email: registerBoxState.email,
-            password: btoa(registerBoxState.password),
-            name: registerBoxState.name,
-        }),
-    };
+    const requestObj = React.useMemo(() => {
+        return {
+            url: apis.registerApi,
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json',
+            },
+            body: JSON.stringify({
+                email: registerBoxState.email,
+                password: btoa(registerBoxState.password),
+                name: registerBoxState.name,
+            }),
+        };
+    }, [registerBoxState.email, registerBoxState.name, registerBoxState.password]);
 
-    const submitRegister = () => {
-        sendRequest<{
+    const submitRegister = React.useCallback(async () => {
+        const body = await sendRequest<{
             jwt?: string;
             name?: string;
-        }>(requestObj).then((body) => {
-            if (body.jwt != null && body.name != null) {
-                const _name = body.name;
-                localStorage.setItem('jwt-eimmigrate', body.jwt);
-                setRegisterBoxState(current => {
-                    return { 
-                        ...current,
-                        loggedIn: true, 
-                        name: _name,
-                    };
-                });
-            }
-        });
-    };
+        }>(requestObj);
+        
+        if (body.jwt != null && body.name != null) {
+            const _name = body.name;
+            localStorage.setItem('jwt-eimmigrate', body.jwt);
+            setRegisterBoxState(current => {
+                return { 
+                    ...current,
+                    loggedIn: true, 
+                    name: _name,
+                };
+            });
+        }
+    }, [requestObj]);
 
     const handleInputChange = React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = event.target;

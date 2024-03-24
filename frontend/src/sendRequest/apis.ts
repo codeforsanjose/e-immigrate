@@ -1,31 +1,50 @@
 // const hostName = process.env.HOSTNAME || 'http://localhost:5000';
 
 export const apis = {
-    loginApi: '/api/admins/sessions',
-    registerApi: '/api/admins',
-    deleteApi: '/api/admins/:id',
-    getUsers: '/api/users',
-    getQuestionnaireResponse: '/api/questionnaire-responses',
-    emailQuestionnaireResponse: '/api/questionnaire-responses/email',
-    agencyAssignURL: '/api/questionnaire-responses/assign-agency',
-    assignResponseFlag: '/api/questionnaire-responses/assign-flag',
-    assignEmail: '/api/questionnaire-responses/assign-email',
-    getUserById: '/api/users/:id',
-    addUser: '/api/users/add',
-    updateUser: '/api/users/update/:id',
-    deleteUser: '/api/users/delete/:id',
-    addQuestionnaireResponse: '/api/questionnaire-responses/add',
-    deleteQuestionnaireResponse: '/api/questionnaire-responses/delete/:id',
-    addQuestionnaires: '/api/questionnaires/add',
-    deleteQuestionnaire: '/api/questionnaires/:id',
-    getQuestions: '/api/questionnaires',
-    getTranslatedContent: '/api/translatedContent',
-    getTranslatedContentByLanguage: '/api/translatedContent/:title.:language',
-    generateResponsesExcel: '/api/generateExcel/responses',
-    getResponsesExcel: '/api/generateExcel/getLatest',
-    deleteResponsesExcel: '/api/generateExcel/delete',
-    uploadQuestinnaires: '/api/admins/questionnairefile',
-    getListOfQuestionnaires: '/api/admins/questionnaires',
-    getQuestionsByLanguage: 'api/questionnaires/:title.:language',
-    deleteQuestionnaireByTitle: '/api/admins/deletequestionnaire/:title',
-} as const;
+    // adminsRouter
+    ...{
+        loginApi: '/api/admins/sessions',
+        registerApi: '/api/admins',
+        deleteApi: '/api/admins/:id',
+        uploadQuestinnaires: '/api/admins/questionnairefile',
+        getListOfQuestionnaires: '/api/admins/questionnaires',
+        deleteQuestionnaireByTitle: '/api/admins/deletequestionnaire/:title',
+    } as const,
+    // usersRouter
+    ...{
+        getUsers: '/api/users',
+        getUserById: '/api/users/:id',
+        addUser: '/api/users/add',
+        updateUser: '/api/users/update/:id',
+        deleteUser: '/api/users/delete/:id',
+    } as const,
+    // generateResponsesExcelRouter
+    ...{
+        getReportById: '/api/generateExcel/get-report/:id',
+        generateResponsesExcel: '/api/generateExcel/responses',
+        getResponsesExcel: '/api/generateExcel/getLatest',
+        deleteResponsesExcel: '/api/generateExcel/delete',
+    } as const,
+    // questionnaireResponsesRouter
+    ...{
+        getAllQuestionnaireResponse: '/api/questionnaire-responses',
+        emailQuestionnaireResponse: '/api/questionnaire-responses/email',
+        agencyAssignURL: '/api/questionnaire-responses/assign-agency',
+        assignResponseFlag: '/api/questionnaire-responses/assign-flag',
+        assignEmail: '/api/questionnaire-responses/assign-email',
+        addQuestionnaireResponse: '/api/questionnaire-responses/add',
+        deleteQuestionnaireResponse: '/api/questionnaire-responses/delete/:id',
+    } as const,
+    // questionnairesRouter
+    ...{
+        addQuestionnaires: '/api/questionnaires/add',
+        deleteQuestionnaire: '/api/questionnaires/:id',
+        getQuestions: '/api/questionnaires',
+        getQuestionsByLanguage: '/api/questionnaires/:title.:language',
+    } as const,
+    // translatedContentRouter
+    ...{
+        getTranslatedContent: '/api/translatedContent',
+        getTranslatedContentByLanguage: '/api/translatedContent/:title.:language',
+    } as const,
+};

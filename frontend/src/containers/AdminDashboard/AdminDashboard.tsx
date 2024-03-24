@@ -1,92 +1,62 @@
+/* eslint-disable no-multiple-empty-lines */
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { z } from 'zod';
+
 import { sendRequest } from '../../sendRequest/sendRequest';
-import { format } from 'date-fns';
 import { apis } from '../../sendRequest/apis';
 import { getAuthToken } from '../../utilities/auth_utils';
-import { searchArrayObjects } from '../../utilities/search_array';
-import './AdminDashboard.css';
-import { languageOptions, workshopTitle } from '../../data/LanguageOptions';
+import { workshopTitle } from '../../data/LanguageOptions';
 import { Navbar } from '../../compositions/Navbar/Navbar';
 import { Button } from '../../components/Button/Button';
-import SortArrow from '../../data/images/SortArrow.svg';
-import { WithEventTarget } from '../../types/WithEventTarget';
-import { defaultCompare } from '../../utilities/defaultCompare';
-import { useNavigate } from 'react-router-dom';
-
 import { apiUrlFormatters } from '../../sendRequest/apiUrlFormatters';
-import { ContentText, missingContentText } from '../../types/ContentText';
-// const {
-//     getQuestionnaireResponse,
-//     emailQuestionnaireResponse,
-//     generateResponsesExcel,
-//     getQuestions,
-//     agencyAssignURL,
-//     assignResponseFlag,
-//     assignEmail,
-//     deleteQuestionnaireResponse,
-// } = apis;
-const DESCRIPTIVE_TIMESTAMP = 'MM/dd/yyyy, h:mm:ss a';
-const AGENCIES = ['ALA', 'CAIR', 'CC', 'CET', 'IRC', 'PARS'];
-const questionKeysThatAreNotRedFlagsButInARedFlagQuestionnaire = [
-    'male',
-    'still_married_to_that_citizen',
-    'receive_public_benefits',
-    'live_US_18-26_and_are_26-31',
-    'selective_service',
-    'green_card_through_marriage',
-];
+import { replaceSlug, slugPair } from '../../utilities/slugs/replaceSlug';
+import { downloadUri } from '../../utilities/downloader/downloadUri';
+import { ResponsesTable } from './ResponsesTable';
+import { isAgencyObject, isValueYes } from './helpers';
+import { questionKeysThatAreNotRedFlagsButInARedFlagQuestionnaire } from './constants';
+import { LoadingIndicator } from './LoadingIndicator';
+import { QuestionnaireResponseElement } from './types';
+import { AgencyOverview } from './AgencyOverview';
+import { FlagOverview } from './FlagOverview';
 
-function isAgencyObject(value: unknown): value is { agency: string, } {
-    if (value == null) return false;
-    else if (typeof value !== 'object') return false;
-    if (!('agency' in value)) return false;
-    return typeof (value.agency) === 'number';
-}
-type QuestionnaireResponseElement = {
-    _id: string;
-    responseDownloadedToExcel: boolean;
-    questionnaireResponse: Record<string, string>;
-    flagOverride?: boolean;
-    flag?: boolean;
-    agency: string;
-    emailSent?: boolean;
-    createdAt: number | Date;
-    updatedAt: number | Date;
-};
+import './AdminDashboard.css';
+
+
+
+const GenerateExcelResponseSchema = z.object({
+    id: z.string(),
+});
+
+
+
 export function AdminDashboard() {
     const navigate = useNavigate();
     const [questionnaireResponses, setQuestionnaireResponses] = React.useState<Array<QuestionnaireResponseElement>>([]);
     const [questions, setQuestions] = React.useState<Array<string>>([]);
-    const content: ContentText = { 
-        ...(missingContentText),
-        buttonHome: 'Home',
-    };
-    const [language, setLanguage] = React.useState<string>('');
-    const [flagOrder, setFlagOrder] = React.useState(false);
-    const [emailOrder, setEmailOrder] = React.useState(false);
-    const [downloadOrder, setDownloadOrder] = React.useState(false);
+    // const [language, setLanguage] = React.useState<string>('');
     const [loading, setLoading] = React.useState(true);
-    const [createdOrder, setCreatedOrder] = React.useState(true);
-    const [updatedOrder, setUpdatedOrder] = React.useState(true);
     const [filterBy, setFilterBy] = React.useState('full_name');
     const [searchTerm, setSearchTerm] = React.useState('');
+
     React.useEffect(() => {
-        setLoading(true);
-        const jwt = getAuthToken();
-        if (jwt === null) {
-            navigate('/login');
-            return;
-        }
-        else {
-            const requestObj = {
-                url: apis.getQuestionnaireResponse,
-            };
-            const headers = {
-                Authorization: `Bearer ${jwt}`,
-            };
-            sendRequest<{
-                responses: Array<QuestionnaireResponseElement>;
-            }>(requestObj, headers).then((response) => {
+        async function inner() {
+            setLoading(true);
+            const jwt = getAuthToken();
+            if (jwt === null) {
+                navigate('/login');
+                return;
+            }
+            else {
+                const requestObj = {
+                    url: apis.getAllQuestionnaireResponse,
+                };
+                const headers = {
+                    Authorization: `Bearer ${jwt}`,
+                };
+                const response = await sendRequest<{
+                    responses: Array<QuestionnaireResponseElement>;
+                }>(requestObj, headers);
                 const { responses = [] } = response;
                 const updatedResponses = responses
                     .map((item) => {
@@ -99,8 +69,7 @@ export function AdminDashboard() {
                                     return !questionKeysThatAreNotRedFlagsButInARedFlagQuestionnaire.includes(
                                         key,
                                     )
-                                        ? (value.length > 0) &&
-                                            value.toUpperCase() === 'YES'
+                                        ? isValueYes(value)
                                             ? true
                                             : acc
                                         : acc;
@@ -121,475 +90,13 @@ export function AdminDashboard() {
                     });
                 setLoading(false);
                 setQuestionnaireResponses(updatedResponses);
-            });
+            }
         }
+        void inner();
     }, [navigate]);
 
-    const toggleFlag = React.useCallback((index: number) => {
-        const updatedResponses = questionnaireResponses.map(
-            (item, responseIndex) => {
-                return {
-                    ...item,
-                    flag: responseIndex === index ? !(item.flag ?? false) : item.flag,
-                    flagOverride: true,
-                };
-            },
-        );
-        const responseToUpdate = updatedResponses.reduce(
-            (accumulator, item, responseIndex) => {
-                return responseIndex === index ? item : accumulator;
-            },
-            {},
-        );
-        const requestObj = {
-            url: apis.assignResponseFlag,
-            method: 'POST',
-            body: JSON.stringify({
-                responsesToUpdate: [responseToUpdate],
-            }),
-        };
-        const jwt = getAuthToken();
-        const headers = {
-            Authorization: `Bearer ${jwt}`,
-        };
-        sendRequest(requestObj, headers).then((response) => {
-            setQuestionnaireResponses(updatedResponses);
-        });
-    }, [questionnaireResponses]);
-    const resetEmail = React.useCallback((index: number) => {
-        const updatedResponses = questionnaireResponses.map(
-            (item, responseIndex) => {
-                return {
-                    ...item,
-                    emailSent: responseIndex === index ? false : item.emailSent,
-                };
-            },
-        );
-        const responseToUpdate = updatedResponses.reduce(
-            (accumulator, item, responseIndex) => {
-                return responseIndex === index ? item : accumulator;
-            },
-            {},
-        );
-        const requestObj = {
-            url: apis.assignEmail,
-            method: 'POST',
-            body: JSON.stringify({
-                responsesToUpdate: [responseToUpdate],
-            }),
-        };
-        const jwt = getAuthToken();
-        const headers = {
-            Authorization: `Bearer ${jwt}`,
-        };
-        sendRequest(requestObj, headers).then((response) => {
-            setQuestionnaireResponses(updatedResponses);
-        });
-    }, [questionnaireResponses]);
-    const flagOverviewMarkup = React.useMemo(() => {
-        return (
-            <div className="flag-dashboard-card">
-                <h4>Responses</h4>
-                <div>
-                    <span>Red:</span>
-                    <span className="text-red bold">
-                        {questionnaireResponses.filter(
-                            (response) => response.flag === true,
-                        ).length}
-                    </span>
-                </div>
-                <div>
-                    Green:{' '}
-                    <span className="text-green bold">
-                        {questionnaireResponses.filter(
-                            (response) => response.flag === false,
-                        ).length}
-                    </span>
-                </div>
-                <div>
-                    Total:{' '}
-                    <span className="bold">
-                        {questionnaireResponses.length}
-                    </span>
-                </div>
-            </div>
-        );
-    }, [questionnaireResponses]);
 
-    const agencyOverviewMarkup = React.useMemo(() => {
-        return (
-            <div className="agency-dashboard-card">
-                <h4>Assigned to</h4>
-                <div className="agency-grid">
-                    {AGENCIES.map((agency, idx) => {
-                        return (
-                            <div key={idx} className="agency-row">
-                                <div>{agency}</div>
-                                <div className="sum text-red bold">
-                                    {questionnaireResponses.filter(
-                                        (response) => response.agency === agency &&
-                                            response.flag === true,
-                                    ).length}
-                                </div>
-                                <div className="sum text-green bold">
-                                    {questionnaireResponses.filter(
-                                        (response) => response.agency === agency &&
-                                            response.flag === false,
-                                    ).length}
-                                </div>
-                                <div className="sum bold">
-                                    {questionnaireResponses.filter(
-                                        (response) => response.agency === agency,
-                                    ).length}
-                                </div>
-                            </div>
-                        );
-                    })}
-                </div>
-            </div>
-        );
-    }, [questionnaireResponses]);
-
-    const allOptions = React.useMemo(() => {
-        const firstOption = (
-            <option key="agency-initial" value="">
-                Please select
-            </option>
-        );
-        const agenciesOptions = AGENCIES.map((agency, index) => {
-            return (
-                <option key={`agency-${index}`} value={agency}>
-                    {agency}
-                </option>
-            );
-        });
-        return [firstOption, agenciesOptions];
-    }, []);
-
-    const assignResponseAgency = React.useCallback((e: WithEventTarget<string>, resIndex: number) => {
-        const updatedResponses = questionnaireResponses.map((item, index) => {
-            return resIndex === index
-                ? {
-                    ...item,
-                    agency: e.target.value,
-                }
-                : item;
-        });
-        const selectedResponseForAgency = {
-            ...questionnaireResponses[resIndex],
-            agency: e.target.value,
-        };
-        const requestObj = {
-            url: apis.agencyAssignURL,
-            method: 'POST',
-            body: JSON.stringify({
-                responsesToEmail: [selectedResponseForAgency],
-            }),
-        };
-        const jwt = getAuthToken();
-        const headers = {
-            Authorization: `Bearer ${jwt}`,
-        };
-        sendRequest(requestObj, headers).then((response) => {
-            console.log('wow agency success response', response);
-            setQuestionnaireResponses(updatedResponses);
-        });
-    }, [questionnaireResponses]);
-
-    const sortFlags = () => {
-        flagOrder
-            ? sortAscending('flag', flagOrder, setFlagOrder)
-            : sortDescending('flag', flagOrder, setFlagOrder);
-    };
-    const sortEmail = () => {
-        emailOrder
-            ? sortAscendingUndefined('emailSent', emailOrder, setEmailOrder)
-            : sortDescendingUndefined('emailSent', emailOrder, setEmailOrder);
-    };
-    const sortDownload = () => {
-        downloadOrder
-            ? sortAscendingUndefined(
-                'responseDownloadedToExcel',
-                downloadOrder,
-                setDownloadOrder,
-            )
-            : sortDescendingUndefined(
-                'responseDownloadedToExcel',
-                downloadOrder,
-                setDownloadOrder,
-            );
-    };
-    const sortCreated = () => {
-        createdOrder
-            ? sortAscending('createdAt', createdOrder, setCreatedOrder)
-            : sortDescending('createdAt', createdOrder, setCreatedOrder);
-    };
-    const sortUpdated = () => {
-        updatedOrder
-            ? sortAscending('updatedAt', updatedOrder, setUpdatedOrder)
-            : sortDescending('updatedAt', updatedOrder, setUpdatedOrder);
-    };
-    
-    type HeaderState = boolean;
-    type SetHeaderState = (value: HeaderState) => void;
-    type SortFunction = (property: keyof QuestionnaireResponseElement, headerState: HeaderState, setHeaderState: SetHeaderState) => void;
-    const sortAscending: SortFunction = (property, headerState, setHeaderState) => {
-        const sortedResponses = questionnaireResponses.sort((a, b) => {
-            return defaultCompare(a[property], b[property]);
-        });
-        setQuestionnaireResponses(sortedResponses);
-        setHeaderState(!headerState);
-    };
-    const sortDescending: SortFunction = (property, headerState, setHeaderState) => {
-        const sortedResponses = questionnaireResponses.sort((a, b) => {
-            return -defaultCompare(a[property], b[property]);
-        });
-        setQuestionnaireResponses(sortedResponses);
-        setHeaderState(!headerState);
-    };
-    const sortAscendingUndefined: SortFunction = (property, headerState, setHeaderState) => {
-        const sortedResponses = questionnaireResponses.sort((a, b) => {
-            if ((Boolean(a[property])) && !(Boolean(b[property]))) return -1;
-            if (!(Boolean(a[property])) && (Boolean(b[property]))) return 1;
-            return 0;
-        });
-        setQuestionnaireResponses(sortedResponses);
-        setHeaderState(!headerState);
-    };
-    const sortDescendingUndefined: SortFunction = (property, headerState, setHeaderState) => {
-        const sortedResponses = questionnaireResponses.sort((a, b) => {
-            if ((Boolean(a[property])) && !(Boolean(b[property]))) return 1;
-            if (!(Boolean(a[property])) && (Boolean(b[property]))) return -1;
-            return 0;
-        });
-        setQuestionnaireResponses(sortedResponses);
-        setHeaderState(!headerState);
-    };
-    const softDeleteResponse = React.useCallback((resIndex: number) => {
-        const confirmBox = window.confirm(
-            'Do you really want to delete this questionnaire response?',
-        );
-        if (!confirmBox) {
-            return;
-        }
-
-        const response_id = questionnaireResponses[resIndex]._id;
-        const updatedResponses = questionnaireResponses.filter(
-            (item, index) => resIndex !== index,
-        );
-
-        const requestObj = {
-            url: apiUrlFormatters.deleteQuestionnaireResponse({
-                id: response_id,
-            }),
-            method: 'PUT',
-        };
-        const jwt = getAuthToken();
-        const headers = {
-            Authorization: `Bearer ${jwt}`,
-        };
-        sendRequest(requestObj, headers)
-            .then((response) => {
-                setQuestionnaireResponses(updatedResponses);
-            })
-            .catch((err) => {
-                console.log(
-                    `error soft-deleting questionnaire response ${response_id}`,
-                    err,
-                );
-            });
-    }, [questionnaireResponses]);
-
-    const responsesMarkup = React.useMemo(() => {
-        const filterQuestionnaireResponses = searchArrayObjects(
-            questionnaireResponses,
-            `questionnaireResponse.${filterBy}`,
-            searchTerm,
-            3,
-        );
-        return filterQuestionnaireResponses.map((response, index) => {
-            const { questionnaireResponse = {} } = response;
-            const fullLangText = languageOptions.find(
-                (item) => item.code === questionnaireResponse.languageCode,
-            );
-            const langDisplay = (fullLangText?.englishName) ?? `Unknown  ${questionnaireResponse.languageCode}`;
-            const languageMarkupQuestion = (
-                <article key={`td-answer-lang-${index}`} className={`answer `}>
-                    <span>
-                        Lang:
-                        {langDisplay}
-                    </span>
-                </article>
-            );
-            const policeMarkupQuestion = (
-                <article
-                    key={`td-answer-police-${index}`}
-                    className={`answer contact-with-police`}
-                >
-                    <span>
-                        contact with police:
-                        {questionnaireResponse.contact_with_police}
-                    </span>
-                </article>
-            );
-            const policeExplinationMarkupQuestion = (questionnaireResponse.contact_with_police_explanation.length > 0)
-                ? (
-                    <article
-                        key={`td-answer-police-exp-${index}`}
-                        className={`answer  contact-with-police-explain`}
-                    >
-                        <span>
-                        police explination:
-                            {questionnaireResponse.contact_with_police_explanation}
-                        </span>
-                    </article>
-                )
-                : null;
-            const alreadyQuestionKeyMarkupedUp = [
-                'languageCode',
-                'contact_with_police',
-                'contact_with_police_explanation',
-            ];
-            const allAnswers = Object.keys(questionnaireResponse).reduce<Array<JSX.Element>>((accumulator, questionKey, index) => {
-                const flagIt = !questionKeysThatAreNotRedFlagsButInARedFlagQuestionnaire.includes(
-                    questionKey,
-                )
-                    ? (questionnaireResponse[questionKey].length > 0) &&
-                            questionnaireResponse[questionKey].toUpperCase() ===
-                            'YES'
-                        ? 'red-outline'
-                        : 'green-outline'
-                    : 'green-outline';
-                const answerMarkup = !alreadyQuestionKeyMarkupedUp.includes(
-                    questionKey,
-                )
-                    ? (
-                        <article
-                            key={`td-answer-${index}`}
-                            className={`answer ${flagIt}`}
-                        >
-                            <b>{index + 1}.</b>
-                            <span>
-                                {questionKey}:
-                                {questionnaireResponse[questionKey]}
-                            </span>
-                        </article>
-                    )
-                    : null;
-                return (answerMarkup != null)
-                    ? [...accumulator, answerMarkup]
-                    : accumulator;
-            }, []);
-            const allTheAnswers = [
-                languageMarkupQuestion,
-                policeMarkupQuestion,
-                policeExplinationMarkupQuestion,
-                ...allAnswers,
-            ];
-            return (
-                <tr key={response._id}>
-                    <td>{index + 1}</td>
-                    <td>
-                        Created:{' '}
-                        {format(
-                            new Date(response.createdAt),
-                            DESCRIPTIVE_TIMESTAMP,
-                        )}
-                    </td>
-                    <td>
-                        Updated:{' '}
-                        {format(
-                            new Date(response.updatedAt),
-                            DESCRIPTIVE_TIMESTAMP,
-                        )}
-                    </td>
-                    <td>
-                        <div
-                            className={`flag ${(response.flag ?? false) ? 'red' : 'green'}`}
-                            onClick={(e) => toggleFlag(index)}
-                        ></div>
-                    </td>
-                    <td>
-                        <label htmlFor="agency-select">Assigned To:</label>
-                        <select
-                            id="agency-select"
-                            value={response.agency}
-                            onChange={(e) => assignResponseAgency(e, index)}
-                        >
-                            {allOptions}
-                        </select>
-                    </td>
-                    <td>
-                        <span>{(response.emailSent ?? false) ? 'Yes' : 'No'}</span>
-                        <button onClick={(e) => resetEmail(index)}>
-                            RESET
-                        </button>
-                    </td>
-                    <td>
-                        <span>
-                            {response.responseDownloadedToExcel ? 'Yes' : 'No'}
-                        </span>
-                    </td>
-                    <td>
-                        <div
-                            title="Delete this response"
-                            className="delete"
-                            onClick={(e) => softDeleteResponse(index)}
-                        ></div>
-                    </td>
-                    <td>
-                        <div className="all-answers">{allTheAnswers}</div>
-                    </td>
-                </tr>
-            );
-        });
-    }, [questionnaireResponses, filterBy, searchTerm, allOptions, toggleFlag, assignResponseAgency, resetEmail, softDeleteResponse]);
-
-    const responsesTable = (
-        <table className="responses">
-            <tbody>
-                <tr className="header-row">
-                    <th>#</th>
-                    <th>
-                        Created
-                        <SortArrow
-                            className={createdOrder ? '' : 'up'}
-                            onClick={sortCreated} />
-                    </th>
-                    <th>
-                        Updated
-                        <SortArrow
-                            className={updatedOrder ? '' : 'up'}
-                            onClick={sortUpdated} />
-                    </th>
-                    <th>
-                        Flag
-                        <SortArrow
-                            className={flagOrder ? 'up' : ''}
-                            onClick={sortFlags} />
-                    </th>
-                    <th>Agency</th>
-                    <th>
-                        Email Sent
-                        <SortArrow
-                            className={emailOrder ? 'up' : ''}
-                            onClick={sortEmail} />
-                    </th>
-                    <th>
-                        Response Downloaded
-                        <SortArrow
-                            className={downloadOrder ? 'up' : ''}
-                            onClick={sortDownload} />
-                    </th>
-                    <th></th>
-                    <th>Responses</th>
-                </tr>
-                {responsesMarkup}
-            </tbody>
-        </table>
-    );
-
-    const sendEmailsToUsers = () => {
+    const sendEmailsToUsers = React.useCallback(async () => {
         const requestObj = {
             url: apis.emailQuestionnaireResponse,
             method: 'POST',
@@ -602,29 +109,39 @@ export function AdminDashboard() {
             Authorization: `Bearer ${jwt}`,
         };
         setLoading(true);
-        sendRequest(requestObj, headers)
-            .then((response) => {
-                console.log('emails sent?', response);
+        try {
 
-                setLoading(false);
-                window.location.reload();
-            })
-            .catch((errors) => {
-                setLoading(false);
-                console.log(
-                    'send emails to users failed errors is',
-                    JSON.stringify(errors),
-                );
-            });
-    };
+            const response = await sendRequest(requestObj, headers);
+            console.log('emails sent?', response);
+            setLoading(false);
+            window.location.reload();
+        }
+        catch (errors) {
+            console.log(
+                'send emails to users failed errors is',
+                JSON.stringify(errors),
+            );
+        }
+        finally {
+            setLoading(false);
+        }
 
-    const getExcelFile = () => {
+       
+    }, []);
+    
+    const getReportById = React.useCallback(async (id: string) => {
         setLoading(false);
-        window.location.href =
-            '/api/generateExcel/getLatest/ResponsesExcel.xlsx';
-    };
+        const uri = replaceSlug(apis.getReportById, [
+            slugPair(':id', id),
+        ]);
+        await downloadUri({
+            uri, 
+            filename: 'ResponsesExcel.xlsx',
+            auth: true,
+        });
+    }, []);
 
-    const downloadLatestResponsesExcel = () => {
+    const downloadLatestResponsesExcel = React.useCallback(async () => {
         setLoading(true);
         // const includedResponses = questionnaireResponses
         //     .sort((a, b) => {
@@ -646,93 +163,101 @@ export function AdminDashboard() {
         const headers = {
             Authorization: `Bearer ${jwt}`,
         };
-        sendRequest(requestObj, headers)
-            .then((response) => {
-                getExcelFile();
-            })
-            .catch((errors) => {
-                console.log(
-                    'Error writing the exel sheet',
-                    JSON.stringify(errors),
-                );
-                alert(
-                    'Error writing the exel sheet please contact administrator.',
-                );
-            });
-    };
-    const downloadAllResponsesExcel = () => {
+        try {
+            const response = await sendRequest(requestObj, headers);
+            const excelResponse = GenerateExcelResponseSchema.parse(response);
+            await getReportById(excelResponse.id);
+        }
+        catch (errors) {
+            console.log(
+                'Error writing the exel sheet',
+                JSON.stringify(errors),
+            );
+            alert(
+                'Error writing the exel sheet please contact administrator.',
+            );
+        }
+    }, [getReportById, questions]);
+    const downloadAllResponsesExcel = React.useCallback(async () => {
         // const includedResponses = questionnaireResponses.sort((a, b) => {
         //     if (a.agency < b.agency) return -1;
         //     if (a.agency > b.agency) return 1;
         //     return 0;
         // });
+        const bodyRaw = {
+            questions,
+            responses: [],
+            downloadAll: true,
+        };
+        console.log({
+            bodyRaw,
+        });
         const requestObj = {
             url: apis.generateResponsesExcel,
             method: 'POST',
-            body: JSON.stringify({
-                questions,
-                responses: [],
-                downloadAll: true,
-            }),
+            body: JSON.stringify(bodyRaw),
         };
         const jwt = getAuthToken();
         const headers = {
             Authorization: `Bearer ${jwt}`,
         };
-        sendRequest(requestObj, headers)
-            .then((response) => {
-                getExcelFile();
-            })
-            .catch((errors) => {
-                console.log(
-                    'Error writing the exel sheet',
-                    JSON.stringify(errors),
-                );
-                alert(
-                    'Error writing the exel sheet please contact administrator.',
-                );
-            });
-    };
+        try {
+            const response = await sendRequest(requestObj, headers);
+            const excelResponse = GenerateExcelResponseSchema.parse(response);
+            await getReportById(excelResponse.id);
+        }
+        catch (errors) {
+            console.log(
+                'Error writing the exel sheet',
+                JSON.stringify(errors),
+            );
+            alert(
+                'Error writing the exel sheet please contact administrator.',
+            );
+        }
+    }, [getReportById, questions]);
 
     React.useEffect(() => {
-        const requestObj = {
-            url: apiUrlFormatters.getQuestionsByLanguage({
-                title: workshopTitle,
-                language: 'en',
-            }),
-        };
-        sendRequest<{ questions: Array<string>, }>(requestObj).then((response) => {
+        async function inner() {
+            const requestObj = {
+                url: apiUrlFormatters.getQuestionsByLanguage({
+                    title: workshopTitle,
+                    language: 'en',
+                }),
+            };
+            const response = await sendRequest<{ questions: Array<string>, }>(requestObj);
+            if (response == null) {
+                console.log('response was null', {
+                    requestObj,
+                });
+                return;
+            }
+            console.log({
+                response: response.questions,
+            });
             setQuestions(response.questions);
-        });
+        }
+        void inner();
     }, []);
-
-    const loadingMarkup = loading
-        ? (
-            <div className="loading is-vcentered">Loading...</div>
-        )
-        : null;
 
     return (
         <section>
-            <Navbar 
-                content={content} 
-                dashboard={true} 
-                language={language}
-                setLanguage={setLanguage}
+            <Navbar
+                dashboard={true}
             />
             <section className="AdminDashboard">
-                {loadingMarkup}
+                <LoadingIndicator loading={loading}/>
                 <section className="overview-container">
                     <article>
                         <h2 className="dashboard-section-title">Overview</h2>
                         <div className="dashboard-card">
-                            {flagOverviewMarkup}
+                            <FlagOverview questionnaireResponses={questionnaireResponses}/>
                         </div>
                     </article>
                     <article>
                         <h2 className="dashboard-section-title">By Agency</h2>
                         <div className="dashboard-card">
-                            {agencyOverviewMarkup}
+                            <AgencyOverview questionnaireResponses={questionnaireResponses} />
                         </div>
                     </article>
                 </section>
@@ -768,7 +293,11 @@ export function AdminDashboard() {
                 </section>
                 <section>
                     <h2 className="dashboard-section-title">Details</h2>
-                    {responsesTable}
+                    <ResponsesTable
+                        filterBy={filterBy}
+                        searchTerm={searchTerm}
+                        setLoading={setLoading}
+                    />
                 </section>
             </section>
         </section>

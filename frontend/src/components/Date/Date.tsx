@@ -1,13 +1,17 @@
 import React from 'react';
 import './Date.css';
-import { ErrorMessageOnlyContentText } from '../../types/ContentText';
 import { CommonComponentProps } from '../../types/CommonComponentProps';
+import { AutoRequiredErrorDiv } from '../RequiredErrorPresenter';
+import { useQuestionnaireResponseContent } from '../../contexts/QuestionnaireResponseContext';
 
-type DateProps = CommonComponentProps<ErrorMessageOnlyContentText>;
+type DateProps = CommonComponentProps;
 export function Date(props: DateProps) {
     const {
-        q, bindField, content,
+        q, 
     } = props;
+    const {
+        bindField,
+    } = useQuestionnaireResponseContent();
     return (
         <>
             <input
@@ -16,7 +20,7 @@ export function Date(props: DateProps) {
                 required={q.required}
                 className="TextInput"
                 {...bindField(q.slug)} />
-            <div className="RequiredError">*{content.errorMessage}</div>
+            <AutoRequiredErrorDiv />
         </>
     );
 }

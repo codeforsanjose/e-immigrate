@@ -1,6 +1,3 @@
-import { ContentText } from "../../types/ContentText";
-import { BindFieldFunction, CollectAnswerFunction } from "../../types/common";
-
 export type QuestionProps_Q = {
     category: string;
     answerSelections: string;
@@ -11,8 +8,5 @@ export type QuestionProps_Q = {
 };
 export type QuestionProps = {
     q?: QuestionProps_Q | undefined | null; 
-    bindField: BindFieldFunction; 
     setQuestion: (value: string | null) => void;  
-    content: ContentText; 
-    collectAnswer: CollectAnswerFunction;
 };

@@ -9,7 +9,7 @@ import { LanguageDropdown } from '../../components/LanguageDropdown/LanguageDrop
 import './EditQuestionnaires.css';
 
 import { apiUrlFormatters } from '../../sendRequest/apiUrlFormatters';
-import { ContentText, missingContentText } from '../../types/ContentText';
+import { useLanguageContext } from '../../contexts/LanguageContext';
 
 type QuestionnaireElement = {
     title: string | undefined;
@@ -25,6 +25,10 @@ type GetQuestionsByLanguageApiResponse = {
     questions: Array<GetQuestionsByLanguageElement>;
 };
 export const EditQuestionnaires = () => {
+    const {
+        language,
+        setLanguage,
+    } = useLanguageContext();
     const [chooseFile, toggleChooseFile] = React.useState(false);
     const [questionnaireStatus, setQuestionnaireStatus] = React.useState<boolean | string>(false);
     const [questionnaires, setQuestionnaires] = React.useState<Array<QuestionnaireElement>>([]);
@@ -33,24 +37,16 @@ export const EditQuestionnaires = () => {
     const [getQuestionCall, callGetQuestions] = React.useState(false);
     const [fetchQuestionnaire, setFetchQuestionnaire] = React.useState(false);
     const [languageDropdown, toggleLanguageDropDown] = React.useState(false);
-    const [language, setLanguage] = React.useState('en');
+    // const [language, setLanguage] = React.useState('en');
     const [questions, setListOfQuestions] = React.useState<Array<GetQuestionsByLanguageElement>>([]);
     const [reFetch, setRefetch] = React.useState(false);
     const [workshopTitle, setWorkshopTitle] = React.useState('');
 
-    const content: ContentText = { 
-        ...(missingContentText),
-        buttonHome: 'Home',
-    };
-    const setToggleChooseFile = () => {
-        if (chooseFile) {
-            toggleChooseFile(false);
-        }
-        else {
-            toggleChooseFile(true);
-        }
-    };
-    const softDeleteResponse = (title: string) => {
+  
+    const setToggleChooseFile = React.useCallback(() => {
+        toggleChooseFile(cur => !cur);
+    }, []);
+    const softDeleteResponse = React.useCallback(async (title: string) => {
         const confirmBox = window.confirm(
             'Do you really want to delete this questionnaire response?',
         );
@@ -68,23 +64,23 @@ export const EditQuestionnaires = () => {
         const headers = {
             Authorization: `Bearer ${jwt}`,
         };
-        sendRequest(requestObj, headers)
-            .then((response) => {
-                setRefetch(true);
-            })
-            .catch((err) => {
-                console.log(
-                    `error soft-deleting questionnaire response ${title}`,
-                    err,
-                );
-            });
-    };
-    const changeLanguage = (language: string) => {
+        try {
+            await sendRequest(requestObj, headers);
+            setRefetch(true);
+        }
+        catch (err) {
+            console.log(
+                `error soft-deleting questionnaire response ${title}`,
+                err,
+            );
+        }
+    }, []);
+    const changeLanguage = React.useCallback((language: string) => {
         setLanguage(language);
         toggleLanguageDropDown(false);
         callGetQuestions(true);
-    };
-    const getByLanguage = () => {
+    }, [setLanguage]);
+    const getByLanguage = React.useCallback(async () => {
         toggleLanguageDropDown(true);
         const encodedTitle = encodeURIComponent(questionnaireTitle);
         const requestObj = {
@@ -94,42 +90,48 @@ export const EditQuestionnaires = () => {
             }),
             method: 'GET',
         };
-        sendRequest<GetQuestionsByLanguageApiResponse>(requestObj)
-            .then((response) => {
-                console.log(response);
-                setListOfQuestions(response.questions);
-            })
-            .catch((error) => console.log(error));
-    };
+        try {
+            const response = await sendRequest<GetQuestionsByLanguageApiResponse>(requestObj);
+            console.log(response);
+            setListOfQuestions(response.questions);
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }, [language, questionnaireTitle]);
     if (getQuestionCall) {
         getByLanguage();
         callGetQuestions(false);
     }
     React.useEffect(() => {
-        if (fetchQuestionnaire || (questionnaires.length > 0 && !reFetch)) {
-            return;
-        }
-        else {
-            const requestObj = {
-                url: apis.getQuestions,
-                method: 'GET',
-            };
-            setFetchQuestionnaire(true);
-            sendRequest<GetQuestionsApiResponse>(requestObj)
-                .then((response) => {
+        async function inner() {
+            if (fetchQuestionnaire || (questionnaires.length > 0 && !reFetch)) {
+                return;
+            }
+            else {
+                const requestObj = {
+                    url: apis.getQuestions,
+                    method: 'GET',
+                };
+                setFetchQuestionnaire(true);
+                try {
+
+                    const response = await sendRequest<GetQuestionsApiResponse>(requestObj);
                     const objs = response.responses;
                     setQuestionnaires(objs);
                     const titles = Array.from(new Set(objs.map((obj) => obj.title)));
                     setTitleList(titles);
                     setFetchQuestionnaire(false);
                     setRefetch(false);
-                })
-                .catch(() => {
+                }
+                catch (err) {
                     setFetchQuestionnaire(false);
-                });
+                }
+            }
         }
+        void inner();
     }, [fetchQuestionnaire, questionnaires.length, reFetch]);
-    const uploadNewQuestionnaire = (qustionnaireFile: File | undefined) => {
+    const uploadNewQuestionnaire = React.useCallback(async (qustionnaireFile: File | undefined) => {
         if (qustionnaireFile == null) {
             console.error('No file selected');
             return;
@@ -153,40 +155,35 @@ export const EditQuestionnaires = () => {
             body: formData,
         };
         setQuestionnaireStatus('Uploading ' + qustionnaireFile.name);
-        sendRequest(requestObj, headers, true)
-            .then((response) => {
-                setQuestionnaireStatus('Uploaded ' + qustionnaireFile.name);
-                setRefetch(true);
+        try {
+            await sendRequest(requestObj, headers, true);
+            setQuestionnaireStatus('Uploaded ' + qustionnaireFile.name);
+            setRefetch(true);
 
-                setTimeout(() => setQuestionnaireStatus(''), 10 * 1000);
-                setToggleChooseFile();
-            })
-            .catch(() => {
-                setQuestionnaireStatus(
-                    'Error! Upload of ' + qustionnaireFile.name + ' failed',
-                );
+            setTimeout(() => setQuestionnaireStatus(''), 10 * 1000);
+            setToggleChooseFile();
+        }
+        catch {
+            setQuestionnaireStatus(`Error! Upload of ${qustionnaireFile.name} failed`);
+            setTimeout(() => setQuestionnaireStatus(''), 10 * 1000);
+            setToggleChooseFile();
+        }
+    }, [setToggleChooseFile, workshopTitle]);
 
-                setTimeout(() => setQuestionnaireStatus(''), 10 * 1000);
-                setToggleChooseFile();
-            });
-    };
-    const selectLanguage = (title: string) => {
+    const selectLanguage = React.useCallback((title: string) => {
         toggleLanguageDropDown(true);
         setTitle(title);
         changeLanguage('en');
-    };
-    const switchViews = () => {
+    }, [changeLanguage]);
+    const switchViews = React.useCallback(() => {
         toggleLanguageDropDown(false);
         setListOfQuestions([]);
-    };
+    }, []);
 
     return (
         <section>
             <Navbar
-                content={content}
                 dashboard={true}
-                language={language}
-                setLanguage={setLanguage}
             />
             <section>
                 {chooseFile
@@ -204,9 +201,7 @@ export const EditQuestionnaires = () => {
                                 required
                                 type="file"
                                 accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                                onChange={(e) =>
-                                    uploadNewQuestionnaire(e.target.files?.[0])
-                                }
+                                onChange={async e => await uploadNewQuestionnaire(e.target.files?.[0])}
                             />
                         </form>
                     )
@@ -243,7 +238,7 @@ export const EditQuestionnaires = () => {
                                         <div
                                             title="Delete this response"
                                             className="delete"
-                                            onClick={(e) => softDeleteResponse(title)}
+                                            onClick={async () => await softDeleteResponse(title)}
                                         ></div>
                                     </li>
                                 );

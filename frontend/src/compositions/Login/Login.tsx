@@ -18,32 +18,41 @@ export function Login() {
         loggedIn: false,
     });
 
-    const requestObj = {
-        url: apis.loginApi,
-        method: 'POST',
-        body: JSON.stringify({
-            email: loginState.email,
-            password: btoa(loginState.password),
-        }),
-    };
+    const requestObj = React.useMemo(() => {
+        return {
+            url: apis.loginApi,
+            method: 'POST',
+            body: JSON.stringify({
+                email: loginState.email,
+                password: btoa(loginState.password),
+            }),
+        };
+    }, [loginState.email, loginState.password]);
 
-    const submitLogin = (e: unknown) => {
-        sendRequest<{
+    const submitLogin = React.useCallback(async (e: unknown) => {
+        const body = await sendRequest<{
             jwt?: string;
             name?: string;
-        }>(requestObj).then((body) => {
-            if ((body.jwt != null) && (body.name != null)) {
-                localStorage.setItem('jwt-eimmigrate', body.jwt);
-                setLoginState(curr => {
-                    return { 
-                        ...curr,
-                        loggedIn: true, 
-                        name: body.name,
-                    };
-                });
-            }
-        });
-    };
+        }>(requestObj);
+        if ((body.jwt != null) && (body.name != null)) {
+            localStorage.setItem('jwt-eimmigrate', body.jwt);
+            setLoginState(curr => {
+                return { 
+                    ...curr,
+                    loggedIn: true, 
+                    name: body.name,
+                };
+            });
+        }
+    }, [requestObj]);
+
+    const handleInputChange: React.ChangeEventHandler<HTMLInputElement> = React.useCallback((event) => {
+        const { name, value } = event.target;
+        setLoginState((loginState) => ({
+            ...loginState,
+            [name]: value,
+        }));
+    }, []);
 
     if (loginState.loggedIn) {
         return (
@@ -55,13 +64,7 @@ export function Login() {
         );
     }
 
-    const handleInputChange: React.ChangeEventHandler<HTMLInputElement> = (event) => {
-        const { name, value } = event.target;
-        setLoginState((loginState) => ({
-            ...loginState,
-            [name]: value,
-        }));
-    };
+    
 
     return (
         <div className="Login">

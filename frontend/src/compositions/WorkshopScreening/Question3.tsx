@@ -8,6 +8,9 @@ import bulmaCalendar from 'bulma-calendar';
 import 'bulma-calendar/dist/css/bulma-calendar.min.css';
 import { QuestionProps } from './QuestionTypes';
 import { WithPreventDefault } from "../../types/WithPreventDefault";
+import { useContentContext } from '../../contexts/ContentContext';
+import { AutoRequiredErrorDiv } from '../../components/RequiredErrorPresenter';
+import { useQuestionnaireResponseContent } from '../../contexts/QuestionnaireResponseContext';
 // const yearsRange = () => {
 //     const years = [];
 //     for (let i = 1900; i < 2023; i++) {
@@ -52,9 +55,11 @@ export function Question3(props: Question3Props) {
         setShowModal, 
         date, 
         setDate, 
-        content, 
-        collectAnswer,
     } = props;
+    const { content } = useContentContext();
+    const { 
+        collectAnswer,
+    } = useQuestionnaireResponseContent();
     // const [day, setDay] = React.useState(1);
     // const [month, setMonth] = React.useState(1);
     // const [year, setYear] = React.useState(1);
@@ -94,10 +99,6 @@ export function Question3(props: Question3Props) {
             // bulmaCalendar instance is available as element.bulmaCalendar
             calendar.on('select', (datepicker) => {
                 const value = datepicker.data.value();
-                console.log(`BULMACALENDAR 'select' event has a date value of`, {
-                    value,
-                });
-                console.error(`BULMACALENDAR 'select' event's date value is not parseable by Date! using 'startDate' for now`);
                 const selectedDate = new Date(value.startDate);
                 setDate(selectedDate);
             });
@@ -114,7 +115,7 @@ export function Question3(props: Question3Props) {
     const bulmaCssCalendar = (
         <div className="bulma-calendar-container is-mobile">
             <input id="date-selection" type="date" />
-            <div className="RequiredError">*{content.errorMessage}</div>
+            <AutoRequiredErrorDiv />
             <Button
                 type="submit"
                 label={content.screeningProceedButton}

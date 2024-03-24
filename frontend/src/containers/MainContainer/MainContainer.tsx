@@ -5,7 +5,7 @@ import { Navbar } from '../../compositions/Navbar/Navbar';
 import { Footer } from '../../compositions/Footer/Footer';
 import { LandingPage } from '../../compositions/LandingPage/LandingPage';
 import { Video } from '../../compositions/Video/Video';
-import { Questionnaire, QuestionnaireResponse } from '../../compositions/Questionnaire/Questionnaire/Questionnaire';
+import { Questionnaire } from '../../compositions/Questionnaire/Questionnaire/Questionnaire';
 import { Route, Routes, useNavigate } from 'react-router-dom';
 import { sendRequest } from '../../sendRequest/sendRequest';
 import { WorkshopScreening } from '../../compositions/WorkshopScreening/WorkshopScreening';
@@ -16,172 +16,94 @@ import { Confirmation } from '../../compositions/Confirmation/Confirmation';
 import './MainContainer.css';
 import { ProgressBar } from '../../compositions/ProgressBar/ProgressBar';
 import { apis } from '../../sendRequest/apis';
-import { getFromStorage, saveToStorage } from '../../utilities/storage_utils';
-import { CollectAnswerFunction } from '../../types/common';
-import { GetQuestionsByLanguageElement } from '../../types/ApiResults';
-import { apiUrlFormatters } from '../../sendRequest/apiUrlFormatters';
-import { ContentText, missingContentText } from '../../types/ContentText';
 
-type GetQuestionForLanguageApiResponse = {
-    questions: Array<GetQuestionsByLanguageElement>;
-};
+
+import { apiUrlFormatters } from '../../sendRequest/apiUrlFormatters';
+import { ContentText } from '../../types/ContentText';
+import { useContentContext } from '../../contexts/ContentContext';
+import { useLanguageContext } from '../../contexts/LanguageContext';
+import { QuestionnaireResponse, QuestionnaireResponseContent, useInitialQuestionnaireResponseContentStateFactory } from '../../contexts/QuestionnaireResponseContext';
+import { QuestionsContext, useInitialQuestionsContextStateFactory } from '../../contexts/QuestionsContext';
+
+
 type GetTranslatedQuestionForLanguageApiResponse = {
     title?: string;
     language?: string;
     content: ContentText;
 };
-function tryGetNavigatorUserLanguage() {
-    if ('userLanguage' in window.navigator) {
-        if (typeof (window.navigator.userLanguage) === 'string') return window.navigator.userLanguage;
-    }
-}
-function getNavigatorLanguage(): string {
-    const userLanguage = tryGetNavigatorUserLanguage();
-    if (userLanguage == null || userLanguage === '') return window.navigator.language;
-    return userLanguage;
-}
-function setupPreferredLanguageStorageWrapper() {
-    const key = 'preferredLanguage';
-    return {
-        tryGet: (): string | undefined => {
-            const output = getFromStorage<string>(key);
-            if (output == null) return;
-            else if (!output.success) {
-                console.error('Failed to deserialize the value');
-                return;
-            }
-            return output.value;
-        },
-        set: (value: string) => {
-            saveToStorage(key, value);
-        },
-    };
-}
 
-function setupLocalstoreContentWrapper(language: string) {
-    const key = `${workshopTitle}-content-${language}`;
-    
-    return {
-        tryGet: (): ContentText | undefined => {
-            const output = getFromStorage<ContentText>(key);
-            if (output == null) return;
-            else if (!output.success) {
-                console.error('Failed to deserialize the value');
-                return;
-            }
-            return output.value;
-        },
-        set: (value: ContentText) => {
-            saveToStorage(key, value);
-        },
-    };
-}
-function setupLocalstoreQuestionsWrapper(language: string) {
-    const key = `${workshopTitle}-questions-${language}`;
-    type DataType = NonNullable<GetQuestionsByLanguageElement>;
-    return {
-        tryGet: (): Array<DataType> | undefined => {
-            // getFromStorage(`${workshopTitle}-content-${LOCALSTORE_LANGUAGE}`) || {}
-            const output = getFromStorage<Array<DataType>>(key);
-            if (output == null) return;
-            else if (!output.success) {
-                console.error('Failed to deserialize the value');
-                return;
-            }
-            return output.value.filter(x => x != null);
-        },
-        set: (value: Array<DataType>) => {
-            saveToStorage(key, value);
-        },
-    };
-}
-const preferredLanguageStorageWrapper = setupPreferredLanguageStorageWrapper();
+
 
 export function MainContainer() {
-    const LOCALSTORE_LANGUAGE = preferredLanguageStorageWrapper.tryGet() ?? 'en';
-    const localStoreContentWrapper = React.useMemo(() => {
-        return setupLocalstoreContentWrapper(LOCALSTORE_LANGUAGE);
-    }, [LOCALSTORE_LANGUAGE]);
-    const localStoreQuestionsWrapper = React.useMemo(() => {
-        return setupLocalstoreQuestionsWrapper(LOCALSTORE_LANGUAGE);
-    }, [LOCALSTORE_LANGUAGE]);
-    const LOCALSTORE_CONTENT = localStoreContentWrapper.tryGet() ?? {
-        ...(missingContentText),
-    };
-    const LOCALSTORE_QUESTIONS = localStoreQuestionsWrapper.tryGet() ?? [];
+    const { language } = useLanguageContext();
+    const { 
+        setContent,
+    } = useContentContext();
+    const questionsContextState = useInitialQuestionsContextStateFactory();
 
-    const [language, setLanguage] = React.useState(LOCALSTORE_LANGUAGE);
-    const [showModal, setShowModal] = React.useState(true);
+
+   
+    const [showLanguageSelectionModal, setShowLanguageSelectionModal] = React.useState(language == null || language === '');
+
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [step, setStep] = React.useState(0);
+
+
     const [videoState, setVideoState] = React.useState({ hasWatchedVideo: false });
-    // const { hasWatchedVideo } = videoState;
-    const [questions, setQuestions] = React.useState(LOCALSTORE_QUESTIONS);
-    const [questionnaireResponse, setQuestionnaireResponse] = React.useState<QuestionnaireResponse>({
-        languageCode: language,
-    });
-    const [content, setContent] = React.useState(LOCALSTORE_CONTENT);
+   
+    const questionnaireResponseContext = useInitialQuestionnaireResponseContentStateFactory();
+    const changeStep = React.useCallback((callback: (current: number) => number) => {
+        setStep(current => {
+            const nextStep = callback(current);
+            return nextStep < 0 ? 0 : nextStep > 3 ? 3 : nextStep;
+        });
+    }, []);
+    
+    const nextStep = React.useCallback(() => {
+        changeStep(step => step + 1);
+    }, [changeStep]);
 
     const navigate = useNavigate();
-    const browserLanguage = getNavigatorLanguage();
+    
 
     React.useEffect(() => {
-        const locallyStoredLanguage = preferredLanguageStorageWrapper.tryGet();
-        if (locallyStoredLanguage != null) {
-            setLanguage(locallyStoredLanguage.slice(1, -1));
-            setShowModal(false);
-        } 
-        else {
-            setLanguage(browserLanguage.split('-')[0]);
+        if (language != null && language !== '') {
+            setShowLanguageSelectionModal(false);
         }
-    }, [browserLanguage]);
+        
+    }, [language]);
 
-    const changeLanguage = (language: string) => {
-        setLanguage(language);
-        preferredLanguageStorageWrapper.set(language);
-        questionnaireResponse.languageCode = language;
-    };
-
-    const videoEndedHandler = () => {
+    const videoEndedHandler = React.useCallback(() => {
         setVideoState({
             hasWatchedVideo: true,
         });
         nextStep();
-    };
+    }, [nextStep]);
+
+    
 
     React.useEffect(() => {
-        const requestObj = {
-            url: apiUrlFormatters.getQuestionsByLanguage({
-                title: workshopTitle,
-                language,
-            }),
-        };
-        sendRequest<GetQuestionForLanguageApiResponse>(requestObj).then((response) => {
-            setQuestions(response.questions);
-            saveToStorage(
-                `${workshopTitle}-questions-${language}`,
-                response.questions,
-            );
-        });
-    }, [language]);
-
-    React.useEffect(() => {
-        const requestObj = {
-            url: apiUrlFormatters.getTranslatedContentByLanguage({
-                title: workshopTitle,
-                language,
-            }),
-        };
-        sendRequest<GetTranslatedQuestionForLanguageApiResponse>(requestObj).then((response) => {
+        async function inner() {
+            const requestObj = {
+                url: apiUrlFormatters.getTranslatedContentByLanguage({
+                    title: workshopTitle,
+                    language,
+                }),
+            };
+            const response = await sendRequest<GetTranslatedQuestionForLanguageApiResponse | undefined>(requestObj);
+            if (response == null) {
+                console.log('response was null', {
+                    requestObj,
+                });
+                return;
+            }
             setContent(response.content);
-            localStoreContentWrapper.set(response.content);
-            // saveToStorage(
-            //     `${workshopTitle}-content-${language}`,
-            //     response.content,
-            // );
-        });
-    }, [language, localStoreContentWrapper]);
+        }
+        void inner();
+    }, [language, setContent]);
 
-    const submitQuestionnaireResponse = (userAnswers: QuestionnaireResponse) => {
+    const submitQuestionnaireResponse = React.useCallback(async (userAnswers: QuestionnaireResponse) => {
         const requestObj = {
             url: apis.addQuestionnaireResponse,
             method: 'POST',
@@ -191,101 +113,54 @@ export function MainContainer() {
                 questionnaireResponse: userAnswers,
             }),
         };
-        sendRequest(requestObj).then((response) => {
-            console.log('success', response);
-            navigate('/confirmation');
-        });
-    };
-    function changeStep(nextStep: number) {
-        setStep(nextStep < 0 ? 0 : nextStep > 3 ? 3 : nextStep);
-    }
-    function nextStep() {
-        changeStep(step + 1);
-    }
+        const response = await sendRequest(requestObj);
+        console.log('success', response);
+        navigate('/confirmation');
+    }, [language, navigate]);
+   
     
-    const updatedContentForProcessOverview = { ...content, ...videoState };
-    const collectAnswer: CollectAnswerFunction = (slug: string, answer: unknown) => {
-        // const answeredQuestion = Object.assign({}, questionnaireResponse);
-        const answeredQuestion = {
-            ...questionnaireResponse,
-            [slug]: answer,
-        };
-        // answeredQuestion[slug] = answer;
-        setQuestionnaireResponse(answeredQuestion);
-    };
     return (
-        <div className="MainContainer">
-            <div className="wrapper">
-                <LanguageSelectionModal
-                    language={language}
-                    setLanguage={changeLanguage}
-                    showModal={showModal}
-                    setShowModal={setShowModal} />
-                <div className={`items ${showModal ? 'blur' : ''}`}>
-                    <Navbar
-                        language={language}
-                        setLanguage={changeLanguage}
-                        content={content}
-                        dashboard={false}
-                    />
-                    <div className="main">
-                        <div className="section">
-                            <Routes>
-                                <Route path="/" element={<LandingPage content={content} />}/>
-                                <Route path="/eligibility" element={<WorkshopScreening
-                                    content={content}
-                                    questions={questions}
-                                    // questionnaireResponse={questionnaireResponse}
-                                    // setQuestionnaireResponse={setQuestionnaireResponse}
-                                    collectAnswer={collectAnswer} />}/>
-                                <Route path="/overview" element={<ProcessOverview
-                                    content={updatedContentForProcessOverview}
-                                    // nextStep={nextStep} 
-                                />}/>
-                                <Route path="/video" element={<>
-                                    <ProgressBar
-                                        content={content}
-                                        step={1}
-                                        // nextStep={nextStep}
-                                        // previousStep={previousStep} 
-                                    />
-                                    <Video
-                                        onEnd={videoEndedHandler}
-                                        // video={content.step1VideoID}
-                                        videoState={videoState}
-                                        content={content} />
-                                </>}/>
-                                    
-                                <Route path="/questionnaire" element={<>
-                                    <ProgressBar
-                                        content={content}
-                                        step={2}
-                                        // nextStep={nextStep}
-                                        // previousStep={previousStep} 
-                                    />
-                                    <Questionnaire
-                                        questions={questions}
-                                        submitQuestionnaireResponse={submitQuestionnaireResponse}
-                                        questionnaireResponse={questionnaireResponse}
-                                        setQuestionnaireResponse={setQuestionnaireResponse}
-                                        content={content}
-                                        collectAnswer={collectAnswer} />
-                                </>}/>
-                                <Route path="/confirmation" element={<>
-                                    <ProgressBar
-                                        content={content}
-                                        step={3}
-                                        // nextStep={nextStep}
-                                        // previousStep={previousStep} 
-                                    />
-                                    <Confirmation content={content} />
-                                </>}/>
-                            </Routes>
+        <QuestionnaireResponseContent.Provider value={questionnaireResponseContext}>
+            <QuestionsContext.Provider value={questionsContextState}>
+                <div className="MainContainer">
+                    <div className="wrapper">
+                        <LanguageSelectionModal
+                            showModal={showLanguageSelectionModal}
+                            setShowModal={setShowLanguageSelectionModal} />
+                        <div className={`items ${showLanguageSelectionModal ? 'blur' : ''}`}>
+                            <Navbar dashboard={false}/>
+                            <div className="main">
+                                <div className="section">
+                                    <Routes>
+                                        <Route path="/" element={<LandingPage />}/>
+                                        <Route path="/eligibility" element={<WorkshopScreening />}/>
+                                        <Route path="/overview" element={<ProcessOverview />}/>
+                                        <Route path="/video" element={<>
+                                            <ProgressBar step={1} />
+                                            <Video
+                                                onEnd={videoEndedHandler}
+                                                videoState={videoState}
+                                            />
+                                        </>}/>
+                                            
+                                        <Route path="/questionnaire" element={<>
+                                            <ProgressBar step={2} />
+                                            <Questionnaire
+                                                submitQuestionnaireResponse={submitQuestionnaireResponse}
+                                            />
+                                        </>}/>
+                                        <Route path="/confirmation" element={<>
+                                            <ProgressBar step={3} />
+                                            <Confirmation />
+                                        </>}/>
+                                    </Routes>
+                                </div>
+                                <Footer />
+                            </div>
                         </div>
-                        <Footer content={content} />
                     </div>
                 </div>
-            </div>
-        </div>
+            </QuestionsContext.Provider>
+        </QuestionnaireResponseContent.Provider>
     );
 }

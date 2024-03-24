@@ -1,10 +1,5 @@
-import { ContentText } from "./ContentText";
 import { Question } from "./Question";
-import { BindFieldFunction, CollectAnswerFunction } from "./common";
 
-export type CommonComponentProps<TContent = ContentText> = {
+export type CommonComponentProps = {
     q: Question;
-    content: TContent;
-    bindField: BindFieldFunction;
-    collectAnswer: CollectAnswerFunction;
 };

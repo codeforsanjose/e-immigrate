@@ -1,73 +1,105 @@
 import React from 'react';
 import { Button } from '../../../components/Button/Button';
-import { useMarkFieldAsTouched } from '../hooks/useMarkFieldAsTouched';
 import { QuestionnaireIntro } from '../QuestionnaireIntro/QuestionnaireIntro';
-import Arrow from '../../../data/images/Arrow-Down-Right.svg';
 
 import './Questionnaire.css';
-import { CollectAnswerFunction } from '../../../types/common';
-import { ContentText } from '../../../types/ContentText';
-import { Question } from '../../../types/Question';
-import { FormElementWrapper } from '../../../components/FormElementWrapper';
 
-export type QuestionnaireResponse = Record<string, unknown>;
+import { WithPreventDefault } from '../../../types/WithPreventDefault';
+import { FollowupMap } from './types';
+import { QuestionnaireContainer } from './QuestionnaireContainer';
+import { QuestionComponent } from './QuestionComponent';
+import { useContentContext } from '../../../contexts/ContentContext';
+import { QuestionnaireResponse, useQuestionnaireResponseContent } from '../../../contexts/QuestionnaireResponseContext';
+import { useQuestionsContext } from '../../../contexts/QuestionsContext';
+
 
 type QuestionnaireProps = {
-    questions: Array<Question>;
     submitQuestionnaireResponse: (value: QuestionnaireResponse) => void;
-    questionnaireResponse: QuestionnaireResponse;
-    setQuestionnaireResponse: (value: QuestionnaireResponse) => void;
-    content: ContentText;
-    collectAnswer: CollectAnswerFunction;
 };
 
+
+
+
+
+const categories = ['Basic Info', 'Waiver Flag', 'Red Flag'] as const;
 export function Questionnaire(props: QuestionnaireProps) {
     const {
-        collectAnswer,
-        content,
-        questionnaireResponse,
-        questions,
         submitQuestionnaireResponse,
     } = props;
-    const categories = ['Basic Info', 'Waiver Flag', 'Red Flag'];
-    const [categoryIndex, setCategoryIndex] = React.useState(0);
-    const {
-        bindField,
+    const { 
+        questionnaireResponse,
         setAllFieldsTouched,
-    } = useMarkFieldAsTouched();
+    } = useQuestionnaireResponseContent();
+    const { content } = useContentContext();
+    const { questions } = useQuestionsContext();
+    const [categoryIndex, setCategoryIndex] = React.useState(0);
+
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [errors, setErrors] = React.useState<Record<string, unknown>>({});
     const [introPage, setIntroPage] = React.useState(true);
-    const [showFollowUp, setShowFollowUp] = React.useState<Record<string, boolean>>({});
+    const [showFollowUp, setShowFollowUp] = React.useState<FollowupMap>({});
+    const category = React.useMemo(() => {
+        return categories[categoryIndex];
+    }, [categoryIndex]);
+    
+    // get the questions for the current stage
+    const filteredQuestions = React.useMemo(() => {
+        return questions.filter(q => q.category === category);
+    }, [category, questions]);
 
-    const filteredQuestions = questions.filter(
-        (q) => q.category === categories[categoryIndex],
-    );
+
+    React.useEffect(() => {
+        console.log({
+            category,
+            filteredQuestions: questions.filter(q => q.category === category),
+        });
+    }, [category, questions]);
+
+
+
     const formElementWrapperOthers = React.useMemo(() => {
         return {
-            bindField,
-            collectAnswer,
             setShowFollowUp,
             setErrors,
         };
-    }, [bindField, collectAnswer]);
-    const onSubmit = () => {
+    }, []);
+
+
+
+    const onSubmit = React.useCallback(() => {
         submitQuestionnaireResponse(questionnaireResponse);
-    };
-    const nextStep = (e: {
-        preventDefault: () => void;
-    }) => {
+    }, [questionnaireResponse, submitQuestionnaireResponse]);
+
+
+
+    const nextStep = React.useCallback((e: WithPreventDefault) => {
         e.preventDefault();
+        console.log({ filteredQuestions });
         const allRequiredFieldsCompleted = filteredQuestions.every((q) => {
-            if ((q.required ?? false) && !(Boolean(questionnaireResponse[q.slug]))) {
+            // if it isnt required, ignore it
+            if (!q.required) return true;
+
+            const value = questionnaireResponse[q.slug];
+            
+            if ((q.required ?? false) && !(Boolean(value))) {
                 if (q.parentQuestionSlug != null) {
                     if (questionnaireResponse[q.parentQuestionSlug] === 'Yes') {
+                        console.log({
+                            part: 'blah1',
+                            slug: q.slug,
+                            value,
+                        });
                         return false;
                     }
                     else {
                         return true;
                     }
                 }
+                console.log({
+                    part: 'blah2',
+                    slug: q.slug,
+                    value,
+                });
                 return false;
             }
             else {
@@ -87,83 +119,40 @@ export function Questionnaire(props: QuestionnaireProps) {
         else {
             alert(`Please complete every question`);
         }
-    };
+    }, [categoryIndex, filteredQuestions, onSubmit, questionnaireResponse, setAllFieldsTouched]);
+    
+    if (introPage) {
+        return (
+            <QuestionnaireContainer>
+                <QuestionnaireIntro
+                    setIntroPage={setIntroPage} 
+                />
+            </QuestionnaireContainer>
+        );
+    }
+
     return (
-        <div className="Questionnaire">
-            {introPage
-                ? (
-                    <QuestionnaireIntro
-                        content={content}
-                        setIntroPage={setIntroPage} />
-                )
-                : (
-                    <>
-                        <>
-                            {filteredQuestions.map((question) => {
-                                const followUpQuestions = filteredQuestions.filter(
-                                    (q) => q.parentQuestionSlug === question.slug,
-                                );
-                                if (question.parentQuestionSlug != null) {
-                                    return null;
-                                }
-                                return (
-                                    <div key={question.slug}>
-                                        <fieldset className="Question">
-                                            <div className="QuestionText">
-                                                {question.text}
-                                                {(question.required ?? false)
-                                                    ? ` (${content.required})`
-                                                    : ` (${content.optional})`}
-                                            </div>
-                                            <FormElementWrapper
-                                                elementName={question.questionType}
-                                                content={content}
-                                                others={formElementWrapperOthers}
-                                                question={question}
-                                            />
-                                        
-                                        </fieldset>
-                                        {showFollowUp[question.slug] &&
-                                        followUpQuestions.map(
-                                            (followUpQuestion) => {
-                                                return (
-                                                    <div
-                                                        className="FollowUp"
-                                                        key={followUpQuestion.slug}
-                                                    >
-                                                        <Arrow
-                                                            height="36px"
-                                                            width="36px" />
-                                                        <fieldset className="Question">
-                                                            <div className="QuestionText">
-                                                                {followUpQuestion.text}
-                                                                {(followUpQuestion.required ?? false)
-                                                                    ? ` (${content.required})`
-                                                                    : ` (${content.optional})`}
-                                                            </div>
-                                                            <FormElementWrapper
-                                                                elementName={followUpQuestion.questionType}
-                                                                content={content}
-                                                                others={formElementWrapperOthers}
-                                                                question={followUpQuestion}
-                                                            />
-                                                        </fieldset>
-                                                    </div>
-                                                );
-                                            },
-                                        )}
-                                    </div>
-                                );
-                            })}
-                        </>
-                        <Button
-                            label={categoryIndex < categories.length - 1
-                                ? content.step2ProceedButton2
-                                : content.step2ProceedButton3}
-                            type="submit"
-                            onClick={nextStep} />
-                    </>
-                )}
-        </div>
+        <QuestionnaireContainer>
+            <>
+                {filteredQuestions.map((question) => {
+                    return (
+                        <QuestionComponent
+                            key={question.slug}
+                            others={formElementWrapperOthers}
+                            question={question}
+                            filteredQuestions={filteredQuestions}
+                            showFollowUp={showFollowUp}
+                        />
+                    );
+                })}
+            </>
+            <Button
+                label={categoryIndex < categories.length - 1
+                    ? content.step2ProceedButton2
+                    : content.step2ProceedButton3}
+                type="submit"
+                onClick={nextStep} 
+            />
+        </QuestionnaireContainer>
     );
 }
