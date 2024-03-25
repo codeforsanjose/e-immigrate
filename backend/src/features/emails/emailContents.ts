@@ -372,4 +372,3 @@ PROJECT NEW CITIZEN
 `,
     },
 } satisfies Record<string, EmailContent>;
-
