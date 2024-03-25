@@ -1,14 +1,11 @@
-<<<<<<<< HEAD:backend/src/features/emails/emailContents.ts
 import { EmailContent } from "./types.js";
 
-========
 export type EmailContentLanguages = keyof typeof emailContents;
 export function isEmailContentLanguage(value?: string | null | undefined): value is EmailContentLanguages {
     if (value == null) return false;
     else if (value === '') return false;
     return value in emailContents;
 }
->>>>>>>> develop:backend/src/routes/sendEmail/emailContent.ts
 export const emailContents = {
     en: {
         red: `Thank you for completing all questions for the upcoming Citizenship Day 2022 event. Unfortunately, your case appears too complex and we will give priority to those who have qualified. Your phone information will be given to our staff and they will contact you by phone first. Our staff will attempt to contact you two times. You may receive a call in the first half of June 2022. We expect many applicants, so it may take one week or more before you receive a call
@@ -380,9 +377,5 @@ PROJECT NEW CITIZEN
 ПРОЕКТ НОВЫЙ ГРАЖДАНИН
 `,
     },
-<<<<<<<< HEAD:backend/src/features/emails/emailContents.ts
 } satisfies Record<string, EmailContent>;
-========
-};
 
->>>>>>>> develop:backend/src/routes/sendEmail/emailContent.ts
