@@ -15,7 +15,7 @@ import { routeLogger } from '../features/logging/logger.js';
 
 const router = express.Router();
 export { router as generateResponsesExcelRouter };
-const Schema1 = z.object({
+const GenerateResponsesExcelSchema = z.object({
     questions: z.array(z.object({
         slug: z.string(),
     })),
@@ -60,7 +60,7 @@ const standardHeaderOffset = standardHeaders.length + 1;
 router.route('/responses').post(async function generateResponsesExcel(req, res) {
     const logger = routeLogger('generateResponsesExcel');
     logger.debug('begin');
-    const bodyData = Schema1.parse(req.body);
+    const bodyData = GenerateResponsesExcelSchema.parse(req.body);
     const admin = userRequestAccessor.get(res);
     if (admin == null) throw new RequestError('Missing the user data', undefined, 401);
     const allDboResponses = await QuestionnaireResponse.find();
@@ -205,17 +205,3 @@ router.route('/responses').post(async function generateResponsesExcel(req, res) 
         id: saveResult._id,
     });
 });
-
-// router.route('/getLatest/:filename').get((req, res) => {
-//     // TODO_SECURITY
-//     const filename = req.params.filename;
-//     res.download('routes/generateResponsesExcel/reports/' + filename);
-// });
-
-// // delete the file after downloaded
-// router.route('/delete/:filename').get((req, res) => {
-//     // TODO_SECURITY
-//     const filename = req.params.filename;
-//     fs.unlink('../../' + filename, function () {});
-//     res.status(202).json({ msg: 'deleted file' });
-// });

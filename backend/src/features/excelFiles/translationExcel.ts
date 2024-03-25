@@ -3,20 +3,11 @@
  * */
 import xlsxFile from 'read-excel-file/node';
 import { Readable } from 'stream';
-import { Types } from 'mongoose';
-import { Row } from 'read-excel-file';
 
-import { ArrayElementOf } from '../../types/ArrayElementOf.js';
 import { TranslatedContent } from '../../models/translatedContent.js';
 import { LanguageOptionCodes, LanguageOptions, WorkshopTitle } from '../../LanguageOptions.js';
+import { logger } from '../logging/logger.js';
 
-
-
-
-type Cell = (ArrayElementOf<Row>) & (string | number);
-function isValidRecordCell(value: unknown): value is (string | number) {
-    return typeof value === 'string' || typeof value === 'number';
-}
 /**
  *  load translation excel file into objects in the TranslatedContent collection
  *
@@ -29,51 +20,46 @@ export async function loadTranslationXlsxIntoDB(excelFileContent: Buffer) {
     stream.push(excelFileContent);
     stream.push(null);
     const rows = await xlsxFile(stream);
-    type TranslationInfo = Partial<Record<LanguageOptionCodes, Record<Cell, unknown>>>;
+    type TranslationInfo = Partial<Record<LanguageOptionCodes, Record<string, unknown>>>;
     const translations = rows.reduce<TranslationInfo>((obj, row) => {
         for (let i = 1; i < row.length; i++) {
             const languageObject = obj[LanguageOptions[i - 1].code];
-            const row0 = row[0];
-            if (!isValidRecordCell(row0)) continue;
+            const fieldLabel = row[0];
+            if (typeof fieldLabel !== 'string') {
+                logger.error({
+                    fieldLabel,
+                    row: i,
+                }, 'The field name for a row wasnt a string');
+                continue;
+            }
 
             if (languageObject != null) {
-                languageObject[row0] = row[i];
+                languageObject[fieldLabel] = row[i];
             }
             else {
                 obj[LanguageOptions[i - 1].code] = {
-                    [row0]: row[i],
+                    [fieldLabel]: row[i],
                 };
             }
         }
         return obj;
     }, {});
 
-    const title = WorkshopTitle;
     const insertPromises = LanguageOptions.map(async (language) => {
-        const content = translations[language.code];
-        async function insertNewTranslatedContent() {
-            await TranslatedContent.insertMany({
-                title,
-                language: language.code,
-                content,
-            });
-        }
-
-        async function removeExistingTranslatedContent(_id: Types.ObjectId) {
-            await TranslatedContent.findByIdAndDelete({ _id });
-        }
-
-        const result = await TranslatedContent.find({
-            title,
+        const existing = await TranslatedContent.findOne({
+            title: WorkshopTitle,
             language: language.code,
         });
-        if (result.length !== 0) {
-            await removeExistingTranslatedContent(result[0]._id);
-            await insertNewTranslatedContent();
+        if (existing != null) {
+            await TranslatedContent.findByIdAndDelete({ 
+                _id: existing._id,
+            });
         }
-        else {
-            await insertNewTranslatedContent();
-        }
+        await TranslatedContent.insertMany({
+            title: WorkshopTitle,
+            language: language.code,
+            content: translations[language.code],
+        });
     });
     await Promise.all(insertPromises);
 }

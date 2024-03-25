@@ -17,6 +17,7 @@ const AddSchema = z.object({
     language: z.string(),
     questionnaireResponse: z.record(z.string(), z.string().nullable()),
 });
+
 // TODO: revisit access control
 router.route('/add').post(async (req, res) => {
     const logger = routeLogger('addQuestionnaireResponse');
@@ -48,6 +49,7 @@ function getAllResponses() {
         $or: [{ deleted: { $exists: false } }, { deleted: false }],
     });
 }
+
 function getAllResponsesForIds(ids: Array<string>) {
     return QuestionnaireResponse.find({
         $and: [
@@ -60,6 +62,7 @@ function getAllResponsesForIds(ids: Array<string>) {
         ],
     });
 }
+
 router.route('/').get(async (req, res) => {
     const logger = routeLogger('getAllQuestionnaireResponse');
     logger.trace('CALLED');
@@ -157,6 +160,8 @@ function isRedFlagKey(value: unknown): value is RedFlagKey {
     if (value == null || typeof value !== 'string') return false;
     return questionKeysThatAreNotRedFlagsButInARedFlagQuestionnaire.includes(value as RedFlagKey);
 }
+
+
 function getUpdatedFlag(userResponse: Partial<Record<RedFlagKey, string | null | undefined>>) {
     return Object.entries(userResponse).reduce((acc, [key, value]) => {
         return !isRedFlagKey(key)
@@ -273,6 +278,7 @@ const AssignEmailSchema = z.array(z.object({
     id: z.string(),
     emailSent: z.boolean().nullish(),
 }));
+
 router.route('/assign-email').post(async (req, res) => {
     const logger = routeLogger('assignEmail');
     const requestBody = AssignEmailSchema.parse(req.body);

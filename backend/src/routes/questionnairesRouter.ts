@@ -19,6 +19,7 @@ export type RemappedQuestionnaireDto = {
     language: string | undefined;
     questions: Array<QuestionEntity>;
 };
+
 function remapQuestionnaire(questionnaire: QuestionnaireEntityWithId): RemappedQuestionnaireDto {
     const {
         _id,
@@ -33,31 +34,29 @@ function remapQuestionnaire(questionnaire: QuestionnaireEntityWithId): RemappedQ
         questions,
     };
 }
-export type GetQuestionsResultDto = {
-    responses: Array<RemappedQuestionnaireDto>;
-};
-async function getQuestionsDriver(): Promise<GetQuestionsResultDto> {
-    const allQuestionnaires = await Questionnaires.find();
-    return {
-        responses: allQuestionnaires.map(remapQuestionnaire),
-    };
-}
+
+
 
 router.route('/').get(async function getQuestions(req, res) {
-    res.json(await getQuestionsDriver());
+    const allQuestionnaires = await Questionnaires.find();
+    const output = {
+        responses: allQuestionnaires.map(remapQuestionnaire),
+    };
+    res.json(output);
 });
 
-
-async function getQuestionsByLanguageDriver(config: {
-    title: string;
-    language: string;
-}): Promise<RemappedQuestionnaireDto | undefined> {
+router.route('/:title.:language?').get(async function getQuestionsByLanguage(req, res) {
     const {
-        language,
-        title,
-    } = config;
-    const cleanTitle = decodeURIComponent(title);
-    const cleanLanguage = decodeURIComponent(language);
+        title: paramTitle,
+        language: paramLanguage = DEFAULT_LANGUAGE,
+    } = req.params;
+    // const result = await getQuestionsByLanguageDriver({
+    //     title: paramTitle,
+    //     language: paramLanguage,
+    // });
+
+    const cleanTitle = decodeURIComponent(paramTitle);
+    const cleanLanguage = decodeURIComponent(paramLanguage);
     const logger = loggers.getQuestionsByLanguage;
     logger.debug({
         title: cleanTitle,
@@ -72,23 +71,13 @@ async function getQuestionsByLanguageDriver(config: {
             title: cleanTitle,
             language: cleanLanguage,
         }, `Failed to find the requested questionnaire`);
-        return;
+        return res.json(null);
     }
-    return remapQuestionnaire(dbo);
-}
-router.route('/:title.:language?').get(async function getQuestionsByLanguage(req, res) {
-    const {
-        title: paramTitle,
-        language: paramLanguage = DEFAULT_LANGUAGE,
-    } = req.params;
-    const result = await getQuestionsByLanguageDriver({
-        title: paramTitle,
-        language: paramLanguage,
-    });
-    
-    res.json(result);
+    res.json(remapQuestionnaire(dbo));
     return;
 });
+
+
 const QuestionSchema = z.object({
     id: z.union([z.string(), z.number()]),
     slug: z.string(),
@@ -106,6 +95,7 @@ const AddQuestionnaireSchema = z.object({
     language: z.string(),
     questions: z.array(QuestionSchema),
 });
+
 router.route('/add').post(async function addQuestionnaires(req, res) {
     const logger = routeLogger('addQuestionnaires');
     // validate the body

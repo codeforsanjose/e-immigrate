@@ -41,6 +41,7 @@ function loadRow(row: Row) {
 }
 
 type LanguageChildPair = [language: LanguageOptionCodes, source: string];
+
 function getOrCreate<T>(map: Map<string, Set<T>>, slug: string) {
     const current = map.get(slug);
     if (current != null) return current;
@@ -329,14 +330,13 @@ export async function importExcelQuestionSheet(config: {
         title,    
     } = config;
 
-    const result = await Questionnaires.find({ title, language });
-    if (result.length !== 0) {
-        const id = result[0]._id;
+    const result = await Questionnaires.findOne({ title, language });
+    if (result != null) {
         await Questionnaires.findByIdAndDelete({
-            _id: id,
+            _id: result._id,
         });
         logger.debug({
-            id,
+            id: result._id,
             title,
             language,
         }, 'questionnaire deleted');

@@ -10,11 +10,3 @@ export type WithMongooseTimestamps<T extends BaseEntity> = T & {
     createdAt: NativeDate;
     updatedAt: NativeDate;
 };
-
-
-export type GetEntityModel<TModel> = 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    TModel extends mongoose.Model<infer TRawDocType, infer TQueryHelpers, infer _, infer _, infer THydratedDocumentType> 
-        ? NonNullable<Awaited<mongoose.QueryWithHelpers<THydratedDocumentType | null, THydratedDocumentType, TQueryHelpers, TRawDocType, 'findOne'>>>
-        : never
-;
