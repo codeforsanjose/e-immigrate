@@ -2,18 +2,23 @@ import express from 'express';
 import fileUpload from 'express-fileupload';
 import cors from 'cors';
 import mongoose, { ConnectOptions } from 'mongoose';
-import { usersRouter } from './routes/users.js';
-import { adminsRouter }  from './routes/admins.js';
-import { questionnaireResponsesRouter } from './routes/questionnaireResponses.js';
-import { questionnairesRouter } from './routes/questionnaires/questionnaires.js';
-import { translatedContentRouter } from './routes/translatedContent/translatedContent.js';
-import { generateResponsesExcelRouter } from './routes/generateResponsesExcel/generateResponsesExcel.js';
 import dotenv from 'dotenv';
+import 'express-async-errors';
+import { usersRouter } from './routes/users.js';
+import { adminsRouter } from './routes/adminsRouter.js';
+import { questionnaireResponsesRouter } from './routes/questionnaireResponsesRouter.js';
+import { questionnairesRouter } from './routes/questionnairesRouter.js';
+import { translatedContentRouter } from './routes/translatedContentRouter.js';
+import { generateResponsesExcelRouter } from './routes/generateResponsesExcelRouter.js';
 import { handleRequestErrorMiddleware } from './middleware/error-middleware/handleRequestErrorMiddleware.js';
 import { handleUncaughtErrorMiddleware } from './middleware/error-middleware/handleUncaughtErrorMiddleware.js';
+import { getRequiredEnvironmentVariable } from './features/environmentVariables/index.js';
+import { handleZodErrorMiddleware } from './middleware/error-middleware/handleZodErrorMiddleware.js';
+import { handleAuthorizationErrorMiddleware } from './middleware/error-middleware/handleAuthorizationErrorMiddleware.js';
+import { logger } from './features/logging/logger.js';
 dotenv.config();
 
-const MAX_EXCEL_FILE_SIZE = 50 * 1024 * 1024; //max size excel file in bytes will allow to be uploaded
+const MAX_EXCEL_FILE_SIZE = 50 * 1024 * 1024; // max size excel file in bytes will allow to be uploaded
 
 const app = express();
 
@@ -21,18 +26,30 @@ app.use(cors());
 app.use(express.json());
 app.use(fileUpload({ limits: { fileSize: MAX_EXCEL_FILE_SIZE } }));
 
-const uri = process.env.MONGO_URI;
-if (uri == null || uri === '') throw new Error(`Missing the 'MONGO_URI' environment variable`);
-console.log('connecting to', uri);
-mongoose.connect(uri, {
+function getPort(defaultPort = 5000) {
+    const port = process.env.PORT;
+    if (port == null) return defaultPort;
+    else if (typeof port === 'number') return port;
+    const numericPort = parseInt(port);
+    if (isNaN(numericPort)) return defaultPort;
+    return port;
+}
+
+const appPort = getPort();
+const mongoUri = getRequiredEnvironmentVariable('MONGO_URI');
+
+logger.info(`connecting to mongo url: '${mongoUri}'`);
+mongoose.connect(mongoUri, {
     // useNewUrlParser: true,
     // useCreateIndex: true,
     // useUnifiedTopology: true,
 } satisfies ConnectOptions);
 const connection = mongoose.connection;
-connection.on('error', console.error.bind(console, 'connection error:'));
+connection.on('error', () => {
+    logger.error('connection error:');
+});
 connection.once('open', () => {
-    console.log('MongoDB database connection established successfully');
+    logger.info('MongoDB database connection established successfully');
 });
 app.get('/api/status', (req, res) => {
     res.sendStatus(200);
@@ -44,14 +61,15 @@ app.use('/api/questionnaires', questionnairesRouter);
 app.use('/api/translatedContent', translatedContentRouter);
 app.use('/api/generateExcel', generateResponsesExcelRouter);
 
+
+app.use(express.static('build'));
 // Error middleware, the earlier ones are run first
 app.use(...[
+    handleZodErrorMiddleware(),
+    handleAuthorizationErrorMiddleware(),
     handleRequestErrorMiddleware(),
     handleUncaughtErrorMiddleware(),
-])
-app.use(express.static('build'))
-const port = process.env.PORT || 5000;
-
-app.listen(port, () => {
-    console.log(`listening on port ${port}`);
+]);
+app.listen(appPort, () => {
+    logger.info(`listening on port ${appPort}`);
 });

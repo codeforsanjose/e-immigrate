@@ -1,6 +1,6 @@
 import { FormElementName } from "../utilities/formElements";
 
-export type GetQuestionsByLanguageElement = {
+export type QuestionInfo = {
     id: string;
     slug: string;
     category: string;
@@ -11,4 +11,10 @@ export type GetQuestionsByLanguageElement = {
     required: boolean;
     followUpQuestionSlug: string;
     parentQuestionSlug: string;
+};
+
+export type GetQuestionsByLanguageApiResponse = {
+    title?: string;
+    language?: string;
+    questions: Array<QuestionInfo>;
 };

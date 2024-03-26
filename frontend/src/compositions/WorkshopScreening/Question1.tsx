@@ -2,15 +2,20 @@ import React from 'react';
 import { Button } from '../../components/Button/Button';
 import { QuestionProps } from './QuestionTypes';
 import { WithPreventDefault } from "../../types/WithPreventDefault";
+import { useContentContext } from '../../contexts/ContentContext';
+import { AutoRequiredErrorSpan } from '../../components/RequiredErrorPresenter';
+import { useQuestionnaireResponseContext } from '../../contexts/QuestionnaireResponseContext';
 
 export function Question1(props: QuestionProps) {
     const {
-        bindField,
-        collectAnswer,
-        content,
         q,
         setQuestion: setQuestion1,
     } = props;
+    const { content } = useContentContext();
+    const {
+        collectAnswer,
+        bindField,
+    } = useQuestionnaireResponseContext();
     const [question1Answer, setQuestion1Answer] = React.useState<string | null>(null);
     if (q == null) return null;
     const answers = q.answerSelections.split(', ');
@@ -48,9 +53,7 @@ export function Question1(props: QuestionProps) {
                             </span>
                             <span className="RadioLabel">{option}</span>
                         </label>
-                        <span className="RequiredError">
-                                *{content.errorMessage}
-                        </span>
+                        <AutoRequiredErrorSpan />
                     </div>
                 ))}
                 <Button

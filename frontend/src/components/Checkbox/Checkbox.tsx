@@ -1,20 +1,34 @@
 import React from 'react';
 import './Checkbox.css';
 import { CommonComponentProps } from '../../types/CommonComponentProps';
+import { AutoRequiredErrorSpan } from '../RequiredErrorPresenter';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { useQuestionnaireResponseContext, QuestionnaireResponseContext } from '../../contexts/QuestionnaireResponseContext';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { ContentContext } from '../../contexts/ContentContext';
 type InputValue = string | Array<string> | number | undefined;
 type CheckboxProps = CommonComponentProps & {
     answers?: Array<string> | undefined;
     values: Array<InputValue>;
 };
+
+/**
+ *
+ *  Depends on {@link QuestionnaireResponseContext}, and
+ * {@link ContentContext}.
+ *
+ * @export
+ */
 export function Checkbox(props: CheckboxProps) {
     const {
         q, 
         answers, 
         values, 
-        bindField, 
-        collectAnswer, 
-        content,
     } = props;
+    const { 
+        collectAnswer,
+        bindField, 
+    } = useQuestionnaireResponseContext();
     return (
         <div>
             {answers?.map((option, idx) => (
@@ -28,9 +42,7 @@ export function Checkbox(props: CheckboxProps) {
                         {...bindField(q.slug)}
                         onChange={(e) => collectAnswer(q.slug, e.target.value)} />
                     <label htmlFor={q.slug}>{option}</label>
-                    <span className="RequiredError">
-                            *{content.errorMessage}
-                    </span>
+                    <AutoRequiredErrorSpan />
                 </div>
             ))}
         </div>

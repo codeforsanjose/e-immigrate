@@ -1,8 +1,7 @@
 import { Response } from "express";
 
-
 export function setResponseLocalsValue(res: Response, key: string, value: unknown) {
-  res.locals[key] = value;
+    res.locals[key] = value;
 }
 
 type FullResponseLocalsValueContainer =
@@ -20,20 +19,18 @@ type FullResponseLocalsValueContainer =
  * @returns {(unknown | undefined)}
  */
 export function getValueFromLocalsContainer(container: FullResponseLocalsValueContainer): unknown | undefined {
-  if (container.key === 'NOT_FOUND') return undefined;
-  return container.value;
+    if (container.key === 'NOT_FOUND') return undefined;
+    return container.value;
 }
 
-
-
 export function getFullResponseLocalsValue(res: Response, key: string): FullResponseLocalsValueContainer {
-  if (res.locals == null) return { key: 'NOT_FOUND' };
-  else if (!(key in res.locals)) return { key: 'NOT_FOUND' };
-  const value = res.locals[key];
-  return {
-    key: 'FOUND',
-    value,
-  };
+    if (res.locals == null) return { key: 'NOT_FOUND' };
+    else if (!(key in res.locals)) return { key: 'NOT_FOUND' };
+    const value = res.locals[key];
+    return {
+        key: 'FOUND',
+        value,
+    };
 }
 
 /**
@@ -47,6 +44,6 @@ export function getFullResponseLocalsValue(res: Response, key: string): FullResp
  * @returns {(unknown | undefined)}
  */
 export function tryGetResponseLocalsValue<T = unknown>(res: Response, key: string): undefined | T {
-  const fullResult = getFullResponseLocalsValue(res, key);
-  return getValueFromLocalsContainer(fullResult) as T;
+    const fullResult = getFullResponseLocalsValue(res, key);
+    return getValueFromLocalsContainer(fullResult) as T;
 }

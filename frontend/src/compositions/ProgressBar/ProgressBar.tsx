@@ -7,14 +7,11 @@ import Blob2 from '../../data/images/Blob2.svg';
 import Blob3 from '../../data/images/Blob3.svg';
 
 import './ProgressBar.css';
-import { ContentText } from '../../types/ContentText';
-type ValidStepNumbers = 
-| 1 
-| 2 
-| 3
-;
+import { useContentContext } from '../../contexts/ContentContext';
+import classNames from 'classnames';
+import { ValidStepNumbers } from '../../types/ValidStepNumbers';
+
 type StepProps = {
-    content: ContentText;
     stepNumber: ValidStepNumbers;
     children?: React.ReactNode;
     completed: boolean;
@@ -22,41 +19,53 @@ type StepProps = {
 function Step(props: StepProps) { 
     const {
         completed,
-        content,
         stepNumber,
         children,
     } = props;
-    const isComplete = completed ? '' : 'incomplete';
-    const step = `step${stepNumber}Header` as const;
-    const title = `step${stepNumber}Title` as const;
+    const { content } = useContentContext();
     return (
-        <div className={`stepContainer ${isComplete}`}>
-            <div className={`stepNumber ${isComplete}`}>
-                {content[step]}
+        <div 
+            className={classNames('stepContainer', {
+                incomplete: !completed,
+            })}
+        >
+            <div 
+                className={classNames('stepNumber', {
+                    incomplete: !completed,
+                })}
+            >
+                {content[`step${stepNumber}Header`]}
             </div>
-            <div className={`stepTitle ${isComplete}`}>
-                {content[title]}
+            <div 
+                className={classNames('stepTitle', {
+                    incomplete: !completed,
+                })}
+            >
+                {content[`step${stepNumber}Title`]}
             </div>
-            <div className={`stepIcon ${isComplete}`}>{children}</div>
+            <div 
+                className={classNames('stepIcon', {
+                    incomplete: !completed,
+                })}
+            >
+                {children}
+            </div>
         </div>
     );
 }
 type ProgressBarProps = {
-    content: ContentText;
     step: number;
 };
 export function ProgressBar(props: ProgressBarProps) {
     const {
-        content, 
         step,
     } = props;
-
+    const { content } = useContentContext();
     return (
         <div className="progressBar">
             <div className="title">{content.progressBarHeader}</div>
             <div className="stepsGrid">
                 <Step
-                    content={content}
                     stepNumber={1}
                     completed={step >= 1}
                 >
@@ -64,7 +73,6 @@ export function ProgressBar(props: ProgressBarProps) {
                     <VideoIcon className="stepSVG" height="32px" width="32px" />
                 </Step>
                 <Step
-                    content={content}
                     stepNumber={2}
                     completed={step >= 2}
                 >
@@ -75,7 +83,6 @@ export function ProgressBar(props: ProgressBarProps) {
                         width="32px" />
                 </Step>
                 <Step
-                    content={content}
                     stepNumber={3}
                     completed={step >= 3}
                 >
@@ -86,10 +93,14 @@ export function ProgressBar(props: ProgressBarProps) {
             <div className="linesGridContainer">
                 <div className="linesGrid">
                     <div
-                        className={`progressLine1 ${step >= 2 ? '' : 'incomplete'}`}
+                        className={classNames('progressLine1', {
+                            incomplete: !(step >= 2),
+                        })}
                     ></div>
                     <div
-                        className={`progressLine2 ${step >= 3 ? '' : 'incomplete'}`}
+                        className={classNames('progressLine2', {
+                            incomplete: !(step >= 3),
+                        })}
                     ></div>
                 </div>
             </div>

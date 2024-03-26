@@ -1,18 +1,14 @@
 env:
-  browser: true
+  browser: false
+  node: true
   es2021: true
 extends:
-  - plugin:react/recommended
   - standard-with-typescript
-  - plugin:react-hooks/recommended
 parserOptions:
   sourceType: module
 plugins: 
-  - react
   - '@stylistic'
-  # - "prettier"
 rules: 
-  # "prettier/prettier": 1
   "semi": "off"
   "@typescript-eslint/semi": [2, "always"]
   #
@@ -22,7 +18,7 @@ rules:
     - "error"
     - arrays: "always-multiline"
       objects: "always-multiline"
-      functions: "always-multiline"
+      functions: "only-multiline"
       imports: "always-multiline"
       generics: "only-multiline"
   #
@@ -72,6 +68,8 @@ rules:
   no-useless-return: off
   no-trailing-spaces: off
   no-extra-boolean-cast: off
-  "@typescript-eslint/no-unused-vars": off
+  # "@typescript-eslint/no-unused-vars": off
   "@typescript-eslint/no-misused-promises": "off"
   "@typescript-eslint/no-floating-promises": "off"
+  no-multiple-empty-lines: off
+  prefer-template: 'error'

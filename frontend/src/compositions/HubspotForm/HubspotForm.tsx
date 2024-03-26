@@ -4,6 +4,7 @@ import { HubspotEnglishForm } from './HubspotEnglishForm';
 import { HubspotVietForm } from './HubspotVietForm';
 import './HubspotForm.css';
 import { HubspotInfo } from './types';
+import { DEFAULT_LANGUAGE } from '../../utilities/languages/constants';
 
 type HubspotFormProps = {
     hubspot: HubspotInfo;
@@ -13,7 +14,7 @@ type HubspotFormProps = {
 export function HubspotForm(props: HubspotFormProps) {
     const { 
         hubspot, 
-        language = 'en', 
+        language = DEFAULT_LANGUAGE, 
         hasWatchedVideo = false,
     } = props;
     const englishForm = <HubspotEnglishForm hubspot={hubspot} />;

@@ -1,6 +1,6 @@
 export type SendGridResponseError = {
-    response: { body: unknown };
-}
+    response: { body: unknown, };
+};
 
 export function isSendGridResponseError(err: unknown): err is SendGridResponseError {
     if (err == null) return false;

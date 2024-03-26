@@ -1,28 +1,16 @@
 import React from 'react';
-import { useMarkFieldAsTouched } from '../Questionnaire/hooks/useMarkFieldAsTouched';
 import { LogicBranches } from './LogicBranches';
 import { Modal } from './Modal/Modal';
 
 import './WorkshopScreening.css';
-import { CollectAnswerFunction } from '../../types/common';
-import { GetQuestionsByLanguageElement } from '../../types/ApiResults';
-import { ContentText } from '../../types/ContentText';
 
-type WorkshopScreeningProps = {
-    content: ContentText; 
-    questions: Array<GetQuestionsByLanguageElement>;
-    // questionnaireResponse, 
-    // setQuestionnaireResponse, 
-    collectAnswer: CollectAnswerFunction;
-};
-export function WorkshopScreening(props: WorkshopScreeningProps) {
-    const {
-        collectAnswer,
-        content,
-        // questionnaireResponse,
-        questions,
-        // setQuestionnaireResponse,
-    } = props;
+import { useContentContext } from '../../contexts/ContentContext';
+import { useQuestionsContext } from '../../contexts/QuestionsContext';
+
+
+export function WorkshopScreening() {
+    const { questions } = useQuestionsContext();
+    const { content } = useContentContext();
     const { screeningDate, screeningDateMarried } = content;
 
     const [question1, setQuestion1] = React.useState<string | null>('');
@@ -39,17 +27,13 @@ export function WorkshopScreening(props: WorkshopScreeningProps) {
         (q) => q.category === 'Workshop Eligibility',
     );
 
-    const {
-        bindField,
-    } = useMarkFieldAsTouched();
+
     return (
         <div className="WorkshopScreening">
             <h1>{content.screeningHeader}</h1>
             <h2>{content.screeningHeader2}</h2>
             <LogicBranches
-                content={content}
                 filteredQuestions={filteredQuestions}
-                bindField={bindField}
                 question1={question1}
                 setQuestion1={setQuestion1}
                 question2={question2}
@@ -60,12 +44,12 @@ export function WorkshopScreening(props: WorkshopScreeningProps) {
                 setShowModal={setShowModal}
                 date={formattedDate}
                 setDate={value => setDate((new Date(value)).toDateString())}
-                collectAnswer={collectAnswer} />
+            />
             <Modal
                 showModal={showModal}
                 question2={question2}
                 date={Date.parse(date)}
-                content={content} />
+            />
         </div>
     );
 }

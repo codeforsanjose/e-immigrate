@@ -3,7 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import YouTube from 'react-youtube';
 import { Button } from '../../components/Button/Button';
 import './Video.css';
-import { ContentText } from '../../types/ContentText';
+import { useContentContext } from '../../contexts/ContentContext';
+import { NavigateToEligibilityIfMissing } from '../NavigateToMissingStage';
+import classNames from 'classnames';
 
 const opts = {
     height: '315',
@@ -14,7 +16,6 @@ const opts = {
 };
 
 type VideoProps = {
-    content: ContentText;
     videoState: {
         hasWatchedVideo: boolean;
     };
@@ -24,11 +25,11 @@ type VideoProps = {
 
 export function Video(props: VideoProps) {
     const {
-        content,
         videoState,
         onEnd = () => { },
         onStateChange = (event) => { },
     } = props;
+    const { content } = useContentContext();
     const hasWatchedVideo = videoState.hasWatchedVideo;
     const navigate = useNavigate();
     const goToStep2 = () => {
@@ -45,6 +46,7 @@ export function Video(props: VideoProps) {
 
     return (
         <div className="video">
+            <NavigateToEligibilityIfMissing />
             <div className="titleText">
                 <div className="step">
                     {content.step1Header}: {content.step1Title}
@@ -55,7 +57,10 @@ export function Video(props: VideoProps) {
                 </div>
             </div>
             <div
-                className={`videoContainer ${watchingVideo ? 'largeVideo' : 'smallVideo'}`}
+                className={classNames('videoContainer', {
+                    largeVideo: watchingVideo,
+                    smallVideo: !watchingVideo,
+                })}
             >
                 <div className="videoWrapper">
                     <YouTube

@@ -1,15 +1,19 @@
 import React from 'react';
-import { apis } from '../../sendRequest/apis';
+import { apiUrls } from '../../sendRequest/apiUrls';
 
 import { sendRequest } from '../../sendRequest/sendRequest';
-import { getAuthToken } from '../../utilities/auth_utils';
 import { Navbar } from '../../compositions/Navbar/Navbar';
-import { Button } from '../../components/Button/Button';
 import { LanguageDropdown } from '../../components/LanguageDropdown/LanguageDropdown';
 import './EditQuestionnaires.css';
 
 import { apiUrlFormatters } from '../../sendRequest/apiUrlFormatters';
-import { ContentText, missingContentText } from '../../types/ContentText';
+import { useLanguageContext } from '../../contexts/LanguageContext';
+import { DEFAULT_LANGUAGE } from '../../utilities/languages/constants';
+import { api } from '../../sendRequest/api';
+import { useLanguageQuestionHook } from '../../hooks/useLanguageQuestionHook';
+import { useSelectableTitle } from './useSelectableTitle';
+import { ChooseFileSection } from './ChooseFileSection';
+import classNames from 'classnames';
 
 type QuestionnaireElement = {
     title: string | undefined;
@@ -17,240 +21,168 @@ type QuestionnaireElement = {
 type GetQuestionsApiResponse = {
     responses: Array<QuestionnaireElement>;
 };
-type GetQuestionsByLanguageElement = {
-    id: string;
-    text: string;
-};
-type GetQuestionsByLanguageApiResponse = {
-    questions: Array<GetQuestionsByLanguageElement>;
-};
-export const EditQuestionnaires = () => {
-    const [chooseFile, toggleChooseFile] = React.useState(false);
+
+function OptionalSelectedTitle(props: {
+    selected?: string;
+}) {
+    const { selected } = props;
+    if (selected == null || selected === '') return null;
+    return (
+        <div>Selected title: {selected}</div>
+    );
+}
+
+export function EditQuestionnaires() {
+    const {
+        language, 
+        setLanguage,
+    } = useLanguageContext();
+
+  
     const [questionnaireStatus, setQuestionnaireStatus] = React.useState<boolean | string>(false);
     const [questionnaires, setQuestionnaires] = React.useState<Array<QuestionnaireElement>>([]);
-    const [titleList, setTitleList] = React.useState<Array<string | undefined>>([]);
-    const [questionnaireTitle, setTitle] = React.useState('');
-    const [getQuestionCall, callGetQuestions] = React.useState(false);
     const [fetchQuestionnaire, setFetchQuestionnaire] = React.useState(false);
-    const [languageDropdown, toggleLanguageDropDown] = React.useState(false);
-    const [language, setLanguage] = React.useState('en');
-    const [questions, setListOfQuestions] = React.useState<Array<GetQuestionsByLanguageElement>>([]);
-    const [reFetch, setRefetch] = React.useState(false);
+    const [reFetch, setReFetch] = React.useState(false);
     const [workshopTitle, setWorkshopTitle] = React.useState('');
+  
+    const {
+        setTitleList,
+        titleList,
+        selectedTitle,
+        setSelectedTitle,
+    } = useSelectableTitle();
 
-    const content: ContentText = { 
-        ...(missingContentText),
-        buttonHome: 'Home',
-    };
-    const setToggleChooseFile = () => {
-        if (chooseFile) {
-            toggleChooseFile(false);
-        }
-        else {
-            toggleChooseFile(true);
-        }
-    };
-    const softDeleteResponse = (title: string) => {
-        const confirmBox = window.confirm(
-            'Do you really want to delete this questionnaire response?',
-        );
-        if (!confirmBox) {
-            return;
-        }
+    const softDeleteResponse = React.useCallback(async (title: string) => {
+        const message = `Do you really want to delete this '${title}' questionnaire?`;
+        const confirmBox = window.confirm(message);
+        if (!confirmBox) return;
 
-        const requestObj = {
-            url: apiUrlFormatters.deleteQuestionnaireByTitle({
-                title,
-            }),
-            method: 'DELETE',
-        };
-        const jwt = getAuthToken();
-        const headers = {
-            Authorization: `Bearer ${jwt}`,
-        };
-        sendRequest(requestObj, headers)
-            .then((response) => {
-                setRefetch(true);
-            })
-            .catch((err) => {
-                console.log(
-                    `error soft-deleting questionnaire response ${title}`,
-                    err,
-                );
+        try {
+            await sendRequest({
+                url: apiUrlFormatters.deleteQuestionnaireByTitle({
+                    title,
+                }),
+                method: 'DELETE',
+            }, {
+                includeAuth: true,
             });
-    };
-    const changeLanguage = (language: string) => {
+            if (selectedTitle === title) {
+                if (titleList.length === 0) setSelectedTitle(undefined);
+                else setSelectedTitle(titleList[0]);
+                //
+            }
+            setReFetch(true);
+        }
+        catch (err) {
+            console.log(
+                `error soft-deleting ${title} questionnaire `,
+                err,
+            );
+        }
+    }, [selectedTitle, setSelectedTitle, titleList]);
+    
+
+    const {
+        questions,
+        setQuestions,
+    } = useLanguageQuestionHook({
+        title: selectedTitle,
+        language,
+    });
+
+
+    const changeLanguage = React.useCallback(async (language: string) => {
         setLanguage(language);
-        toggleLanguageDropDown(false);
-        callGetQuestions(true);
-    };
-    const getByLanguage = () => {
-        toggleLanguageDropDown(true);
-        const encodedTitle = encodeURIComponent(questionnaireTitle);
-        const requestObj = {
-            url: apiUrlFormatters.getQuestionsByLanguage({
-                title: encodedTitle,
-                language,
-            }),
-            method: 'GET',
-        };
-        sendRequest<GetQuestionsByLanguageApiResponse>(requestObj)
-            .then((response) => {
-                console.log(response);
-                setListOfQuestions(response.questions);
-            })
-            .catch((error) => console.log(error));
-    };
-    if (getQuestionCall) {
-        getByLanguage();
-        callGetQuestions(false);
-    }
+        // setLanguageDropdown(false);
+        // setLanguageDropdown(true);
+        const result = await api.getQuestionsByLanguage({
+            title: selectedTitle,
+            language,
+        });
+        if (result == null) return;
+        setQuestions(result.questions);
+    }, [selectedTitle, setLanguage, setQuestions]);
+
     React.useEffect(() => {
-        if (fetchQuestionnaire || (questionnaires.length > 0 && !reFetch)) {
-            return;
-        }
-        else {
-            const requestObj = {
-                url: apis.getQuestions,
-                method: 'GET',
-            };
+        async function inner() {
+            if (fetchQuestionnaire) return;
+            else if (questionnaires.length > 0 && !reFetch) return;
+
             setFetchQuestionnaire(true);
-            sendRequest<GetQuestionsApiResponse>(requestObj)
-                .then((response) => {
-                    const objs = response.responses;
-                    setQuestionnaires(objs);
-                    const titles = Array.from(new Set(objs.map((obj) => obj.title)));
-                    setTitleList(titles);
-                    setFetchQuestionnaire(false);
-                    setRefetch(false);
-                })
-                .catch(() => {
-                    setFetchQuestionnaire(false);
+            try {
+
+                const response = await sendRequest<GetQuestionsApiResponse>({
+                    url: apiUrls.getQuestions,
+                    method: 'GET',
                 });
+                const questionnaires = response.responses;
+                setQuestionnaires(questionnaires);
+                const cleanTitles = questionnaires.map(q => q.title).filter(t => t != null && t !== '') as Array<string>;
+                setTitleList(Array.from(new Set(cleanTitles)));
+            }
+            catch (err) {
+                console.error(err);
+            }
+            finally {
+                setFetchQuestionnaire(false);
+                setReFetch(false);
+            }
         }
-    }, [fetchQuestionnaire, questionnaires.length, reFetch]);
-    const uploadNewQuestionnaire = (qustionnaireFile: File | undefined) => {
-        if (qustionnaireFile == null) {
-            console.error('No file selected');
-            return;
-        }
-        const formData = new FormData();
+        void inner();
+    }, [fetchQuestionnaire, questionnaires.length, reFetch, setTitleList]);
 
-        formData.append(
-            'questionnaire',
-            qustionnaireFile,
-            qustionnaireFile.name,
-        );
-        formData.append('title', workshopTitle);
-        const jwt = getAuthToken();
-        const headers = {
-            Authorization: `Bearer ${jwt}`,
-        };
-
-        const requestObj = {
-            url: apis.uploadQuestinnaires,
-            method: 'POST',
-            body: formData,
-        };
-        setQuestionnaireStatus('Uploading ' + qustionnaireFile.name);
-        sendRequest(requestObj, headers, true)
-            .then((response) => {
-                setQuestionnaireStatus('Uploaded ' + qustionnaireFile.name);
-                setRefetch(true);
-
-                setTimeout(() => setQuestionnaireStatus(''), 10 * 1000);
-                setToggleChooseFile();
-            })
-            .catch(() => {
-                setQuestionnaireStatus(
-                    'Error! Upload of ' + qustionnaireFile.name + ' failed',
-                );
-
-                setTimeout(() => setQuestionnaireStatus(''), 10 * 1000);
-                setToggleChooseFile();
-            });
-    };
-    const selectLanguage = (title: string) => {
-        toggleLanguageDropDown(true);
-        setTitle(title);
-        changeLanguage('en');
-    };
-    const switchViews = () => {
-        toggleLanguageDropDown(false);
-        setListOfQuestions([]);
-    };
-
+    const selectLanguage = React.useCallback((title: string) => {
+        // setLanguageDropdown(true);
+        setSelectedTitle(title);
+        changeLanguage(DEFAULT_LANGUAGE);
+    }, [changeLanguage, setSelectedTitle]);
+    
     return (
         <section>
             <Navbar
-                content={content}
                 dashboard={true}
-                language={language}
-                setLanguage={setLanguage}
             />
             <section>
-                {chooseFile
-                    ? (
-                        <form>
-                            <label>WorkshopTitle</label>
-                            <input
-                                onChange={(e) => setWorkshopTitle(e.target.value)}
-                                required
-                                type="text"
-                            ></input>
-                            <br></br>
-                            <input
-                                disabled={workshopTitle == null || workshopTitle === ''}
-                                required
-                                type="file"
-                                accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                                onChange={(e) =>
-                                    uploadNewQuestionnaire(e.target.files?.[0])
-                                }
-                            />
-                        </form>
-                    )
-                    : (
-                        <Button
-                            label="Upload New Questionnaire"
-                            onClick={setToggleChooseFile}
-                        />
-                    )}
+                <ChooseFileSection 
+                    setQuestionnaireStatus={setQuestionnaireStatus}
+                    setRefetch={setReFetch}
+                    setWorkshopTitle={setWorkshopTitle}
+                    workshopTitle={workshopTitle}
+                />
             </section>
-            <section>{`${questionnaireStatus ?? ''}`}</section>
-
+            <section>{`questionnaireStatus: ${questionnaireStatus ?? ''}`}</section>
             <section>
-                {languageDropdown
-                    ? (
-                        <section>
-                            <button onClick={switchViews}>Back</button>
-                            <LanguageDropdown
-                                setLanguage={(lang) => changeLanguage(lang)}
-                                language={language}
-                            ></LanguageDropdown>
-                        </section>
-                    )
-                    : (
-                        <ul>
-                            {titleList.map((title) => {
-                                if (title == null) return null;
-                                return (
-                                    <li key={title}>
-                                        {title}
-                                        <button onClick={() => selectLanguage(title)}>
-                                        View
-                                        </button>
-                                        <div
-                                            title="Delete this response"
-                                            className="delete"
-                                            onClick={(e) => softDeleteResponse(title)}
-                                        ></div>
-                                    </li>
-                                );
-                            })}
-                        </ul>
-                    )}
-                <div>{questionnaireTitle}</div>
+                <LanguageDropdown
+                    setLanguage={changeLanguage}
+                    language={language}
+                ></LanguageDropdown>
+            </section>
+            <section>
+                <ul className='TitleList'>
+                    {titleList.map((title) => {
+                        if (title == null) return null;
+                        return (
+                            <li 
+                                key={title} 
+                                className={classNames('TitleList_Item', {
+                                    ActiveTitle: title === selectedTitle,
+                                    InactiveTitle: title !== selectedTitle,
+                                })}
+                            >
+                                <span className='TitleList_Title'>{title}</span>
+                                <button className='TitleList_View' onClick={() => selectLanguage(title)}>
+                                    View
+                                </button>
+                                <div
+                                    title="Delete this response"
+                                    className="delete"
+                                    onClick={async () => await softDeleteResponse(title)}
+                                ></div>
+                            </li>
+                        );
+                    })}
+                </ul>
+                <OptionalSelectedTitle selected={selectedTitle} />
                 <ul>
                     {questions.map((q) => (
                         <li key={q.id}>
@@ -261,4 +193,4 @@ export const EditQuestionnaires = () => {
             </section>
         </section>
     );
-};
+}

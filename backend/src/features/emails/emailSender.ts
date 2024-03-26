@@ -1,6 +1,8 @@
-export function getRequiredEmailSender() {
-    const output = process.env.SENDER_EMAIL;
-    if (output == null || output === '') throw new Error(`Missing the 'SENDER_EMAIL' environment variable`);
-    return output;
-}
-export const emailSender = getRequiredEmailSender();
+import { getRequiredEnvironmentVariable } from "../environmentVariables/index.js";
+
+
+/**
+ *   The email address to send messages from.
+ * @todo set senderEmail that has access to to e-immigrate SENDGRID_API_KEY key
+ */
+export const emailSender = getRequiredEnvironmentVariable('SENDER_EMAIL');

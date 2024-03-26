@@ -1,27 +1,28 @@
 import React from 'react';
-import { useNavigate, NavigateFunction } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import { isAfter } from 'date-fns';
 
 import './Modal.css';
-import { ContentText } from '../../../types/ContentText';
+import { useContentContext } from '../../../contexts/ContentContext';
 
-function checkEligibility(
-    userDate: number | Date, 
-    question2: string | null,
-    navigate: NavigateFunction, 
-    content: ContentText,
-) {
-    // const cutoffDate = new Date();
+type EligibilityReasonPresenterProps = {
+    userDate: number | Date;
+    question2: string | null;
+};
+function EligibilityReasonPresenter(props: EligibilityReasonPresenterProps) {
+    const {
+        question2,
+        userDate,
+    } = props;
+    const { content } = useContentContext();
     const marriedDate = new Date(content.screeningDateMarried);
     const nonMarriedDate = new Date(content.screeningDate);
-
     if (question2 === 'Yes') {
         if (isAfter(userDate, marriedDate)) {
             return <div className="Reason">{content.modalText3}</div>;
         }
         else {
-            navigate('/overview');
-            return null;
+            return <Navigate to={'/overview'} />;
         }
     }
     else {
@@ -29,33 +30,35 @@ function checkEligibility(
             return <div className="Reason">{content.modalText4}</div>;
         }
         else {
-            navigate('/overview');
-            return null;
+            return <Navigate to={'/overview'} />;
         }
     }
 }
+
 
 type ModalProps = {
     showModal: boolean;
     question2: string | null;
     date: number | Date;
-    content: ContentText;
 };
 
 export function Modal(props: ModalProps) {
-    const { showModal, question2, date, content } = props;
-    const navigate = useNavigate();
-
-    if (!showModal) {
-        return null;
-    }
+    const { showModal, question2, date } = props;
+    const { content } = useContentContext();
+    
+    if (!showModal) return null;
 
     return (
         <div>
             <div className="Modal">
                 <h2>{content.modalText1}</h2>
                 <h3>{content.modalText2}</h3>
-                <div>{checkEligibility(date, question2, navigate, content)}</div>
+                <div>
+                    <EligibilityReasonPresenter 
+                        question2={question2}
+                        userDate={date}
+                    />
+                </div>
                 <a href="https://e-immigrate.info/" className="ExitButton">
                     {content.modalExitButton}
                 </a>

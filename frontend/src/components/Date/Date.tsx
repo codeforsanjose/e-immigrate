@@ -1,13 +1,26 @@
 import React from 'react';
 import './Date.css';
-import { ErrorMessageOnlyContentText } from '../../types/ContentText';
 import { CommonComponentProps } from '../../types/CommonComponentProps';
-
-type DateProps = CommonComponentProps<ErrorMessageOnlyContentText>;
+import { AutoRequiredErrorDiv } from '../RequiredErrorPresenter';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { useQuestionnaireResponseContext, QuestionnaireResponseContext } from '../../contexts/QuestionnaireResponseContext';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { ContentContext } from '../../contexts/ContentContext';
+type DateProps = CommonComponentProps;
+/**
+ *
+ *  Depends on {@link QuestionnaireResponseContext}, and
+ * {@link ContentContext}.
+ *
+ * @export
+ */
 export function Date(props: DateProps) {
     const {
-        q, bindField, content,
+        q, 
     } = props;
+    const {
+        bindField,
+    } = useQuestionnaireResponseContext();
     return (
         <>
             <input
@@ -16,7 +29,7 @@ export function Date(props: DateProps) {
                 required={q.required}
                 className="TextInput"
                 {...bindField(q.slug)} />
-            <div className="RequiredError">*{content.errorMessage}</div>
+            <AutoRequiredErrorDiv />
         </>
     );
 }

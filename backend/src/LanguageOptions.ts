@@ -1,4 +1,4 @@
-import { EmailContentLanguages } from "./routes/sendEmail/emailContent.js";
+import { EmailContentLanguages } from "./features/emails/emailContentLanguages.js";
 
 export const WorkshopTitle = 'CIIT_Workshop_Spring_2022';
 
@@ -87,3 +87,44 @@ export const LanguageOptions: Array<LanguageOption> = [
         englishName: 'Portuguese',
     },
 ];
+
+/**
+ *   A mapping from 'language code' to 'excel sheet name'
+ */
+export const ExcelLanguageSheetMap: Partial<Record<LanguageOptionCodes, string | undefined>> = {
+    en: 'English',
+    es: 'Spanish',
+    vi: 'Vietnamese',
+    tl: 'TAGALOG',
+    cmn: 'MANDARIN',
+    yue: 'CANTONESE',
+    ru: 'Russian',
+    am: 'AMHARIC',
+    ar: 'ARABIC',
+    fa: 'FARSI',
+    hi: 'Hindi',
+    ko: 'Korean',
+    ps: 'PASHTO',
+    pa: 'PUNJABI',
+    pt: 'Portuguese',
+};
+
+// 
+
+export const TranslatedContentLanguageSheetMap: Partial<Record<LanguageOptionCodes, string | undefined>> = {
+    en: 'English',
+    es: 'Español',
+    vi: 'Tiếng Việt',
+    tl: 'Tagalog',
+    cmn: 'Mandarin',
+    yue: 'Cantonese',
+    ru: 'Russian',
+    am: 'Amharic',
+    ar: 'Arabic',
+    fa: 'Farsi',
+    hi: 'Hindi',
+    ko: 'Korean',
+    ps: 'Pashto',
+    pa: 'Punjabi',
+    pt: 'Portuguese',
+};

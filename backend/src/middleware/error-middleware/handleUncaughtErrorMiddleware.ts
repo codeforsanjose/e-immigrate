@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from "express";
 import { ErrorMiddleware } from "../../types/Middleware.js";
-import { RequestError } from "../../errors/RequestError.js";
-const DEFAULT_ERROR_CODE = 400;
+import { scopedLogger } from "../../features/logging/logger.js";
+const DEFAULT_ERROR_CODE = 500;
 
-
+const logger = scopedLogger('UncaughtErrorMiddleware');
 /**
  *  Middleware which returns a 400 status code when an uncaught
  * {@link Error} is thrown.
@@ -12,8 +12,10 @@ const DEFAULT_ERROR_CODE = 400;
  */
 export function handleUncaughtErrorMiddleware(): ErrorMiddleware {
     return (err: Error, req: Request, res: Response, next: NextFunction) => {
-        console.error('[UncaughtErrorMiddleware]', { 
+        logger.info('UncaughtErrorMiddleware');
+        logger.error({ 
             err, 
+            request: req.url,
             errMessage: err.message,
         });
         const errorStatus = DEFAULT_ERROR_CODE;

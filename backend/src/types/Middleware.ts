@@ -4,10 +4,10 @@ export type ErrorMiddleware = (
     req: Request,
     res: Response,
     next: NextFunction
-  ) => void;
+) => void;
   
-  export type Middleware = (
+export type Middleware = (
     req: Request,
     res: Response,
     next: NextFunction
-  ) => void;
+) => void;

@@ -1,11 +1,16 @@
 import mongoose from 'mongoose';
+import { WithMongooseTimestamps } from './core/types.js';
 
-const Schema = mongoose.Schema;
 
-const userSchema = new Schema(
+export type UserEntity = WithMongooseTimestamps<{
+    name?: string;
+    phoneNumber: string;
+    document?: string;
+}>;
+const userSchema = new mongoose.Schema<UserEntity>(
     {
         name: { type: String, required: false, unique: false },
-        phoneNumber: { type: Number, required: true, unique: true, trim: true },
+        phoneNumber: { type: String, required: true, unique: true, trim: true },
         document: { type: String, required: false, unique: false },
     },
     {
@@ -13,4 +18,4 @@ const userSchema = new Schema(
     }
 );
 
-export const User = mongoose.model('User', userSchema);
+export const User = mongoose.model<UserEntity>('User', userSchema);

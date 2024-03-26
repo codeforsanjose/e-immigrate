@@ -2,17 +2,16 @@ import React from 'react';
 import { Button } from '../../../components/Button/Button';
 
 import './QuestionnaireIntro.css';
-import { ContentText } from '../../../types/ContentText';
+import { useContentContext } from '../../../contexts/ContentContext';
 
 type QuestionnaireIntroProps = {
-    content: ContentText;
     setIntroPage: (value: boolean) => void;
 };
 export function QuestionnaireIntro(props: QuestionnaireIntroProps) {
     const {
-        content,
         setIntroPage,
     } = props;
+    const { content } = useContentContext();
     const onClick = () => {
         setIntroPage(false);
     };
