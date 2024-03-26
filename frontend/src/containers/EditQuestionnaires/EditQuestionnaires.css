@@ -1,0 +1,66 @@
+.EditQuestionnaires .questionnaire-section-title {
+    font-weight: 900;
+    margin: 2rem 0 1rem;
+}
+
+.EditQuestionnaires .li {
+    font-weight: 900;
+    margin: 2rem 0 1rem;
+    color: white;
+}
+.EditQuestionnaires .delete {
+    width: 20px;
+    height: 20px;
+    border-radius: 25px;
+    margin: auto;
+    background: #fa6900;
+    color: #fff;
+    opacity: 0.3;
+}
+
+
+
+.ChooseFileForm {
+    display: flex;
+    flex-direction: column;
+}
+
+.flex,
+.flex-column,
+.flex-row {
+    display: flex;
+}
+
+.flex-column {
+    flex-direction: column;
+}
+
+.flex-row {
+    flex-direction: row;
+}
+
+
+
+.TitleList {
+    display: grid;
+    justify-content:  left;
+    grid-template-columns: 1fr auto auto;
+}
+
+.TitleList li {
+    display: grid;
+    grid-column: 1/4;
+    grid-template-columns: subgrid;
+    
+}
+
+.TitleList .TitleList_Title {
+  grid-column: 1;
+}
+.TitleList .TitleList_View {
+  grid-column: 2;
+}
+
+.TitleList .delete {
+  grid-column: 3;
+}

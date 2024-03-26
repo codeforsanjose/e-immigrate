@@ -2,11 +2,15 @@
 version: "3.9"
 
 services:
-  app:
+  backend:
     image: e-immigrate
     build:
       context: ./
-      dockerfile: Dockerfile
+      dockerfile: docker/backend/Dockerfile
+    env_file: ./backend/.secrets/.env
+    volumes:
+      - "./backend:/srv"
+      - eimmigrate_backend-node_modules:/srv/node_modules
     ports:
       - "5000:5000"
     environment:
@@ -16,13 +20,46 @@ services:
       - "org.opensourcesanjose.app=eimmigrate"
     depends_on:
       - mongo
+  frontend:
+    build:
+      context: ./
+      dockerfile: docker/frontend/Dockerfile
+    volumes:
+      - "./frontend:/srv"
+      - eimmigrate_frontend-node_modules:/srv/node_modules
+    ports:
+      - "8080:8080"
+    labels:
+      - "org.opensourcesanjose.app=eimmigrate"
 
   mongo:
     image: mongo:latest
     ports:
       - "27017:27017"
     restart: always
+    volumes:
+      - mongo-data:/data/db
     environment:
       MONGO_INITDB_ROOT_USERNAME: eimmigrate
       MONGO_INITDB_ROOT_PASSWORD: eimmigrate
       MONGO_INITDB_DATABASE: eimmigrate
+  
+  reverse_proxy:
+    image: nginx:latest
+    volumes:
+      - ./docker/reverse-proxy/conf_d:/etc/nginx/conf.d
+      - ./docker/reverse-proxy/nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - 80:80
+    restart: unless-stopped
+
+volumes:
+  mongo-data:
+    labels:
+      org.opensourcesanjose.app: eimmigrate
+  eimmigrate_backend-node_modules:
+    labels:
+      org.opensourcesanjose.app: eimmigrate
+  eimmigrate_frontend-node_modules:
+    labels:
+      org.opensourcesanjose.app: eimmigrate
