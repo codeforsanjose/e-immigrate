@@ -7,7 +7,7 @@ import { Readable } from 'stream';
 
 
 const loggers = {
-    loadQuestionSheet: scopedLogger('loadQuestionnaireXlsxIntoDB'),
+    loadQuestionSheet: scopedLogger('loadQuestionSheet'),
     loadQuestionnaireXlsxIntoDB: scopedLogger('loadQuestionnaireXlsxIntoDB'),
 };
 
@@ -195,7 +195,10 @@ export function loadQuestionSheet(rows: Array<Row>, language: LanguageOptionCode
 
         const parseResult = loadRow(row);
         if (!parseResult.success) {
-            logger.error(parseResult.error, 'Failed to extract row data');
+            logger.error({
+                slug: row[1],
+                parseError: parseResult.error,
+            }, 'Failed to extract row data');
             return;
         }
         data.push({
