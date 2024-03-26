@@ -6,6 +6,9 @@ import { forEachAsync } from '../features/iterators/forEachAsync.js';
 import { loadQuestionSheet } from '../features/excelFiles/questionnaireExcel.js';
 
 async function generateQuestionnaires() {
+    type LanguageData = Awaited<ReturnType<typeof loadQuestionSheet>>;
+    // eslint-disable-next-line no-undef-init, @typescript-eslint/no-unused-vars
+    let englishData: LanguageData | undefined = undefined;
     await forEachAsync(LanguageOptions, async (language, idx) => {
         // find the name of the sheet in the excel file
         const excelSheetName = ExcelLanguageSheetMap[language.code];
@@ -14,7 +17,10 @@ async function generateQuestionnaires() {
             sheet: excelSheetName,
         });
         const data = loadQuestionSheet(rows, language.code);
-        
+        if (language.code === 'en') {
+            englishData = data;
+        }
+
         await sendRequest({
             url: 'http://localhost:5000/api/questionnaires/add',
             method: 'POST',

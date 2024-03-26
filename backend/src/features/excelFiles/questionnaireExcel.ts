@@ -16,7 +16,7 @@ const RowSchema = z.object({
     id: z.union([z.string(), z.number()]),
     slug: z.string(),
     category: z.string(),
-    text: z.string(),
+    text: z.string().nullable(),
     questionType: z.string(),
     answerSelections: z.string().nullable(),
     answerValues: z.string().nullable(),
@@ -318,7 +318,7 @@ export async function importExcelQuestionSheet(config: {
         required: boolean;
         slug: string;
         category: string;
-        text: string;
+        text: string | null;
         questionType: string;
         answerSelections: string | null;
         answerValues: string | null;

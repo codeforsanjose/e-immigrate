@@ -5,7 +5,7 @@ export type QuestionEntity = {
     id: string;
     slug: string;
     category: string;
-    text: string;
+    text?: string;
     questionType: string;
     answerSelections?: string;
     answerValues?: string;
@@ -23,7 +23,7 @@ export const questionSchema = new mongoose.Schema<QuestionEntity>({
     id: { type: String, unique: false, required: true },
     slug: { type: String, unique: false, required: true },
     category: { type: String, unique: false, required: true },
-    text: { type: String, unique: false, required: true },
+    text: { type: String, unique: false, required: false },
     questionType: { type: String, unique: false, required: true },
     answerSelections: { type: String, unique: false, required: false },
     answerValues: { type: String, unique: false, required: false },
