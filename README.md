@@ -8,6 +8,8 @@ The purpose of the project is to have users watch an informational video and ans
 
 ## Run Locally
 
+# Docker latest 2024 development
+
 ### Clone the project
 
 ```bash
@@ -20,13 +22,28 @@ Go to the project directory
   cd e-immigrate
 ```
 
-**Installing CORRECT version of Node**
-Engines is defined in package.json and is `14.21.3`
+**Installing latest version of Node 21.1.0**
+## Docker Running
+Make sure you have the latest of Docker Desktop
 
-Install dependencies
+`docker compose up -d` load docker in detached mode to gain terminal back while it runs in Docker Desktop
+`docekr compose exec backend npm run prepare-from-execl`
+load the browser and go to `localhost:80`
 
+
+## Updating Questionnaire or TranslatedContent
+1. Updating website page content or Questionnaire content files `Questionnaire.xlsx or TranslatedContent.xlsx`
+2. Make sure the docker containers are alive and running in Docker Desktop, should see all green.
+  - if not green then rerun `docker compose up -d`
+3. `docekr compose exec backend npm run prepare-from-execl`
+4. Reload page to see changes from xlsx files
+
+Install dependencies locally
 ```bash
-  npm install
+  - cd frontend/
+  - npm install
+  - cd ../backend
+  - npm install
 ```
 
 ### Run MongoDB Locally
