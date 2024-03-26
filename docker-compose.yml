@@ -12,7 +12,7 @@ services:
       - "./backend:/srv"
       - eimmigrate_backend-node_modules:/srv/node_modules
     ports:
-      - "5000:5000"
+      - "5000"
     environment:
       - MONGO_URI=mongodb://eimmigrate:eimmigrate@mongo/eimmigrate?authSource=admin
       # - SENDGRID_API_KEY=SG.hxxxx
@@ -35,7 +35,7 @@ services:
   mongo:
     image: mongo:latest
     ports:
-      - "27017:27017"
+      - "27017"
     restart: always
     volumes:
       - mongo-data:/data/db
