@@ -165,10 +165,6 @@ export function MainContainer() {
                                 <Route path="/video" element={<>
                                     <ProgressBar step={1} />
                                     <NavigateToEligibilityIfMissing />
-                                    <Button
-                                        label='Skip video'
-                                        onClick={videoEndedHandler}
-                                    />
                                     <Video
                                         onEnd={videoEndedHandler}
                                         videoState={videoState}

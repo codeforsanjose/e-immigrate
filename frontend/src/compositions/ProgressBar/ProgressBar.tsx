@@ -61,6 +61,7 @@ export function ProgressBar(props: ProgressBarProps) {
         step,
     } = props;
     const { content } = useContentContext();
+    console.log('what it suppose to be ', content.progressBarHeader);
     return (
         <div className="progressBar">
             <div className="title">{content.progressBarHeader}</div>

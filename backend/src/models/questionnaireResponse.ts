@@ -38,7 +38,7 @@ export type ResponseEntity = {
     US_citizen_registered_voted: string;
     associated_terrorist_orgs_gangs: string;
     "live_US_18-26_and_are_26-31": string;
-    selective_service: string;
+    selective_service?: string;
 };
 export type QuestionnaireResponseEntity = WithMongooseTimestamps<{
     title?: string;
@@ -88,7 +88,7 @@ const responseSchema = new mongoose.Schema<ResponseEntity>({
     US_citizen_registered_voted: { type: String, required: true },
     associated_terrorist_orgs_gangs: { type: String, required: true },
     "live_US_18-26_and_are_26-31": { type: String, required: true },
-    selective_service: { type: String, required: true },
+    selective_service: { type: String, required: false },
 });
 
 
