@@ -8,7 +8,7 @@ type ChooseFileSectionProps = {
     setWorkshopTitle: (value: string) => void;
     setQuestionnaireStatus: (status: string) => void;
     setRefetch: (value: boolean) => void;
-};  
+};
 export function ChooseFileSection(props: ChooseFileSectionProps) {
     const {
         setQuestionnaireStatus,
@@ -34,10 +34,16 @@ export function ChooseFileSection(props: ChooseFileSectionProps) {
     }
     else {
         return (
-            <Button
-                label = "Upload New Questionnaire"
-                onClick = { toggleChooseFile } 
-            />
+            <div>
+                <Button
+                    label="Upload New Questionnaire"
+                    onClick={toggleChooseFile}
+                />
+                <Button
+                    label="Upload New Website content"
+                    onClick={toggleChooseFile}
+                />
+            </div>
         );
     }
 }

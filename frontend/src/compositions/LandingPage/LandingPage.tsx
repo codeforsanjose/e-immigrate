@@ -36,7 +36,7 @@ export function LandingPage() {
                             </a>
                         </h2>
                     </div>
-                    <h3>{content.closedMessage}</h3>
+                    {/* <h3>{content.closedMessage}</h3> */}
                     <Button label={'Start'} onClick={goToStep1}/>
                 </div>
                 <img src={image} alt="CIIT Logo" width="100%" height="auto" />
