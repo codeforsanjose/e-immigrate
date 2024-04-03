@@ -7,7 +7,7 @@ services:
     build:
       context: ./
       dockerfile: docker/backend/Dockerfile
-    env_file: ./backend/.secrets/.env
+    # env_file: ./backend/.secrets/.env
     volumes:
       - "./backend:/srv"
       - eimmigrate_backend-node_modules:/srv/node_modules
