@@ -23,7 +23,6 @@ import { ContentText } from '../../types/ContentText';
 import { useContentContext } from '../../contexts/ContentContext';
 import { useLanguageContext } from '../../contexts/LanguageContext';
 import { QuestionnaireResponse } from '../../contexts/QuestionnaireResponseContext';
-import { Button } from '../../components/Button/Button';
 import { NavigateToEligibilityIfMissing } from '../../compositions/NavigateToMissingStage';
 import classNames from 'classnames';
 

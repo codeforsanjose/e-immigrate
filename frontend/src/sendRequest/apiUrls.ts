@@ -7,6 +7,7 @@ export const apiUrls = {
         registerApi: '/api/admins',
         deleteApi: '/api/admins/:id',
         uploadQuestinnaires: '/api/admins/questionnairefile',
+        uploadNewTranslatedContent: '/api/translatedContent/add',
         getListOfQuestionnaires: '/api/admins/questionnaires',
         deleteQuestionnaireByTitle: '/api/admins/deletequestionnaire/:title',
     } as const,

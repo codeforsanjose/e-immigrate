@@ -8,6 +8,7 @@ type SendRequestObj = {
 
 const DEFAULT_HEADERS = {
     'Content-Type': 'application/json',
+    Authorization: '',
 };
 const logger = scopedLogger('sendRequest');
 export async function sendRequest(requestObj: SendRequestObj, headers = DEFAULT_HEADERS) {

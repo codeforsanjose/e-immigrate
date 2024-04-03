@@ -15,7 +15,8 @@ services:
       - "3001:3001"
     environment:
       - MONGO_URI=mongodb://eimmigrate:eimmigrate@mongo/eimmigrate?authSource=admin
-      # - SENDGRID_API_KEY=SG.hxxxx
+      - SENDGRID_API_KEY=SG.hxxxx
+      - SENDER_EMAIL='noreply@cet-icp.org'
     labels:
       - "org.opensourcesanjose.app=eimmigrate"
     depends_on:
