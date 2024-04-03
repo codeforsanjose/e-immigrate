@@ -7,6 +7,8 @@ import './WorkshopScreening.css';
 import { useContentContext } from '../../contexts/ContentContext';
 import { useQuestionsContext } from '../../contexts/QuestionsContext';
 import { Question1 } from './Question1';
+import { compareDateForValidation } from '../../utilities/dateHelper';
+import { Navigate } from 'react-router-dom';
 
 
 export function WorkshopScreening() {
@@ -40,7 +42,11 @@ export function WorkshopScreening() {
 
 
     const restOfScreeningQuestions = filteredQuestions.slice(3);
-   
+    const finalScreenStep = (
+        <div>
+            <Navigate to={'/overview'} />;
+        </div>
+    );
     return (
         <div className="WorkshopScreening">
             <h1>{content.screeningHeader}</h1>
@@ -56,13 +62,20 @@ export function WorkshopScreening() {
                 showModal={showModal}
                 setShowModal={handleShowRestOfQuestions}
                 date={formattedDate}
-                setDate={value => setDate((new Date(value)).toDateString())}
+                setDate={value => {
+                    const check = compareDateForValidation(value, dateToUse); // date must be before the dateToUse
+                    if (check) {
+                        // valid date
+                        setDate((new Date(value)).toDateString());
+                    }
+                    else {
+                        // invalid date selected show the modal to leave
+                        setShowModal(true);
+                    }
+
+                }}
             />}
-            <Modal
-                showModal={showModal}
-                question2={question2}
-                date={Date.parse(date)}
-            />
+
 
             {!showLogicBranch && question4 === ''
                 ? (<Question1
@@ -90,9 +103,6 @@ export function WorkshopScreening() {
                 ? (<Question1
                     q={restOfScreeningQuestions[2]}
                     setQuestion={(userResponse) => {
-                        setShowModal(currentState => {
-                            return true;
-                        });
                         setQuestion6(currentState => {
                             return userResponse;
                         });
@@ -100,6 +110,15 @@ export function WorkshopScreening() {
                 />
                 )
                 : null}
+
+            <Modal
+                showModal={showModal}
+                question2={question2}
+                date={Date.parse(date)}
+            />
+            {
+                question6 !== '' && question5 !== '' && !showModal ? finalScreenStep : null
+            }
         </div>
     );
 }

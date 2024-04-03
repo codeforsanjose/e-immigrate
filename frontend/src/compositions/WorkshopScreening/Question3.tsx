@@ -64,7 +64,8 @@ export function Question3(props: Question3Props) {
             // bulmaCalendar instance is available as element.bulmaCalendar
             calendar.on('select', (datepicker) => {
                 const value = datepicker.data.value();
-                const selectedDate = new Date(value.startDate);
+                // @ts-expect-error date takes in this string just fine
+                const selectedDate = new Date(value);
                 setDate(selectedDate);
             });
         }
