@@ -5,7 +5,13 @@ on:
   pull_request:
   push:
     branches: ['master']
-
+  workflow_dispatch:
+    inputs:
+      env:
+        type: environment
+      ref:
+        description: 'Branch, Tag, or SHA'
+        required: true
 concurrency:
   group: ci-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
