@@ -7,7 +7,7 @@ import * as WorkboxWebpackPlugin from 'workbox-webpack-plugin';
 type WebpackConfiguration = webpack.Configuration;
 type DevServer = WebpackDevServer.Configuration;
 
-const port = 8080;
+const port = 80;
 const BYTES_PER_KB = 1024;
 const BYTES_PER_MB = (1024 * BYTES_PER_KB);
 

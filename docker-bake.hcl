@@ -121,5 +121,5 @@ target "backend" {
  * "docker buildx bake" == "docker buildx bake default"
  */
 group "default" {
-    targets = ["frontend", "backend"]
+    targets = ["build", "backend"]
 }
