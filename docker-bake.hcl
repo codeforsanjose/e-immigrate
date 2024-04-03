@@ -89,19 +89,8 @@ target "build" {
     dockerfile = "docker/frontend/Dockerfile"
     context = "./"
     target = "nginx-build"
-    args = {
-        PUBLIC_URL = "${PUBLIC_URL}"
-        REACT_APP_GRAPHQL_URL = "${REACT_APP_GRAPHQL_URL}"
-    }
-    secret = [
-        "type=env,id=REACT_APP_RECAPTCHAS_SITE_KEY",
-        "type=env,id=REACT_APP_JWT_ISSUER",
-        "type=env,id=REACT_APP_MICROSOFT_ID",
-        "type=env,id=REACT_APP_GOOGLE_ID",
-        "type=env,id=MICROSOFT_CLIENT_ID"
-    ]
     inherits = ["_common"]
-    tags = dockerTag("happeningatm", "${DOCKER_TAG}", "frontend")
+    tags = dockerTag("eimmigrate", "${DOCKER_TAG}", "frontend")
     cache-from = [dockerS3Cache("${CACHE_ID}-frontend")]
     cache-to   = [notequal("false",GITHUB_ACTIONS) ? dockerS3Cache("${CACHE_ID}-frontend"): ""]
 }
