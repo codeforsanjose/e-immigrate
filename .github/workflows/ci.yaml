@@ -1,12 +1,10 @@
 ---
 name: ci
-run-name: ci ${{ github.event_name}} ${{ github.ref_name }} by ${{ github.actor }}
+run-name: ci ${{ github.event_name }} ${{ github.ref_name }}
 on:
-  schedule:
-    - cron: '20 11 * * *'
   pull_request:
   push:
-    branches: [master]
+    branches: ['master']
   workflow_dispatch:
     inputs:
       env:
@@ -14,14 +12,9 @@ on:
       ref:
         description: 'Branch, Tag, or SHA'
         required: true
-
 concurrency:
-  group: test-${{ github.head_ref || github.run_id }}
+  group: ci-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
-
-permissions:
-  id-token: write
-  contents: read
 
 env:
   REFERENCE: ${{ github.event.pull_request.head.sha || github.event.push.head_commit.id }}
@@ -29,26 +22,33 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    strategy:
+      matrix:
+        image: [build, backend]
     steps:
-      - uses: aws-actions/configure-aws-credentials@v2
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.REFERENCE }}
+      - uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github-actions
           role-session-name: gha
           aws-region: us-west-2
-      - uses: actions/checkout@v3
-        with:
-          ref: ${{ env.REFERENCE }}
-      - uses: docker/setup-qemu-action@v2
-      - uses: docker/setup-buildx-action@v2
-        with:
-          install: true
-          version: latest
+      - uses: docker/setup-buildx-action@v3
       - id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
-      - run: make build
+        uses: aws-actions/amazon-ecr-login@v2
+        with:
+          mask-password: 'true'
+      - run: make build-${{ matrix.image }}
         env:
           AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
-      # - uses: docker/build-push-action@v4
-      #   with:
-      #     push: true
-      #     tags: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-west-2.amazonaws.com/eimmigrate:${{ env.REFERENCE }}
+          # REACT_APP_GRAPHQL_URL: ${{ vars.REACT_APP_GRAPHQL_URL }}
+          # PUBLIC_URL: ${{ vars.PUBLIC_URL }}
+          # REACT_APP_JWT_ISSUER: ${{ secrets.REACT_APP_JWT_ISSUER }}
+          # REACT_APP_RECAPTCHAS_SITE_KEY: ${{ secrets.REACT_APP_RECAPTCHAS_SITE_KEY }}
+          # REACT_APP_MICROSOFT_ID: ${{ secrets.REACT_APP_MICROSOFT_ID }}
+          # REACT_APP_GOOGLE_ID: ${{ secrets.REACT_APP_GOOGLE_ID }}
+          # MICROSOFT_CLIENT_ID: ${{ secrets.MICROSOFT_CLIENT_ID }}

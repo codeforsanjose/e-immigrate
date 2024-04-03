@@ -93,7 +93,7 @@ async function generateLanguageContent() {
         // });
         // submit them locally
         await sendRequest({
-            url: 'http://localhost:5000/api/translatedContent/add',
+            url: 'http://localhost:3001/api/translatedContent/add',
             method: 'POST',
             body: JSON.stringify({
                 title: WorkshopTitle,

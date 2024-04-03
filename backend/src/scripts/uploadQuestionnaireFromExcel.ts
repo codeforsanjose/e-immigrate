@@ -22,7 +22,7 @@ async function generateQuestionnaires() {
         }
 
         await sendRequest({
-            url: 'http://localhost:5000/api/questionnaires/add',
+            url: 'http://localhost:3001/api/questionnaires/add',
             method: 'POST',
             body: JSON.stringify({
                 title: WorkshopTitle,

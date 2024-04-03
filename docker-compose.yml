@@ -7,12 +7,12 @@ services:
     build:
       context: ./
       dockerfile: docker/backend/Dockerfile
-    env_file: ./backend/.secrets/.env
+    # env_file: ./backend/.secrets/.env
     volumes:
       - "./backend:/srv"
       - eimmigrate_backend-node_modules:/srv/node_modules
     ports:
-      - "5000"
+      - "3001:3001"
     environment:
       - MONGO_URI=mongodb://eimmigrate:eimmigrate@mongo/eimmigrate?authSource=admin
       # - SENDGRID_API_KEY=SG.hxxxx
@@ -28,7 +28,7 @@ services:
       - "./frontend:/srv"
       - eimmigrate_frontend-node_modules:/srv/node_modules
     ports:
-      - "8080:8080"
+      - "3000:3000"
     labels:
       - "org.opensourcesanjose.app=eimmigrate"
 

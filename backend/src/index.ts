@@ -26,7 +26,7 @@ app.use(cors());
 app.use(express.json());
 app.use(fileUpload({ limits: { fileSize: MAX_EXCEL_FILE_SIZE } }));
 
-function getPort(defaultPort = 5000) {
+function getPort(defaultPort = 3001) {
     const port = process.env.PORT;
     if (port == null) return defaultPort;
     else if (typeof port === 'number') return port;

@@ -1,15 +1,31 @@
-FROM node:latest
+FROM node:latest AS step1
 
 WORKDIR /srv
 
 COPY --link ./backend .
 RUN npm install
 
-EXPOSE 5000/tcp
+EXPOSE 3001/tcp
+
+FROM step1 as build
+
+RUN npm run build
+
+FROM build AS prod
 LABEL org.opensourcesanjosedistro="debian" \
   org.opensourcesanjoseimage="emmigrate" \
   org.opencontainers.image.source="https://github.com/codeforsanjose/e-immigrate" \
   org.opencontainers.image.ref.name="emmigrate" \
   org.opencontainers.image.title="E-Immigrate" \
   org.opencontainers.image.description="Project New Citizen is a web application created for the Center for Employment Training Immigration and Citizenship Program (CET-ICP) in collaboration with Code for San Jose."
-CMD [ "npm", "run", "build-and-serve:watch" ]
+CMD [ "npm", "run", "start" ]
+
+FROM build as local
+LABEL org.opensourcesanjosedistro="debian" \
+  org.opensourcesanjoseimage="emmigrate" \
+  org.opencontainers.image.source="https://github.com/codeforsanjose/e-immigrate" \
+  org.opencontainers.image.ref.name="emmigrate" \
+  org.opencontainers.image.title="E-Immigrate" \
+  org.opencontainers.image.description="Project New Citizen is a web application created for the Center for Employment Training Immigration and Citizenship Program (CET-ICP) in collaboration with Code for San Jose."
+
+CMD [ "npm", "run", "start:watch" ]
