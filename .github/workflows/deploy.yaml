@@ -43,7 +43,7 @@ jobs:
       - name: deploy
         run: |-
           python .github/scripts/argocd_deploy.py \
-          --application=happeningatm-${{ env.ENVIRONMENT }} \
+          --application=${{ env.ENVIRONMENT }} \
           --docker_tag=$(git rev-parse HEAD)
         env:
           ARGO_CD_SERVER: ${{ secrets.ARGO_CD_SERVER }}
