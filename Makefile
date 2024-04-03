@@ -21,7 +21,11 @@ build: aws-cli-creds
 build: ## Build Docker image
 	docker buildx bake --print
 	docker buildx bake
-
+build-%: aws-cli-creds
+build-%: ## Build Docker specific image
+	docker buildx bake --file docker-bake.hcl --print $*
+	docker buildx bake --file docker-bake.hcl $*
+	
 run: ## Run the app
 	docker compose up -d
 
