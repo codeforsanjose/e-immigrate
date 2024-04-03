@@ -5,7 +5,7 @@ WORKDIR /srv
 COPY --link ./backend .
 RUN npm install
 
-EXPOSE 5000/tcp
+EXPOSE 3001/tcp
 
 FROM step1 as build
 
