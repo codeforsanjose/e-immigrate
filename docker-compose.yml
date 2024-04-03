@@ -28,7 +28,7 @@ services:
       - "./frontend:/srv"
       - eimmigrate_frontend-node_modules:/srv/node_modules
     ports:
-      - "3000:80"
+      - "3000:3000"
     labels:
       - "org.opensourcesanjose.app=eimmigrate"
 
