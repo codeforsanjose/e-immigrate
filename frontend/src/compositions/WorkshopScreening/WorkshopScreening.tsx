@@ -31,7 +31,9 @@ export function WorkshopScreening() {
         });
     };
     const dateToUse = question1?.toLocaleLowerCase() === 'yes'
-        ? screeningDateMarried
+        ? question2?.toLocaleLowerCase() === 'yes'
+            ? screeningDateMarried
+            : screeningDate
         : screeningDate;
 
     const [date, setDate] = React.useState(dateToUse);
@@ -63,6 +65,7 @@ export function WorkshopScreening() {
                 setShowModal={handleShowRestOfQuestions}
                 date={formattedDate}
                 setDate={value => {
+                    console.log('date to use', dateToUse);
                     const check = compareDateForValidation(value, dateToUse); // date must be before the dateToUse
                     if (check) {
                         // valid date
