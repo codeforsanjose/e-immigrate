@@ -31,8 +31,8 @@ export function WorkshopScreening() {
         });
     };
     const dateToUse = question1?.toLocaleLowerCase() === 'yes'
-        ? screeningDate
-        : screeningDateMarried;
+        ? screeningDateMarried
+        : screeningDate;
 
     const [date, setDate] = React.useState(dateToUse);
     const formattedDate = new Date(date);
