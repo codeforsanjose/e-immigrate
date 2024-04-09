@@ -8,3 +8,6 @@ export const compareDateForValidation = (date: string | number | Date, compareTo
         return true;
     }
 };
+export function dateFormatterForReport(date: Date) {
+    return `${date.getDay() + 1}/${date.getMonth() + 1}/${date.getFullYear()}`;
+}

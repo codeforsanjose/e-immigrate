@@ -25,6 +25,7 @@ import { useLanguageContext } from '../../contexts/LanguageContext';
 import { QuestionnaireResponse } from '../../contexts/QuestionnaireResponseContext';
 import { NavigateToEligibilityIfMissing } from '../../compositions/NavigateToMissingStage';
 import classNames from 'classnames';
+import { dateFormatterForReport } from '../../utilities/dateHelper';
 
 
 type GetTranslatedQuestionForLanguageApiResponse = {
@@ -94,23 +95,13 @@ function useVideoStuff() {
 }
 export function MainContainer() {
     const { language } = useLanguageContext();
-
-
-   
     const {
         step,
         goToNextStep,
     } = useStepManagement();
 
     const navigate = useNavigate();
-
     useLanguageContentRetrieval();
-
-
-   
-
-
-
     const [videoState, setVideoState] = React.useState({ hasWatchedVideo: false });
     const videoEndedHandler = React.useCallback(() => {
         setVideoState({
@@ -118,15 +109,14 @@ export function MainContainer() {
         });
         goToNextStep();
     }, [goToNextStep]);
-
-    
     const {
         showLanguageSelectionModal,
         setShowLanguageSelectionModal,
     } = useVideoStuff();
   
-
     const submitQuestionnaireResponse = React.useCallback(async (userAnswers: QuestionnaireResponse) => {
+        // @ts-expect-error we are storing a date here i dont know how to make it not complain
+        userAnswers.legal_resident_date = dateFormatterForReport(userAnswers.legal_resident_date);
         const requestObj = {
             url: apiUrls.addQuestionnaireResponse,
             method: 'POST',
