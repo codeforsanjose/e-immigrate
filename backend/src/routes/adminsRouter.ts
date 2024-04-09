@@ -37,78 +37,88 @@ const RegisterSchema = z.object({
     name: z.string(),
     password: z.string(),
 });
-// route to sign up
-router.route('/').post(async (req, res) => {
-    const logger = routeLogger('registerApi');
-    const reqBody = RegisterSchema.parse(req.body);
-    const {
-        email,
-        name,
-        password,
-    } = reqBody;
-
-    if (name == null || name === '') {
-        return res
-            .status(400)
-            .json({ error: { message: 'name not entered! ' } });
-    }
-    else if (!EMAIL_REGEX.test(email)) {
-        return res
-            .status(400)
-            .json({ error: { message: 'Invalid email.' } });
-    }
-
-    try {
-        const admins = await Admin.find({ email }).exec();
-        if (admins.length >= 1) {
-            return res.status(409).json({
-                message: 'admin email exists',
-            });
-        }
-        let hash: string;
-        try {
-            hash = await bcrypt.hash(password, SALT_ROUNDS);
-        }
-        catch (err) {
-            return res.status(500).json({
-                error: err,
-            });
-        }
-
-        const admin = new Admin({
-            _id: new mongoose.Types.ObjectId(),
+if (process.env.ALLOW_REGISTRATIONS === 'yes') {
+    // route to sign up
+    router.route('/').post(async (req, res) => {
+        const logger = routeLogger('registerApi');
+        const reqBody = RegisterSchema.parse(req.body);
+        const {
             email,
             name,
-            password: hash,
-        });
+            password,
+        } = reqBody;
+
+        if (name == null || name === '') {
+            return res
+                .status(400)
+                .json({ error: { message: 'name not entered! ' } });
+        }
+        else if (!EMAIL_REGEX.test(email)) {
+            return res
+                .status(400)
+                .json({ error: { message: 'Invalid email.' } });
+        }
 
         try {
-            const result = await admin.save();
-            logger.debug(result, 'created admin user');
-            const jwToken = jwt.sign(
-                { email },
-                getRequiredJwtKey()
-            );
-            return res.status(201).json({
-                name,
+            const admins = await Admin.find({ email }).exec();
+            if (admins.length >= 1) {
+                return res.status(409).json({
+                    message: 'admin email exists',
+                });
+            }
+            let hash: string;
+            try {
+                hash = await bcrypt.hash(password, SALT_ROUNDS);
+            }
+            catch (err) {
+                return res.status(500).json({
+                    error: err,
+                });
+            }
+
+            const admin = new Admin({
+                _id: new mongoose.Types.ObjectId(),
                 email,
-                jwt: jwToken,
+                name,
+                password: hash,
             });
+
+            try {
+                const result = await admin.save();
+                logger.debug(result, 'created admin user');
+                const jwToken = jwt.sign(
+                    { email },
+                    getRequiredJwtKey()
+                );
+                return res.status(201).json({
+                    name,
+                    email,
+                    jwt: jwToken,
+                });
+            }
+            catch (err) {
+                logger.error(err, 'register failed');
+                return res.status(500).json({
+                    error: {
+                        message: 'Sign up failed',
+                    },
+                });
+            }
         }
         catch (err) {
-            logger.error(err, 'register failed');
-            return res.status(500).json({
-                error: {
-                    message: 'Sign up failed',
-                },
-            });
+            logger.error(err, 'error!');
+            return res.json(err);
         }
-    }
-    catch (err) {
-        logger.error(err, 'error!');
-        return res.json(err);
-    }
-});
+    });
+}
+else {
+    // route to sign up
+    router.route('/').post(async (req, res) => {
+        return res
+            .status(403)
+            .json({ error: { message: 'Registrations are not allowed' } });
+    });
+}
 const SessionSchema = z.object({
     email: z.string(),
     password: z.string(),
