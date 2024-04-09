@@ -1,5 +1,5 @@
 import express from 'express';
-import { QuestionnaireResponse } from '../models/questionnaireResponse.js';
+import { QuestionnaireResponse, fieldsExportableToExcel } from '../models/questionnaireResponse.js';
 import xl from 'excel4node';
 import { z } from 'zod';
 import mongoose from 'mongoose';
@@ -45,9 +45,6 @@ router.route('/get-report/:id').get(async (req, res) => {
 });
 router.use(authMiddleware); // all apis AFTER this line will require authentication as implemented in auth.js
 
-function isKeyOf<TValue extends Record<string, unknown>>(key: string, value: TValue): key is (keyof TValue & string) {
-    return key in value;
-}
 
 const standardHeaders = [
     'Workshop Title',
@@ -95,15 +92,10 @@ router.route('/responses').post(async function generateResponsesExcel(req, res) 
    
     async function updateResponseDownloadStatus(questionnaireResponses: Array<DboItem> = []) {
         for (const response of questionnaireResponses) {
-            const tempUpdatedResponse = {
-                ...response,
-                responseDownloadedToExcel: true,
-            };
             try {
-                await QuestionnaireResponse.updateOne(
-                    { _id: response._id },
-                    tempUpdatedResponse
-                );
+                await QuestionnaireResponse.updateOne({ _id: response._id }, {
+                    responseDownloadedToExcel: true,
+                });
             }   
             catch (err) {
                 logger.error(err, 'updated download status something err is');
@@ -114,8 +106,12 @@ router.route('/responses').post(async function generateResponsesExcel(req, res) 
     const downloadAll = bodyData.downloadAll;
     
     const updatedDboResponses = allDboResponses.filter(item => {
-        return (item.responseDownloadedToExcel ?? false) !== downloadAll;
+        // if we want to download everything
+        if (downloadAll) return true;
+        // or if we havent yet downloaded it
+        return !(item.responseDownloadedToExcel ?? false);
     });
+
     const questionsColumns = questions.reduce<Record<string, number>>((acc, question, idx) => {
         acc[question.slug] = idx + standardHeaderOffset;
         return acc;
@@ -168,20 +164,12 @@ router.route('/responses').post(async function generateResponsesExcel(req, res) 
             .string((dboResponse.emailSent ?? false) ? 'true' : 'false')
             .style(style);
         ws.cell(row, 5).string(langDisplay).style(style);
-        const qResponses = Object.keys(dboResponse.questionnaireResponse);
-        qResponses.forEach((qResponse) => {
-            if (qResponse === 'languageCode') return;
-            if (isKeyOf(qResponse, dboResponse.questionnaireResponse)) {
-                const value = dboResponse.questionnaireResponse[qResponse] ?? '';
-                ws.cell(row, questionsColumns[qResponse])
-                    .string(`${value}`)
-                    .style(style);
-            }
-            else {
-                ws.cell(row, questionsColumns[qResponse])
-                    .string('')
-                    .style(style);
-            }
+        
+        fieldsExportableToExcel.forEach((qResponse) => {
+            const value = dboResponse.questionnaireResponse[qResponse] ?? '';
+            ws.cell(row, questionsColumns[qResponse])
+                .string(`${value}`)
+                .style(style);
         });
     });
     // NOTE: we should replace this with a "write to some table" call

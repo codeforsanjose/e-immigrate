@@ -1,8 +1,52 @@
 import mongoose from 'mongoose';
 import { WithDefaultMongooseId, WithMongooseTimestamps } from './core/types.js';
 
+/**
+ *   The fields listed here will be included in the
+ * generated excel files.
+ */
+export const fieldsExportableToExcel = [
+    'green_card_through_marriage',
+    'legal_resident_date',
+    'gender',
+    'preferred_language',
+    'full_name',
+    'birth_country',
+    'US_zipcode',
+    'mobile_phone',
+    'age',
+    'ethnicity',
+    'still_married_to_that_citizen',
+    'email',
+    'how_did_you_hear_about_event',
+    'receive_public_benefits',
+    'contact_with_police',
+    'habitual_alcoholic_drugs',
+    'money_from_illegal_gambling',
+    'contact_with_immigration_officer',
+    'helped_enter_or_entered_US_illegally',
+    'married_to_multiple_people_same_time',
+    'failed_support_kids_pay_alimony',
+    'asylum_travel_back_home_country',
+    'deported_removed_excluded_from_US',
+    'lied_to_obtain_immigrant_benefit',
+    'lied_to_obtain_welfare_benefit',
+    'left_US_>6mo_while_LPR',
+    'owed_taxes_since_LPR',
+    'taxes_payment_plan',
+    'genocide_torture_killing_hurting',
+    "court-martialed_disciplinced_in_military",
+    'US_citizen_registered_voted',
+    'associated_terrorist_orgs_gangs',
+    "live_US_18-26_and_are_26-31",
+    'selective_service',
+] satisfies Array<keyof ResponseEntity>;
 
-
+/**
+ *   NOTE: if you add a field here, and want it
+ * included in the generated excel files,
+ * add it to {@link fieldsExportableToExcel}
+ */
 export type ResponseEntity = {
     languageCode: string;
     green_card_through_marriage: string;
@@ -40,6 +84,8 @@ export type ResponseEntity = {
     "live_US_18-26_and_are_26-31": string;
     selective_service?: string;
 };
+
+
 export type QuestionnaireResponseEntity = WithMongooseTimestamps<{
     title?: string;
     language?: string;
