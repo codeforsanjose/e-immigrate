@@ -8,6 +8,12 @@ import { WithDefaultMongooseId, WithMongooseTimestamps } from './core/types.js';
 export const fieldsExportableToExcel = [
     'green_card_through_marriage',
     'legal_resident_date',
+    'need_wheel_chair',
+    'speak_basic_english',
+    'follow_up_basic_english_50_years_gc_20_years',
+    'follow_up_basic_english_55_years_gc_15_years',
+    'createdAt',
+    'updatedAt',
     'gender',
     'preferred_language',
     'full_name',
@@ -51,6 +57,12 @@ export type ResponseEntity = {
     languageCode: string;
     green_card_through_marriage: string;
     legal_resident_date?: string;
+    need_wheel_chair?: string;
+    speak_basic_english?: string;
+    follow_up_basic_english_50_years_gc_20_years?: string;
+    follow_up_basic_english_55_years_gc_15_years?: string;
+    createdAt?: string;
+    updatedAt?: string;
     gender: string;
     preferred_language: string;
     full_name: string;
@@ -96,6 +108,9 @@ export type QuestionnaireResponseEntity = WithMongooseTimestamps<{
     questionnaireResponse: ResponseEntity;
     responseDownloadedToExcel?: boolean;
     deleted?: boolean;
+    createdAt?: string;
+    updatedAt?: string;
+
 }>;
 export type QuestionnaireResponseEntityWithId = WithDefaultMongooseId<QuestionnaireResponseEntity>;
 
@@ -135,11 +150,17 @@ const responseSchema = new mongoose.Schema<ResponseEntity>({
     associated_terrorist_orgs_gangs: { type: String, required: true },
     "live_US_18-26_and_are_26-31": { type: String, required: true },
     selective_service: { type: String, required: false },
+    need_wheel_chair: { type: String, required: false },
+    speak_basic_english: { type: String, required: false },
+    follow_up_basic_english_50_years_gc_20_years: { type: String, required: false },
+    follow_up_basic_english_55_years_gc_15_years: { type: String, required: false },
 });
 
 
 
 const questionnaireSchema = new mongoose.Schema<QuestionnaireResponseEntity>({
+    createdAt: { type: String, required: false },
+    updatedAt: { type: String, required: false },
     title: { type: String, required: false, unique: false },
     language: { type: String, required: false, unique: false },
     flag: { type: Boolean, required: false, unique: false },

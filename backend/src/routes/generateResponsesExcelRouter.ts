@@ -47,6 +47,8 @@ router.use(authMiddleware); // all apis AFTER this line will require authenticat
 
 
 const standardHeaders = [
+    'createdAt',
+    'updatedAt',
     'Workshop Title',
     'Red Dot?',
     'Agency',
@@ -145,8 +147,10 @@ router.route('/responses').post(async function generateResponsesExcel(req, res) 
         const langObject = LanguageOptions.find(item => item.code === language);
         const langDisplay = langObject?.englishName ?? `Unknown `;
         const row = idx + 2;
-        ws.cell(row, 1).string(dboResponse.title).style(style);
-        ws.cell(row, 2)
+        ws.cell(row, 1).string(dboResponse.createdAt).style(style);
+        ws.cell(row, 2).string(dboResponse.updatedAt).style(style);
+        ws.cell(row, 3).string(dboResponse.title).style(style);
+        ws.cell(row, 4)
             .string((dboResponse.flag ?? false) ? 'true' : 'false')
             .style(style)
             .style({
@@ -157,13 +161,13 @@ router.route('/responses').post(async function generateResponsesExcel(req, res) 
                     fgColor: (dboResponse.flag ?? false) ? '#EA2616' : '#ADFF3D',
                 },
             });
-        ws.cell(row, 3)
+        ws.cell(row, 5)
             .string(dboResponse.agency ?? '')
             .style(style);
-        ws.cell(row, 4)
+        ws.cell(row, 6)
             .string((dboResponse.emailSent ?? false) ? 'true' : 'false')
             .style(style);
-        ws.cell(row, 5).string(langDisplay).style(style);
+        ws.cell(row, 7).string(langDisplay).style(style);
         
         fieldsExportableToExcel.forEach((qResponse) => {
             const value = dboResponse.questionnaireResponse[qResponse] ?? '';
