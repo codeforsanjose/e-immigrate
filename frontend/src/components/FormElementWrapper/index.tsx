@@ -24,7 +24,10 @@ type FormElementWrapperProps<TElementName extends FormElementName> = {
     };
 };
 
-
+export function splitStringOfAnswersToArray(splittingString?: string | null) {
+    if (splittingString == null) return [];
+    return splittingString.split(',').map(splitString => splitString.trim());
+}
 export function FormElementWrapper<
     TElementName extends FormElementName,
 >(props: FormElementWrapperProps<TElementName>) {
@@ -37,7 +40,11 @@ export function FormElementWrapper<
         elementName,
     } = props;
     const content = useContentContext();
-    const answers = question.answerSelections?.split(',\n ').join(', ');
+    const answers = splitStringOfAnswersToArray(question.answerSelections).join(',');
+    // const answers = question.answerSelections?.split(',\n ').join(', ');
+
+    // const answerValues = question.answerSelectionsValues?.split(',\n ').join(', ');
+    // console.log("answer values ------>", answerValues);
     const componentName = elementName;
     const commonData = {
         q: question,
@@ -45,13 +52,13 @@ export function FormElementWrapper<
     };
     const selectAnswers = React.useMemo(() => {
         if (answers == null) return null;
-        return ['--', ...answers.split(', ')]; 
+        return ['--', ...splitStringOfAnswersToArray(answers)]; 
     }, [answers]);
     if (elementName === 'checkbox') {
         return (
             <Checkbox
                 {...commonData}
-                values={answers?.split(', ') ?? []}
+                values={splitStringOfAnswersToArray(answers) ?? []}
             />
         );
     }
@@ -67,7 +74,7 @@ export function FormElementWrapper<
             <Select
                 {...commonData}
                 selectAnswers={selectAnswers ?? undefined}
-                values={answers?.split(', ') ?? []}
+                values={splitStringOfAnswersToArray(answers) ?? []}
                 setShowFollowUp={setShowFollowUp}
             />
         );
@@ -98,8 +105,8 @@ export function FormElementWrapper<
         return (
             <Radio
                 {...commonData}
-                answers={answers?.split(', ')}
-                values={answers?.split(', ') ?? []}
+                answers={splitStringOfAnswersToArray(answers)}
+                values={splitStringOfAnswersToArray(answers) ?? []}
             />
         );
     }
@@ -107,8 +114,8 @@ export function FormElementWrapper<
         return (
             <RadioWithFollowUp
                 {...commonData}
-                answers={answers?.split(', ')}
-                values={answers?.split(', ') ?? []}
+                answers={splitStringOfAnswersToArray(answers)}
+                values={splitStringOfAnswersToArray(answers) ?? []}
                 setShowFollowUp={setShowFollowUp}
             />
         );

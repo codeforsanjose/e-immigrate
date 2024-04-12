@@ -5,6 +5,7 @@ import { WithPreventDefault } from "../../types/WithPreventDefault";
 import { useContentContext } from '../../contexts/ContentContext';
 import { AutoRequiredErrorSpan } from '../../components/RequiredErrorPresenter';
 import { useQuestionnaireResponseContext } from '../../contexts/QuestionnaireResponseContext';
+import { splitStringOfAnswersToArray } from '../../components/FormElementWrapper';
 
 export function Question2(props: QuestionProps) {
     const { 
@@ -18,8 +19,8 @@ export function Question2(props: QuestionProps) {
     } = useQuestionnaireResponseContext();
     const [question2Answer, setQuestion2Answer] = React.useState<string | null>(null);
     if (q == null) return null;
-    const answers = q.answerSelections.split(', ');
-    const values = q.answerValues.split(', ');
+    const answers = splitStringOfAnswersToArray(q.answerSelections);
+    const values = splitStringOfAnswersToArray(q.answerValues);
     const onClick = (e: WithPreventDefault) => {
         e.preventDefault();
         setQuestion2(question2Answer);
