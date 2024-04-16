@@ -10,6 +10,7 @@ import { emailSender } from '../features/emails/emailSender.js';
 import { ArrayElementOf } from '../types/ArrayElementOf.js';
 import { isSendGridResponseError } from '../types/SendGridResponseError.js';
 import { routeLogger, scopedLogger } from '../features/logging/logger.js';
+import { RedFlagKey, isRedFlagKey, yesValuesTranslated } from './flagDeterminerHelpers.js';
 const router = express.Router();
 export { router as questionnaireResponsesRouter };
 const AddSchema = z.object({
@@ -147,25 +148,12 @@ router.route('/email').post(async (req, res) => {
     }
 });
 
-const questionKeysThatAreNotRedFlagsButInARedFlagQuestionnaire = [
-    // 'male',
-    'still_married_to_that_citizen',
-    'receive_public_benefits',
-    'live_US_18-26_and_are_26-31',
-    'selective_service',
-    'green_card_through_marriage',
-] as const;
-type RedFlagKey = ArrayElementOf<typeof questionKeysThatAreNotRedFlagsButInARedFlagQuestionnaire>;
-function isRedFlagKey(value: unknown): value is RedFlagKey {
-    if (value == null || typeof value !== 'string') return false;
-    return questionKeysThatAreNotRedFlagsButInARedFlagQuestionnaire.includes(value as RedFlagKey);
-}
-
 
 function getUpdatedFlag(userResponse: Partial<Record<RedFlagKey, string | null | undefined>>) {
     return Object.entries(userResponse).reduce((acc, [key, value]) => {
-        return !isRedFlagKey(key)
-            ? value?.toUpperCase() === 'YES'
+        if (value == null) return false;
+        return isRedFlagKey(key)
+            ? yesValuesTranslated.includes(value)
                 ? true
                 : acc
             : acc;

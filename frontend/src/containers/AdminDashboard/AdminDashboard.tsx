@@ -12,7 +12,7 @@ import { Button } from '../../components/Button/Button';
 import { replaceSlug, slugPair } from '../../utilities/slugs/replaceSlug';
 import { downloadUri } from '../../utilities/downloader/downloadUri';
 import { ResponsesTable } from './ResponsesTable';
-import { isAgencyObject, isValueYes } from './helpers';
+import { isAgencyObject, isValueTranslatedYes } from './helpers';
 import { questionKeysThatAreNotRedFlagsButInARedFlagQuestionnaire } from './constants';
 import { LoadingIndicator } from './LoadingIndicator';
 import { QuestionnaireResponseElement } from './types';
@@ -73,7 +73,8 @@ export function AdminDashboard() {
                                     return !questionKeysThatAreNotRedFlagsButInARedFlagQuestionnaire.includes(
                                         key,
                                     )
-                                        ? isValueYes(value)
+                                        ? isValueTranslatedYes(value)
+                                        // ? isValueYes(value)
                                             ? true
                                             : acc
                                         : acc;
@@ -184,6 +185,7 @@ export function AdminDashboard() {
             }, {
                 includeAuth: true,
             });
+
             const excelResponse = GenerateExcelResponseSchema.parse(response);
             await getReportById(excelResponse.id);
         }

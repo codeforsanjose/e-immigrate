@@ -1,11 +1,5 @@
-import { ArrayElementOf } from '../../types/ArrayElementOf.js';
+import { ArrayElementOf } from "../types/ArrayElementOf";
 
-
-export const DESCRIPTIVE_TIMESTAMP = 'MM/dd/yyyy, h:mm:ss a';
-export const AGENCIES = ['ALA', 'CAIR', 'CC', 'CET', 'IRC', 'PARS'];
-
-// if they answer YES to these questions then they get a full green flag, basically they have already gone through a vetting process
-// to recieve those public benefits so we can trust that process and give them green dot
 export const fullWaiverQuestionKeys = ['receive_public_benefits'];
 
 // these are keys of questions that are in the "RED FLAG section" but are not actually red flag questions, i know, its confusing
@@ -45,7 +39,20 @@ export const actualRedFlagQuestionKeys = [
 ];
 export type RedFlagKey = ArrayElementOf<typeof actualRedFlagQuestionKeys>;
 
+export function isRedFlagKey(value: string) {
+    if (value == null || typeof value !== 'string') return false;
+    return actualRedFlagQuestionKeys.includes(value);
+}
+
+export function isWaiverFlagKey(value: string) {
+    if (value == null || typeof value !== 'string') return false;
+    return fullWaiverQuestionKeys.includes(value);
+}
+
+export function isNOTRedFlagKey(value: string) {
+    if (value == null || typeof value !== 'string') return false;
+    return questionKeysThatAreNotRedFlagsButInARedFlagQuestionnaire.includes(value);
+}
+
 // need this due to values being set as translated and not the YES or no
 export const yesValuesTranslated = ['Yes', 'Sí', 'Có', 'Oo', '是', '是', '是', 'Да', 'አዎ', 'نعم', 'بله', 'हाँ', '예', 'هو', 'ਹਾਂ', 'Sim'];
-export type yesValuesTranslatedAsTypedString = 'Yes' | 'Sí' | 'Có' | 'Oo' | '是' | '是' | '是' | 'Да' | 'አዎ' | 'نعم' | 'بله' | 'हाँ' | '예' | 'هو' | 'ਹਾਂ' | 'Sim';
-

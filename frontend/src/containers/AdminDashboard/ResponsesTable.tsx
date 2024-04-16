@@ -10,9 +10,10 @@ import { defaultCompare } from '../../utilities/defaultCompare';
 import { useNavigate } from 'react-router-dom';
 import { apiUrlFormatters } from '../../sendRequest/apiUrlFormatters';
 import SortArrow from '../../data/images/SortArrow.svg';
-import { isAgencyObject, isValueYes } from './helpers';
-import { AGENCIES, DESCRIPTIVE_TIMESTAMP, questionKeysThatAreNotRedFlagsButInARedFlagQuestionnaire } from './constants';
+import { isAgencyObject, isValueTranslatedYes } from './helpers';
+import { AGENCIES, DESCRIPTIVE_TIMESTAMP } from './constants';
 import { QuestionnaireResponseElement } from './types';
+import { isRedFlagKey } from '../../utilities/flagDeterminerHelpers';
 
 
 function AgencyOptions() {
@@ -130,6 +131,7 @@ type ResponseTableRowProps = {
 };
 
 function ResponseTableRow(props: ResponseTableRowProps) {
+    // console.log('the response here', props);
     const {
         response,
         toggleFlag,
@@ -182,10 +184,9 @@ function ResponseTableRow(props: ResponseTableRowProps) {
         'contact_with_police_explanation',
     ];
     const allAnswers = Object.keys(questionnaireResponse).reduce<Array<JSX.Element>>((accumulator, questionKey, index) => {
-        const flagIt = !questionKeysThatAreNotRedFlagsButInARedFlagQuestionnaire.includes(
-            questionKey,
-        )
-            ? isValueYes(questionnaireResponse[questionKey])
+        const flagIt = isRedFlagKey(questionKey)
+            ? isValueTranslatedYes(questionnaireResponse[questionKey])
+            // ? isValueYes(questionnaireResponse[questionKey])
                 ? 'red-outline'
                 : 'green-outline'
             : 'green-outline';
@@ -390,22 +391,25 @@ export function ResponsesTable(props: ResponsesTableProps) {
                     includeAuth: true,
                 });
                 const { responses } = response;
-                console.log({
-                    responses,
-                });
                 const updatedResponses = responses
                     .map((item) => {
+                        console.log('ok we do get to here with stuff', item);
                         const { questionnaireResponse } = item;
                         const newFlag = (item.flagOverride ?? false)
                             ? item.flag
                             : Object.entries(questionnaireResponse).reduce(
                                 (acc, stuff) => {
                                     const [key, value] = stuff;
-                                    return !questionKeysThatAreNotRedFlagsButInARedFlagQuestionnaire.includes(
-                                        key,
-                                    )
-                                        ? isValueYes(value) ? true : acc
-                                        : acc;
+                                    if (isRedFlagKey(key)) {
+                                        return isValueTranslatedYes(value);
+                                    }
+                                    else {
+                                        return acc;
+                                    }
+                                    // return isRedFlagKey(key)
+                                    //     ? isValueTranslatedYes(value) ? true : acc
+                                    //     // ? isValueYes(value) ? true : acc
+                                    //     : acc;
                                 },
                                 false,
                             );
