@@ -79,6 +79,7 @@ const translatedContentContentSchema = new mongoose.Schema<TranslatedContentCont
     required: { type: String, required: true, unique: false },
     optional: { type: String, required: true, unique: false },
     closedMessage: { type: String, required: true, unique: false },
+    closingDate: { type: String, required: false, unique: false },
     
 });
 

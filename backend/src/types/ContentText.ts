@@ -71,6 +71,7 @@ export const contentTextKeys = [
     'required',
     'optional',
     'closedMessage',
+    'closingDate',
 ] as const;
 export type ContentText = Record<ContentTextKey, string>;
 

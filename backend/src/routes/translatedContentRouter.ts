@@ -99,6 +99,7 @@ const ContentTextSchema = z.object({
     required: z.string(),
     optional: z.string(),
     closedMessage: z.string(),
+    closingDate: z.string(),
 });
 const AddSchema = z.object({
     title: z.string(),

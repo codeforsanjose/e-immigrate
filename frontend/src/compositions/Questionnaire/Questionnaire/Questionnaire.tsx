@@ -11,27 +11,23 @@ import { QuestionWithFollowup } from './QuestionWithFollowup';
 import { useContentContext } from '../../../contexts/ContentContext';
 import { QuestionnaireResponse, useQuestionnaireResponseContext } from '../../../contexts/QuestionnaireResponseContext';
 import { useQuestionsContext } from '../../../contexts/QuestionsContext';
-
+import { useClosingDateHook } from '../../../hooks/useClosingDateHook';
 
 
 type QuestionnaireProps = {
     submitQuestionnaireResponse: (value: QuestionnaireResponse) => void;
 };
 
-
-
-
-
 const categories = ['Basic Info', 'Waiver Flag', 'Red Flag'] as const;
 export function Questionnaire(props: QuestionnaireProps) {
     const {
         submitQuestionnaireResponse,
     } = props;
-    const { 
+    const {
         questionnaireResponse,
         setAllFieldsTouched,
     } = useQuestionnaireResponseContext();
-    
+
     const { content } = useContentContext();
     const { questions } = useQuestionsContext();
     const [categoryIndex, setCategoryIndex] = React.useState(0);
@@ -41,7 +37,9 @@ export function Questionnaire(props: QuestionnaireProps) {
     const [introPage, setIntroPage] = React.useState(true);
     const [showFollowUp, setShowFollowUp] = React.useState<FollowupMap>({});
     const category = categories[categoryIndex];
-    
+
+    const closingDateFromDoc = content.closingDate ?? '04/18/24'; // fallback
+    const closedWorkShop = useClosingDateHook({ closingDate: closingDateFromDoc });
     // get the questions for the current stage
     const filteredQuestions = React.useMemo(() => {
         return questions.filter(q => q.category === category);
@@ -55,8 +53,6 @@ export function Questionnaire(props: QuestionnaireProps) {
         };
     }, []);
 
-
-
     const onSubmit = React.useCallback(() => {
         submitQuestionnaireResponse(questionnaireResponse);
     }, [questionnaireResponse, submitQuestionnaireResponse]);
@@ -68,9 +64,7 @@ export function Questionnaire(props: QuestionnaireProps) {
         const allRequiredFieldsCompleted = filteredQuestions.every((q) => {
             // if it isnt required, ignore it
             if (!q.required) return true;
-
             const value = questionnaireResponse[q.slug];
-            
             if ((q.required ?? false) && value == null) {
                 if (q.parentQuestionSlug != null) {
                     if (questionnaireResponse[q.parentQuestionSlug] === 'Yes') {
@@ -100,17 +94,15 @@ export function Questionnaire(props: QuestionnaireProps) {
             alert(`Please complete every question`);
         }
     }, [categoryIndex, filteredQuestions, onSubmit, questionnaireResponse, setAllFieldsTouched]);
-    
     if (introPage) {
         return (
             <QuestionnaireContainer>
                 <QuestionnaireIntro
-                    setIntroPage={setIntroPage} 
+                    setIntroPage={setIntroPage}
                 />
             </QuestionnaireContainer>
         );
     }
-
     return (
         <QuestionnaireContainer>
             {filteredQuestions.map((question) => {
@@ -124,13 +116,16 @@ export function Questionnaire(props: QuestionnaireProps) {
                     />
                 );
             })}
-            <Button
+            { !closedWorkShop && <Button
                 label={categoryIndex < categories.length - 1
                     ? content.step2ProceedButton2
                     : content.step2ProceedButton3}
                 type="submit"
-                onClick={nextStep} 
-            />
+                onClick={nextStep}
+            />}
+            {
+                closedWorkShop && <h4>{content.closedMessage}</h4>
+            }
         </QuestionnaireContainer>
     );
 }

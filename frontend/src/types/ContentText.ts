@@ -68,6 +68,7 @@ export type ContentText = {
     required: string;
     optional: string;
     closedMessage: string;
+    closingDate: string;
 };
 
 export type ErrorMessageOnlyContentText = Pick<ContentText, 'errorMessage'>;
@@ -142,4 +143,5 @@ export const missingContentText: ContentText = {
     required: `missing 'required'`,
     optional: `missing 'optional'`,
     closedMessage: `missing 'closedMessage'`,
+    closingDate: `'missing closingDate'`,
 };

@@ -6,14 +6,19 @@ import image from '../../data/images/CiiT Logo.png';
 import './LandingPage.css';
 import { useNavigate } from 'react-router-dom';
 import { useContentContext } from '../../contexts/ContentContext';
+import { useClosingDateHook } from '../../hooks/useClosingDateHook';
 
 
 export function LandingPage() {
     const { content } = useContentContext();
+
     const navigate = useNavigate();
     const goToStep1 = React.useCallback(() => {
         navigate('/eligibility');
     }, [navigate]);
+    console.log('closing date is', content.closingDate);
+    const closingDateFromDoc = content.closingDate ?? '04/18/24'; // fallback 
+    const closedUI = useClosingDateHook({ closingDate: closingDateFromDoc });
     return (
         <div className="LandingPage">
             <h1>{content.homeWelcomeMessage}</h1>
@@ -36,8 +41,9 @@ export function LandingPage() {
                             </a>
                         </h2>
                     </div>
-                    {/* <h3>{content.closedMessage}</h3> */}
-                    <Button label={'Start'} onClick={goToStep1}/>
+
+                    {!closedUI && <Button label={'Start'} onClick={goToStep1} />}
+                    {closedUI && <><h3>{content.closedMessage}</h3></>}
                 </div>
                 <img src={image} alt="CIIT Logo" width="100%" height="auto" />
             </div>
