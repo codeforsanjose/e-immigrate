@@ -126,7 +126,6 @@ export function MainContainer() {
                 questionnaireResponse: userAnswers,
             }),
         };
-        console.log('the request object going out, check here for flag value', userAnswers);
         const response = await sendRequest(requestObj);
         console.log('success', response);
         navigate('/confirmation');
