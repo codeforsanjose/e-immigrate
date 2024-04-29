@@ -1,4 +1,9 @@
-import { questionKeysThatAreNotRedFlagsButInARedFlagQuestionnaire, actualRedFlagQuestionKeys, yesValuesTranslated, RedFlagKey } from "../containers/AdminDashboard/constants";
+import {
+    questionKeysThatAreNotRedFlagsButInARedFlagQuestionnaire,
+    actualRedFlagQuestionKeys,
+    yesValuesTranslated,
+    RedFlagKey,
+} from "../containers/AdminDashboard/constants";
 
 export function isRedFlagKey(value: string) {
     if (value == null || typeof value !== 'string') return false;

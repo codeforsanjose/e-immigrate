@@ -54,5 +54,17 @@ export function isNOTRedFlagKey(value: string) {
     return questionKeysThatAreNotRedFlagsButInARedFlagQuestionnaire.includes(value);
 }
 
+
+export function getUpdatedFlag(userResponse: Partial<Record<RedFlagKey, string | null | undefined>>) {
+    return Object.entries(userResponse).reduce((acc, [key, value]) => {
+        if (value == null) return acc;
+        return isRedFlagKey(key)
+            ? yesValuesTranslated.includes(value)
+                ? true
+                : acc
+            : acc;
+    }, false);
+}
+
 // need this due to values being set as translated and not the YES or no
 export const yesValuesTranslated = ['Yes', 'Sí', 'Có', 'Oo', '是', '是', '是', 'Да', 'አዎ', 'نعم', 'بله', 'हाँ', '예', 'هو', 'ਹਾਂ', 'Sim'];

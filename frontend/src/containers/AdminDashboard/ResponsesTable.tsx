@@ -13,7 +13,7 @@ import SortArrow from '../../data/images/SortArrow.svg';
 import { isAgencyObject, isValueTranslatedYes } from './helpers';
 import { AGENCIES, DESCRIPTIVE_TIMESTAMP } from './constants';
 import { QuestionnaireResponseElement } from './types';
-import { isRedFlagKey } from '../../utilities/flagDeterminerHelpers';
+import { getUpdatedFlag, isRedFlagKey } from '../../utilities/flagDeterminerHelpers';
 
 
 function AgencyOptions() {
@@ -122,6 +122,7 @@ function ResponseTableHeaderRow(props: ResponseTableHeaderRowProps) {
 }
 
 type ResponseTableRowProps = {
+    flag?: boolean;
     toggleFlag: (response: QuestionnaireResponseElement) => Promise<void>;
     response: QuestionnaireResponseElement;
     index: number;
@@ -131,7 +132,6 @@ type ResponseTableRowProps = {
 };
 
 function ResponseTableRow(props: ResponseTableRowProps) {
-    // console.log('the response here', props);
     const {
         response,
         toggleFlag,
@@ -186,7 +186,6 @@ function ResponseTableRow(props: ResponseTableRowProps) {
     const allAnswers = Object.keys(questionnaireResponse).reduce<Array<JSX.Element>>((accumulator, questionKey, index) => {
         const flagIt = isRedFlagKey(questionKey)
             ? isValueTranslatedYes(questionnaireResponse[questionKey])
-            // ? isValueYes(questionnaireResponse[questionKey])
                 ? 'red-outline'
                 : 'green-outline'
             : 'green-outline';
@@ -393,26 +392,10 @@ export function ResponsesTable(props: ResponsesTableProps) {
                 const { responses } = response;
                 const updatedResponses = responses
                     .map((item) => {
-                        console.log('ok we do get to here with stuff', item);
                         const { questionnaireResponse } = item;
                         const newFlag = (item.flagOverride ?? false)
                             ? item.flag
-                            : Object.entries(questionnaireResponse).reduce(
-                                (acc, stuff) => {
-                                    const [key, value] = stuff;
-                                    if (isRedFlagKey(key)) {
-                                        return isValueTranslatedYes(value);
-                                    }
-                                    else {
-                                        return acc;
-                                    }
-                                    // return isRedFlagKey(key)
-                                    //     ? isValueTranslatedYes(value) ? true : acc
-                                    //     // ? isValueYes(value) ? true : acc
-                                    //     : acc;
-                                },
-                                false,
-                            );
+                            : getUpdatedFlag(questionnaireResponse);
                         return {
                             ...item,
                             selected: false,

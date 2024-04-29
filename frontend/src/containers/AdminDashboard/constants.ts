@@ -23,6 +23,7 @@ export const questionKeysThatAreNotRedFlagsButInARedFlagQuestionnaire = [
 ];
 export const actualRedFlagQuestionKeys = [
     'contact_with_police',
+    'contact-with-police',
     'habitual_alcoholic_drugs',
     'money_from_illegal_gambling',
     'contact_with_immigration_officer',

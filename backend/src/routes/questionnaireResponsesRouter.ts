@@ -10,7 +10,7 @@ import { emailSender } from '../features/emails/emailSender.js';
 import { ArrayElementOf } from '../types/ArrayElementOf.js';
 import { isSendGridResponseError } from '../types/SendGridResponseError.js';
 import { routeLogger, scopedLogger } from '../features/logging/logger.js';
-import { RedFlagKey, isRedFlagKey, yesValuesTranslated } from './flagDeterminerHelpers.js';
+import { getUpdatedFlag } from './flagDeterminerHelpers.js';
 const router = express.Router();
 export { router as questionnaireResponsesRouter };
 const AddSchema = z.object({
@@ -148,17 +148,6 @@ router.route('/email').post(async (req, res) => {
     }
 });
 
-
-function getUpdatedFlag(userResponse: Partial<Record<RedFlagKey, string | null | undefined>>) {
-    return Object.entries(userResponse).reduce((acc, [key, value]) => {
-        if (value == null) return false;
-        return isRedFlagKey(key)
-            ? yesValuesTranslated.includes(value)
-                ? true
-                : acc
-            : acc;
-    }, false);
-}
 async function updateUserResponsesEmailFlag(responsesToEmail: Array<QuestionnaireResponseElement>, res: express.Response) {
     const logger = scopedLogger('updateUserResponsesEmailFlag');
     const totalEmailsToSend = responsesToEmail.length;
@@ -166,15 +155,15 @@ async function updateUserResponsesEmailFlag(responsesToEmail: Array<Questionnair
     for (const response of responsesToEmail) {
         // pull out only what we need since coming from backend not frontne response contains lots more than what we need
         const {
-            _id, 
-            title, 
-            language, 
-            flag, 
-            flagOverride = false, 
-            createdAt, 
+            _id,
+            title,
+            language,
+            flag,
+            flagOverride = false,
+            createdAt,
             updatedAt,
-            questionnaireResponse, 
-            agency = '', 
+            questionnaireResponse,
+            agency = '',
             responseDownloadedToExcel,
         } = response;
         const updatedFlag = flag ?? getUpdatedFlag(questionnaireResponse);
@@ -270,7 +259,7 @@ const AssignEmailSchema = z.array(z.object({
 router.route('/assign-email').post(async (req, res) => {
     const logger = routeLogger('assignEmail');
     const requestBody = AssignEmailSchema.parse(req.body);
-    
+
     for (const change of requestBody) {
         try {
             await QuestionnaireResponse.updateOne({ _id: change.id }, {
