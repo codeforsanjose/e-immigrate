@@ -12,8 +12,7 @@ import { Button } from '../../components/Button/Button';
 import { replaceSlug, slugPair } from '../../utilities/slugs/replaceSlug';
 import { downloadUri } from '../../utilities/downloader/downloadUri';
 import { ResponsesTable } from './ResponsesTable';
-import { isAgencyObject, isValueYes } from './helpers';
-import { questionKeysThatAreNotRedFlagsButInARedFlagQuestionnaire } from './constants';
+import { isAgencyObject } from './helpers';
 import { LoadingIndicator } from './LoadingIndicator';
 import { QuestionnaireResponseElement } from './types';
 import { AgencyOverview } from './AgencyOverview';
@@ -22,6 +21,7 @@ import { FlagOverview } from './FlagOverview';
 import './AdminDashboard.css';
 import { DEFAULT_LANGUAGE } from '../../utilities/languages/constants';
 import { useLanguageQuestionHook } from '../../hooks/useLanguageQuestionHook';
+import { getUpdatedFlag } from '../../utilities/flagDeterminerHelpers';
 
 
 
@@ -67,19 +67,7 @@ export function AdminDashboard() {
                         const { questionnaireResponse = {} } = item;
                         const newFlag = (item.flagOverride ?? false)
                             ? item.flag
-                            : Object.entries(questionnaireResponse).reduce(
-                                (acc, stuff) => {
-                                    const [key, value] = stuff;
-                                    return !questionKeysThatAreNotRedFlagsButInARedFlagQuestionnaire.includes(
-                                        key,
-                                    )
-                                        ? isValueYes(value)
-                                            ? true
-                                            : acc
-                                        : acc;
-                                },
-                                false,
-                            );
+                            : getUpdatedFlag(questionnaireResponse);
                         return {
                             ...item,
                             selected: false,
@@ -184,6 +172,7 @@ export function AdminDashboard() {
             }, {
                 includeAuth: true,
             });
+
             const excelResponse = GenerateExcelResponseSchema.parse(response);
             await getReportById(excelResponse.id);
         }

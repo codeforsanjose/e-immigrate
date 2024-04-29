@@ -7,6 +7,7 @@ export type QuestionInfo = {
     text: string;
     questionType: FormElementName;
     answerSelections: string;
+    answerSelectionsValues: string;
     answerValues: string;
     required: boolean;
     followUpQuestionSlug: string;

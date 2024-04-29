@@ -10,9 +10,10 @@ import { defaultCompare } from '../../utilities/defaultCompare';
 import { useNavigate } from 'react-router-dom';
 import { apiUrlFormatters } from '../../sendRequest/apiUrlFormatters';
 import SortArrow from '../../data/images/SortArrow.svg';
-import { isAgencyObject, isValueYes } from './helpers';
-import { AGENCIES, DESCRIPTIVE_TIMESTAMP, questionKeysThatAreNotRedFlagsButInARedFlagQuestionnaire } from './constants';
+import { isAgencyObject, isValueTranslatedYes } from './helpers';
+import { AGENCIES, DESCRIPTIVE_TIMESTAMP } from './constants';
 import { QuestionnaireResponseElement } from './types';
+import { getUpdatedFlag, isRedFlagKey } from '../../utilities/flagDeterminerHelpers';
 
 
 function AgencyOptions() {
@@ -121,6 +122,7 @@ function ResponseTableHeaderRow(props: ResponseTableHeaderRowProps) {
 }
 
 type ResponseTableRowProps = {
+    flag?: boolean;
     toggleFlag: (response: QuestionnaireResponseElement) => Promise<void>;
     response: QuestionnaireResponseElement;
     index: number;
@@ -182,10 +184,8 @@ function ResponseTableRow(props: ResponseTableRowProps) {
         'contact_with_police_explanation',
     ];
     const allAnswers = Object.keys(questionnaireResponse).reduce<Array<JSX.Element>>((accumulator, questionKey, index) => {
-        const flagIt = !questionKeysThatAreNotRedFlagsButInARedFlagQuestionnaire.includes(
-            questionKey,
-        )
-            ? isValueYes(questionnaireResponse[questionKey])
+        const flagIt = isRedFlagKey(questionKey)
+            ? isValueTranslatedYes(questionnaireResponse[questionKey])
                 ? 'red-outline'
                 : 'green-outline'
             : 'green-outline';
@@ -390,25 +390,12 @@ export function ResponsesTable(props: ResponsesTableProps) {
                     includeAuth: true,
                 });
                 const { responses } = response;
-                console.log({
-                    responses,
-                });
                 const updatedResponses = responses
                     .map((item) => {
                         const { questionnaireResponse } = item;
                         const newFlag = (item.flagOverride ?? false)
                             ? item.flag
-                            : Object.entries(questionnaireResponse).reduce(
-                                (acc, stuff) => {
-                                    const [key, value] = stuff;
-                                    return !questionKeysThatAreNotRedFlagsButInARedFlagQuestionnaire.includes(
-                                        key,
-                                    )
-                                        ? isValueYes(value) ? true : acc
-                                        : acc;
-                                },
-                                false,
-                            );
+                            : getUpdatedFlag(questionnaireResponse);
                         return {
                             ...item,
                             selected: false,

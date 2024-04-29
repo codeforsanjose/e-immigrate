@@ -120,10 +120,10 @@
     margin: auto;
 }
 .AdminDashboard .green-outline {
-    border: solid 1px var(--color-green);
+    border: solid 3px var(--color-green);
 }
 .AdminDashboard .red-outline {
-    border: solid 1px var(--color-red);
+    border: solid 3px "red";
 }
 
 .AdminDashboard .dropdown-select {
