@@ -82,6 +82,7 @@ export function FormElementWrapper<
     else if (elementName === 'email') {
         return (
             <Email
+                type={"email"}
                 {...commonData}
             />
         );
@@ -89,6 +90,7 @@ export function FormElementWrapper<
     else if (elementName === 'input') {
         return (
             <TextInput
+                type={"email"}
                 {...commonData}
             />
         );
@@ -96,6 +98,7 @@ export function FormElementWrapper<
     else if (elementName === 'phoneNumber') {
         return (
             <PhoneNumber
+                type={"tel"}
                 {...commonData}
                 setErrors={setErrors}
             />
@@ -130,6 +133,7 @@ export function FormElementWrapper<
     else if (elementName === 'zip') {
         return (
             <Zip
+                type={"number"}
                 {...commonData}
                 setErrors={setErrors}
             />

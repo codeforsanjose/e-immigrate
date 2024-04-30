@@ -6,7 +6,8 @@ import { useQuestionnaireResponseContext } from '../../contexts/QuestionnaireRes
 type TextInputProps = CommonComponentProps;
 export function TextInput(props: TextInputProps) {
     const {
-        q, 
+        q,
+        type = 'text',
     } = props;
     const { 
         collectAnswer,
@@ -15,7 +16,7 @@ export function TextInput(props: TextInputProps) {
     return (
         <>
             <input
-                type="text"
+                type={type}
                 name={q.slug}
                 required={q.required}
                 className="TextInput"
