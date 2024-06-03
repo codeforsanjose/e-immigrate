@@ -3,7 +3,7 @@ import React from 'react';
 import { LanguageSelectionModal } from '../../compositions/LanguageSelectionModal/LanguageSelectionModal';
 import { Navbar } from '../../compositions/Navbar/Navbar';
 import { Footer } from '../../compositions/Footer/Footer';
-import { LandingPage } from '../../compositions/LandingPage/LandingPage';
+import { WorkshopLandingPage } from '../../compositions/WorkshopLandingPage/WorkshopLandingPage';
 import { Video } from '../../compositions/Video/Video';
 import { Questionnaire } from '../../compositions/Questionnaire/Questionnaire/Questionnaire';
 import { Route, Routes, useNavigate } from 'react-router-dom';
@@ -79,15 +79,15 @@ function useLanguageContentRetrieval() {
 }
 
 
-function useVideoStuff() {
+function useLanguageSelectionStuff() {
     const { language } = useLanguageContext();
     const [showLanguageSelectionModal, setShowLanguageSelectionModal] = React.useState(language == null || language === '');
     React.useEffect(() => {
         if (language != null && language !== '') {
             setShowLanguageSelectionModal(false);
         }
-        
     }, [language]);
+
     return {
         showLanguageSelectionModal, 
         setShowLanguageSelectionModal,
@@ -112,7 +112,7 @@ export function MainContainer() {
     const {
         showLanguageSelectionModal,
         setShowLanguageSelectionModal,
-    } = useVideoStuff();
+    } = useLanguageSelectionStuff();
   
     const submitQuestionnaireResponse = React.useCallback(async (userAnswers: QuestionnaireResponse) => {
         // @ts-expect-error we are storing a date here i dont know how to make it not complain
@@ -139,7 +139,12 @@ export function MainContainer() {
             <div className="wrapper">
                 <LanguageSelectionModal
                     showModal={showLanguageSelectionModal}
-                    setShowModal={setShowLanguageSelectionModal} />
+                    setShowModal={(value) => {
+                        console.log('what is value', value);
+                        setShowLanguageSelectionModal(value);
+
+                    }
+                    } />
                 <div className={classNames('items', {
                     blur: showLanguageSelectionModal,
                 })}>
@@ -148,7 +153,7 @@ export function MainContainer() {
                         <div className="section">
 
                             <Routes>
-                                <Route path="/" element={<LandingPage />}/>
+                                <Route path="/" element={<WorkshopLandingPage />}/>
                                 <Route path="/eligibility" element={<WorkshopScreening />}/>
                                 <Route path="/overview" element={<ProcessOverview />}/>
                                 <Route path="/video" element={<>

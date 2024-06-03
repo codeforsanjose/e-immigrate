@@ -48,4 +48,9 @@ export const apiUrls = {
         getTranslatedContent: '/api/translatedContent',
         getTranslatedContentByLanguage: '/api/translatedContent/:title.:language',
     } as const,
+    // MERS Reporting
+    ...{
+        addMersReportingResponse: '/api/mers-reporting/add',
+        getAllMersReportingResponses: '/api/mers-reporting',
+    } as const,
 };

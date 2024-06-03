@@ -7,6 +7,7 @@ import 'express-async-errors';
 import { usersRouter } from './routes/users.js';
 import { adminsRouter } from './routes/adminsRouter.js';
 import { questionnaireResponsesRouter } from './routes/questionnaireResponsesRouter.js';
+import { mersReportingQuestionnaireResponsesRouter } from './routes/mersResportingResponseRouter.js';
 import { questionnairesRouter } from './routes/questionnairesRouter.js';
 import { translatedContentRouter } from './routes/translatedContentRouter.js';
 import { generateResponsesExcelRouter } from './routes/generateResponsesExcelRouter.js';
@@ -57,6 +58,7 @@ app.get('/api/status', (req, res) => {
 app.use('/api/users', usersRouter);
 app.use('/api/admins', adminsRouter);
 app.use('/api/questionnaire-responses', questionnaireResponsesRouter);
+app.use('/api/mers-reporting', mersReportingQuestionnaireResponsesRouter);
 app.use('/api/questionnaires', questionnairesRouter);
 app.use('/api/translatedContent', translatedContentRouter);
 app.use('/api/generateExcel', generateResponsesExcelRouter);

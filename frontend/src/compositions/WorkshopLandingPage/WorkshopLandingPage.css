@@ -1,16 +1,13 @@
-.LandingPage {
-}
-
-.LandingPage h1 {
+.WorkshopLandingPage h1 {
     font-size: 3rem;
     margin: 0 0 48px;
 }
 
-.LandingPage .description {
+.WorkshopLandingPage .description {
     margin-bottom: 48px;
 }
 
-.LandingPage .description h2,
+.WorkshopLandingPage .description h2,
 p {
     margin: 0 0 12px;
 }
@@ -20,20 +17,20 @@ p {
 }
 
 @media only screen and (min-width: 875px) {
-    .LandingPage {
+    .WorkshopLandingPage {
         max-width: 900px;
         margin: auto;
         padding: 36px;
     }
 
-    .LandingPage .content {
+    .WorkshopLandingPage .content {
         display: grid;
         grid-template-columns: auto 345px;
         grid-template-rows: auto;
         gap: 5%;
     }
 
-    .LandingPage img {
+    .WorkshopLandingPage img {
         grid-column-start: 2;
         display: block;
         align-self: center;
@@ -41,19 +38,19 @@ p {
 }
 
 @media only screen and (max-width: 874px) {
-    .LandingPage {
+    .WorkshopLandingPage {
         max-width: 900px;
         margin: auto;
         padding: 8px;
     }
 
-    .LandingPage .content {
+    .WorkshopLandingPage .content {
         display: grid;
         grid-template-columns: 1fr;
         grid-template-rows: auto auto;
     }
 
-    .LandingPage img {
+    .WorkshopLandingPage img {
         grid-row-start: 1;
         display: block;
         margin: 0 auto 48px;
@@ -61,7 +58,7 @@ p {
         height: auto;
     }
 
-    .LandingPage .content .buttonComponent {
+    .WorkshopLandingPage .content .buttonComponent {
         width: 100%;
     }
 }

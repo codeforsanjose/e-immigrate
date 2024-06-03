@@ -30,7 +30,7 @@ export const LanguageContext = React.createContext<LanguageContextState | undefi
 function useInitialLanguageContextStateFactory(): LanguageContextState {
     const browserLanguage = getNavigatorLanguage();
     const _LOCALSTORE_LANGUAGE = preferredLanguageStorageWrapper.tryGet();
-    const LOCALSTORE_LANGUAGE = (_LOCALSTORE_LANGUAGE == null || _LOCALSTORE_LANGUAGE === '') ? 'en' : _LOCALSTORE_LANGUAGE;
+    const LOCALSTORE_LANGUAGE = (_LOCALSTORE_LANGUAGE == null || _LOCALSTORE_LANGUAGE === '') ? '' : _LOCALSTORE_LANGUAGE;
 
     const [language, setLanguage] = React.useState(LOCALSTORE_LANGUAGE);
     React.useEffect(() => {

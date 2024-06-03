@@ -19,3 +19,9 @@ export type GetQuestionsByLanguageApiResponse = {
     language?: string;
     questions: Array<QuestionInfo>;
 };
+
+
+export type GetMERSQuestionsApiResponse = {
+    title?: string;
+    questions: Array<QuestionInfo>;
+};
