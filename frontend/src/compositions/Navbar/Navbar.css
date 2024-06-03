@@ -15,15 +15,22 @@
 
 .Navbar .NavLinks {
     align-items: center;
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
 }
 
 .Navbar .NavLinks a {
     text-decoration: none;
-    font-size: 20px;
-    font-weight: 600;
+    font-size: 16px;
+    font-weight: 500;
     color: var(--color-text-primary);
 }
 
+.Navbar .NavLinks .active {
+    font-weight: 800;
+    text-decoration: underline;
+}
 @media only screen and (max-width: 600px) {
     .Navbar {
         padding: 4px;

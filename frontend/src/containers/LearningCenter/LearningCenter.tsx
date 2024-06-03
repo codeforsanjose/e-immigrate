@@ -1,17 +1,12 @@
 import React from 'react';
 
-
-// import { useNavigate } from 'react-router-dom';
-
 import './LearningCenter.css';
+import { Navbar } from '../../compositions/Navbar/Navbar';
 
 export function LearningCenter() {
-    
-    // const navigate = useNavigate();
-   
-    
     return (
         <div className="LearningCenter">
+            <Navbar />
             <h1>This is the LearningCenter page</h1>
         </div>
     );

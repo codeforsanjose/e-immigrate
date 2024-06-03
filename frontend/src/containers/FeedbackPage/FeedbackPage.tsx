@@ -1,17 +1,12 @@
 import React from 'react';
 
-
-// import { useNavigate } from 'react-router-dom';
-
 import './FeedbackPage.css';
+import { Navbar } from '../../compositions/Navbar/Navbar';
 
 export function FeedbackPage() {
-    
-    // const navigate = useNavigate();
-   
-    
     return (
         <div className="FeedbackPage">
+            <Navbar />
             <h1>This is the FeedbackPage</h1>
         </div>
     );
