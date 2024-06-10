@@ -87,6 +87,7 @@ export type MersReportingQuestionnaireResponseEntity = WithMongooseTimestamps<{
     deleted?: boolean;
     createdAt?: string;
     updatedAt?: string;
+    unique_flow_id?: string;
 }>;
 export type MersReportingQuestionnaireResponseEntityWithId = WithDefaultMongooseId<MersReportingQuestionnaireResponseEntity>;
 
@@ -130,6 +131,7 @@ const responseSchema = new mongoose.Schema<MersReportingResponseEntity>({
 const questionnaireSchema = new mongoose.Schema<MersReportingQuestionnaireResponseEntity>({
     createdAt: { type: String, required: false },
     updatedAt: { type: String, required: false },
+    unique_flow_id: { type: String, required: false },
     agency: { type: String, required: false, unique: false },
     mersReportingQuestionnaireResponse: { type: responseSchema, required: true },
     deleted: {

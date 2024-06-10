@@ -11,13 +11,15 @@ dotenv.config();
 sgMail.setApiKey(getRequiredEnvironmentVariable('SENDGRID_API_KEY'));
 
 const logger = scopedLogger('email');
-function getColoredLanguage(content: EmailContent, flag: boolean) {
-    return flag ? content.red : content.green;
+
+function getColoredLanguage(content: EmailContent, flag: boolean, uniqueId: string) {
+    return flag ? content.red(uniqueId) : content.green(uniqueId);
 }
-function getEmailContentForLanguage(language: EmailContentLanguages, flag: boolean) {
-    const translatedContent = getColoredLanguage(emailContents[language], flag);
+
+function getEmailContentForLanguage(language: EmailContentLanguages, flag: boolean, uniqueId: string) {
+    const translatedContent = getColoredLanguage(emailContents[language], flag, uniqueId);
     if (translatedContent == null || translatedContent === '') {
-        const fallbackContent = getColoredLanguage(emailContents[DEFAULT_LANGUAGE], flag);
+        const fallbackContent = getColoredLanguage(emailContents[DEFAULT_LANGUAGE], flag, uniqueId);
         if (fallbackContent == null || fallbackContent === '') {
             logger.error({
                 language,
@@ -30,12 +32,12 @@ function getEmailContentForLanguage(language: EmailContentLanguages, flag: boole
     }
     return translatedContent;
 }
-export async function sendEmail(email: string, name: string, flag: boolean, language: EmailContentLanguages) {
+export async function sendEmail(email: string, name: string, flag: boolean, language: EmailContentLanguages, uniqueId: string) {
     const msg = {
         to: email,
         from: emailSender,
         subject: 'Your Response has been received',
-        html: getEmailContentForLanguage(language, flag),
+        html: getEmailContentForLanguage(language, flag, uniqueId),
     };
     return await sgMail.send(msg);
 }

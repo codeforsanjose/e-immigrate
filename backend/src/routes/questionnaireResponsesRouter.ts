@@ -1,6 +1,7 @@
 import express from 'express';
 import { z } from 'zod';
 
+import { randomUUID } from 'crypto';
 import { QuestionnaireResponse } from '../models/questionnaireResponse.js';
 import { sendMassEmails } from '../features/emails/sendEmail.js';
 import { isEmailContentLanguage } from '../features/emails/emailContentLanguages.js';
@@ -22,7 +23,7 @@ const AddSchema = z.object({
 // TODO: revisit access control
 router.route('/add').post(async (req, res) => {
     const logger = routeLogger('addQuestionnaireResponse');
-
+    const unique_flow_id = randomUUID();
     const reqBody = AddSchema.parse(req.body);
     const {
         language,
@@ -36,6 +37,7 @@ router.route('/add').post(async (req, res) => {
     const newQuestionnaireResponse = new QuestionnaireResponse({
         title,
         language,
+        unique_flow_id,
         questionnaireResponse,
     });
 
@@ -110,6 +112,7 @@ router.route('/email').post(async (req, res) => {
                 questionnaireResponse,
                 flag,
                 language = 'en',
+                unique_flow_id = '',
             } = response;
             if (!isEmailContentLanguage(language)) throw new Error('should not happen');
 
@@ -126,7 +129,7 @@ router.route('/email').post(async (req, res) => {
                 to: email.toLowerCase(),
                 from: emailSender,
                 subject: 'Your Response has been received',
-                html: translatedContents,
+                html: translatedContents(unique_flow_id),
             };
             return msg;
         });

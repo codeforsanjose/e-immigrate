@@ -1,4 +1,4 @@
 export type EmailContent = {
-    green: string;
-    red: string;
+    green: (uniqueId: string) => string;
+    red: (uniqueId: string) => string;
 };

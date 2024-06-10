@@ -110,6 +110,7 @@ export type QuestionnaireResponseEntity = WithMongooseTimestamps<{
     deleted?: boolean;
     createdAt?: string;
     updatedAt?: string;
+    unique_flow_id?: string;
 
 }>;
 export type QuestionnaireResponseEntityWithId = WithDefaultMongooseId<QuestionnaireResponseEntity>;
@@ -161,6 +162,7 @@ const responseSchema = new mongoose.Schema<ResponseEntity>({
 const questionnaireSchema = new mongoose.Schema<QuestionnaireResponseEntity>({
     createdAt: { type: String, required: false },
     updatedAt: { type: String, required: false },
+    unique_flow_id: { type: String, required: false },
     title: { type: String, required: false, unique: false },
     language: { type: String, required: false, unique: false },
     flag: { type: Boolean, required: false, unique: false },
