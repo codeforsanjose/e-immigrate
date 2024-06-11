@@ -34,6 +34,7 @@ router.route('/add').post(async (req, res) => {
         origBody: req.body,
         questionnaireResponse,
     }, 'body');
+    console.log('new response with flow id', unique_flow_id);
     const newQuestionnaireResponse = new QuestionnaireResponse({
         title,
         language,
@@ -91,9 +92,6 @@ type QuestionnaireResponseElement = ArrayElementOf<Awaited<ReturnType<typeof get
 
 router.route('/email').post(async (req, res) => {
     const logger = routeLogger('emailQuestionnaireResponse');
-    // const getResponses = req.user.issuper
-    //     ? getAllResponses()
-    //     : getResponsesForAdmin(req.user);
     const qResponses = await getAllResponses();
     const responsesToEmail = qResponses.filter((item) => item.emailSent !== true);
     const totalEmailsToSend = responsesToEmail.length;
@@ -114,6 +112,8 @@ router.route('/email').post(async (req, res) => {
                 language = 'en',
                 unique_flow_id = '',
             } = response;
+            console.log('the full response', response);
+            console.log('questionnaire respoonse', questionnaireResponse);
             if (!isEmailContentLanguage(language)) throw new Error('should not happen');
 
             const { email } = questionnaireResponse;
@@ -134,6 +134,7 @@ router.route('/email').post(async (req, res) => {
             return msg;
         });
 
+    console.log('messages to send', messsagesToSend);
     try {
         await sendMassEmails(messsagesToSend);
         await updateUserResponsesEmailFlag(responsesToEmail, res);

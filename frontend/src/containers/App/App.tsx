@@ -43,7 +43,7 @@ export function App() {
                                 <Route path="/questionnaires" element={
                                     <EditQuestionnaires />
                                 }/>
-                                <Route path="/workshop" element={
+                                <Route path="/*" element={
                                     <QuestionnaireResponseContextProvider>
                                         <MainContainer />
                                     </QuestionnaireResponseContextProvider>

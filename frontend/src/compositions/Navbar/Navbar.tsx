@@ -38,8 +38,8 @@ export function Navbar(props: NavbarProps) {
                 <Link to="/feedback">
                     <h3 className={isActiveTab('feedback') ? 'active' : '' }>{feedbackText}</h3>
                 </Link>
-                <Link to="/workshop">
-                    <h3 className={isActiveTab('workshop') ? 'active' : '' }>{workshopText}</h3>
+                <Link to="/workshops">
+                    <h3 className={isActiveTab('workshops') ? 'active' : '' }>{workshopText}</h3>
                 </Link>
                 <Link to="/login">
                     <h3 className={isActiveTab('login') ? 'active' : '' }>{loginText}</h3>

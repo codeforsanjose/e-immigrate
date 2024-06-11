@@ -116,7 +116,7 @@ export function Questionnaire(props: QuestionnaireProps) {
                     />
                 );
             })}
-            { !closedWorkShop && <Button
+            { closedWorkShop && <Button
                 label={categoryIndex < categories.length - 1
                     ? content.step2ProceedButton2
                     : content.step2ProceedButton3}

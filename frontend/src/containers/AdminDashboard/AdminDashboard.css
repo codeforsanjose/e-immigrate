@@ -123,7 +123,7 @@
     border: solid 3px var(--color-green);
 }
 .AdminDashboard .red-outline {
-    border: solid 3px "red";
+    border: solid 3px var(--color-red);
 }
 
 .AdminDashboard .dropdown-select {

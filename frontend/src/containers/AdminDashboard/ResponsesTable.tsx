@@ -13,7 +13,7 @@ import SortArrow from '../../data/images/SortArrow.svg';
 import { isAgencyObject, isValueTranslatedYes } from './helpers';
 import { AGENCIES, DESCRIPTIVE_TIMESTAMP } from './constants';
 import { QuestionnaireResponseElement } from './types';
-import { getUpdatedFlag, isRedFlagKey } from '../../utilities/flagDeterminerHelpers';
+import { fullWaiverQuestionAnsweredYesTo, getUpdatedFlag, isRedFlagKey } from '../../utilities/flagDeterminerHelpers';
 
 
 function AgencyOptions() {
@@ -84,32 +84,32 @@ function ResponseTableHeaderRow(props: ResponseTableHeaderRowProps) {
     return (
         <tr className="header-row">
             <th>#</th>
-            <ResponseTableHeaderColumn 
+            <ResponseTableHeaderColumn
                 className={createdOrder ? '' : 'up'}
                 onClick={sortCreated}
             >
                 Created
             </ResponseTableHeaderColumn>
-            <ResponseTableHeaderColumn 
+            <ResponseTableHeaderColumn
                 className={updatedOrder ? '' : 'up'}
                 onClick={sortUpdated}
             >
                 Updated
             </ResponseTableHeaderColumn>
-            <ResponseTableHeaderColumn 
+            <ResponseTableHeaderColumn
                 className={flagOrder ? 'up' : ''}
                 onClick={sortFlags}
             >
                 Flag
             </ResponseTableHeaderColumn>
             <th>Agency</th>
-            <ResponseTableHeaderColumn 
+            <ResponseTableHeaderColumn
                 className={emailOrder ? 'up' : ''}
                 onClick={sortEmail}
             >
                 Email Sent
             </ResponseTableHeaderColumn>
-            <ResponseTableHeaderColumn 
+            <ResponseTableHeaderColumn
                 className={downloadOrder ? 'up' : ''}
                 onClick={sortDownload}
             >
@@ -154,10 +154,12 @@ function ResponseTableRow(props: ResponseTableRowProps) {
             </span>
         </article>
     );
+    const flagIt = getUpdatedFlag(questionnaireResponse) ? 'red-outline' : 'green-outline';
+    const fullWaiverFlagged = fullWaiverQuestionAnsweredYesTo('receive_public_benefits', questionnaireResponse.receive_public_benefits ?? '');
     const policeMarkupQuestion = (
         <article
             key={`td-answer-police-${index}`}
-            className={`answer contact-with-police`}
+            className={`answer contact-with-police ${flagIt}`}
         >
             <span>
                 contact with police:
@@ -184,18 +186,20 @@ function ResponseTableRow(props: ResponseTableRowProps) {
         'contact_with_police_explanation',
     ];
     const allAnswers = Object.keys(questionnaireResponse).reduce<Array<JSX.Element>>((accumulator, questionKey, index) => {
-        const flagIt = isRedFlagKey(questionKey)
+
+        const flagItOutline = isRedFlagKey(questionKey)
             ? isValueTranslatedYes(questionnaireResponse[questionKey])
                 ? 'red-outline'
                 : 'green-outline'
             : 'green-outline';
+
         const answerMarkup = !alreadyQuestionKeyMarkupedUp.includes(
             questionKey,
         )
             ? (
                 <article
                     key={`td-answer-${index}`}
-                    className={`answer ${flagIt}`}
+                    className={`answer ${flagItOutline}`}
                 >
                     <b>{index + 1}.</b>
                     <span>
@@ -234,7 +238,7 @@ function ResponseTableRow(props: ResponseTableRowProps) {
             </td>
             <td>
                 <div
-                    className={`flag ${(response.flag ?? false) ? 'red' : 'green'}`}
+                    className={`flag ${(response.flag === true && !fullWaiverFlagged) ? 'red' : 'green'}`}
                     onClick={async (e) => await toggleFlag(response)}
                 ></div>
             </td>
@@ -324,7 +328,7 @@ async function updateEmailSentAsync(values: Array<UpdateEmailSentElement>) {
         method: 'POST',
         body: JSON.stringify([...values]),
     };
-   
+
     return await sendRequest<Array<QuestionnaireResponseElement>>(requestObj, {
         includeAuth: true,
     });
@@ -456,7 +460,7 @@ export function ResponsesTable(props: ResponsesTableProps) {
         setHeaderState(!headerState);
     }, []);
 
-    
+
     const sortDescending: SortFunction = React.useCallback((property, headerState, setHeaderState) => {
         setQuestionnaireResponses(current => {
             return current.sort((a, b) => {
@@ -540,7 +544,7 @@ export function ResponsesTable(props: ResponsesTableProps) {
             }),
             method: 'PUT',
         };
-        
+
         try {
             await sendRequest(requestObj, {
                 includeAuth: true,
@@ -555,7 +559,7 @@ export function ResponsesTable(props: ResponsesTableProps) {
         }
     }, [questionnaireResponses]);
 
-    
+
     const filterQuestionnaireResponses = React.useMemo(() => {
         if (searchTerm == null || searchTerm === '') return questionnaireResponses;
         return searchArrayObjects(
@@ -565,7 +569,7 @@ export function ResponsesTable(props: ResponsesTableProps) {
             3,
         );
     }, [filterBy, questionnaireResponses, searchTerm]);
-    
+
     return (
         <table className="responses">
             <tbody>

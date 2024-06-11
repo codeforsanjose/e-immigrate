@@ -140,9 +140,7 @@ export function MainContainer() {
                 <LanguageSelectionModal
                     showModal={showLanguageSelectionModal}
                     setShowModal={(value) => {
-                        console.log('what is value', value);
                         setShowLanguageSelectionModal(value);
-
                     }
                     } />
                 <div className={classNames('items', {
@@ -151,9 +149,8 @@ export function MainContainer() {
                     <Navbar dashboard={false}/>
                     <div className="main">
                         <div className="section">
-
                             <Routes>
-                                <Route path="/" element={<WorkshopLandingPage />}/>
+                                <Route path="/workshops" element={<WorkshopLandingPage />}/>
                                 <Route path="/eligibility" element={<WorkshopScreening />}/>
                                 <Route path="/overview" element={<ProcessOverview />}/>
                                 <Route path="/video" element={<>
@@ -164,7 +161,6 @@ export function MainContainer() {
                                         videoState={videoState}
                                     />
                                 </>}/>
-                                    
                                 <Route path="/questionnaire" element={<>
                                     <ProgressBar step={2} />
                                     <NavigateToEligibilityIfMissing />
