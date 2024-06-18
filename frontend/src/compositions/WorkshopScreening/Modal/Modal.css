@@ -46,10 +46,3 @@
 .Modal .ExitButton:hover {
     background-color: var(--color-primary-light);
 }
-
-.Modal .green-outline {
-    border: solid 3px var(--color-green);
-}
-.Modal .red-outline {
-    border: solid 3px var(--color-red);
-}

@@ -126,6 +126,23 @@
     border: solid 3px var(--color-red);
 }
 
+.AdminDashboardModal .Modal .modal-details {
+    overflow-y: scroll;
+}
+.AdminDashboardModal .Modal .green-outline {
+    border: solid 3px var(--color-green);
+}
+.AdminDashboardModal .Modal .red-outline {
+    border: solid 3px var(--color-red);
+}
+.AdminDashboardModal {
+    article {
+        margin: 6px;
+        padding: 6px;
+        border-radius: 25px;
+    }
+}
+
 .AdminDashboard .dropdown-select {
     margin: 0.5rem;
 }

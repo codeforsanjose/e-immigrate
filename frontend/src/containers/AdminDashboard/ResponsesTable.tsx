@@ -277,14 +277,17 @@ function ResponseTableRow(props: ResponseTableRowProps) {
             <td>
                 <button onClick={() => {
                     const modalMarkup = (
-                        <div>
+                        <div className="AdminDashboardModal">
                             <div className="Modal">
-                                <QuestionnaireContainer>
-                                    <button onClick={() => {
-                                        setQuestionsModal(null);
-                                    }}>X</button>
-                                    {allTheAnswers}
-                                </QuestionnaireContainer>
+                                <button onClick={() => {
+                                    setQuestionsModal(null);
+                                }}>X</button>
+                                <div className="modal-details">
+                                    <QuestionnaireContainer>
+                                        {allTheAnswers}
+                                    </QuestionnaireContainer>
+                                </div>
+
                             </div>
                             <div className="ModalOverlay"></div>
                         </div>
