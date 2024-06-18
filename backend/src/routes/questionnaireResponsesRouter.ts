@@ -34,7 +34,6 @@ router.route('/add').post(async (req, res) => {
         origBody: req.body,
         questionnaireResponse,
     }, 'body');
-    console.log('new response with flow id', unique_flow_id);
     const newQuestionnaireResponse = new QuestionnaireResponse({
         title,
         language,

@@ -4,6 +4,7 @@ import { ExcelLanguageSheetMap, LanguageOptionCodes, LanguageOptions, WorkshopTi
 import { scopedLogger } from '../logging/logger.js';
 import { Questionnaires } from '../../models/questionnaires.js';
 import { Readable } from 'stream';
+import { MersReportingQuestionnaireResponse } from '../../models/mersReportingQuestionnaireResponses.js';
 
 
 const loggers = {
@@ -73,7 +74,7 @@ class ParentSlugKnowledgeManager {
         this.#allLanguages = new Set<LanguageOptionCodes>();
     }
 
-    
+
     addKnown(parentSlug: string, childSlug: string, language: LanguageOptionCodes) {
         this.#allLanguages.add(language);
         this.known.add(parentSlug, childSlug, language);
@@ -84,7 +85,7 @@ class ParentSlugKnowledgeManager {
         this.unknown.add(parentSlug, childSlug, language);
     }
 
-    
+
     getPartiallyMissingSlugs() {
         const slugs = Array.from(this.unknown.parentSlugs.keys()).filter(key => {
             return this.known.parentSlugs.has(key);
@@ -122,12 +123,12 @@ class ParentSlugKnowledgeManager {
         }, {});
     }
 }
-type HeaderRowValidationResult = 
-| { success: true, }
-| { 
-    success: false;
-    errorMessage: string;
-};
+type HeaderRowValidationResult =
+    | { success: true, }
+    | {
+        success: false;
+        errorMessage: string;
+    };
 function validateHeaderRow(row: Row): HeaderRowValidationResult {
     const validHeaders = [
         '#(id)',
@@ -178,7 +179,7 @@ function validateHeaderRow(row: Row): HeaderRowValidationResult {
 export function loadQuestionSheet(rows: Array<Row>, language: LanguageOptionCodes) {
     const logger = loggers.loadQuestionSheet;
     type RowData = z.infer<typeof RowSchema>;
-    
+
     // validate the header row
     const validationResult = validateHeaderRow(rows[0]);
     if (!validationResult.success) {
@@ -217,7 +218,7 @@ export function loadQuestionSheet(rows: Array<Row>, language: LanguageOptionCode
 
     const radioWithFollowupType = 'radioWithFollowUp' as const;
     const radioType = 'radio' as const;
- 
+
 
     const parentSlugManager = new ParentSlugKnowledgeManager();
     function applyFollowupQuestions() {
@@ -284,7 +285,7 @@ export function loadQuestionSheet(rows: Array<Row>, language: LanguageOptionCode
         });
         return anyChanges;
     }
-    
+
     while (true) {
         const didChange = applyFollowupQuestions();
         console.log({
@@ -306,7 +307,7 @@ export function loadQuestionSheet(rows: Array<Row>, language: LanguageOptionCode
             slugs: fullyMissing,
         }, 'fully missing');
     }
-    
+
     return data;
 }
 
@@ -330,7 +331,7 @@ export async function importExcelQuestionSheet(config: {
     const {
         language,
         questions,
-        title,    
+        title,
     } = config;
 
     const result = await Questionnaires.findOne({ title, language });
@@ -351,8 +352,54 @@ export async function importExcelQuestionSheet(config: {
     });
     logger.debug({
         title,
-        language, 
+        language,
     }, 'questionnaire inserted');
+}
+
+
+export async function importExcelMersQuestionSheet(config: {
+    title: string;
+    language: string;
+    questions: Array<{
+        id: string | number;
+        required: boolean;
+        slug: string;
+        category: string;
+        text: string | null;
+        questionType: string;
+        answerSelections: string | null;
+        answerValues: string | null;
+        followUpQuestionSlug: string | null;
+        parentQuestionSlug: string | null;
+    }>;
+}) {
+    const logger = loggers.loadQuestionnaireXlsxIntoDB;
+    const {
+        language,
+        questions,
+        title,
+    } = config;
+
+    const result = await MersReportingQuestionnaireResponse.findOne({ title, language });
+    if (result != null) {
+        await MersReportingQuestionnaireResponse.findByIdAndDelete({
+            _id: result._id,
+        });
+        logger.debug({
+            id: result._id,
+            title,
+            language,
+        }, 'mers questionnaire deleted');
+    }
+    await MersReportingQuestionnaireResponse.insertMany({
+        title,
+        language,
+        questions,
+    });
+    logger.debug({
+        title,
+        language,
+    }, 'mers questionnaire inserted');
 }
 
 
@@ -391,12 +438,22 @@ export async function loadQuestionnaireXlsxIntoDB(excelFileContent: Buffer, titl
     const questionnaires = await Promise.all(questionnairePromises);
     const insertPromises = LanguageOptions.map(async (language, idx) => {
         const questions = questionnaires[idx];
+        console.log('here we are title ----->', title);
         if (questions == null) return;
-        await importExcelQuestionSheet({
-            language: language.code,
-            title,
-            questions,
-        });
+        if (title.toLowerCase().includes('mers')) {
+            await importExcelMersQuestionSheet({
+                language: language.code,
+                title,
+                questions,
+            });
+        }
+        else {
+            await importExcelQuestionSheet({
+                language: language.code,
+                title,
+                questions,
+            });
+        }
     });
     await Promise.all(insertPromises);
 }

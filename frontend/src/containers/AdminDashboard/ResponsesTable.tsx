@@ -13,7 +13,9 @@ import SortArrow from '../../data/images/SortArrow.svg';
 import { isAgencyObject, isValueTranslatedYes } from './helpers';
 import { AGENCIES, DESCRIPTIVE_TIMESTAMP } from './constants';
 import { QuestionnaireResponseElement } from './types';
-import { fullWaiverQuestionAnsweredYesTo, getUpdatedFlag, isRedFlagKey } from '../../utilities/flagDeterminerHelpers';
+import { getUpdatedFlag, getUpdatedFlagForKey, isRedFlagKey } from '../../utilities/flagDeterminerHelpers';
+import { QuestionnaireContainer } from '../../compositions/Questionnaire/Questionnaire/QuestionnaireContainer';
+
 
 
 function AgencyOptions() {
@@ -129,6 +131,7 @@ type ResponseTableRowProps = {
     resetEmail: (response: QuestionnaireResponseElement) => Promise<void>;
     softDeleteResponse: (index: number) => Promise<void>;
     assignResponseAgency: (response: QuestionnaireResponseElement, agency: string) => Promise<void>;
+    setQuestionsModal: (state: React.ReactNode | null) => void;
 };
 
 function ResponseTableRow(props: ResponseTableRowProps) {
@@ -139,6 +142,7 @@ function ResponseTableRow(props: ResponseTableRowProps) {
         softDeleteResponse,
         resetEmail,
         assignResponseAgency,
+        setQuestionsModal,
     } = props;
 
     const { questionnaireResponse } = response;
@@ -154,8 +158,7 @@ function ResponseTableRow(props: ResponseTableRowProps) {
             </span>
         </article>
     );
-    const flagIt = getUpdatedFlag(questionnaireResponse) ? 'red-outline' : 'green-outline';
-    const fullWaiverFlagged = fullWaiverQuestionAnsweredYesTo('receive_public_benefits', questionnaireResponse.receive_public_benefits ?? '');
+    const flagIt = getUpdatedFlagForKey('contact-with-police', questionnaireResponse.contact_with_police ?? '') ? 'red-outline' : 'green-outline';
     const policeMarkupQuestion = (
         <article
             key={`td-answer-police-${index}`}
@@ -198,7 +201,7 @@ function ResponseTableRow(props: ResponseTableRowProps) {
         )
             ? (
                 <article
-                    key={`td-answer-${index}`}
+                    key={`td-answer-${questionKey}`}
                     className={`answer ${flagItOutline}`}
                 >
                     <b>{index + 1}.</b>
@@ -219,6 +222,7 @@ function ResponseTableRow(props: ResponseTableRowProps) {
         policeExplinationMarkupQuestion,
         ...allAnswers,
     ];
+
     return (
         <tr key={response._id}>
             <td>{index + 1}</td>
@@ -238,7 +242,7 @@ function ResponseTableRow(props: ResponseTableRowProps) {
             </td>
             <td>
                 <div
-                    className={`flag ${(response.flag === true && !fullWaiverFlagged) ? 'red' : 'green'}`}
+                    className={`flag ${(response.flag === true) ? 'red' : 'green'}`}
                     onClick={async (e) => await toggleFlag(response)}
                 ></div>
             </td>
@@ -271,7 +275,22 @@ function ResponseTableRow(props: ResponseTableRowProps) {
                 ></div>
             </td>
             <td>
-                <div className="all-answers">{allTheAnswers}</div>
+                <button onClick={() => {
+                    const modalMarkup = (
+                        <div>
+                            <div className="Modal">
+                                <QuestionnaireContainer>
+                                    <button onClick={() => {
+                                        setQuestionsModal(null);
+                                    }}>X</button>
+                                    {allTheAnswers}
+                                </QuestionnaireContainer>
+                            </div>
+                            <div className="ModalOverlay"></div>
+                        </div>
+                    );
+                    setQuestionsModal(modalMarkup);
+                }}>View answers</button>
             </td>
         </tr>
     );
@@ -286,6 +305,7 @@ type ResponsesTableProps = {
     filterBy: string;
     searchTerm: string;
     setLoading: (state: boolean) => void;
+    setQuestionsModal: (state: React.ReactNode | null) => void;
 };
 
 type UpdateAgencyElement = {
@@ -369,6 +389,7 @@ export function ResponsesTable(props: ResponsesTableProps) {
         filterBy,
         searchTerm,
         setLoading,
+        setQuestionsModal,
     } = props;
     const navigate = useNavigate();
     const [questionnaireResponses, setQuestionnaireResponses] = React.useState<Array<QuestionnaireResponseElement>>([]);
@@ -595,6 +616,7 @@ export function ResponsesTable(props: ResponsesTableProps) {
                             assignResponseAgency={assignResponseAgency}
                             resetEmail={resetEmail}
                             softDeleteResponse={softDeleteResponse}
+                            setQuestionsModal={setQuestionsModal}
                         />
                     );
                 })}

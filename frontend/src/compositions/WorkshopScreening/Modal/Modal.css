@@ -10,6 +10,7 @@
     transform: translate(-50%, -50%);
     z-index: 1010;
     background-color: white;
+    overflow: scroll;
 }
 
 .ModalOverlay {
@@ -44,4 +45,11 @@
 
 .Modal .ExitButton:hover {
     background-color: var(--color-primary-light);
+}
+
+.Modal .green-outline {
+    border: solid 3px var(--color-green);
+}
+.Modal .red-outline {
+    border: solid 3px var(--color-red);
 }

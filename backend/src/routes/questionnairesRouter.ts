@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { QuestionEntity, QuestionnaireEntityWithId, Questionnaires } from '../models/questionnaires.js';
 import { DEFAULT_LANGUAGE } from '../features/languages/default.js';
 import { routeLogger } from '../features/logging/logger.js';
-import { importExcelQuestionSheet } from '../features/excelFiles/questionnaireExcel.js';
+import { importExcelMersQuestionSheet, importExcelQuestionSheet } from '../features/excelFiles/questionnaireExcel.js';
 const router = express.Router();
 export { router as questionnairesRouter };
 
@@ -109,7 +109,17 @@ router.route('/add').post(async function addQuestionnaires(req, res) {
         title,
         language,
     }, 'request body');
+    console.log('title here in router', title);
     try {
+        if (title.toLowerCase().includes('mers')) {
+            await importExcelMersQuestionSheet({
+                language,
+                title,
+                questions,
+            });
+            res.status(200).send();
+            return;
+        }
         await importExcelQuestionSheet({
             language,
             title,

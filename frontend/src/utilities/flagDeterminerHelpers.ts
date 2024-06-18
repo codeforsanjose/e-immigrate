@@ -31,3 +31,10 @@ export function getUpdatedFlag(userResponse: Partial<Record<RedFlagKey, string |
             : acc;
     }, false);
 }
+
+export function getUpdatedFlagForKey(key: RedFlagKey, value: string) {
+    return isRedFlagKey(key)
+        ? !!yesValuesTranslated.includes(value)
+        : false;
+
+}

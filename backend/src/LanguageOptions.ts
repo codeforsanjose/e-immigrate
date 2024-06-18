@@ -1,6 +1,8 @@
 import { EmailContentLanguages } from "./features/emails/emailContentLanguages.js";
 
-export const WorkshopTitle = 'CIIT_Workshop_Spring_2022';
+const year = new Date().getFullYear();
+export const WorkshopTitle = `CIIT_Workshop_Spring_${year}`;
+export const MERSWorkshopTitle = `MERS_CIIT_Workshop_Spring_${year}`;
 
 export type LanguageOptionCodes = EmailContentLanguages | 'ko' | 'pa';
 type LanguageOption = {

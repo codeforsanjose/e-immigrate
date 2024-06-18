@@ -50,6 +50,7 @@
         "build-and-serve": "npm run build && npm run start",
         "build-and-serve:watch": "npm run build && npm run start:watch",
         "upload-from-excel:questions": "node ./dist/scripts/uploadQuestionnaireFromExcel.js",
+        "upload-from-excel:mers_questions": "node ./dist/scripts/uploadMERSQuestionnaire.js",
         "upload-from-excel:translated": "node ./dist/scripts/uploadTranslatedContentFromExcel.js",
         "prepare-from-excel": "npm run upload-from-excel:questions && npm run upload-from-excel:translated"
     }

@@ -38,6 +38,7 @@ export function AdminDashboard() {
     const [filterBy, setFilterBy] = React.useState('full_name');
     const [searchTerm, setSearchTerm] = React.useState('');
 
+    const [modal, setModal] = React.useState<React.ReactNode | null>(null);
     const {
         questions,
     } = useLanguageQuestionHook({
@@ -194,6 +195,7 @@ export function AdminDashboard() {
             <Navbar
                 dashboard={true}
             />
+            {modal}
             <section className="AdminDashboard">
                 <LoadingIndicator loading={loading}/>
                 <section className="overview-container">
@@ -246,6 +248,7 @@ export function AdminDashboard() {
                         filterBy={filterBy}
                         searchTerm={searchTerm}
                         setLoading={setLoading}
+                        setQuestionsModal={setModal}
                     />
                 </section>
             </section>
