@@ -11,8 +11,11 @@ export function TextInput(props: TextInputProps) {
     } = props;
     const { 
         collectAnswer,
-        bindField, 
+        bindField,
+        questionnaireResponse,
     } = useQuestionnaireResponseContext();
+    const valueForSlug = questionnaireResponse[q.slug];
+    const showError = valueForSlug == null || valueForSlug === '';
     return (
         <>
             <input
@@ -21,8 +24,9 @@ export function TextInput(props: TextInputProps) {
                 required={q.required}
                 className="TextInput"
                 {...bindField(q.slug)}
+                {...{ 'data-touched': showError }}
                 onChange={(e) => collectAnswer(q.slug, e.target.value)} />
-            <AutoRequiredErrorDiv />
+            <AutoRequiredErrorDiv show={showError}/>
         </>
     );
 }

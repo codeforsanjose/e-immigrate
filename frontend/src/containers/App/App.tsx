@@ -35,19 +35,22 @@ export function App() {
                                     <AdminDashboard />}
                                 />
                                 <Route path="/mers-reporting" element={
-                                    <MERSReportingPage />}
+                                    <QuestionnaireResponseContextProvider>
+                                        <MERSReportingPage />
+                                    </QuestionnaireResponseContextProvider>
+                                }
                                 />
                                 <Route path="/login" element={
                                     <Admin />
-                                }/>
+                                } />
                                 <Route path="/questionnaires" element={
                                     <EditQuestionnaires />
-                                }/>
+                                } />
                                 <Route path="/*" element={
                                     <QuestionnaireResponseContextProvider>
                                         <MainContainer />
                                     </QuestionnaireResponseContextProvider>
-                                }/>
+                                } />
                             </Routes>
                         </div>
                     </Router>

@@ -18,7 +18,12 @@ export function Select(props: SelectProps) {
     const { 
         collectAnswer,
         bindField,
+        questionnaireResponse,
     } = useQuestionnaireResponseContext();
+
+    const valueForSlug = questionnaireResponse[q.slug];
+    const showError = valueForSlug == null || valueForSlug === '';
+
     React.useEffect(() => {
         if (selectAnswers == null) {
             console.error(`'selectAnswers' was null`);
@@ -48,7 +53,7 @@ export function Select(props: SelectProps) {
                     );
                 })}
             </select>
-            <AutoRequiredErrorDiv />
+            <AutoRequiredErrorDiv show={showError} />
         </>
     );
 }

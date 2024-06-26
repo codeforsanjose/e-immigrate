@@ -13,8 +13,11 @@ export const questionKeysThatAreNotRedFlagsButInARedFlagQuestionnaire = [
     'speak_basic_english',
     'follow_up_basic_english_50_years_gc_20_years',
     'follow_up_basic_english_55_years_gc_15_years',
+    'owed_taxes_since_LPR',
     'taxes_payment_plan',
 ];
+
+export const answeringNoIsRedFlag = ['taxes_payment_plan'];
 export const actualRedFlagQuestionKeys = [
     'contact_with_police',
     'habitual_alcoholic_drugs',
@@ -29,19 +32,22 @@ export const actualRedFlagQuestionKeys = [
     'lied_to_obtain_welfare_benefit',
     'left_US_>6mo_while_LPR',
     'lived_outsideUS>insideUS_since_LPR',
-    'owed_taxes_since_LPR',
     'genocide_torture_killing_hurting',
     'served_military_group_against_govt',
     'court-martialed_disciplinced_in_military',
     'associated_terrorist_orgs_gangs',
     'US_citizen_registered_voted',
-
 ];
 export type RedFlagKey = ArrayElementOf<typeof actualRedFlagQuestionKeys>;
 
 export function isRedFlagKey(value: string) {
     if (value == null || typeof value !== 'string') return false;
     return actualRedFlagQuestionKeys.includes(value);
+}
+
+export function isAnswerNoRedFlagKey(value: string) {
+    if (value == null || typeof value !== 'string') return false;
+    return answeringNoIsRedFlag.includes(value);
 }
 
 export function isWaiverFlagKey(value: string) {
@@ -56,15 +62,31 @@ export function isNOTRedFlagKey(value: string) {
 
 
 export function getUpdatedFlag(userResponse: Partial<Record<RedFlagKey, string | null | undefined>>) {
-    return Object.entries(userResponse).reduce((acc, [key, value]) => {
-        if (value == null) return acc;
-        return isRedFlagKey(key)
-            ? yesValuesTranslated.includes(value)
-                ? true
-                : acc
-            : acc;
-    }, false);
+    const result = Object.entries(userResponse).map(([key, value]) => {
+        if (value == null) return false;
+        return getUpdatedFlagForKey(key, value, userResponse);
+    });
+    return result.includes(true);
+}
+
+export function getUpdatedFlagForKey(key: RedFlagKey, value: string, userResponse: Partial<Record<RedFlagKey, string | null | undefined>>) {
+    if (isRedFlagKey(key)) {
+        return yesValuesTranslated.includes(value);
+    }
+    else if (isAnswerNoRedFlagKey(key)) {
+        if (key === 'taxes_payment_plan') {
+            const prevVal = userResponse.owed_taxes_since_LPR ?? '';
+            if (yesValuesTranslated.includes(prevVal)) {
+                return noValuesTranslated.includes(value);     
+            }
+        }
+        return false;
+    }
+    else {
+        return false;
+    }
 }
 
 // need this due to values being set as translated and not the YES or no
 export const yesValuesTranslated = ['Yes', 'Sí', 'Có', 'Oo', '是', '是', '是', 'Да', 'አዎ', 'نعم', 'بله', 'हाँ', '예', 'هو', 'ਹਾਂ', 'Sim'];
+export const noValuesTranslated = ['No', 'No', 'Không', 'Hindi', '否', '否', 'нет', 'አይደለም', 'نعم', 'بله', 'नहीं', '아니오', 'هو', 'ਨਹੀਂ', 'Nao'];

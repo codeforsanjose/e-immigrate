@@ -1,3 +1,9 @@
 .MERSReportingPage {
-    
+
+}
+.MERSReportingPage .green-outline {
+    border: solid 3px var(--color-green);
+}
+.MERSReportingPage .red-outline {
+    border: solid 3px var(--color-red);
 }

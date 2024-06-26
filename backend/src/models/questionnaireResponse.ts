@@ -38,6 +38,7 @@ export const fieldsExportableToExcel = [
     'lied_to_obtain_immigrant_benefit',
     'lied_to_obtain_welfare_benefit',
     'left_US_>6mo_while_LPR',
+    'lived_outsideUS>insideUS_since_LPR',
     'owed_taxes_since_LPR',
     'taxes_payment_plan',
     'genocide_torture_killing_hurting',
@@ -87,6 +88,7 @@ export type ResponseEntity = {
     lied_to_obtain_immigrant_benefit: string;
     lied_to_obtain_welfare_benefit: string;
     'left_US_>6mo_while_LPR': string;
+    'lived_outsideUS>insideUS_since_LPR': string;
     owed_taxes_since_LPR: string;
     taxes_payment_plan: string;
     genocide_torture_killing_hurting: string;

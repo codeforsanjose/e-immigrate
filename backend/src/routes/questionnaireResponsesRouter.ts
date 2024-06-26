@@ -237,6 +237,7 @@ const AssignFlagSchema = z.array(z.object({
 router.route('/assign-flag').post(async (req, res) => {
     const logger = routeLogger('assignResponseFlag');
     const requestBody = AssignFlagSchema.parse(req.body);
+    console.log('the request body here', requestBody);
     for (const change of requestBody) {
         try {
             await QuestionnaireResponse.updateOne({ _id: change.id }, {

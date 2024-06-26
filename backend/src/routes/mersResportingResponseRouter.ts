@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { MersReportingQuestionnaireResponse } from '../models/mersReportingQuestionnaireResponses.js';
 import { authMiddleware } from '../middleware/authMiddleware.js';
 import { routeLogger } from '../features/logging/logger.js';
+import { QuestionnaireResponse } from '../models/questionnaireResponse.js';
 const router = express.Router();
 export { router as mersReportingQuestionnaireResponsesRouter };
 
@@ -46,18 +47,18 @@ function getAllResponses() {
     });
 }
 
-function getAllResponsesForIds(ids: Array<string>) {
-    return MersReportingQuestionnaireResponse.find({
-        $and: [
-            {
-                $or: [{ deleted: { $exists: false } }, { deleted: false }],
-            },
-            {
-                _id: { $in: ids },
-            },
-        ],
-    });
-}
+// function getAllResponsesForIds(ids: Array<string>) {
+//     return MersReportingQuestionnaireResponse.find({
+//         $and: [
+//             {
+//                 $or: [{ deleted: { $exists: false } }, { deleted: false }],
+//             },
+//             {
+//                 _id: { $in: ids },
+//             },
+//         ],
+//     });
+// }
 
 router.route('/').get(async (req, res) => {
     const logger = routeLogger('getAllMERZQuestionnaireResponse');
@@ -67,60 +68,86 @@ router.route('/').get(async (req, res) => {
     res.json(responsesInfo);
 });
 
-const AssignAgencySchema = z.array(z.object({
-    id: z.string(),
-    agency: z.string().nullish(),
-}));
 
-router.route('/assign-agency').post(async (req, res) => {
-    const logger = routeLogger('agencyAssignURL');
-    const requestBody = AssignAgencySchema.parse(req.body);
-    for (const change of requestBody) {
-        try {
-            await MersReportingQuestionnaireResponse.updateOne({ _id: change.id }, {
-                agency: change.agency ?? null,
-            });
-        }
-        catch (err) {
-            logger.error({
-                request: change,
-                error: err,
-            }, 'Failed to update an agency');
-        }
-    }
-    logger.info(requestBody, 'Successfully assigned agency');
-    res.json(await getAllResponsesForIds(requestBody.map(x => x.id)));
+// /api/mers-reporting/:title.:uniqueId
+router.route('/').get(async (req, res) => {
+    const logger = routeLogger('getAllMERZQuestionnaireResponse');
+    logger.trace('CALLED');
+    const qResponses = await getAllResponses();
+    const responsesInfo = { responses: qResponses };
+    res.json(responsesInfo);
 });
 
-const AssignFlagSchema = z.array(z.object({
-    id: z.string(),
-    flag: z.boolean().nullish(),
-}));
 
-router.route('/assign-flag').post(async (req, res) => {
-    const logger = routeLogger('assignResponseFlag');
-    const requestBody = AssignFlagSchema.parse(req.body);
-    for (const change of requestBody) {
-        try {
-            await MersReportingQuestionnaireResponse.updateOne({ _id: change.id }, {
-                flag: change.flag ?? null,
-            });
-        }
-        catch (err) {
-            logger.error({
-                request: change,
-                error: err,
-            }, 'Failed to update a flag');
-        }
-    }
-    logger.info(requestBody, 'Successfully assigned flag');
-    res.json(await getAllResponsesForIds(requestBody.map(x => x.id)));
-});
+// const AssignAgencySchema = z.array(z.object({
+//     id: z.string(),
+//     agency: z.string().nullish(),
+// }));
+
+// router.route('/assign-agency').post(async (req, res) => {
+//     const logger = routeLogger('agencyAssignURL');
+//     const requestBody = AssignAgencySchema.parse(req.body);
+//     for (const change of requestBody) {
+//         try {
+//             await MersReportingQuestionnaireResponse.updateOne({ _id: change.id }, {
+//                 agency: change.agency ?? null,
+//             });
+//         }
+//         catch (err) {
+//             logger.error({
+//                 request: change,
+//                 error: err,
+//             }, 'Failed to update an agency');
+//         }
+//     }
+//     logger.info(requestBody, 'Successfully assigned agency');
+//     res.json(await getAllResponsesForIds(requestBody.map(x => x.id)));
+// });
+
+// const AssignFlagSchema = z.array(z.object({
+//     id: z.string(),
+//     flag: z.boolean().nullish(),
+// }));
+
+// router.route('/assign-flag').post(async (req, res) => {
+//     const logger = routeLogger('assignResponseFlag');
+//     const requestBody = AssignFlagSchema.parse(req.body);
+//     for (const change of requestBody) {
+//         try {
+//             await MersReportingQuestionnaireResponse.updateOne({ _id: change.id }, {
+//                 flag: change.flag ?? null,
+//             });
+//         }
+//         catch (err) {
+//             logger.error({
+//                 request: change,
+//                 error: err,
+//             }, 'Failed to update a flag');
+//         }
+//     }
+//     logger.info(requestBody, 'Successfully assigned flag');
+//     res.json(await getAllResponsesForIds(requestBody.map(x => x.id)));
+// });
 
 
 router.route('/:id').get(async (req, res) => {
     const questionnaireResponse = await MersReportingQuestionnaireResponse.findById(req.params.id);
     res.json(questionnaireResponse);
+});
+
+router.route('/lookup/:uniqueId').get(async (req, res) => {
+    const logger = routeLogger('mersUniqueId');
+    logger.info(req.params, 'shiiiiiiiiiit');
+    console.log('\n\nthe params coming in', req.params);
+    // pull prescreening question for unique flow id
+    const questionnaireResponse = await QuestionnaireResponse.findOne({
+        unique_flow_id: req.params.uniqueId,
+    });
+    console.log('LOOOOOOOOK----->', questionnaireResponse);
+    // const questionnaireResponse = await MersReportingQuestionnaireResponse.findOne({
+    //     unique_flow_id: req.params.uniqueId,
+    // });
+    res.json({ results: questionnaireResponse });
 });
 
 router.route('/:id').delete(async (req, res) => {

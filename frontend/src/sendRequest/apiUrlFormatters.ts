@@ -23,6 +23,11 @@ type IdOnlyQuery = {
 type TitleOnlyQuery = {
     title: string;
 };
+
+type TitleWithUniqueIdQuery = {
+    title: string;
+    uniqueId: string;
+};
 export const apiUrlFormatters = {
     // adminsRouter
     ...{
@@ -57,6 +62,19 @@ export const apiUrlFormatters = {
             return replaceSlug(apiUrls.getQuestionsByLanguage, [
                 slugPair(':title', title),
                 slugPair(':language', effectiveLanguage),
+            ]);
+        },
+    },
+    // mers questionnaire router
+    ...{
+        getMersQuestionsByUniqueId: (query: TitleWithUniqueIdQuery) => {
+            const {
+                uniqueId,
+                title,
+            } = query;
+            return replaceSlug(apiUrls.getMersResportForUniqueId, [
+                slugPair(':title', title),
+                slugPair(':uniqueId', uniqueId),
             ]);
         },
     },

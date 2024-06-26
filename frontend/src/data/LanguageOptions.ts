@@ -1,4 +1,6 @@
-export const workshopTitle = 'CIIT_Workshop_Spring_2022';
+const year = new Date().getFullYear();
+export const workshopTitle = `CIIT_Workshop_Spring_${year}`;
+export const mersWorkshopTitle = `MERS_CIIT_Workshop_Spring_${year}`;
 
 export const languageOptions = [
     {

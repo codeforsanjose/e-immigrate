@@ -1,5 +1,8 @@
 .AdminDashboard {
-    margin: 0 10%;
+    margin: 15px;
+    padding: 15px;
+    border-radius: 25px;
+    box-shadow: 10px 15px 25px rgb(154, 153, 153);
 }
 .AdminDashboard .loading {
     position: absolute;

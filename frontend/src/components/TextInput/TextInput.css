@@ -11,9 +11,6 @@
     border: 2px solid #0072ff;
 }
 
-.TextInput[data-touched='true']:invalid {
-    border: 2px solid var(--color-secondary);
-}
 
 .RequiredError {
     display: none;

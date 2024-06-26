@@ -109,7 +109,7 @@ router.route('/add').post(async function addQuestionnaires(req, res) {
         title,
         language,
     }, 'request body');
-    console.log('title here in router', title);
+
     try {
         if (title.toLowerCase().includes('mers')) {
             await importExcelMersQuestionSheet({

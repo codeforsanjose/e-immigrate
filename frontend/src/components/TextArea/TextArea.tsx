@@ -7,23 +7,27 @@ import { useQuestionnaireResponseContext } from '../../contexts/QuestionnaireRes
 type TextAreaProps = CommonComponentProps;
 export function TextArea(props: TextAreaProps) {
     const {
-        q, 
+        q,
     } = props;
-    const { 
+    const {
         collectAnswer,
-        bindField, 
+        bindField,
+        questionnaireResponse,
     } = useQuestionnaireResponseContext();
+    const valueForSlug = questionnaireResponse[q.slug];
+    const showError = valueForSlug == null || valueForSlug === '';
     return (
         <>
             <textarea
                 rows={4}
                 name={q.slug}
                 required={q.required}
-                className="TextInput"
+                className="TextArea"
                 {...bindField(q.slug)}
-                onChange={(e) => collectAnswer(q.slug, e.target.value)} 
+                {...{ 'data-touched': showError }}
+                onChange={(e) => collectAnswer(q.slug, e.target.value)}
             />
-            <AutoRequiredErrorDiv />
+            <AutoRequiredErrorDiv show={showError} />
         </>
     );
 }

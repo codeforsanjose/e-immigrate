@@ -34,6 +34,7 @@ export function Question3(props: Question3Props) {
     const { content } = useContentContext();
     const { 
         collectAnswer,
+        questionnaireResponse,
     } = useQuestionnaireResponseContext();
 
     React.useEffect(() => {
@@ -78,10 +79,12 @@ export function Question3(props: Question3Props) {
             setShowModal(true);
         }
     };
+    const valueForSlug = questionnaireResponse[q.slug];
+    const showError = valueForSlug == null || valueForSlug === '';
     const bulmaCssCalendar = (
         <div className="bulma-calendar-container is-mobile">
             <input id="date-selection" type="date" />
-            <AutoRequiredErrorDiv />
+            <AutoRequiredErrorDiv show={showError} />
             <Button
                 type="submit"
                 label={content.screeningProceedButton}

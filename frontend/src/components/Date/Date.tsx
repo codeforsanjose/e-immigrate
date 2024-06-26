@@ -20,7 +20,12 @@ export function Date(props: DateProps) {
     } = props;
     const {
         bindField,
+        questionnaireResponse,
     } = useQuestionnaireResponseContext();
+
+    const valueForSlug = questionnaireResponse[q.slug];
+    const showError = valueForSlug == null || valueForSlug === '';
+
     return (
         <>
             <input
@@ -29,7 +34,7 @@ export function Date(props: DateProps) {
                 required={q.required}
                 className="TextInput"
                 {...bindField(q.slug)} />
-            <AutoRequiredErrorDiv />
+            <AutoRequiredErrorDiv show={showError} />
         </>
     );
 }

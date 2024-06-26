@@ -52,5 +52,6 @@ export const apiUrls = {
     ...{
         addMersReportingResponse: '/api/mers-reporting/add',
         getAllMersReportingResponses: '/api/mers-reporting',
+        getMersResportForUniqueId: '/api/mers-reporting/lookup/:uniqueId',
     } as const,
 };

@@ -13,17 +13,32 @@ export function RequiredErrorDiv(props: RequiredErrorProps) {
         <div className="RequiredError">*{message}</div>
     );
 }
+
+type AutoRequiredErrorDivProps = {
+    show: boolean;
+};
+
 /**
  * Depends on {@link ContentContext}
  * @export
  */
-export function AutoRequiredErrorDiv() {
+export function AutoRequiredErrorDiv(props: AutoRequiredErrorDivProps) {
     const { content } = useContentContext();
-    return (
-        <RequiredErrorDiv 
-            message={content.errorMessage}
-        />
-    );
+    const {
+        show = false,
+    } = props;
+
+    if (show) {
+        return (
+            <RequiredErrorDiv 
+                message={content.errorMessage}
+            />
+        );
+    }
+    else {
+        return null;
+    }
+    
 }
 export function RequiredErrorSpan(props: RequiredErrorProps) {
     const {

@@ -10,10 +10,10 @@ import { defaultCompare } from '../../utilities/defaultCompare';
 import { useNavigate } from 'react-router-dom';
 import { apiUrlFormatters } from '../../sendRequest/apiUrlFormatters';
 import SortArrow from '../../data/images/SortArrow.svg';
-import { isAgencyObject, isValueTranslatedYes } from './helpers';
+import { isAgencyObject } from './helpers';
 import { AGENCIES, DESCRIPTIVE_TIMESTAMP } from './constants';
 import { QuestionnaireResponseElement } from './types';
-import { getUpdatedFlag, getUpdatedFlagForKey, isRedFlagKey } from '../../utilities/flagDeterminerHelpers';
+import { getUpdatedFlag, getUpdatedFlagForKey } from '../../utilities/flagDeterminerHelpers';
 import { QuestionnaireContainer } from '../../compositions/Questionnaire/Questionnaire/QuestionnaireContainer';
 
 
@@ -123,6 +123,36 @@ function ResponseTableHeaderRow(props: ResponseTableHeaderRowProps) {
     );
 }
 
+export function questionnaireResponseAnswersToMarkupArray(
+    responseToQuestionnaire: QuestionnaireResponseElement,
+    alreadyQuestionKeyMarkupedUp: Array<string>,
+) {
+    const questionnaireResponse = responseToQuestionnaire.questionnaireResponse;
+    const allAnswers = Object.keys(questionnaireResponse).reduce<Array<JSX.Element>>((accumulator, questionKey, index) => {
+        const flagItOutline = getUpdatedFlagForKey(questionKey, questionnaireResponse[questionKey] ?? '', questionnaireResponse) ? 'red-outline' : 'green-outline';
+        const answerMarkup = !alreadyQuestionKeyMarkupedUp.includes(
+            questionKey,
+        )
+            ? (
+                <article
+                    key={`td-answer-${questionKey}`}
+                    className={`answer ${flagItOutline}`}
+                >
+                    <b>{index + 1}.</b>
+                    <span>
+                        {questionKey}:
+                        {questionnaireResponse[questionKey]}
+                    </span>
+                </article>
+            )
+            : null;
+        return (answerMarkup != null)
+            ? [...accumulator, answerMarkup]
+            : accumulator;
+    }, []);
+    return allAnswers;
+}
+
 type ResponseTableRowProps = {
     flag?: boolean;
     toggleFlag: (response: QuestionnaireResponseElement) => Promise<void>;
@@ -158,7 +188,7 @@ function ResponseTableRow(props: ResponseTableRowProps) {
             </span>
         </article>
     );
-    const flagIt = getUpdatedFlagForKey('contact-with-police', questionnaireResponse.contact_with_police ?? '') ? 'red-outline' : 'green-outline';
+    const flagIt = getUpdatedFlagForKey('contact-with-police', questionnaireResponse.contact_with_police ?? '', questionnaireResponse) ? 'red-outline' : 'green-outline';
     const policeMarkupQuestion = (
         <article
             key={`td-answer-police-${index}`}
@@ -188,34 +218,7 @@ function ResponseTableRow(props: ResponseTableRowProps) {
         'contact_with_police',
         'contact_with_police_explanation',
     ];
-    const allAnswers = Object.keys(questionnaireResponse).reduce<Array<JSX.Element>>((accumulator, questionKey, index) => {
-
-        const flagItOutline = isRedFlagKey(questionKey)
-            ? isValueTranslatedYes(questionnaireResponse[questionKey])
-                ? 'red-outline'
-                : 'green-outline'
-            : 'green-outline';
-
-        const answerMarkup = !alreadyQuestionKeyMarkupedUp.includes(
-            questionKey,
-        )
-            ? (
-                <article
-                    key={`td-answer-${questionKey}`}
-                    className={`answer ${flagItOutline}`}
-                >
-                    <b>{index + 1}.</b>
-                    <span>
-                        {questionKey}:
-                        {questionnaireResponse[questionKey]}
-                    </span>
-                </article>
-            )
-            : null;
-        return (answerMarkup != null)
-            ? [...accumulator, answerMarkup]
-            : accumulator;
-    }, []);
+    const allAnswers = questionnaireResponseAnswersToMarkupArray(response, alreadyQuestionKeyMarkupedUp);
     const allTheAnswers = [
         languageMarkupQuestion,
         policeMarkupQuestion,

@@ -4,11 +4,18 @@ import {
     yesValuesTranslated,
     RedFlagKey,
     fullWaiverQuestionKeys,
+    answeringNoIsRedFlag,
+    noValuesTranslated,
 } from "../containers/AdminDashboard/constants";
 
 export function isRedFlagKey(value: string) {
     if (value == null || typeof value !== 'string') return false;
     return actualRedFlagQuestionKeys.includes(value);
+}
+
+export function isAnswerNoRedFlagKey(value: string) {
+    if (value == null || typeof value !== 'string') return false;
+    return answeringNoIsRedFlag.includes(value);
 }
 
 export function isNOTRedFlagKey(value: string) {
@@ -22,19 +29,27 @@ export function fullWaiverQuestionAnsweredYesTo(questionKey: string, value: stri
     return false;
 }
 export function getUpdatedFlag(userResponse: Partial<Record<RedFlagKey, string | null | undefined>>) {
-    return Object.entries(userResponse).reduce((acc, [key, value]) => {
-        if (value == null) return true;
-        return isRedFlagKey(key)
-            ? yesValuesTranslated.includes(value)
-                ? true
-                : acc
-            : acc;
-    }, false);
+    const result = Object.entries(userResponse).map(([key, value]) => {
+        if (value == null) return false;
+        return getUpdatedFlagForKey(key, value, userResponse);
+    });
+    return result.includes(true);
 }
 
-export function getUpdatedFlagForKey(key: RedFlagKey, value: string) {
-    return isRedFlagKey(key)
-        ? !!yesValuesTranslated.includes(value)
-        : false;
-
+export function getUpdatedFlagForKey(key: RedFlagKey, value: string, userResponse: Partial<Record<RedFlagKey, string | null | undefined>>) {
+    if (isRedFlagKey(key)) {
+        return yesValuesTranslated.includes(value);
+    }
+    else if (isAnswerNoRedFlagKey(key)) {
+        if (key === 'taxes_payment_plan') {
+            const prevVal = userResponse.owed_taxes_since_LPR ?? '';
+            if (yesValuesTranslated.includes(prevVal)) {
+                return noValuesTranslated.includes(value);     
+            }
+        }
+        return false;
+    }
+    else {
+        return false;
+    }
 }

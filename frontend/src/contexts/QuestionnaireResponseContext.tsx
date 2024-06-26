@@ -30,6 +30,8 @@ function useMarkFieldAsTouched() {
     }, []);
 
     const bindField: BindFieldFunction = React.useCallback((name: string) => {
+        console.log('touchedFields', touchedFields);
+        console.log('touchedFields with name', name);
         return {
             'data-touched': touchedFields.all || touchedFields[name],
             onBlur: setFieldAsTouched,
