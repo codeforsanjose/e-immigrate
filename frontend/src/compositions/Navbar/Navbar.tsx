@@ -20,6 +20,7 @@ export function Navbar(props: NavbarProps) {
     const mersReportingText = `MERS`;
     const loginText = `Login`;
     const workshopText = `Workshops`;
+    const resourcesText = 'Resources';
     const isActiveTab = (tabName: string) => {
         return window.location.href.includes(tabName);
     };
@@ -40,6 +41,12 @@ export function Navbar(props: NavbarProps) {
                 </Link>
                 <Link to="/workshops">
                     <h3 className={isActiveTab('workshops') ? 'active' : '' }>{workshopText}</h3>
+                </Link>
+                <Link to="/resources">
+                    <h3 className={isActiveTab('resources') ? 'active' : '' }>{resourcesText}</h3>
+                </Link>
+                <Link to='https://projectnewcitizen.com/'>
+                    <h3>Project New Citizen Impact</h3>
                 </Link>
                 <Link to="/login">
                     <h3 className={isActiveTab('login') ? 'active' : '' }>{loginText}</h3>

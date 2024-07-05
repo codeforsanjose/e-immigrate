@@ -1,0 +1,14 @@
+.StatementDetails {
+    display: grid;
+    justify-items: center;
+    width: 85%;
+}
+.StatementDetails .statementContainer {
+    display: grid;
+    text-wrap: wrap;
+}
+
+.StatementDetails .statementContainer h2 {
+    font-size: 2rem;
+    font-weight: 400;
+}

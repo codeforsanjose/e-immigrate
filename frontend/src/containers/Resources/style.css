@@ -1,0 +1,23 @@
+.Resources {
+    padding: 10px;
+}
+
+.resourcesDetails h2 {
+    font-size: 3.5rem;
+    font-weight: 500;
+}
+
+.resourcesDetails h3 {
+    font-size: 3rem;
+    font-weight: 400;
+}
+
+.resourcesDetails h2 {
+    font-size: 3.5rem;
+    font-weight: 500;
+}
+
+.resourcesDetails p {
+    font-size: 1.5rem;
+    font-weight: 300;
+}

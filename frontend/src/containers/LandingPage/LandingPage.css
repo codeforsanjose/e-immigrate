@@ -1,3 +1,21 @@
 .LandingPage {
-    
+    display: grid;
+}
+.LandingPage .pageDetails {
+    display: grid;
+    justify-items: center;
+}
+
+.LandingPage .pageDetails h1 {
+    font-size: 4rem;
+    text-decoration: underline;
+    font-weight: 500;
+}
+.LandingPage .pageDetails h2 {
+    font-size: 3rem;
+    font-weight: bold;
+}
+
+.LandingPage .pageDetails .pastEventsDetails {
+    margin-top: 20px;
 }

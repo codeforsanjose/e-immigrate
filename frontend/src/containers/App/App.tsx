@@ -13,6 +13,7 @@ import { LandingPage } from '../LandingPage/LandingPage';
 import { FeedbackPage } from '../FeedbackPage/FeedbackPage';
 import { LearningCenter } from '../LearningCenter/LearningCenter';
 import { MERSReportingPage } from '../MERSReportingPage/MERSReportingPage';
+import { Resources } from '../Resources';
 
 export function App() {
     return (
@@ -30,6 +31,9 @@ export function App() {
                                 />
                                 <Route path="/feedback" element={
                                     <FeedbackPage />}
+                                />
+                                <Route path="/resources" element={
+                                    <Resources />}
                                 />
                                 <Route path="/dashboard" element={
                                     <AdminDashboard />}

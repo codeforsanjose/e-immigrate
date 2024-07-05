@@ -3,24 +3,32 @@ import React from 'react';
 import './LandingPage.css';
 import { Navbar } from '../../compositions/Navbar/Navbar';
 
+import image from '../../data/images/eimmigrateBackground.png';
+import { StatementDetails } from '../../compositions/StatementsDetails';
+
 export function LandingPage() {
 
     return (
         <div className="LandingPage">
             <Navbar />
-            <h1>This is the landing page</h1>
-            {/* <h4 onClick={() => {
-                navigateToPage('/learning-center');
-            }}>Learning Center</h4>
-            <h4 onClick={() => {
-                navigateToPage('/mers-reporting');
-            }}>MERs Reporting</h4>
-            <h4 onClick={() => {
-                navigateToPage('/workshop');
-            }}>workshops</h4>
-            <h4 onClick={() => {
-                navigateToPage('/feedback');
-            }}>feedback</h4> */}
+            <article className='pageDetails'>
+                <h1>E-Immigrate</h1>
+                <StatementDetails />
+                <h2>Project New Citizen</h2>
+                <img src={image} />
+                <article className='pastEventsDetails'>
+                    <hr />
+                    <h2>Citizenship Day 2024</h2>
+                    <section className='letterDetails'>
+                        <h3>This event is now closed. Thank you for your interest in Citizenship Day 2024.</h3>
+                        <p>Thank you for your cooperation, patience, and understanding.</p>
+                        <p>Sincerely,</p>
+                        <p>PROJECT NEW CITIZEN</p>
+                    </section>
+                    <hr />
+                </article>
+            </article>
+
         </div>
     );
 }
