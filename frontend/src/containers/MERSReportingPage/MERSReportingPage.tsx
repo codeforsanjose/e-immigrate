@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import './MERSReportingPage.css';
 import { Navbar } from '../../compositions/Navbar/Navbar';
@@ -8,6 +9,7 @@ import { sendRequest } from '../../sendRequest/sendRequest';
 import { QuestionnaireResponseElement } from '../AdminDashboard/types';
 import { questionnaireResponseAnswersToMarkupArray } from '../AdminDashboard/ResponsesTable';
 import { QuestionnaireContainer } from '../../compositions/Questionnaire/Questionnaire/QuestionnaireContainer';
+import { getAuthToken } from '../../utilities/auth_utils';
 
 type GetMersQuestionsForIdentifierApiResponse = {
     title?: string;
@@ -23,11 +25,21 @@ export function MERSReportingPage() {
         // test with d782e81c-5802-4637-9d29-ba2546acead0
         setFetchMers(true);
     }
-
+    const navigate = useNavigate();
+    React.useEffect(() => {
+        async function inner() {
+            // setLoading(true);
+            const jwt = getAuthToken();
+            if (jwt == null) {
+                navigate('/');
+                return;
+            }
+        }
+        void inner();
+    }, [navigate]);
     React.useEffect(() => {
         if (mersResults != null) {
             const stuff = questionnaireResponseAnswersToMarkupArray(mersResults?.results, []);
-            console.log('the fuck is stuff', stuff);
             setMarkupResults(current => {
                 return stuff;
             });
@@ -35,7 +47,6 @@ export function MERSReportingPage() {
         }
 
     }, [mersResults]);
-    console.log('all the asnwersssss', markupResults);
     React.useEffect(() => {
         async function inner() {
             if (fetchMers) {
@@ -47,9 +58,6 @@ export function MERSReportingPage() {
                 };
                 const response = await sendRequest<GetMersQuestionsForIdentifierApiResponse | undefined>(requestObj, { includeAuth: true });
                 if (response == null) {
-                    console.log('response was null', {
-                        requestObj,
-                    });
                     return;
                 }
                 setMersResults(current => {
@@ -60,8 +68,6 @@ export function MERSReportingPage() {
         }
         void inner();
     }, [fetchMers, mers]);
-    console.log('the mers results', mersResults?.results);
-    // console.log('allTheAnswers', allTheAnswers);
     return (
         <div className="MERSReportingPage">
             <Navbar />
