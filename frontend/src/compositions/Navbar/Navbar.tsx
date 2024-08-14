@@ -1,9 +1,11 @@
 import React from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import Logo from '../../data/images/CiiT Logo.png';
 import { LanguageDropdown } from '../../components/LanguageDropdown/LanguageDropdown';
-import { Link } from 'react-router-dom';
+
 import './Navbar.css';
 import { useLanguageContext } from '../../contexts/LanguageContext';
+import { getAuthToken } from '../../utilities/auth_utils';
 type NavbarProps = {
     dashboard?: boolean;
 };
@@ -11,6 +13,23 @@ export function Navbar(props: NavbarProps) {
     const {
         dashboard,
     } = props;
+    const [showAdminTabs, setShowAdminTabs] = React.useState(false); 
+    const navigate = useNavigate();
+    React.useEffect(() => {
+        async function inner() {
+            // setLoading(true);
+            const jwt = getAuthToken();
+            if (jwt == null) {
+                // navigate('/');
+                setShowAdminTabs(false);
+                return;
+            }
+            else {
+                setShowAdminTabs(true);
+            }
+        }
+        void inner();
+    }, [navigate]);
     const {
         language,
         setLanguage,
@@ -33,9 +52,9 @@ export function Navbar(props: NavbarProps) {
                 <Link to="/learning-center">
                     <h3 className={isActiveTab('learning-center') ? 'active' : '' }>{learningCenterText}</h3>
                 </Link>
-                <Link to="/mers-reporting">
+                { showAdminTabs && <Link to="/mers-reporting">
                     <h3 className={isActiveTab('mers') ? 'active' : '' }>{mersReportingText}</h3>
-                </Link>
+                </Link> }
                 <Link to="/feedback">
                     <h3 className={isActiveTab('feedback') ? 'active' : '' }>{feedbackText}</h3>
                 </Link>
