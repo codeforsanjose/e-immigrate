@@ -1,15 +1,16 @@
 .Navbar {
-    background-color: var(--color-brightSky);
+    background-color: white;
     padding: 0 1rem;
     display: grid;
     grid-template-columns: 94px auto;
     grid-template-rows: 73px;
     justify-content: space-between;
     align-items: center;
+    border-bottom: solid 3px black;
 }
 
 .Navbar .logo {
-    width: 94px;
+    width: 60px;
     height: auto;
 }
 
@@ -20,10 +21,9 @@
     gap: 25px;
 }
 
-.Navbar .NavLinks a {
+.Navbar .NavLinks h3 {
     text-decoration: none;
-    font-size: 14px;
-    font-weight: 500;
+    font-size: 18px;
     color: var(--color-text-primary);
 }
 
